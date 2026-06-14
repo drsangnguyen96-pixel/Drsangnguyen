@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Hệ Thống Đánh Giá Lâm Sàng</title>
+    <style>
+        :root {
+            --primary-color: #2b6cb0; --sidebar-bg: #2d3748; --sidebar-hover: #4a5568;
+            --text-light: #edf2f7; --bg-light: #e2e8f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0; padding: 0; display: flex; height: 100dvh; /* Kích thước động tối ưu cho mobile */
+            background-color: var(--bg-light); color: #2d3748; overflow: hidden;
+        }
+        
+        /* HEADER ĐIỆN THOẠI (Ẩn trên máy tính) */
+        .mobile-header {
+            display: none; background-color: #1a202c; color: white;
+            padding: 12px 20px; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 50; flex-shrink: 0;
+        }
+        .mobile-header h3 { margin: 0; font-size: 1.1em; color: #63b3ed; }
+        .menu-btn {
+            background: none; border: none; color: white; font-size: 1.5em; cursor: pointer; padding: 0;
+        }
+
+        .sidebar {
+            width: 320px; background-color: var(--sidebar-bg); color: var(--text-light);
+            display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto; flex-shrink: 0; z-index: 100; transition: transform 0.3s ease;
+        }
+        .sidebar-header { padding: 20px; background-color: #1a202c; text-align: center; border-bottom: 1px solid #4a5568; }
+        .sidebar-header h2 { margin: 0; font-size: 1.2em; color: #63b3ed; }
+        .sidebar-header p { margin: 5px 0 0 0; font-size: 0.85em; color: #a0aec0; }
+        
+        ul.tree { list-style-type: none; padding: 15px; margin: 0; }
+        ul.tree ul { list-style-type: none; padding-left: 20px; display: none; }
+        ul.tree ul.active { display: block; }
+        ul.tree li { margin: 5px 0; }
+        
+        .folder {
+            cursor: pointer; font-weight: bold; padding: 10px; border-radius: 6px;
+            display: flex; align-items: center; user-select: none; background-color: #2d3748;
+        }
+        .folder:hover { background-color: var(--sidebar-hover); }
+        .folder::before { content: "▶"; display: inline-block; margin-right: 10px; font-size: 0.8em; transition: transform 0.2s; }
+        .folder.open::before { transform: rotate(90deg); }
+        
+        .file {
+            cursor: pointer; padding: 10px 10px 10px 30px; border-radius: 6px;
+            color: #cbd5e0; font-size: 0.95em; display: block; margin-top: 5px;
+        }
+        .file:hover, .file.active { background-color: var(--primary-color); color: white; }
+        .file::before { content: "📄"; margin-right: 8px; font-size: 0.9em; }
+
+        .main-content {
+            flex-grow: 1; padding: 0; overflow: hidden; position: relative; display: flex; flex-direction: column;
+        }
+        .welcome-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; color: #718096; text-align: center; padding: 20px;
+        }
+        .welcome-screen h1 { color: #2b6cb0; font-size: 1.5em; }
+        
+        .plugin-form { display: none; width: 100%; height: 100%; animation: fadeIn 0.3s; }
+        .plugin-form.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        iframe.form-frame { width: 100%; height: 100%; border: none; display: block; }
+
+        .overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+            background: rgba(0,0,0,0.5); z-index: 90; opacity: 0; transition: opacity 0.3s;
+        }
+
+        /* ================= TỐI ƯU CỰC ĐẠI CHO ĐIỆN THOẠI ================= */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .mobile-header { display: flex; }
+            
+            /* Biến Menu thành dạng Ngăn kéo trượt từ trái sang */
+            .sidebar {
+                position: fixed; top: 0; left: 0; height: 100dvh; width: 280px;
+                transform: translateX(-100%);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .overlay.open { display: block; opacity: 1; }
+            
+            /* Khu vực hiển thị Form chiếm 100% phần còn lại, chống tràn */
+            .main-content { height: calc(100dvh - 50px); }
+            .sidebar-header { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Nút Bấm Điện Thoại -->
+    <div class="mobile-header">
+        <h3>HUB LÂM SÀNG</h3>
+        <button class="menu-btn" id="menuToggle">☰</button>
+    </div>
+    <div class="overlay" id="menuOverlay"></div>
+
+    <!-- Menu Gốc -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>HỆ THỐNG HUB LÂM SÀNG</h2>
+            <p>Quản trị hệ thống</p>
+        </div>
+        <ul class="tree" id="auto-generated-menu"></ul>
+    </div>
+
+    <!-- Khung Hiển Thị Chính -->
+    <div class="main-content" id="main-container">
+        <div id="panel-welcome" class="plugin-form active">
+            <div class="welcome-screen">
+                <h1>TRUNG TÂM CÔNG CỤ</h1>
+                <p style="color:#a0aec0; margin-top: 15px;">Vui lòng chọn bảng đánh giá ở Menu.</p>
+            </div>
+        </div>
+
+        <!-- ==================================================================== -->
+        <!-- 🔴🔴🔴 ANH DÁN LẠI CÁC ĐOẠN CODE IFRAME CỦA ANH VÀO ĐÂY 🔴🔴🔴            -->
+        <!-- ==================================================================== -->
+		<div class="plugin-form" data-folder="1. Mạch Máu" data-name="Đánh giá P&L trong PLAN">
+    <iframe class="form-frame" src="Bang_Kiem_MM1.html"></iframe>
+</div>
+		<div class="plugin-form" data-folder="1. Mạch Máu" data-name="Thang điểm Rutherford">
+    <iframe class="form-frame" src="Rutherford_Classification.html"></iframe>
+</div>
+		<div class="plugin-form" data-folder="2. Huyết khối tĩnh mạch" data-name="Thang điểm Caprini">
+    <iframe class="form-frame" src="Caprini_VTE.html"></iframe>
+</div>
+		<div class="plugin-form" data-folder="2. Huyết khối tĩnh mạch" data-name="Thang điểm Geneva đánh giá thuyên tắc phổi">
+    <iframe class="form-frame" src="Geneva_PE.html"></iframe>
+</div>
+		<div class="plugin-form" data-folder="2. Huyết khối tĩnh mạch" data-name="Thang điểm Padua đánh giá VTE ở bệnh nhân nội khoa">
+    <iframe class="form-frame" src="Padua_VTE.html"></iframe>
+</div>
+		<div class="plugin-form" data-folder="2. Huyết khối tĩnh mạch" data-name="Thang điểm sPESI đánh giá thuyên tắc phổi nhanh">
+    <iframe class="form-frame" src="sPESI_PE.html"></iframe>
+</div>
+		<div class="plugin-form" data-folder="2. Huyết khối tĩnh mạch" data-name="Thang điểm Villalta đánh giá hội chứng hậu huyết khối">
+    <iframe class="form-frame" src="Villalta_PTS.html"></iframe>
+</div>
+		<div class="plugin-form" data-folder="2. Huyết khối tĩnh mạch" data-name="Thang điểm Wells đánh giá huyết khối tĩnh mạch sâu">
+    <iframe class="form-frame" src="Wells_DVT.html"></iframe>
+</div>
+		<div class="plugin-form" data-folder="2. Huyết khối tĩnh mạch" data-name="Thang điểm Wells đánh giá thuyên tắc phổi">
+    <iframe class="form-frame" src="Wells_PE.html"></iframe>
+</div>
+
+</div>
+	<div class="plugin-form" data-folder="1. Mạch Máu" data-name="Đánh giá A trong PLAN">
+    <iframe class="form-frame" src="Bang_Kiem_MM2.html"></iframe>
+        
+        
+        <!-- ==================================================================== -->
+        <!-- 🔴🔴🔴 KẾT THÚC KHOẢNG TRỐNG DÁN CODE 🔴🔴🔴                           -->
+        <!-- ==================================================================== -->
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuContainer = document.getElementById('auto-generated-menu');
+            const allForms = document.querySelectorAll('.plugin-form');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('menuOverlay');
+            const menuToggle = document.getElementById('menuToggle');
+
+            // Tính năng ẩn/hiện Menu trên Mobile
+            function toggleMenu() {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('open');
+            }
+            menuToggle.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+
+            const systemTree = {};
+            let hasPlugins = false;
+
+            allForms.forEach((form, index) => {
+                if(form.id === 'panel-welcome') return;
+                hasPlugins = true;
+                const formId = form.id || `auto-form-${index}`;
+                form.id = formId;
+                const folderName = form.getAttribute('data-folder') || 'Công cụ Khác';
+                const formName = form.getAttribute('data-name') || `Bảng đánh giá ${index}`;
+
+                if (!systemTree[folderName]) systemTree[folderName] = [];
+                systemTree[folderName].push({ id: formId, name: formName });
+            });
+
+            if (!hasPlugins) {
+                menuContainer.innerHTML = `<li style="text-align:center; color:#a0aec0; padding-top:20px; font-size:0.9em;">[Hệ thống chưa có Form nào]</li>`;
+                return;
+            }
+
+            let menuHTML = '';
+            for (const [folder, files] of Object.entries(systemTree)) {
+                menuHTML += `<li><div class="folder">${folder}</div><ul>`;
+                files.forEach(file => {
+                    menuHTML += `<li><div class="file" data-target="${file.id}">${file.name}</div></li>`;
+                });
+                menuHTML += `</ul></li>`;
+            }
+            menuContainer.innerHTML = menuHTML;
+
+            // Xử lý Click Menu
+            document.querySelectorAll('.folder').forEach(folder => {
+                folder.addEventListener('click', function() {
+                    this.classList.toggle('open');
+                    const subMenu = this.nextElementSibling;
+                    if(subMenu) subMenu.classList.toggle('active');
+                });
+            });
+
+            document.querySelectorAll('.file').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.file').forEach(f => f.classList.remove('active'));
+                    this.classList.add('active');
+                    allForms.forEach(f => f.classList.remove('active'));
+                    
+                    const targetId = this.getAttribute('data-target');
+                    if (targetId) {
+                        const targetPanel = document.getElementById(targetId);
+                        if(targetPanel) targetPanel.classList.add('active');
+                    }
+                    
+                    // TỰ ĐỘNG ĐÓNG MENU SAU KHI CHỌN (Chỉ trên Mobile)
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('open');
+                        overlay.classList.remove('open');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
