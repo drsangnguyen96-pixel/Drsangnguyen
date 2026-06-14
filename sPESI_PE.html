@@ -2,29 +2,123 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Thang điểm sPESI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thang điểm sPESI (Phân tầng nguy cơ PE)</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
-        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; text-align: center; }
-        .item { margin-bottom: 10px; }
-        .result-box { margin-top: 20px; padding: 15px; background: #fff0f5; border-left: 4px solid #c0392b; font-weight: bold; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 20px; 
+            line-height: 1.6; 
+            background-color: #f9f9f9;
+        }
+        .container { 
+            max-width: 700px; 
+            margin: auto; 
+            padding: 25px; 
+            background: #ffffff;
+            border: 1px solid #e0e0e0; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        }
+        h2 { 
+            color: #2c3e50; 
+            text-align: center; 
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        .item { 
+            margin-bottom: 12px; 
+            padding: 8px 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .item:hover { background-color: #e9ecef; }
+        .item label { 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            font-size: 1.05em;
+        }
+        .item input[type="checkbox"] {
+            margin-right: 15px;
+            transform: scale(1.3);
+        }
+        .result-box { 
+            margin-top: 25px; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            font-size: 1.1em;
+        }
+        .low-risk { 
+            background: #e8f5e9; 
+            border-left: 5px solid #2e7d32; 
+            color: #1b5e20; 
+        }
+        .high-risk { 
+            background: #ffebee; 
+            border-left: 5px solid #c62828; 
+            color: #b71c1c; 
+        }
+        .score-display { font-size: 1.3em; font-weight: bold; }
+        .treatment-box { 
+            margin-top: 20px; 
+            padding: 15px 20px; 
+            background: #e3f2fd; 
+            border-left: 5px solid #1565c0; 
+            border-radius: 8px; 
+        }
+        .treatment-box h4 { 
+            margin-top: 0; 
+            color: #0d47a1; 
+            border-bottom: 1px solid #90caf9;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+        .treatment-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .treatment-box li {
+            margin-bottom: 8px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h2>Thang điểm sPESI (Mức độ nghiêm trọng của PE)</h2>
+    <h2>Thang điểm sPESI</h2>
+    <div class="subtitle">Đánh giá mức độ nghiêm trọng & Phân tầng nguy cơ Thuyên tắc phổi (PE)</div>
+    
     <form id="spesiForm">
-        <div class="item"><input type="checkbox" value="1"> Tuổi > 80 (+1)</div>
-        <div class="item"><input type="checkbox" value="1"> Tiền sử ung thư (+1)</div>
-        <div class="item"><input type="checkbox" value="1"> Tiền sử bệnh tim phổi mãn tính (+1)</div>
-        <div class="item"><input type="checkbox" value="1"> Nhịp tim >= 110 lần/phút (+1)</div>
-        <div class="item"><input type="checkbox" value="1"> Huyết áp tâm thu < 100 mmHg (+1)</div>
-        <div class="item"><input type="checkbox" value="1"> SpO2 < 90% (+1)</div>
+        <div class="item"><label><input type="checkbox" value="1"> Tuổi > 80 (+1)</label></div>
+        <div class="item"><label><input type="checkbox" value="1"> Tiền sử ung thư (+1)</label></div>
+        <div class="item"><label><input type="checkbox" value="1"> Tiền sử suy tim hoặc bệnh phổi mạn tính (+1)</label></div>
+        <div class="item"><label><input type="checkbox" value="1"> Nhịp tim ≥ 110 lần/phút (+1)</label></div>
+        <div class="item"><label><input type="checkbox" value="1"> Huyết áp tâm thu < 100 mmHg (+1)</label></div>
+        <div class="item"><label><input type="checkbox" value="1"> Độ bão hòa oxy máu (SpO2) < 90% (+1)</label></div>
     </form>
-    <div class="result-box">
-        <p>Tổng điểm: <span id="score">0</span></p>
-        <p>Đánh giá: <span id="interpretation">Nguy cơ thấp (Tỷ lệ tử vong 30 ngày khoảng 1%)</span></p>
+
+    <div id="resultContainer" class="result-box low-risk">
+        <div class="score-display">Tổng điểm: <span id="score">0</span></div>
+        <p style="margin: 10px 0 5px 0;"><strong>Phân tầng:</strong> <span id="riskLevel">Nguy cơ thấp</span></p>
+        <p style="margin: 0;"><strong>Tiên lượng tử vong 30 ngày:</strong> <span id="mortalityRate">Khoảng 1.0%</span></p>
+    </div>
+
+    <div class="treatment-box">
+        <h4>Định hướng quản lý & Điều trị:</h4>
+        <div id="treatmentGuide">
+            <ul>
+                <li><strong>Ngoại trú:</strong> Bệnh nhân có thể được xem xét xuất viện sớm hoặc điều trị ngoại trú an toàn.</li>
+                <li><strong>Điều trị:</strong> Khởi trị bằng thuốc chống đông máu theo phác đồ tiêu chuẩn (DOACs hoặc LMWH).</li>
+                <li><strong>Lưu ý:</strong> Đảm bảo bệnh nhân có đủ mạng lưới hỗ trợ y tế và dễ dàng tái khám khi cần thiết.</li>
+            </ul>
+        </div>
     </div>
 </div>
 
@@ -32,7 +126,10 @@
     const form = document.getElementById('spesiForm');
     const checkboxes = form.querySelectorAll('input[type="checkbox"]');
     const scoreSpan = document.getElementById('score');
-    const interpretationSpan = document.getElementById('interpretation');
+    const riskLevelSpan = document.getElementById('riskLevel');
+    const mortalityRateSpan = document.getElementById('mortalityRate');
+    const resultContainer = document.getElementById('resultContainer');
+    const treatmentGuide = document.getElementById('treatmentGuide');
 
     checkboxes.forEach(cb => {
         cb.addEventListener('change', calculateScore);
@@ -43,14 +140,31 @@
         checkboxes.forEach(cb => {
             if (cb.checked) total += parseInt(cb.value);
         });
+        
         scoreSpan.textContent = total;
         
         if (total >= 1) {
-            interpretationSpan.textContent = "Nguy cơ cao (Tỷ lệ tử vong 30 ngày khoảng 10.9%)";
-            interpretationSpan.style.color = "red";
+            // HIGH RISK
+            resultContainer.className = "result-box high-risk";
+            riskLevelSpan.textContent = "Nguy cơ CAO (theo sPESI)";
+            mortalityRateSpan.textContent = "Khoảng 10.9%";
+            treatmentGuide.innerHTML = `
+                <ul>
+                    <li><strong>Nhập viện:</strong> Bắt buộc nhập viện để theo dõi sát diễn tiến lâm sàng và huyết động.</li>
+                    <li><strong>Đánh giá bổ sung:</strong> Cần thực hiện siêu âm tim hoặc định lượng Biomarker (Troponin, BNP/NT-proBNP) để phân loại sâu hơn thành nguy cơ <em>trung bình-thấp</em> hoặc <em>trung bình-cao</em>.</li>
+                    <li><strong>Điều trị:</strong> Khởi trị ngay thuốc chống đông máu. Chuẩn bị sẵn phương án can thiệp tái tưới máu (tiêu huyết khối, lấy huyết khối qua Catheter) nếu có dấu hiệu rối loạn huyết động.</li>
+                </ul>`;
         } else {
-            interpretationSpan.textContent = "Nguy cơ thấp (Tỷ lệ tử vong 30 ngày khoảng 1%)";
-            interpretationSpan.style.color = "green";
+            // LOW RISK
+            resultContainer.className = "result-box low-risk";
+            riskLevelSpan.textContent = "Nguy cơ THẤP";
+            mortalityRateSpan.textContent = "Khoảng 1.0%";
+            treatmentGuide.innerHTML = `
+                <ul>
+                    <li><strong>Ngoại trú:</strong> Bệnh nhân có thể được xem xét xuất viện sớm hoặc điều trị ngoại trú an toàn.</li>
+                    <li><strong>Điều trị:</strong> Khởi trị bằng thuốc chống đông máu theo phác đồ tiêu chuẩn (DOACs hoặc LMWH).</li>
+                    <li><strong>Lưu ý:</strong> Đảm bảo bệnh nhân có đủ mạng lưới hỗ trợ y tế và dễ dàng tái khám khi cần thiết.</li>
+                </ul>`;
         }
     }
 </script>
