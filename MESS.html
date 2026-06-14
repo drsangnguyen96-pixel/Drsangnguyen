@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thang Điểm MESS - Đánh Giá Chấn Thương Chi</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #16a085;
+            --bg-color: #f5f6fa;
+            --card-bg: #ffffff;
+            --border-color: #dcdde1;
+            --text-color: #2f3640;
+            --save-color: #27ae60;
+            --amputate-color: #c0392b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.4;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .section-title {
+            background: #34495e;
+            color: white;
+            padding: 6px 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .option-item {
+            position: relative;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 10px 8px 38px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            background: #fdfefe;
+            transition: all 0.15s ease;
+        }
+
+        .option-item:hover {
+            background: #f5f6fa;
+        }
+
+        .option-item input[type="radio"], .checkbox-item input[type="checkbox"] {
+            position: absolute;
+            left: 12px;
+            top: 11px;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent-color);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent-color);
+            background-color: #e8f8f5;
+            font-weight: 500;
+        }
+
+        /* Khối checkbox đặc biệt cho thời gian */
+        .checkbox-item {
+            position: relative;
+            border: 1px dashed #e67e22;
+            border-radius: 6px;
+            padding: 10px 10px 10px 38px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            background: #fff5e6;
+            margin-top: 8px;
+            font-weight: bold;
+            color: #d35400;
+        }
+
+        /* Khối hiển thị kết quả */
+        .result-panel {
+            margin-top: 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f8fafc;
+            text-align: center;
+        }
+
+        .result-header {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .score-display {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 8px 0;
+            color: var(--primary-color);
+        }
+
+        .result-badge {
+            font-size: 1.05rem;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            display: inline-block;
+            margin-bottom: 12px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .badge-save { background-color: var(--save-color); }
+        .badge-amputate { background-color: var(--amputate-color); }
+
+        .treatment-box {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #334155;
+            padding: 10px;
+            font-size: 0.85rem;
+            border-radius: 0 4px 4px 0;
+            color: #0f172a;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .btn-reset {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #dcdde1;
+            color: #2f3640;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .btn-reset:hover {
+            background: #c8d6e5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Thang Điểm MESS</h2>
+    <div class="subtitle">Mangled Extremity Severity Score - Dự đoán bảo tồn chi chấn thương</div>
+
+    <form id="messForm">
+        <div class="section-title">Yếu tố 1: Tổn thương xương và mô mềm</div>
+        <div class="radio-group">
+            <label class="option-item"><input type="radio" name="yeuto1" value="1" checked> <strong>1 điểm:</strong> Năng lượng thấp (Vết thương do dao đâm, súng lục, gãy xương đơn giản)</label>
+            <label class="option-item"><input type="radio" name="yeuto1" value="2"> <strong>2 điểm:</strong> Năng lượng trung bình (Gãy xương hở hoặc nhiều ổ, trật khớp lớn)</label>
+            <label class="option-item"><input type="radio" name="yeuto1" value="3"> <strong>3 điểm:</strong> Năng lượng cao (Súng bắn tốc độ cao, súng săn, tai nạn dập nát chi)</label>
+            <label class="option-item"><input type="radio" name="yeuto1" value="4"> <strong>4 điểm:</strong> Năng lượng rất cao (Mức 3 kèm ô nhiễm nặng hoặc lột da/mất mô diện rộng)</label>
+        </div>
+
+        <div class="section-title">Yếu tố 2: Tình trạng thiếu máu cục bộ chi</div>
+        <div class="radio-group">
+            <label class="option-item"><input type="radio" name="yeuto2" value="1" checked> <strong>1 điểm:</strong> Giảm/mất mạch, tuần hoàn mao mạch & tưới máu ngoại vi bình thường</label>
+            <label class="option-item"><input type="radio" name="yeuto2" value="2"> <strong>2 điểm:</strong> Mất mạch, mất cảm giác, giảm đổ đầy mao mạch, dấu hiệu thiếu máu rõ</label>
+            <label class="option-item"><input type="radio" name="yeuto2" value="3"> <strong>3 điểm:</strong> Chi lạnh, liệt cơ hoàn toàn, mất cảm giác hoàn toàn</label>
+        </div>
+        
+        <label class="checkbox-item">
+            <input type="checkbox" id="timeMultiplier" value="2">
+            XÁC NHẬN: Thời gian thiếu máu chi đã vượt quá 6 giờ (Nhân đôi điểm Yếu tố 2)
+        </label>
+
+        <div class="section-title">Yếu tố 3: Tình trạng sốc huyết động</div>
+        <div class="radio-group">
+            <label class="option-item"><input type="radio" name="yeuto3" value="0" checked> <strong>0 điểm:</strong> Huyết động ổn định</label>
+            <label class="option-item"><input type="radio" name="yeuto3" value="1"> <strong>1 điểm:</strong> Tụt huyết áp thoáng qua (Đáp ứng tốt sau khi bù dịch/máu)</label>
+            <label class="option-item"><input type="radio" name="yeuto3" value="2"> <strong>2 điểm:</strong> Tụt huyết áp kéo dài (HA tâm thu &lt; 90 mmHg, đáp ứng kém, cần vận mạch)</label>
+        </div>
+
+        <div class="section-title">Yếu tố 4: Tuổi của bệnh nhân</div>
+        <div class="radio-group">
+            <label class="option-item"><input type="radio" name="yeuto4" value="0" checked> <strong>0 điểm:</strong> Dưới 30 tuổi (&lt; 30)</label>
+            <label class="option-item"><input type="radio" name="yeuto4" value="1"> <strong>1 điểm:</strong> Từ 30 đến 50 tuổi</label>
+            <label class="option-item"><input type="radio" name="yeuto4" value="2"> <strong>2 điểm:</strong> Từ 50 tuổi trở lên (&ge; 50)</label>
+        </div>
+
+        <div class="result-panel">
+            <div class="result-header">TỔNG ĐIỂM MESS</div>
+            <div id="scoreValue" class="score-display">2 Điểm</div>
+            <div id="resultBadge" class="result-badge badge-save">TIÊN LƯỢNG CỨU CHI TỐT (&le; 6)</div>
+            
+            <div id="treatmentText" class="treatment-box" style="border-left-color: var(--save-color);">
+                Ưu tiên chiến lược bảo tồn, phẫu thuật kết hợp xương và tái thông mạch máu ngoại vi (bằng mảnh ghép tự thân hoặc nhân tạo), giải áp khoang nếu có chỉ định.
+            </div>
+        </div>
+
+        <button type="button" class="btn-reset" onclick="resetMESS()">Xóa / Làm mới biểu mẫu</button>
+    </form>
+</div>
+
+<script>
+    function calculateMESS() {
+        const form = document.getElementById('messForm');
+        
+        // Đọc giá trị cơ bản
+        const y1 = parseInt(form.elements['yeuto1'].value);
+        let y2 = parseInt(form.elements['yeuto2'].value);
+        const y3 = parseInt(form.elements['yeuto3'].value);
+        const y4 = parseInt(form.elements['yeuto4'].value);
+
+        // Kiểm tra điều kiện nhân đôi thời gian (> 6 giờ)
+        const isOver6Hours = document.getElementById('timeMultiplier').checked;
+        if (isOver6Hours) {
+            y2 = y2 * 2;
+        }
+
+        // Tính tổng điểm
+        const totalScore = y1 + y2 + y3 + y4;
+
+        // Cập nhật giao diện class được chọn (Highlight)
+        document.querySelectorAll('.option-item').forEach(item => {
+            const radio = item.querySelector('input');
+            if (radio && radio.checked) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+
+        // Hiển thị điểm số
+        document.getElementById('scoreValue').innerText = `${totalScore} Điểm`;
+
+        // Phân định xử trí dựa trên điểm cắt (Cut-off = 7)
+        const badge = document.getElementById('resultBadge');
+        const treatBox = document.getElementById('treatmentText');
+
+        if (totalScore <= 6) {
+            badge.innerText = "TIÊN LƯỢNG CỨU CHI TỐT (≤ 6)";
+            badge.className = "result-badge badge-save";
+            treatBox.innerText = "Ưu tiên chiến lược bảo tồn, phẫu thuật kết hợp xương và tái thông mạch máu ngoại vi (bằng mảnh ghép tự thân hoặc nhân tạo), giải áp khoang nếu có chỉ định.";
+            treatBox.style.borderLeftColor = "var(--save-color)";
+        } else {
+            badge.innerText = "TỶ LỆ THẤT BẠI CAO - CÓ CHỈ ĐỊNH CẮT CỤT (≥ 7)";
+            badge.className = "result-badge badge-secondary badge-amputate";
+            treatBox.innerText = "Tỷ lệ thất bại khi cố gắng bảo tồn rất cao, nguy cơ nhiễm trùng, hoại tử và hội chứng tiêu cơ vân dẫn đến suy đa tạng. Thường có chỉ định cắt cụt chi ban đầu để bảo toàn tính mạng cho bệnh nhân.";
+            treatBox.style.borderLeftColor = "var(--amputate-color)";
+        }
+    }
+
+    function resetMESS() {
+        document.getElementById('messForm').reset();
+        calculateMESS();
+    }
+
+    // Đăng ký sự kiện lắng nghe thay đổi tự động
+    document.getElementById('messForm').addEventListener('change', calculateMESS);
+    
+    // Khởi chạy lần đầu để lấy điểm mặc định
+    window.onload = calculateMESS;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân loại Thiếu máu chi cấp tính - Rutherford</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #2980b9;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --border-color: #dcdde1;
+            --text-color: #2f3640;
+            
+            /* Màu biểu thị mức độ nguy hiểm */
+            --level-i: #27ae60;
+            --level-iia: #f39c12;
+            --level-iib: #d35400;
+            --level-iii: #c0392b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.4;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .section-title {
+            background: #34495e;
+            color: white;
+            padding: 6px 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-top: 12px;
+            margin-bottom: 8px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .option-item {
+            position: relative;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 10px 8px 38px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            background: #fdfefe;
+            transition: all 0.15s ease;
+        }
+
+        .option-item:hover {
+            background: #f5f6fa;
+        }
+
+        .option-item input[type="radio"] {
+            position: absolute;
+            left: 12px;
+            top: 11px;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent-color);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent-color);
+            background-color: #ebf5fb;
+            font-weight: 500;
+        }
+
+        /* Khối hiển thị kết quả */
+        .result-panel {
+            margin-top: 18px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 12px;
+            background: #f8fafc;
+        }
+
+        .result-header {
+            font-size: 0.95rem;
+            font-weight: bold;
+            text-align: center;
+            color: #1e293b;
+        }
+
+        .result-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 6px 0;
+            padding: 4px;
+            border-radius: 6px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Thang màu kết quả */
+        .res-i { background-color: var(--level-i); }
+        .res-iia { background-color: var(--level-iia); }
+        .res-iib { background-color: var(--level-iib); }
+        .res-iii { background-color: var(--level-iii); }
+
+        .info-row {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-top: 6px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .treatment-box {
+            background: #fff;
+            border-left: 4px solid #334155;
+            padding: 8px;
+            margin-top: 6px;
+            font-size: 0.85rem;
+            border-radius: 0 4px 4px 0;
+            color: #0f172a;
+        }
+
+        .btn-reset {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            background: #dcdde1;
+            color: #2f3640;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 12px;
+            font-size: 0.85rem;
+        }
+
+        .btn-reset:hover {
+            background: #c8d6e5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Phân loại Thiếu máu chi cấp tính</h2>
+    <div class="subtitle">Hệ thống phân độ lâm sàng theo Rutherford</div>
+
+    <form id="rutherfordForm">
+        <!-- Khảo sát cảm giác -->
+        <div class="section-title">1. Mất cảm giác lâm sàng</div>
+        <div class="radio-group">
+            <label class="option-item"><input type="radio" name="camsiac" value="0" checked> Không mất cảm giác</label>
+            <label class="option-item"><input type="radio" name="camsiac" value="1"> Mất tối thiểu (chỉ khu trú ở các ngón chân)</label>
+            <label class="option-item"><input type="radio" name="camsiac" value="2"> Lan rộng hơn ngón chân, kèm tình trạng đau liên tục khi nghỉ</label>
+            <label class="option-item"><input type="radio" name="camsiac" value="3"> Mất cảm giác hoàn toàn (gây tê vùng chi tổn thương)</label>
+        </div>
+
+        <!-- Khảo sát vận động -->
+        <div class="section-title">2. Liệt cơ (Khả năng vận động)</div>
+        <div class="radio-group">
+            <label class="option-item"><input type="radio" name="vandong" value="0" checked> Không bị liệt cơ, vận động bình thường</label>
+            <label class="option-item"><input type="radio" name="vandong" value="2"> Liệt cơ mức độ nhẹ đến vừa</label>
+            <label class="option-item"><input type="radio" name="vandong" value="3"> Liệt hoàn toàn, cơ chi rơi vào trạng thái co cứng</label>
+        </div>
+
+        <!-- Khảo sát Doppler động mạch -->
+        <div class="section-title">3. Tín hiệu dòng Doppler Động mạch</div>
+        <div class="radio-group">
+            <label class="option-item"><input type="radio" name="doppler_da" value="0" checked> Nghe rõ (+)</label>
+            <label class="option-item"><input type="radio" name="doppler_da" value="1"> Mất tín hiệu động mạch (-)</label>
+        </div>
+
+        <!-- Khảo sát Doppler tĩnh mạch -->
+        <div class="section-title">4. Tín hiệu dòng Doppler Tĩnh mạch</div>
+        <div class="radio-group">
+            <label class="option-item"><input type="radio" name="doppler_tm" value="0" checked> Nghe rõ (+)</label>
+            <label class="option-item"><input type="radio" name="doppler_tm" value="3"> Mất tín hiệu tĩnh mạch (-)</label>
+        </div>
+
+        <!-- BẢNG KẾT QUẢ ĐÁNH GIÁ -->
+        <div class="result-panel">
+            <div class="result-header">ĐÁNH GIÁ TÌNH TRẠNG CHI</div>
+            <div id="gradeValue" class="result-value res-i">ĐỘ I - CÒN SỐNG TỐT (VIABLE)</div>
+            
+            <div class="info-row">
+                <span class="info-label">Trạng thái tổn thương:</span>
+                <span id="statusText">Chi chưa bị đe dọa trực tiếp ngay tại thời điểm khảo sát.</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Hướng xử trí lâm sàng:</span>
+                <div id="treatmentText" class="treatment-box" style="border-left-color: var(--level-i);">
+                    Chưa đe dọa chi ngay. Có thể chuẩn bị mổ chương trình hoặc bán cấp.
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn-reset" onclick="resetRutherford()">Xóa / Làm mới dữ liệu</button>
+    </form>
+</div>
+
+<script>
+    function evaluateRutherford() {
+        const form = document.getElementById('rutherfordForm');
+        
+        // Đọc giá trị từ các lựa chọn radio bài đăng
+        const s = parseInt(form.elements['camsiac'].value);
+        const m = parseInt(form.elements['vandong'].value);
+        const da = parseInt(form.elements['doppler_da'].value);
+        const tm = parseInt(form.elements['doppler_tm'].value);
+
+        // Cập nhật Highlight Class trên giao diện người dùng
+        document.querySelectorAll('.option-item').forEach(item => {
+            const r = item.querySelector('input');
+            if (r && r.checked) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+
+        // Thiết lập biến lưu cấu trúc kết quả phân độ
+        let finalGrade = "I";
+        let gradeTitle = "ĐỘ I - CÒN SỐNG TỐT (VIABLE)";
+        let status = "Còn sống tốt (Viable).";
+        let treatment = "Chưa đe dọa chi ngay. Có thể chuẩn bị mổ chương trình hoặc bán cấp.";
+        let cssClass = "res-i";
+        let accentBorder = "var(--level-i)";
+
+        // Thuật toán ma trận suy luận Rutherford dựa trên tổ hợp triệu chứng nặng nhất:
+        // Định đoạt Độ III
+        if (s === 3 || m === 3 || tm === 3) {
+            finalGrade = "III";
+            gradeTitle = "ĐỘ III - TỔN THƯƠNG KHÔNG HỒI PHỤC";
+            status = "Tổn thương không hồi phục (Irreversible). Chi đã bắt đầu hoại tử.";
+            treatment = "Chi đã hoại tử. Chỉ định cắt cụt chi để tránh hội chứng tái tưới máu gây suy thận, tử vong.";
+            cssClass = "res-iii";
+            accentBorder = "var(--level-iii)";
+        }
+        // Định đoạt Độ IIb
+        else if (s === 2 || m === 2 || (da === 1 && s === 1 && m === 0)) {
+            // Ưu tiên đưa vào IIb nếu có dấu hiệu lan rộng kèm đau khi nghỉ hoặc liệt cơ nhẹ-vừa
+            if (s === 2 || m === 2) {
+                finalGrade = "IIb";
+                gradeTitle = "ĐỘ IIb - ĐE DỌA LẬP TỨC";
+                status = "Đe dọa lập tức (Immediately threatened).";
+                treatment = "Cấp cứu tối khẩn cấp. Cần tái thông mạch máu ngay lập tức để cứu chi.";
+                cssClass = "res-iib";
+                accentBorder = "var(--level-iib)";
+            } else {
+                // Trường hợp mất mạch động mạch kèm tổn thương cảm giác ngón đơn thuần
+                finalGrade = "IIa";
+                gradeTitle = "ĐỘ IIa - ĐE DỌA TỐI THIỂU";
+                status = "Đe dọa tối thiểu (Marginally threatened).";
+                treatment = "Cứu được chi nếu tái thông mạch kịp thời (cấp cứu trì hoãn được trong vài giờ).";
+                cssClass = "res-iia";
+                accentBorder = "var(--level-iia)";
+            }
+        }
+        // Định đoạt Độ IIa
+        else if (s === 1 || da === 1) {
+            finalGrade = "IIa";
+            gradeTitle = "ĐỘ IIa - ĐE DỌA TỐI THIỂU";
+            status = "Đe dọa tối thiểu (Marginally threatened).";
+            treatment = "Cứu được chi nếu tái thông mạch kịp thời (cấp cứu trì hoãn được trong vài giờ).";
+            cssClass = "res-iia";
+            accentBorder = "var(--level-iia)";
+        }
+
+        // Đổ dữ liệu ra cấu trúc hiển thị kết quả
+        const elGrade = document.getElementById('gradeValue');
+        elGrade.innerText = gradeTitle;
+        elGrade.className = `result-value ${cssClass}`;
+        
+        document.getElementById('statusText').innerText = status;
+        
+        const elTreat = document.getElementById('treatmentText');
+        elTreat.innerText = treatment;
+        elTreat.style.borderLeftColor = accentBorder;
+    }
+
+    function resetRutherford() {
+        document.getElementById('rutherfordForm').reset();
+        evaluateRutherford();
+    }
+
+    // Đăng ký sự kiện lắng nghe tương tác tự động thay đổi
+    document.getElementById('rutherfordForm').addEventListener('change', evaluateRutherford);
+    
+    // Đọc trạng thái ban đầu khi load trang
+    window.onload = evaluateRutherford;
+</script>
+
+</body>
+</html>

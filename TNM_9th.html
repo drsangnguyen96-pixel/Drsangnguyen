@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh Giá Giai Đoạn & Xử Trí Ung Thư Phổi - TNM 9th (NCCN 2026)</title>
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #0284c7;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+            --border-color: #cbd5e1;
+            --success-color: #16a34a;
+            --danger-color: #dc2626;
+            --warning-bg: #fffbeb;
+            --warning-border: #fcd34d;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.5; padding: 20px 10px; }
+        
+        .container {
+            max-width: 850px; margin: 0 auto; background: var(--card-bg); 
+            padding: 25px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        h2 { text-align: center; color: var(--primary-color); font-size: 1.5rem; text-transform: uppercase; }
+        .subtitle { text-align: center; font-size: 0.95rem; color: #64748b; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; }
+
+        .section-title {
+            background: var(--primary-color); color: white; padding: 10px 15px; 
+            font-size: 1.05rem; font-weight: 600; border-radius: 6px; margin: 25px 0 15px 0;
+        }
+
+        .input-row { margin-bottom: 15px; }
+        .input-field { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem; }
+        
+        .grid-options { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        @media(min-width: 600px) { .grid-options { grid-template-columns: 1fr 1fr; } }
+
+        .check-item {
+            display: flex; align-items: center; border: 1px solid var(--border-color); 
+            border-radius: 6px; padding: 10px; cursor: pointer; background: #f8fafc; transition: 0.2s;
+        }
+        .check-item:hover { background: #e0f2fe; }
+        .check-item input { margin-right: 10px; width: 18px; height: 18px; accent-color: var(--accent-color); }
+        .check-item.selected { border-color: var(--accent-color); background: #e0f2fe; font-weight: 500; }
+
+        .node-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+            background: #f8fafc; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px;
+        }
+        .node-col h4 { text-align: center; margin-bottom: 10px; color: var(--accent-color); border-bottom: 1px dashed var(--border-color); padding-bottom: 5px;}
+        .node-list { display: flex; flex-direction: column; gap: 8px; }
+        .node-midline { grid-column: 1 / -1; display: flex; justify-content: center; gap: 15px; margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 15px;}
+        
+        .tumor-side-selector {
+            display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;
+            background: #fff0f2; padding: 15px; border-radius: 8px; border: 1px solid #fda4af;
+        }
+        .tumor-side-selector.left-selected { background: #eff6ff; border-color: #93c5fd; }
+        .tumor-side-selector label { font-size: 1.1rem; font-weight: bold; display: flex; align-items: center; cursor: pointer;}
+
+        /* Bảng kết quả 2 cột */
+        .result-container {
+            display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 30px;
+        }
+        @media(min-width: 768px) { .result-container { grid-template-columns: 1fr 1.5fr; } }
+
+        .result-panel {
+            background: #f0fdf4; border: 2px solid var(--success-color); 
+            border-radius: 8px; padding: 20px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .result-title { font-size: 1.1rem; color: var(--primary-color); font-weight: bold; }
+        .result-value { font-size: 2rem; color: var(--success-color); font-weight: 800; margin: 10px 0; }
+        .result-detail { font-size: 0.95rem; color: #334155; font-weight: 600; padding: 8px; background: rgba(255,255,255,0.7); border-radius: 6px; display: inline-block; }
+        .logic-explain { margin-top: 10px; font-size: 0.85rem; color: #64748b; font-style: italic; }
+
+        /* Panel Khuyến nghị lâm sàng */
+        .recommendation-panel {
+            background: var(--warning-bg); border: 2px solid var(--warning-border);
+            border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .rec-title { font-size: 1.1rem; color: #b45309; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+        .rec-content { font-size: 0.95rem; color: #451a03; }
+        .rec-content ul { padding-left: 20px; margin-top: 8px; margin-bottom: 8px;}
+        .rec-content li { margin-bottom: 6px; }
+
+        .btn-reset { width: 100%; padding: 12px; background: #e2e8f0; color: #475569; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1rem; transition: 0.2s;}
+        .btn-reset:hover { background: #cbd5e1; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Công Cụ Đánh Giá Giai Đoạn & Xử Trí Ung Thư Phổi</h2>
+    <div class="subtitle">Dựa trên TNM 9th Edition (2025) & Hướng dẫn NCCN (2026)</div>
+
+    <form id="tnmForm">
+        <!-- Vị trí khối u -->
+        <div class="tumor-side-selector" id="sideContainer">
+            <label><input type="radio" name="tumorSide" value="R" checked> 🫁 KHỐI U PHỔI PHẢI</label>
+            <label><input type="radio" name="tumorSide" value="L"> 🫁 KHỐI U PHỔI TRÁI</label>
+        </div>
+
+        <!-- KHỐI T -->
+        <div class="section-title">1. U nguyên phát (T) trên CT/MRI</div>
+        <div class="input-row">
+            <label><strong>Kích thước phần đặc lớn nhất (cm):</strong></label>
+            <input type="number" id="tumor_size" class="input-field" step="0.1" min="0" placeholder="Ví dụ: 3.5">
+        </div>
+        <div class="grid-options t-options">
+            <label class="check-item"><input type="checkbox" class="t-mod" value="T2a"> Xâm lấn màng phổi tạng / Phế quản gốc</label>
+            <label class="check-item"><input type="checkbox" class="t-mod" value="T2a"> Viêm phổi nghẽn / Xẹp phổi</label>
+            <label class="check-item"><input type="checkbox" class="t-mod" value="T3"> Xâm lấn thành ngực / Thần kinh hoành</label>
+            <label class="check-item"><input type="checkbox" class="t-mod" value="T3"> Nốt vệ tinh <strong>cùng thùy</strong></label>
+            <label class="check-item"><input type="checkbox" class="t-mod" value="T4"> Xâm lấn trung thất/mạch máu/cơ hoành</label>
+            <label class="check-item"><input type="checkbox" class="t-mod" value="T4"> Nốt u ở <strong>thùy khác</strong> (cùng bên)</label>
+        </div>
+
+        <!-- KHỐI N -->
+        <div class="section-title">2. Bản đồ Hạch vùng (N) theo CT/EBUS</div>
+        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px;"><i>* Chọn các trạm hạch dương tính. Hệ thống tự động phân loại N1/N2/N3 dựa vào bên phổi chứa u.</i></p>
+        
+        <div class="node-grid">
+            <div class="node-col">
+                <h4>Hạch Phải (Right)</h4>
+                <div class="node-list">
+                    <label class="check-item"><input type="checkbox" id="n1R" class="node-cb"> 1R (Thượng đòn/Bậc thang)</label>
+                    <label class="check-item"><input type="checkbox" id="n2R" class="node-cb n2-r"> 2R (Cạnh khí quản trên)</label>
+                    <label class="check-item"><input type="checkbox" id="n4R" class="node-cb n2-r"> 4R (Cạnh khí quản dưới)</label>
+                    <label class="check-item"><input type="checkbox" id="n8R" class="node-cb n2-r"> 8R (Cạnh thực quản)</label>
+                    <label class="check-item"><input type="checkbox" id="n9R" class="node-cb n2-r"> 9R (Dây chằng phổi)</label>
+                    <label class="check-item" style="margin-top: 5px;"><input type="checkbox" id="nHilarR" class="node-cb"> <strong>10-14R (Rốn phổi)</strong></label>
+                </div>
+            </div>
+            
+            <div class="node-col">
+                <h4>Hạch Trái (Left)</h4>
+                <div class="node-list">
+                    <label class="check-item"><input type="checkbox" id="n1L" class="node-cb"> 1L (Thượng đòn/Bậc thang)</label>
+                    <label class="check-item"><input type="checkbox" id="n2L" class="node-cb n2-l"> 2L (Cạnh khí quản trên)</label>
+                    <label class="check-item"><input type="checkbox" id="n4L" class="node-cb n2-l"> 4L (Cạnh khí quản dưới)</label>
+                    <label class="check-item"><input type="checkbox" id="n56" class="node-cb n2-l"> 5/6 (Cửa sổ phế chủ)</label>
+                    <label class="check-item"><input type="checkbox" id="n89L" class="node-cb n2-l"> 8L/9L (Cạnh TQ/DC Phổi)</label>
+                    <label class="check-item" style="margin-top: 5px;"><input type="checkbox" id="nHilarL" class="node-cb"> <strong>10-14L (Rốn phổi)</strong></label>
+                </div>
+            </div>
+
+            <div class="node-midline">
+                <label class="check-item"><input type="checkbox" id="n3" class="node-cb n2-mid"> Nhóm 3 (Trước mạch/Sau KQ)</label>
+                <label class="check-item"><input type="checkbox" id="n7" class="node-cb n2-mid"> Nhóm 7 (Dưới chạc ba - Subcarinal)</label>
+            </div>
+        </div>
+
+        <!-- KHỐI M -->
+        <div class="section-title">3. Di căn xa (M) trên PET/MRI</div>
+        <div class="grid-options m-options">
+            <label class="check-item"><input type="radio" name="clinM" value="M0" checked> Không có di căn xa</label>
+            <label class="check-item"><input type="radio" name="clinM" value="M1a"> Nốt màng phổi/tim, nốt phổi đối bên</label>
+            <label class="check-item"><input type="radio" name="clinM" value="M1b"> Di căn ngoài lồng ngực: <strong>1 ổ đơn độc</strong></label>
+            <label class="check-item"><input type="radio" name="clinM" value="M1c1"> Di căn ngoài: Nhiều ổ, <strong>thuộc 1 cơ quan</strong></label>
+            <label class="check-item"><input type="radio" name="clinM" value="M1c2" style="grid-column: 1/-1;"> Di căn ngoài: Nhiều ổ, <strong>nhiều cơ quan khác nhau</strong></label>
+        </div>
+
+        <div class="result-container">
+            <!-- Cột Giai đoạn -->
+            <div class="result-panel">
+                <div class="result-title">GIAI ĐOẠN LÂM SÀNG (cSTAGE)</div>
+                <div class="result-value" id="stageOutput">Chưa đủ dữ kiện</div>
+                <div class="result-detail" id="formulaOutput">Mã TNM: Tx N0 M0</div>
+                <div class="logic-explain" id="nLogicExplain">Đang chờ nhập liệu hạch...</div>
+            </div>
+
+            <!-- Cột Khuyến nghị -->
+            <div class="recommendation-panel">
+                <div class="rec-title">📋 HƯỚNG XỬ TRÍ TIẾP THEO (NCCN)</div>
+                <div class="rec-content" id="clinicalRecommendation">
+                    Vui lòng hoàn tất biểu mẫu để nhận khuyến nghị lâm sàng.
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn-reset" onclick="resetForm()">Làm mới bệnh án</button>
+    </form>
+</div>
+
+<script>
+    function updateUIStyles() {
+        const sideVal = document.querySelector('input[name="tumorSide"]:checked').value;
+        const container = document.getElementById('sideContainer');
+        if(sideVal === 'L') container.classList.add('left-selected');
+        else container.classList.remove('left-selected');
+
+        document.querySelectorAll('.check-item').forEach(item => {
+            const input = item.querySelector('input');
+            if (input && input.checked) item.classList.add('selected');
+            else item.classList.remove('selected');
+        });
+    }
+
+    function resolveT() {
+        const sizeInput = document.getElementById('tumor_size').value;
+        const size = parseFloat(sizeInput);
+        let tWeight = 0; 
+        
+        if (!isNaN(size) && sizeInput.trim() !== '') {
+            if (size > 7) tWeight = 7;
+            else if (size > 5) tWeight = 6;
+            else if (size > 4) tWeight = 5;
+            else if (size > 3) tWeight = 4;
+            else if (size > 2) tWeight = 3;
+            else if (size > 1) tWeight = 2;
+            else if (size > 0) tWeight = 1;
+        }
+
+        document.querySelectorAll('.t-mod').forEach(cb => {
+            if (cb.checked) {
+                if (cb.value === 'T2a' && tWeight < 4) tWeight = 4;
+                if (cb.value === 'T3' && tWeight < 6) tWeight = 6;
+                if (cb.value === 'T4' && tWeight < 7) tWeight = 7;
+            }
+        });
+
+        const tMap = {0: 'Tx', 1: 'T1a', 2: 'T1b', 3: 'T1c', 4: 'T2a', 5: 'T2b', 6: 'T3', 7: 'T4'};
+        return tMap[tWeight];
+    }
+
+    function resolveN() {
+        const tumorSide = document.querySelector('input[name="tumorSide"]:checked').value;
+        let isN3 = false; let n2Stations = new Set(); let isN1 = false;
+        let explainText = "Hạch: Không có di căn hạch vùng (N0).";
+
+        if (document.getElementById('n1R').checked || document.getElementById('n1L').checked) {
+            isN3 = true; explainText = "Hạch: Có di căn hạch thượng đòn/cơ bậc thang (Nhóm 1) -> N3.";
+        }
+
+        const rightNodes = ['n2R', 'n4R', 'n8R', 'n9R'];
+        const leftNodes = ['n2L', 'n4L', 'n56', 'n89L'];
+        const midNodes = ['n3', 'n7'];
+
+        rightNodes.forEach(id => {
+            if (document.getElementById(id).checked) {
+                if (tumorSide === 'L') { isN3 = true; explainText = "Hạch: Trung thất đối bên (Phải) -> N3."; }
+                else if (tumorSide === 'R') n2Stations.add(id);
+            }
+        });
+
+        leftNodes.forEach(id => {
+            if (document.getElementById(id).checked) {
+                if (tumorSide === 'R') { isN3 = true; explainText = "Hạch: Trung thất đối bên (Trái) -> N3."; }
+                else if (tumorSide === 'L') n2Stations.add(id);
+            }
+        });
+
+        midNodes.forEach(id => { if (document.getElementById(id).checked) n2Stations.add(id); });
+
+        if (document.getElementById('nHilarR').checked) {
+            if (tumorSide === 'L') { isN3 = true; explainText = "Hạch: Rốn phổi đối bên (Phải) -> N3."; }
+            else isN1 = true;
+        }
+        if (document.getElementById('nHilarL').checked) {
+            if (tumorSide === 'R') { isN3 = true; explainText = "Hạch: Rốn phổi đối bên (Trái) -> N3."; }
+            else isN1 = true;
+        }
+
+        let finalN = 'N0';
+        if (isN3) finalN = 'N3';
+        else if (n2Stations.size > 1) { finalN = 'N2b'; explainText = `Hạch: Có ${n2Stations.size} trạm trung thất cùng bên -> N2b.`; }
+        else if (n2Stations.size === 1) { finalN = 'N2a'; explainText = "Hạch: Chỉ 1 trạm trung thất cùng bên -> N2a."; }
+        else if (isN1) { finalN = 'N1'; explainText = "Hạch: Chỉ có rốn phổi cùng bên -> N1."; }
+
+        return { nStage: finalN, note: explainText };
+    }
+
+    function calculateStage(t, n, m) {
+        if (m === 'M1a' || m === 'M1b') return 'Giai đoạn IVA';
+        if (m === 'M1c1' || m === 'M1c2') return 'Giai đoạn IVB';
+        if (m === 'M0') {
+            if (t === 'Tx' && n === 'N0') return 'Thiếu dữ kiện kích thước';
+            if (n === 'N0') {
+                const mapN0 = {'T1a':'IA1', 'T1b':'IA2', 'T1c':'IA3', 'T2a':'IB', 'T2b':'IIA', 'T3':'IIB', 'T4':'IIIA'};
+                return 'Giai đoạn ' + mapN0[t];
+            }
+            if (n === 'N1') {
+                if (['T1a','T1b','T1c'].includes(t)) return 'Giai đoạn IIA';
+                if (['T2a','T2b'].includes(t)) return 'Giai đoạn IIB';
+                return 'Giai đoạn IIIA';
+            }
+            if (n === 'N2a') {
+                if (['T1a','T1b','T1c'].includes(t)) return 'Giai đoạn IIB'; 
+                if (['T2a','T2b','T3'].includes(t)) return 'Giai đoạn IIIA';
+                return 'Giai đoạn IIIB';
+            }
+            if (n === 'N2b') {
+                if (['T1a','T1b','T1c'].includes(t)) return 'Giai đoạn IIIA';
+                return 'Giai đoạn IIIB';
+            }
+            if (n === 'N3') {
+                if (['T3','T4'].includes(t)) return 'Giai đoạn IIIC';
+                return 'Giai đoạn IIIB';
+            }
+        }
+        return "Chưa đủ dữ kiện";
+    }
+
+    // Logic sinh Hướng xử trí lâm sàng dựa theo NCCN
+    function generateRecommendation(stage) {
+        let rec = "<strong>Nguyên tắc chung:</strong> Hội chẩn đa chuyên khoa, tư vấn cai thuốc lá. Xét nghiệm sinh học phân tử (EGFR, ALK, PD-L1...) bằng panel đa gen (MGPT).<br><br>";
+        
+        if (stage.includes("Thiếu dữ kiện")) {
+            return "Vui lòng nhập kích thước khối u hoặc các đặc điểm xâm lấn để nhận khuyến nghị lâm sàng.";
+        }
+
+        if (stage.includes("IA") || stage.includes("IB") || (stage.includes("IIA") && !stage.includes("IIIA"))) {
+            rec += "<strong>Mục tiêu điều trị: Triệt căn tại chỗ</strong><ul>";
+            rec += "<li><strong>Ưu tiên:</strong> Phẫu thuật cắt bỏ (Surgical resection) kèm nạo vét/lấy mẫu hạch hệ thống.</li>";
+            rec += "<li><strong>Trường hợp không đủ điều kiện sức khỏe:</strong> Xạ trị triệt căn (SABR/SBRT).</li>";
+            rec += "<li>Đánh giá hóa trị/miễn dịch bổ trợ tùy thuộc vào yếu tố nguy cơ sau mổ.</li></ul>";
+        } 
+        else if (stage.includes("IIB") || stage.includes("IIIA")) {
+            rec += "<strong>Mục tiêu điều trị: Đa mô thức (Multimodality)</strong><ul>";
+            rec += "<li>Bắt buộc hội chẩn đa chuyên khoa để đánh giá khả năng phẫu thuật.</li>";
+            rec += "<li><strong>Nếu có thể phẫu thuật:</strong> Đánh giá điều trị hệ thống tân bổ trợ (Neoadjuvant) trước mổ (Hóa trị + Miễn dịch).</li>";
+            rec += "<li><strong>Nếu không thể phẫu thuật:</strong> Hóa xạ trị đồng thời (Concurrent chemoradiation).</li></ul>";
+        } 
+        else if (stage.includes("IIIB") || stage.includes("IIIC")) {
+            rec += "<strong>Mục tiêu điều trị: Hóa xạ trị triệt căn</strong><ul>";
+            rec += "<li>Đa số không có chỉ định phẫu thuật cắt bỏ.</li>";
+            rec += "<li><strong>Ưu tiên:</strong> Phác đồ hóa xạ trị đồng thời triệt căn (Definitive concurrent chemoradiation).</li>";
+            rec += "<li><strong>Điều trị củng cố (Consolidation):</strong> Bằng liệu pháp miễn dịch (VD: Durvalumab) hoặc nhắm trúng đích (VD: Osimertinib) tùy thuộc vào xét nghiệm biomarker.</li></ul>";
+        } 
+        else if (stage.includes("IV")) {
+            rec += "<strong>Mục tiêu điều trị: Điều trị hệ thống & Giảm nhẹ</strong><ul>";
+            rec += "<li>Bắt buộc chờ kết quả sinh học phân tử toàn diện (MGPT) để quyết định liệu pháp nhắm trúng đích, miễn dịch, hoặc hóa trị.</li>";
+            rec += "<li><strong>Di căn giới hạn (Oligometastatic):</strong> Xem xét phối hợp điều trị tại chỗ (SABR/Phẫu thuật) cho các ổ di căn.</li>";
+            rec += "<li>Tích hợp chăm sóc giảm nhẹ (Palliative care) từ sớm.</li></ul>";
+        }
+
+        return rec;
+    }
+
+    function processClinicalData() {
+        updateUIStyles();
+        const t = resolveT();
+        const nData = resolveN();
+        const m = document.querySelector('input[name="clinM"]:checked').value;
+
+        const finalStage = calculateStage(t, nData.nStage, m);
+        
+        // Cập nhật Cột Giai Đoạn
+        document.getElementById('stageOutput').innerText = finalStage;
+        document.getElementById('formulaOutput').innerText = `Mã hóa: ${t} - ${nData.nStage} - ${m}`;
+        document.getElementById('nLogicExplain').innerText = nData.note;
+
+        // Cập nhật Cột Khuyến Nghị
+        document.getElementById('clinicalRecommendation').innerHTML = generateRecommendation(finalStage);
+    }
+
+    function resetForm() {
+        document.getElementById('tnmForm').reset();
+        processClinicalData();
+    }
+
+    document.getElementById('tnmForm').addEventListener('input', processClinicalData);
+    document.getElementById('tnmForm').addEventListener('change', processClinicalData);
+
+    window.onload = processClinicalData;
+</script>
+
+</body>
+</html>

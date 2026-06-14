@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chẩn Đoán và Xử Trí Phản Vệ - TT 51/2017/TT-BYT</title>
+    <style>
+        :root {
+            --primary-color: #0284c7;
+            --text-color: #1e293b;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+            
+            /* Thang màu mức độ */
+            --do1-color: #eab308;
+            --do2-color: #f97316;
+            --do3-color: #dc2626;
+            --success-color: #16a34a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.4;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .header-panel {
+            text-align: center;
+            border-bottom: 3px double var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #0f172a;
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .alert-top {
+            background: #fff1f2;
+            border-left: 4px solid var(--do3-color);
+            padding: 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #991b1b;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .section-title {
+            background: #334155;
+            color: white;
+            padding: 6px 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* Checkbox lâm sàng */
+        .symptom-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+        }
+
+        .symptom-item {
+            display: flex;
+            align-items: flex-start;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .symptom-item:hover {
+            background: #f1f5f9;
+        }
+
+        .symptom-item input {
+            margin-top: 3px;
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .symptom-item.active {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+            color: white;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        .b-do1 { background-color: var(--do1-color); color: #000; }
+        .b-do2 { background-color: var(--do2-color); }
+        .b-do3 { background-color: var(--do3-color); }
+
+        /* Khối hiển thị kết quả chẩn đoán */
+        .diagnosis-box {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: 2px solid #cbd5e1;
+            background: #f8fafc;
+        }
+
+        /* Khối phác đồ xử trí chi tiết */
+        .treatment-box {
+            margin-top: 15px;
+            display: none;
+            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid transparent;
+        }
+
+        .treatment-box h3 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .treatment-step {
+            margin-bottom: 12px;
+        }
+
+        .treatment-step-title {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: #0f172a;
+        }
+
+        .treatment-box ul, .treatment-box ol {
+            padding-left: 18px;
+            font-size: 0.85rem;
+        }
+
+        .treatment-box li {
+            margin-bottom: 4px;
+        }
+
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px dashed rgba(0, 0, 0, 0.15);
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 6px;
+            font-size: 0.85rem;
+        }
+
+        /* Style theo mức độ kết quả */
+        .diag-do1 { background: #fef9c3; border-color: var(--do1-color); color: #854d0e; }
+        .diag-do2 { background: #ffedd5; border-color: var(--do2-color); color: #9a3412; }
+        .diag-do3 { background: #fee2e2; border-color: var(--do3-color); color: #991b1b; }
+
+        .treat-do1 { background: #fefce8; border-color: var(--do1-color); }
+        .treat-do2 { background: #fff7ed; border-color: var(--do2-color); }
+        .treat-do3 { background: #fef2f2; border-color: var(--do3-color); }
+
+        .btn-reset {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #cbd5e1;
+            color: #1e293b;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        .btn-reset:hover { background: #94a3b8; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-panel">
+        <h2>Chẩn Đoán & Xử Trí Cấp Cứu Phản Vệ</h2>
+        <div class="subtitle">Áp dụng theo Thông tư số 51/2017/TT-BYT - Bộ Y tế</div>
+    </div>
+
+    <div class="alert-top">
+        HƯỚNG DẪN CHUNG: NGỪNG NGAY TIẾP XÚC VỚI THUỐC HOẶC DỊ NGUYÊN + GỌI HỖ TRỢ. ĐẶT NGƯỜI BỆNH NẰM ĐẦU THẤP.
+    </div>
+
+    <form id="symptomForm">
+        <div class="section-title">Chọn các triệu chứng xuất hiện ở bệnh nhân:</div>
+        
+        <div class="symptom-grid">
+            <label class="symptom-item" data-level="1">
+                <input type="checkbox" name="symptom" value="may_day">
+                <span>Mày đay, ngứa, phù mạch <strong>(Chỉ có ở da, niêm mạc)</strong></span>
+                <span class="badge b-do1">Độ I</span>
+            </label>
+
+            <label class="symptom-item" data-level="2">
+                <input type="checkbox" name="symptom" value="may_day_nhanh">
+                <span>Mày đay, ngứa, phù mạch xuất hiện nhanh</span>
+                <span class="badge b-do2">Độ II</span>
+            </label>
+            <label class="symptom-item" data-level="2">
+                <input type="checkbox" name="symptom" value="kho_tho_nhe">
+                <span>Khó thở, tức ngực, thở rít nhẹ hoặc vừa</span>
+                <span class="badge b-do2">Độ II</span>
+            </label>
+            <label class="symptom-item" data-level="2">
+                <input type="checkbox" name="symptom" value="dau_bung">
+                <span>Đau bụng quặn, nôn mửa</span>
+                <span class="badge b-do2">Độ II</span>
+            </label>
+            <label class="symptom-item" data-level="2">
+                <input type="checkbox" name="symptom" value="ha_tut_nhe">
+                <span>Huyết áp tụt hoặc tăng, chưa có rối loạn ý thức</span>
+                <span class="badge b-do2">Độ II</span>
+            </label>
+
+            <label class="symptom-item" data-level="3">
+                <input type="checkbox" name="symptom" value="duong_tho">
+                <span>Đường thở: Khàn tiếng, tiếng rít thanh quản liên tục</span>
+                <span class="badge b-do3">Độ III</span>
+            </label>
+            <label class="symptom-item" data-level="3">
+                <input type="checkbox" name="symptom" value="ho_hap_nang">
+                <span>Hô hấp: Thở nhanh, khò khè, tím tái, rối loạn nhịp thở</span>
+                <span class="badge b-do3">Độ III</span>
+            </label>
+            <label class="symptom-item" data-level="3">
+                <input type="checkbox" name="symptom" value="tuan_hoan_nang">
+                <span>Tuần hoàn: Da nhợt, lạnh, ẩm, tụt huyết áp nặng</span>
+                <span class="badge b-do3">Độ III</span>
+            </label>
+            <label class="symptom-item" data-level="3">
+                <input type="checkbox" name="symptom" value="than_kinh">
+                <span>Thần kinh: Rối loạn ý thức, hôn mê, co giật, rối loạn cơ tròn</span>
+                <span class="badge b-do3">Độ III</span>
+            </label>
+        </div>
+
+        <div class="diagnosis-box" id="diagnosisOutput">
+            Chưa chọn triệu chứng lâm sàng
+        </div>
+
+        <div class="treatment-box treat-do1" id="treat_1">
+            <h3 style="color: #854d0e;">Phác đồ xử trí phản vệ Nhẹ (Độ I)</h3>
+            <div class="treatment-step">
+                <div class="treatment-step-title">1. Thuốc sử dụng chính:</div>
+                <ul>
+                    <li><strong>Diphenhydramin:</strong> Uống hoặc tiêm liều 1mg / kg cân nặng.</li>
+                    <li><strong>Methylprednisolon:</strong> Uống hoặc tiêm liều 1 - 2 mg / kg cân nặng tùy theo mức độ dị ứng (hoặc sử dụng các thuốc corticoid khác tương tự).</li>
+                </ul>
+            </div>
+            <div class="treatment-step">
+                <div class="treatment-step-title">2. Theo dõi tiếp theo:</div>
+                <ul>
+                    <li>Tiếp tục theo dõi sát: Toàn trạng, Huyết áp, Nhịp thở, Mạch và các triệu chứng da niêm mạc ít nhất trong 24 giờ.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="treatment-box treat-do2" id="treat_2">
+            <h3 style="color: #9a3412;">Phác đồ cấp cứu khẩn cấp Nặng (Độ II)</h3>
+            <div class="treatment-step" style="background: #ffedd5; padding: 8px; border-radius: 4px; border-left: 4px solid var(--do2-color);">
+                <strong>THUỐC THIẾT YẾU CỨU SỐNG NGƯỜI BỆNH: TIÊM BẮP ADRENALIN NGAY</strong>
+            </div>
+            <div class="treatment-step" style="margin-top: 8px;">
+                <div class="treatment-step-title">1. Liều lượng Adrenalin (Ống 1mg/1ml) - Tiêm bắp:</div>
+                <ul>
+                    <li><strong>Người lớn:</strong> Tiêm bắp 1/2 ống.</li>
+                    <li><strong>Trẻ em:</strong> Tiêm bắp từ 1/5 đến 1/3 ống (tùy cân nặng).</li>
+                    <li><strong style="color: var(--do3-color);">Nhắc lại:</strong> Sau mỗi 3 - 5 phút/lần cho đến khi hết các dấu hiệu về hô hấp, tiêu hóa và huyết động ổn định.</li>
+                </ul>
+            </div>
+            <div class="treatment-step">
+                <div class="treatment-step-title">2. Thiết lập đường truyền:</div>
+                <ul>
+                    <li>Thiết lập sẵn đường truyền tĩnh mạch và truyền dịch **NaCl 0.9%**.</li>
+                </ul>
+            </div>
+            <div class="treatment-step">
+                <div class="treatment-step-title">3. Mục tiêu cần duy trì:</div>
+                <ul>
+                    <li><strong>Huyết áp tâm thu người lớn:</strong> &ge; 90 mmHg.</li>
+                    <li><strong>Huyết áp tâm thu trẻ em:</strong> &ge; 70 mmHg.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="treatment-box treat-do3" id="treat_3">
+            <h3 style="color: #991b1b;">Phác đồ cấp cứu khẩn cấp Nguy Kịch (Độ III)</h3>
+            <div class="treatment-step" style="background: #fee2e2; padding: 8px; border-radius: 4px; border-left: 4px solid var(--do3-color); color: #991b1b;">
+                <strong>TIÊM ADRENALIN ĐƯỜNG TĨNH MẠCH NGAY KHI TIÊM BẮP KHÔNG HIỆU QUẢ</strong>
+            </div>
+            <div class="treatment-step" style="margin-top: 8px;">
+                <div class="treatment-step-title">1. Nếu chưa có đường truyền tĩnh mạch:</div>
+                <ul>
+                    <li>Tiếp tục <strong>Tiêm bắp Adrenalin</strong> liều như Độ II, nhắc lại sau 3-5 phút.</li>
+                </ul>
+            </div>
+            <div class="treatment-step">
+                <div class="treatment-step-title">2. Khi đã có đường truyền hoặc tiêm bắp > 2 lần không hiệu quả:</div>
+                <ul>
+                    <li><strong>Tiêm tĩnh mạch chậm Adrenalin pha loãng:</strong> Pha loãng thành dung dịch 1/10 (0.1mg = 1ml), tiêm tĩnh mạch chậm khi cần.</li>
+                    <li><strong>Liều tiêm tĩnh mạch chậm ban đầu:</strong> Người lớn: 0.5ml - 1ml (tương đương 50 - 100mcg). Trẻ em: Không áp dụng tiêm tĩnh mạch chậm.</li>
+                    <li><strong>Chuyển sang truyền tĩnh mạch liên tục:</strong> Bắt đầu từ liều <strong>0.1 &mu;g/kg/phút</strong>, chỉnh liều tăng/giảm theo diễn tiến Huyết áp của bệnh nhân.</li>
+                </ul>
+            </div>
+            <div class="treatment-step">
+                <div class="treatment-step-title">3. Các biện pháp phối hợp hồi sức kỹ thuật cao:</div>
+                <ol>
+                    <li>Khai thông đường thở, đảm bảo hô hấp, bóp bóng qua mặt nạ, đặt nội khí quản hoặc mở khí quản, thở oxy, thông khí nhân tạo.</li>
+                    <li><strong>Truyền dịch tĩnh mạch nhanh NaCl 0.9%:</strong> Người lớn truyền nhanh 1-2 lít (nhắc lại nếu cần). Trẻ em truyền nhanh 10-20 ml/kg trong 10-20 phút đầu.</li>
+                    <li>Phối hợp thuốc bổ trợ: Diphenhydramin (10-50mg), Methylprednisolon (1-2mg/kg), xịt Salbutamol nếu co thắt phế quản nặng.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="treatment-box" id="general_note" style="display:none; background: #f8fafc; border: 1px solid #cbd5e1; margin-top: 10px;">
+            <div class="treatment-step-title" style="color:#0f172a;">4. Theo dõi sát & Khuyến cáo của Bộ Y tế:</div>
+            <ul style="padding-left: 18px; font-size: 0.85rem;">
+                <li><strong>Tần suất theo dõi:</strong> Theo dõi Mạch, Huyết áp từ <strong>5 - 10 phút/lần</strong> kèm chỉ số SpO2 liên tục.</li>
+                <li>Khi tình trạng ổn định, tiếp tục theo dõi mạch, huyết áp mỗi 1 - 2 giờ/lần trong <strong>ít nhất 24 giờ tiếp theo</strong> để phòng phản vệ pha 2.</li>
+                <li style="font-weight: bold; color: #16a34a;">LƯU Ý: Nhân viên y tế được phép tiêm bắp Adrenalin theo phác đồ ngay lập tức khi xảy ra phản vệ mà không cần chờ lệnh bác sĩ.</li>
+            </ul>
+        </div>
+
+        <button type="button" class="btn-reset" onclick="resetSymptomForm()">Xóa / Làm mới biểu mẫu</button>
+    </form>
+</div>
+
+<script>
+    function updateDiagnosis() {
+        const checkedInputs = document.querySelectorAll('input[name="symptom"]:checked');
+        const diagBox = document.getElementById('diagnosisOutput');
+        
+        // Ẩn toàn bộ các hộp xử trí trước khi tính toán
+        document.getElementById('treat_1').style.display = 'none';
+        document.getElementById('treat_2').style.display = 'none';
+        document.getElementById('treat_3').style.display = 'none';
+        document.getElementById('general_note').style.display = 'none';
+
+        // Xóa class màu cũ của hộp chẩn đoán
+        diagBox.className = 'diagnosis-box';
+
+        // Cập nhật class hiển thị viền xanh cho hàng được chọn
+        document.querySelectorAll('.symptom-item').forEach(item => {
+            if (item.querySelector('input').checked) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        if (checkedInputs.length === 0) {
+            diagBox.innerText = 'Chưa chọn triệu chứng lâm sàng';
+            return;
+        }
+
+        // Tìm mức độ cao nhất trong các triệu chứng được chọn
+        let maxLevel = 1;
+        checkedInputs.forEach(input => {
+            const level = parseInt(input.parentElement.getAttribute('data-level'));
+            if (level > maxLevel) {
+                maxLevel = level;
+            }
+        });
+
+        // Hiển thị kết quả tương ứng theo mức độ cao nhất phát hiện được
+        if (maxLevel === 1) {
+            diagBox.innerText = 'CHẨN ĐOÁN: PHẢN VỆ MỨC ĐỘ NHẸ (ĐỘ I)';
+            diagBox.classList.add('diag-do1');
+            document.getElementById('treat_1').style.display = 'block';
+        } else if (maxLevel === 2) {
+            diagBox.innerText = 'CHẨN ĐOÁN: PHẢN VỆ MỨC ĐỘ NẶNG (ĐỘ II)';
+            diagBox.classList.add('diag-do2');
+            document.getElementById('treat_2').style.display = 'block';
+            document.getElementById('general_note').style.display = 'block';
+        } else if (maxLevel === 3) {
+            diagBox.innerText = 'CHẨN ĐOÁN: PHẢN VỆ MỨC ĐỘ NGUY KỊCH (ĐỘ III)';
+            diagBox.classList.add('diag-do3');
+            document.getElementById('treat_3').style.display = 'block';
+            document.getElementById('general_note').style.display = 'block';
+        }
+    }
+
+    function resetSymptomForm() {
+        document.getElementById('symptomForm').reset();
+        updateDiagnosis();
+    }
+
+    // Gắn sự kiện thay đổi tự động
+    document.getElementById('symptomForm').addEventListener('change', updateDiagnosis);
+</script>
+
+</body>
+</html>
