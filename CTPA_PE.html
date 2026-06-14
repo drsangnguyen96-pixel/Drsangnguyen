@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ ra quyết định lâm sàng: Thuyên tắc phổi (PE)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2, h3 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .form-group { margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        select, input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        .checkbox-group { margin-bottom: 10px; display: flex; align-items: center; }
+        .checkbox-group input { margin-right: 10px; width: 18px; height: 18px; }
+        .checkbox-group label { font-weight: normal; margin-bottom: 0; }
+        .btn { background: #3498db; color: #fff; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; }
+        .btn:hover { background: #2980b9; }
+        .hidden { display: none; }
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 4px; font-weight: bold; font-size: 18px; }
+        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .branch-section { border-left: 4px solid #3498db; padding-left: 15px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Lưu đồ Quyết định Chụp CTPA (PE Algorithm)</h2>
+    
+    <div class="form-group">
+        <label for="patientAge">Tuổi bệnh nhân:</label>
+        <input type="number" id="patientAge" min="1" max="120" placeholder="Nhập tuổi bệnh nhân..." required>
+    </div>
+
+    <div class="form-group">
+        <label for="scoreType">Lựa chọn thang điểm tiền test:</label>
+        <select id="scoreType" onchange="toggleScoreType()">
+            <option value="wells">Thang điểm Wells (Kinh điển)</option>
+            <option value="geneva">Thang điểm Geneva Cải tiến (RGS)</option>
+        </select>
+    </div>
+
+    <div id="wellsCriteria">
+        <h3>Tiêu chí Wells</h3>
+        <div class="checkbox-group"><input type="checkbox" id="w1" value="3.0"><label>Dấu hiệu lâm sàng của DVT (Huyết khối tĩnh mạch sâu) (+3.0)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="w2" value="3.0"><label>Khả năng PE cao hơn các chẩn đoán thay thế (+3.0)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="w3" value="1.5"><label>Nhịp tim > 100 lần/phút (+1.5)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="w4" value="1.5"><label>Bất động ≥ 3 ngày hoặc phẫu thuật trong vòng 4 tuần (+1.5)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="w5" value="1.5"><label>Tiền sử DVT hoặc PE (+1.5)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="w6" value="1.0"><label>Ho ra máu (+1.0)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="w7" value="1.0"><label>Bệnh lý ác tính (Đang điều trị hoặc trong vòng 6 tháng) (+1.0)</label></div>
+    </div>
+
+    <div id="genevaCriteria" class="hidden">
+        <h3>Tiêu chí Geneva Cải tiến</h3>
+        <p><i>* Điểm tuổi (>65 tuổi: +1 điểm) sẽ được tự động tính.</i></p>
+        <div class="checkbox-group"><input type="checkbox" id="g1" value="3"><label>Tiền sử DVT hoặc PE (+3)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="g2" value="2"><label>Phẫu thuật hoặc gãy xương chi dưới trong vòng 1 tháng (+2)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="g3" value="2"><label>Bệnh lý ác tính thể hoạt động (+2)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="g4" value="3"><label>Đau một bên chi dưới (+3)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="g5" value="2"><label>Ho ra máu (+2)</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="g6" value="4"><label>Đau khi ấn tĩnh mạch sâu chi dưới VÀ phù một bên (+4)</label></div>
+        
+        <label style="margin-top:10px;">Nhịp tim (chọn 1):</label>
+        <div class="checkbox-group"><input type="radio" name="hr_geneva" value="0" checked><label>Dưới 75 lần/phút (+0)</label></div>
+        <div class="checkbox-group"><input type="radio" name="hr_geneva" value="3"><label>75 - 94 lần/phút (+3)</label></div>
+        <div class="checkbox-group"><input type="radio" name="hr_geneva" value="5"><label>≥ 95 lần/phút (+5)</label></div>
+    </div>
+
+    <button class="btn" onclick="calculateClinicalScore()">1. Đánh giá Lâm sàng</button>
+
+    <div id="clinicalResult" class="result-box hidden"></div>
+
+    <div id="ddimerBranch" class="branch-section hidden">
+        <h3>Xét nghiệm D-dimer</h3>
+        <p>Bệnh nhân thuộc nhóm <strong>Không có khả năng PE (PE Unlikely)</strong>. Bắt buộc kiểm tra D-dimer siêu nhạy.</p>
+        <div class="form-group">
+            <label for="ddimerValue">Kết quả D-dimer (µg/L FEU):</label>
+            <input type="number" id="ddimerValue" placeholder="Nhập giá trị D-dimer...">
+        </div>
+        <button class="btn" onclick="evaluateDdimer()">2. Quyết định CTPA</button>
+    </div>
+
+    <div id="finalDecision" class="result-box hidden"></div>
+
+</div>
+
+<script>
+    // Chuyển đổi giao diện giữa Wells và Geneva
+    function toggleScoreType() {
+        const type = document.getElementById('scoreType').value;
+        if (type === 'wells') {
+            document.getElementById('wellsCriteria').classList.remove('hidden');
+            document.getElementById('genevaCriteria').classList.add('hidden');
+        } else {
+            document.getElementById('wellsCriteria').classList.add('hidden');
+            document.getElementById('genevaCriteria').classList.remove('hidden');
+        }
+        resetResults();
+    }
+
+    function resetResults() {
+        document.getElementById('clinicalResult').classList.add('hidden');
+        document.getElementById('ddimerBranch').classList.add('hidden');
+        document.getElementById('finalDecision').classList.add('hidden');
+    }
+
+    let isLikelyPE = false;
+    let ageAdjustedCutoff = 500;
+
+    // Tính điểm lâm sàng
+    function calculateClinicalScore() {
+        resetResults();
+        const age = parseInt(document.getElementById('patientAge').value);
+        if (!age) { alert("Vui lòng nhập tuổi bệnh nhân!"); return; }
+
+        const type = document.getElementById('scoreType').value;
+        let score = 0;
+
+        if (type === 'wells') {
+            const wellsIds = ['w1', 'w2', 'w3', 'w4', 'w5', 'w6', 'w7'];
+            wellsIds.forEach(id => {
+                if (document.getElementById(id).checked) {
+                    score += parseFloat(document.getElementById(id).value);
+                }
+            });
+            isLikelyPE = score > 4; 
+            showClinicalResult(`Tổng điểm Wells: ${score} điểm`, isLikelyPE);
+            
+        } else {
+            const genevaIds = ['g1', 'g2', 'g3', 'g4', 'g5', 'g6'];
+            genevaIds.forEach(id => {
+                if (document.getElementById(id).checked) {
+                    score += parseInt(document.getElementById(id).value);
+                }
+            });
+            // Cộng điểm tuổi
+            if (age > 65) score += 1;
+            // Cộng điểm nhịp tim
+            const hrRadios = document.getElementsByName('hr_geneva');
+            for (let radio of hrRadios) {
+                if (radio.checked) { score += parseInt(radio.value); break; }
+            }
+            isLikelyPE = score >= 6;
+            showClinicalResult(`Tổng điểm Geneva cải tiến: ${score} điểm`, isLikelyPE);
+        }
+
+        // Tính ngưỡng D-dimer hiệu chỉnh theo tuổi
+        ageAdjustedCutoff = age > 50 ? age * 10 : 500;
+
+        // Quyết định phân nhánh
+        if (isLikelyPE) {
+            document.getElementById('finalDecision').innerHTML = "⚠️ XÁC SUẤT CAO (PE LIKELY).<br> Bỏ qua D-dimer. <strong>CHỈ ĐỊNH CHỤP CTPA NGAY LẬP TỨC.</strong> Cân nhắc dùng kháng đông theo kinh nghiệm.";
+            document.getElementById('finalDecision').className = "result-box alert-danger";
+            document.getElementById('finalDecision').classList.remove('hidden');
+        } else {
+            document.getElementById('ddimerBranch').classList.remove('hidden');
+            document.getElementById('ddimerValue').value = ""; // Clear old value
+        }
+    }
+
+    function showClinicalResult(text, isLikely) {
+        const resultDiv = document.getElementById('clinicalResult');
+        const status = isLikely ? "Nhóm: CÓ KHẢ NĂNG (PE Likely)" : "Nhóm: KHÔNG CÓ KHẢ NĂNG (PE Unlikely)";
+        resultDiv.innerHTML = `${text} <br> ${status}`;
+        resultDiv.className = `result-box ${isLikely ? 'alert-warning' : 'alert-success'}`;
+        resultDiv.classList.remove('hidden');
+    }
+
+    // Đánh giá nhánh D-dimer
+    function evaluateDdimer() {
+        const ddimer = parseFloat(document.getElementById('ddimerValue').value);
+        if (isNaN(ddimer)) { alert("Vui lòng nhập giá trị D-dimer!"); return; }
+
+        const age = parseInt(document.getElementById('patientAge').value);
+        const finalDiv = document.getElementById('finalDecision');
+        
+        let logicText = `Ngưỡng cắt D-dimer hiệu chỉnh theo tuổi (Age-adjusted cutoff): <strong>${ageAdjustedCutoff} µg/L</strong>.<br>`;
+        
+        if (ddimer < ageAdjustedCutoff) {
+            finalDiv.innerHTML = logicText + "✅ Kết quả D-dimer ÂM TÍNH. <br>Đã loại trừ thuyên tắc phổi an toàn. <strong>KHÔNG CHỈ ĐỊNH CHỤP CTPA.</strong> (Ngăn ngừa phơi nhiễm bức xạ vô ích).";
+            finalDiv.className = "result-box alert-success";
+        } else {
+            finalDiv.innerHTML = logicText + "⚠️ Kết quả D-dimer DƯƠNG TÍNH. <br>Không thể loại trừ thuyên tắc phổi. <strong>QUYẾT ĐỊNH: CHỤP CTPA.</strong>";
+            finalDiv.className = "result-box alert-danger";
+        }
+        finalDiv.classList.remove('hidden');
+    }
+</script>
+</body>
+</html>
