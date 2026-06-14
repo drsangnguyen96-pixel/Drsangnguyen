@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Xử trí PE Cấp tính & Thang điểm (AHA/ACC 2026)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1, h2 { color: #004085; text-align: center; }
+        h3 { color: #0056b3; border-bottom: 2px solid #b8daff; padding-bottom: 5px; margin-top: 30px; }
+        .section { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 15px 20px; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 10px; cursor: pointer; }
+        input[type="checkbox"], input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
+        input[type="number"] { width: 80px; padding: 5px; margin-left: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .score-container { background: #e9ecef; padding: 15px; border-radius: 5px; margin-top: 15px; display: none; }
+        .score-active { display: block; }
+        button { width: 100%; padding: 15px; background: #0056b3; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: background 0.3s; }
+        button:hover { background: #004085; }
+        #result { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; font-size: 16px; border-left: 6px solid; }
+        .cat-A { background-color: #d4edda; color: #155724; border-color: #28a745; }
+        .cat-B { background-color: #fff3cd; color: #856404; border-color: #ffc107; }
+        .cat-C { background-color: #ffe8a1; color: #856404; border-color: #fd7e14; }
+        .cat-D { background-color: #f8d7da; color: #721c24; border-color: #dc3545; }
+        .cat-E { background-color: #f5c6cb; color: #721c24; border-color: #bd2130; font-weight: bold; }
+        .score-result { margin-top: 15px; padding: 10px; background: #d1ecf1; color: #0c5460; border-radius: 5px; font-weight: bold; }
+        .flex-row { display: flex; align-items: center; margin-bottom: 10px; }
+        .flex-row label { margin-bottom: 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Đánh giá Nguy cơ & Xử trí PE Cấp tính</h1>
+    
+    <div class="section">
+        <h3>1. Trạng thái lâm sàng ban đầu</h3>
+        <label><input type="radio" name="presentation" value="asymptomatic"> Bệnh nhân KHÔNG có triệu chứng (Phát hiện tình cờ, Subclinical)</label>
+        <label><input type="radio" name="presentation" value="symptomatic" checked> Bệnh nhân CÓ triệu chứng</label>
+    </div>
+
+    <div id="symptomatic-section">
+        
+        <div class="section">
+            <h3>2. Đánh giá Điểm Nguy cơ Lâm sàng</h3>
+            <p>Chọn một thang điểm để đánh giá (PESI, sPESI, Bova, hoặc Hestia):</p>
+            <select id="score_selector" style="padding: 10px; width: 100%; font-size: 16px; border-radius: 5px; margin-bottom: 15px;" onchange="toggleScoreForm()">
+                <option value="none">-- Chọn thang điểm --</option>
+                <option value="pesi">PESI (Pulmonary Embolism Severity Index)</option>
+                <option value="spesi">sPESI (Simplified PESI)</option>
+                <option value="hestia">Hestia Criteria</option>
+                <option value="bova">Bova Score</option>
+            </select>
+
+            <!-- Bảng PESI -->
+            <div id="form_pesi" class="score-container">
+                <h4>Thang điểm PESI</h4>
+                <div class="flex-row"><label>Tuổi (Năm):</label> <input type="number" id="pesi_age" min="18" max="120" value="50"></div>
+                <label><input type="checkbox" id="pesi_male"> Giới tính Nam (+10)</label>
+                <label><input type="checkbox" id="pesi_cancer"> Tiền sử Ung thư (+30)</label>
+                <label><input type="checkbox" id="pesi_hf"> Tiền sử Suy tim (+10)</label>
+                <label><input type="checkbox" id="pesi_lung"> Bệnh phổi mạn tính (+10)</label>
+                <label><input type="checkbox" id="pesi_hr"> Nhịp tim ≥ 110 l/p (+20)</label>
+                <label><input type="checkbox" id="pesi_sbp"> Huyết áp tâm thu < 100 mmHg (+30)</label>
+                <label><input type="checkbox" id="pesi_rr"> Nhịp thở ≥ 30 l/p (+20)</label>
+                <label><input type="checkbox" id="pesi_temp"> Nhiệt độ < 36°C (+20)</label>
+                <label><input type="checkbox" id="pesi_ams"> Thay đổi tri giác (+60)</label>
+                <label><input type="checkbox" id="pesi_spo2"> SpO2 < 90% (+20)</label>
+            </div>
+
+            <!-- Bảng sPESI -->
+            <div id="form_spesi" class="score-container">
+                <h4>Thang điểm sPESI</h4>
+                <label><input type="checkbox" id="spesi_age"> Tuổi > 80 (+1)</label>
+                <label><input type="checkbox" id="spesi_cancer"> Tiền sử Ung thư (+1)</label>
+                <label><input type="checkbox" id="spesi_cpd"> Bệnh tim phổi mạn tính (+1)</label>
+                <label><input type="checkbox" id="spesi_hr"> Nhịp tim ≥ 110 l/p (+1)</label>
+                <label><input type="checkbox" id="spesi_sbp"> HA tâm thu < 100 mmHg (+1)</label>
+                <label><input type="checkbox" id="spesi_spo2"> SpO2 < 90% (+1)</label>
+            </div>
+
+            <!-- Bảng Hestia -->
+            <div id="form_hestia" class="score-container">
+                <h4>Tiêu chuẩn Hestia</h4>
+                <p><em>(Nếu CÓ bất kỳ tiêu chí nào, bệnh nhân thuộc nhóm nguy cơ cao/cần nhập viện)</em></p>
+                <label><input type="checkbox" class="hestia_item"> Huyết động không ổn định?</label>
+                <label><input type="checkbox" class="hestia_item"> Cần tiêu sợi huyết hoặc lấy huyết khối?</label>
+                <label><input type="checkbox" class="hestia_item"> Đang chảy máu hoạt động hoặc nguy cơ chảy máu cao?</label>
+                <label><input type="checkbox" class="hestia_item"> Cần thở oxy > 24 giờ để duy trì SpO2 > 90%?</label>
+                <label><input type="checkbox" class="hestia_item"> PE được chẩn đoán khi đang dùng thuốc chống đông?</label>
+                <label><input type="checkbox" class="hestia_item"> Đau dữ dội cần giảm đau tĩnh mạch > 24 giờ?</label>
+                <label><input type="checkbox" class="hestia_item"> Lý do y tế/xã hội cần nhập viện > 24h (nhiễm trùng, ung thư, thiếu hỗ trợ)?</label>
+                <label><input type="checkbox" class="hestia_item"> Độ thanh thải Creatinine < 30 mL/phút?</label>
+                <label><input type="checkbox" class="hestia_item"> Suy gan nặng?</label>
+                <label><input type="checkbox" class="hestia_item"> Đang mang thai?</label>
+                <label><input type="checkbox" class="hestia_item"> Có tiền sử giảm tiểu cầu do Heparin (HIT)?</label>
+            </div>
+
+            <!-- Bảng Bova -->
+            <div id="form_bova" class="score-container">
+                <h4>Thang điểm Bova</h4>
+                <label><input type="checkbox" id="bova_sbp"> Huyết áp tâm thu 90 - 100 mmHg (+2)</label>
+                <label><input type="checkbox" id="bova_trop"> Tăng Troponin (+2)</label>
+                <label><input type="checkbox" id="bova_rv"> Suy chức năng thất phải (+2)</label>
+                <label><input type="checkbox" id="bova_hr"> Nhịp tim ≥ 110 l/p (+1)</label>
+            </div>
+
+            <div id="score_display" class="score-result" style="display:none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>3. Đánh giá Huyết động và Suy tim/Hô hấp</h3>
+            <label><input type="checkbox" id="cardiac_arrest"> Ngừng tim hoặc sốc tim trơ (Refractory cardiogenic shock)</label>
+            <label><input type="checkbox" id="cardiogenic_shock"> Sốc tim (Tụt HA tái phát/dai dẳng kèm giảm tưới máu cơ quan)</label>
+            <label><input type="checkbox" id="transient_hypo"> Hạ huyết áp thoáng qua (SBP < 90 hoặc giảm > 40 mmHg < 15 phút / đáp ứng dịch)</label>
+            <label><input type="checkbox" id="normotensive_shock"> Sốc đẳng áp (Normotensive shock - Tụt tưới máu: Lactate >2, suy thận, thay đổi tri giác... nhưng SBP bình thường)</label>
+        </div>
+
+        <div class="section">
+            <h3>4. Hình ảnh học & Biomarkers (Nguy cơ ngắn hạn)</h3>
+            <label><input type="checkbox" id="rv_dysfunction"> Suy/Giãn thất phải (RV) trên Echo/CT (RV/LV ≥ 1.0)</label>
+            <label><input type="checkbox" id="biomarker_elevated"> Tăng Biomarkers (Troponin I/T dương tính và/hoặc BNP/NT-proBNP tăng)</label>
+        </div>
+        
+        <div class="section">
+            <h3>5. Dấu hiệu Hô hấp (R - Respiratory Modifier)</h3>
+            <label><input type="checkbox" id="resp_modifier_c"> SpO2 < 90%, Nhịp thở ≥ 30 l/p, hoặc cần hỗ trợ oxy cơ bản</label>
+            <label><input type="checkbox" id="resp_modifier_d"> Cần Cannula mũi > 6L/phút hoặc Mask không thở lại (NRB mask)</label>
+            <label><input type="checkbox" id="resp_modifier_e"> Suy hô hấp giảm oxy máu/Cần thông khí nhân tạo (NIV hoặc xâm lấn)</label>
+        </div>
+    </div>
+
+    <button onclick="calculateFinalCategory()">Tính toán Phân loại & Phác đồ</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    // Xử lý ẩn/hiện bảng điểm
+    function toggleScoreForm() {
+        document.querySelectorAll('.score-container').forEach(el => el.classList.remove('score-active'));
+        document.getElementById('score_display').style.display = 'none';
+        
+        let selected = document.getElementById('score_selector').value;
+        if(selected !== 'none') {
+            document.getElementById('form_' + selected).classList.add('score-active');
+        }
+    }
+
+    // Toggle phần có triệu chứng
+    document.querySelectorAll('input[name="presentation"]').forEach((elem) => {
+        elem.addEventListener("change", function() {
+            document.getElementById("symptomatic-section").style.display = (this.value === "asymptomatic") ? "none" : "block";
+        });
+    });
+
+    // Tính điểm lâm sàng
+    function evaluateClinicalScore() {
+        let selected = document.getElementById('score_selector').value;
+        let isElevatedRisk = false;
+        let scoreText = "";
+
+        if (selected === 'none') {
+            return { calculated: false, elevated: false, text: "Chưa chọn thang điểm." };
+        }
+
+        if (selected === 'pesi') {
+            let pts = parseInt(document.getElementById('pesi_age').value || 0);
+            if(document.getElementById('pesi_male').checked) pts += 10;
+            if(document.getElementById('pesi_cancer').checked) pts += 30;
+            if(document.getElementById('pesi_hf').checked) pts += 10;
+            if(document.getElementById('pesi_lung').checked) pts += 10;
+            if(document.getElementById('pesi_hr').checked) pts += 20;
+            if(document.getElementById('pesi_sbp').checked) pts += 30;
+            if(document.getElementById('pesi_rr').checked) pts += 20;
+            if(document.getElementById('pesi_temp').checked) pts += 20;
+            if(document.getElementById('pesi_ams').checked) pts += 60;
+            if(document.getElementById('pesi_spo2').checked) pts += 20;
+            
+            isElevatedRisk = (pts > 85);
+            let pesiClass = pts <= 65 ? "I" : (pts <= 85 ? "II" : (pts <= 105 ? "III" : (pts <= 125 ? "IV" : "V")));
+            scoreText = `Tổng điểm PESI: ${pts} (Class ${pesiClass}) -> Nguy cơ: ${isElevatedRisk ? "CAO" : "THẤP"}`;
+        }
+        else if (selected === 'spesi') {
+            let pts = 0;
+            if(document.getElementById('spesi_age').checked) pts += 1;
+            if(document.getElementById('spesi_cancer').checked) pts += 1;
+            if(document.getElementById('spesi_cpd').checked) pts += 1;
+            if(document.getElementById('spesi_hr').checked) pts += 1;
+            if(document.getElementById('spesi_sbp').checked) pts += 1;
+            if(document.getElementById('spesi_spo2').checked) pts += 1;
+
+            isElevatedRisk = (pts >= 1);
+            scoreText = `Tổng điểm sPESI: ${pts} -> Nguy cơ: ${isElevatedRisk ? "CAO" : "THẤP"}`;
+        }
+        else if (selected === 'hestia') {
+            let checks = document.querySelectorAll('.hestia_item');
+            let hasYes = false;
+            checks.forEach(chk => { if(chk.checked) hasYes = true; });
+            
+            isElevatedRisk = hasYes;
+            scoreText = `Tiêu chuẩn Hestia: ${isElevatedRisk ? "CÓ tiêu chí" : "KHÔNG có tiêu chí"} -> Nguy cơ: ${isElevatedRisk ? "CAO" : "THẤP"}`;
+        }
+        else if (selected === 'bova') {
+            let pts = 0;
+            if(document.getElementById('bova_sbp').checked) pts += 2;
+            if(document.getElementById('bova_trop').checked) pts += 2;
+            if(document.getElementById('bova_rv').checked) pts += 2;
+            if(document.getElementById('bova_hr').checked) pts += 1;
+
+            isElevatedRisk = (pts > 4);
+            let bovaStage = pts <= 2 ? "I" : (pts <= 4 ? "II" : "III");
+            scoreText = `Tổng điểm Bova: ${pts} (Stage ${bovaStage}) -> Nguy cơ: ${isElevatedRisk ? "CAO" : "THẤP"}`;
+        }
+
+        document.getElementById('score_display').innerHTML = scoreText;
+        document.getElementById('score_display').style.display = 'block';
+
+        return { calculated: true, elevated: isElevatedRisk, text: scoreText };
+    }
+
+    // Logic AHA/ACC Categories
+    function calculateFinalCategory() {
+        let resultDiv = document.getElementById("result");
+        resultDiv.style.display = "block";
+        resultDiv.className = ""; 
+
+        let presentation = document.querySelector('input[name="presentation"]:checked').value;
+
+        if (presentation === "asymptomatic") {
+            resultDiv.classList.add("cat-A");
+            resultDiv.innerHTML = "<h3>Phân loại: AHA/ACC Category A (Nguy cơ thấp nhất)</h3>" +
+                                  "<ul><li><strong>Đặc điểm:</strong> PE dưới lâm sàng, tình cờ, không triệu chứng.</li>" +
+                                  "<li><strong>Xử trí:</strong> Bệnh nhân có thể xuất viện an toàn từ phòng cấp cứu. Không cần nhập viện. Khởi trị chống đông DOAC.</li></ul>";
+            return;
+        }
+
+        let scoreResult = evaluateClinicalScore();
+        if(!scoreResult.calculated) {
+            resultDiv.style.backgroundColor = "#e2e3e5";
+            resultDiv.innerHTML = "<strong>Lỗi:</strong> Vui lòng chọn và điền một thang điểm lâm sàng (PESI, sPESI, Hestia, Bova).";
+            return;
+        }
+
+        let cardiacArrest = document.getElementById("cardiac_arrest").checked;
+        let cardioShock = document.getElementById("cardiogenic_shock").checked;
+        let transientHypo = document.getElementById("transient_hypo").checked;
+        let normotensiveShock = document.getElementById("normotensive_shock").checked;
+        
+        let rvDysfunction = document.getElementById("rv_dysfunction").checked;
+        let biomarkerElevated = document.getElementById("biomarker_elevated").checked;
+        
+        let respC = document.getElementById("resp_modifier_c").checked;
+        let respD = document.getElementById("resp_modifier_d").checked;
+        let respE = document.getElementById("resp_modifier_e").checked;
+
+        let modifier = (respE || respD || respC) ? "R" : "";
+
+        if (cardiacArrest) {
+            resultDiv.classList.add("cat-E");
+            resultDiv.innerHTML = `<h3>Phân loại: AHA/ACC Category E2${modifier}</h3>` +
+                                  `<p>${scoreResult.text}</p>` +
+                                  `<ul><li><strong>Đặc điểm:</strong> Sốc tim trơ hoặc ngừng tim không phục hồi tuần hoàn sau 30 phút. Nhóm có tỷ lệ tử vong cao nhất.</li>` +
+                                  `<li><strong>Xử trí:</strong> Kích hoạt nhóm chuyên gia đa ngành (PERT). Cân nhắc hồi sức tim phổi, dùng thuốc vận mạch. Khởi trị LMWH/UFH tĩnh mạch. Xem xét các biện pháp huyết động ngoài cơ thể (VA-ECMO) hoặc liệu pháp lấy huyết khối (phẫu thuật).</li></ul>`;
+            return;
+        }
+        if (cardioShock) {
+            resultDiv.classList.add("cat-E");
+            resultDiv.innerHTML = `<h3>Phân loại: AHA/ACC Category E1${modifier}</h3>` +
+                                  `<p>${scoreResult.text}</p>` +
+                                  `<ul><li><strong>Đặc điểm:</strong> Sốc tim với tụt huyết áp kéo dài, giảm tưới máu tổ chức.</li>` +
+                                  `<li><strong>Xử trí:</strong> Nhập ICU. Dùng vận mạch/co bóp cơ tim. Khởi trị LMWH (ưu tiên hơn UFH). Hợp lý khi sử dụng các liệu pháp nâng cao: tiêu sợi huyết toàn thân (nếu không chống chỉ định), lấy huyết khối bằng Catheter (CDL), cơ học (MT) hoặc phẫu thuật lấy huyết khối.</li></ul>`;
+            return;
+        }
+        if (normotensiveShock) {
+            resultDiv.classList.add("cat-D");
+            resultDiv.innerHTML = `<h3>Phân loại: AHA/ACC Category D2${modifier}</h3>` +
+                                  `<p>${scoreResult.text}</p>` +
+                                  `<ul><li><strong>Đặc điểm:</strong> Sốc đẳng áp (Normotensive shock) - Không tụt huyết áp nhưng có dấu hiệu tổn thương tưới máu cơ quan đích (Tăng lactate, suy thận cấp).</li>` +
+                                  `<li><strong>Xử trí:</strong> Nhập viện ở mức độ giám sát cao. Có thể dùng vận mạch/inotropes sớm. Khởi trị LMWH. Tiêu sợi huyết toàn thân / CDL / MT có thể được xem xét để chống suy sụp lâm sàng.</li></ul>`;
+            return;
+        }
+        if (transientHypo) {
+            resultDiv.classList.add("cat-D");
+            resultDiv.innerHTML = `<h3>Phân loại: AHA/ACC Category D1${modifier}</h3>` +
+                                  `<p>${scoreResult.text}</p>` +
+                                  `<ul><li><strong>Đặc điểm:</strong> Hạ huyết áp thoáng qua, đáp ứng với bù dịch, không kèm tụt tưới máu cơ quan. Suy tim phổi chớm phát.</li>` +
+                                  `<li><strong>Xử trí:</strong> Theo dõi liên tục. Khởi trị LMWH. Bù dịch thận trọng (<500ml). Có thể xem xét CDL / MT / Tiêu sợi huyết toàn thân nếu có dấu hiệu nặng lên.</li></ul>`;
+            return;
+        }
+
+        if (scoreResult.elevated || rvDysfunction || biomarkerElevated) {
+            resultDiv.classList.add("cat-C");
+            let catCLevel = "1";
+            let c_reason = "Không có bất thường thất phải, Biomarker bình thường.";
+            
+            if ((rvDysfunction && !biomarkerElevated) || (!rvDysfunction && biomarkerElevated)) {
+                catCLevel = "2";
+                c_reason = "Có bất thường kích thước/chức năng thất phải (RV) HOẶC tăng Biomarker.";
+            } else if (rvDysfunction && biomarkerElevated) {
+                catCLevel = "3";
+                c_reason = "Có cả bất thường chức năng thất phải (RV) VÀ tăng Biomarker tim.";
+            }
+
+            resultDiv.innerHTML = `<h3>Phân loại: AHA/ACC Category C${catCLevel}${modifier}</h3>` +
+                                  `<p>${scoreResult.text}</p>` +
+                                  `<ul><li><strong>Đặc điểm:</strong> Bệnh nhân ổn định huyết động nhưng có điểm nguy cơ lâm sàng cao. ${c_reason}</li>` +
+                                  `<li><strong>Xử trí chung:</strong> Nhập viện để tối ưu hóa điều trị. Khởi trị LMWH. Bắt buộc đo chỉ số Lactate và theo dõi sát.</li>` +
+                                  `<li><strong>Lưu ý:</strong> Đặc biệt với nhóm C3, nếu phát hiện huyết khối trôi nổi (clot-in-transit), có thể xem xét sớm các liệu pháp lấy huyết khối bằng ống thông (CDL / MT). Cần hội chẩn nhóm PERT.</li></ul>`;
+            return;
+        }
+
+        if (!scoreResult.elevated && !rvDysfunction && !biomarkerElevated) {
+            resultDiv.classList.add("cat-B");
+            let subclass = "2 (Huyết khối đoạn gần - Segmental/Proximal)";
+            resultDiv.innerHTML = `<h3>Phân loại: AHA/ACC Category B${modifier}</h3>` +
+                                  `<p>${scoreResult.text}</p>` +
+                                  `<ul><li><strong>Đặc điểm:</strong> Bệnh nhân có triệu chứng nhưng điểm nguy cơ thấp (Ví dụ: PESI ≤ 85, sPESI = 0). Biomarkers bình thường, không giãn thất phải.</li>` +
+                                  `<li><strong>Xử trí:</strong> Nên xuất viện sớm / điều trị ngoại trú dựa trên quyết định chung. Khởi trị thuốc chống đông đường uống DOAC. Cần sắp xếp tái khám chuyên khoa sớm (trong vòng 1 tuần).</li></ul>`;
+            return;
+        }
+    }
+</script>
+
+</body>
+</html>
