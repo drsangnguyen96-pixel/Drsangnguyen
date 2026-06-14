@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mô hình RF-CL 2024 (ESC) - Bản Chính Thức</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .checkbox-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-item input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .result-box {
+            background: #e8f6f3;
+            border: 1px solid #1abc9c;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
+            display: none;
+        }
+        .result-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #16a085;
+            margin-bottom: 10px;
+        }
+        .recommendation {
+            font-weight: bold;
+            color: #c0392b;
+        }
+        .btn-calc {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-calc:hover {
+            background: #2980b9;
+        }
+        .symptom-criteria {
+            display: none;
+            margin-top: 10px;
+            padding-left: 15px;
+            border-left: 2px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Mô hình Khả năng Lâm sàng RF-CL (ESC 2024 - Bản Chuẩn)</h2>
+    
+    <div class="form-group">
+        <label for="age">Tuổi (30 - 80+):</label>
+        <input type="number" id="age" min="30" max="100" value="50">
+    </div>
+
+    <div class="form-group">
+        <label for="gender">Giới tính:</label>
+        <select id="gender">
+            <option value="male">Nam</option>
+            <option value="female">Nữ</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="symptom_type">Loại triệu chứng chính:</label>
+        <select id="symptom_type" onchange="toggleSymptomCriteria()">
+            <option value="chest_pain">Đau ngực (Cần đánh giá tiêu chuẩn)</option>
+            <option value="dyspnoea">Khó thở khi gắng sức (Tương đương 2 điểm)</option>
+        </select>
+    </div>
+
+    <div id="chest_pain_criteria" class="checkbox-group symptom-criteria" style="display: block;">
+        <label>Tiêu chuẩn đau ngực (Chọn các mục thỏa mãn):</label>
+        <div class="checkbox-item">
+            <input type="checkbox" id="sym1" class="sym-checkbox" value="1">
+            <label for="sym1" style="font-weight: normal; margin: 0;">1. Đau thắt/bóp nghẹt vùng sau xương ức, hoặc lan lên cổ, hàm, vai, cánh tay</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="sym2" class="sym-checkbox" value="1">
+            <label for="sym2" style="font-weight: normal; margin: 0;">2. Khởi phát khi gắng sức hoặc căng thẳng cảm xúc</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="sym3" class="sym-checkbox" value="1">
+            <label for="sym3" style="font-weight: normal; margin: 0;">3. Giảm khi nghỉ ngơi hoặc ngậm Nitroglycerin trong vòng 5 phút</label>
+        </div>
+    </div>
+
+    <div class="checkbox-group">
+        <label>Yếu tố Nguy cơ (YTNC):</label>
+        <div class="checkbox-item">
+            <input type="checkbox" id="rf1" class="rf-checkbox" value="1">
+            <label for="rf1" style="font-weight: normal; margin: 0;">Tăng huyết áp</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="rf2" class="rf-checkbox" value="1">
+            <label for="rf2" style="font-weight: normal; margin: 0;">Đái tháo đường</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="rf3" class="rf-checkbox" value="1">
+            <label for="rf3" style="font-weight: normal; margin: 0;">Rối loạn lipid máu</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="rf4" class="rf-checkbox" value="1">
+            <label for="rf4" style="font-weight: normal; margin: 0;">Hút thuốc lá (đang hút hoặc mới bỏ)</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="rf5" class="rf-checkbox" value="1">
+            <label for="rf5" style="font-weight: normal; margin: 0;">Tiền sử gia đình mắc bệnh tim mạch sớm</label>
+        </div>
+    </div>
+
+    <button class="btn-calc" onclick="calculateExactRFCL()">Tính điểm RF-CL</button>
+
+    <div id="resultBox" class="result-box">
+        <div class="result-title">Khả năng Lâm sàng (RF-CL): <span id="scoreResult">0%</span></div>
+        <p><strong>Diễn giải:</strong> Phân nhóm nguy cơ <span id="riskCategory" style="font-weight:bold;">...</span></p>
+        <hr style="border-top: 1px dashed #1abc9c; margin: 15px 0;">
+        <p><strong>Chiến lược Khuyến cáo (ESC 2024):</strong></p>
+        <p id="recommendationText" class="recommendation"></p>
+    </div>
+</div>
+
+<script>
+    // Hàm ẩn/hiện tiêu chuẩn đau ngực
+    function toggleSymptomCriteria() {
+        let type = document.getElementById("symptom_type").value;
+        document.getElementById("chest_pain_criteria").style.display = (type === "chest_pain") ? "block" : "none";
+    }
+
+    // MA TRẬN ESC 2024 CHÍNH THỨC (Figure 4)
+    // Cấu trúc: [Điểm triệu chứng 0-1, 2, 3] -> Mỗi mục chứa Array cho nhóm YTNC: [0-1 YTNC, 2-3 YTNC, 4-5 YTNC]
+    const rfclMatrix = {
+        "female": {
+            "0-1": { "30-39": [0,1,2], "40-49": [1,1,3], "50-59": [1,2,5], "60-69": [2,4,7], "70-80": [4,7,11] },
+            "2":   { "30-39": [0,1,3], "40-49": [1,2,5], "50-59": [2,3,7], "60-69": [3,6,11], "70-80": [6,10,16] },
+            "3":   { "30-39": [2,5,10], "40-49": [4,7,12], "50-59": [6,10,15], "60-69": [10,14,19], "70-80": [16,19,23] }
+        },
+        "male": {
+            "0-1": { "30-39": [1,2,5], "40-49": [2,4,8], "50-59": [4,7,12], "60-69": [8,12,17], "70-80": [15,19,24] },
+            "2":   { "30-39": [2,4,8], "40-49": [3,6,12], "50-59": [6,11,17], "60-69": [12,17,25], "70-80": [22,27,34] },
+            "3":   { "30-39": [9,14,22], "40-49": [14,20,27], "50-59": [21,27,33], "60-69": [32,35,39], "70-80": [44,44,45] }
+        }
+    };
+
+    function calculateExactRFCL() {
+        // 1. Xác định tuổi
+        let age = parseInt(document.getElementById("age").value);
+        let ageGroup = "30-39";
+        if (age < 40) ageGroup = "30-39";
+        else if (age < 50) ageGroup = "40-49";
+        else if (age < 60) ageGroup = "50-59";
+        else if (age < 70) ageGroup = "60-69";
+        else ageGroup = "70-80";
+
+        // 2. Xác định giới tính
+        let gender = document.getElementById("gender").value;
+
+        // 3. Tính điểm triệu chứng
+        let symptomType = document.getElementById("symptom_type").value;
+        let symptomScore = 0;
+        
+        if (symptomType === "dyspnoea") {
+            symptomScore = 2; // Khó thở tính mặc định là 2 điểm
+        } else {
+            let symCheckboxes = document.querySelectorAll('.sym-checkbox');
+            symCheckboxes.forEach(function(cb) {
+                if (cb.checked) symptomScore++;
+            });
+        }
+        
+        // Quy đổi Symptom Score sang index của Ma trận (0-1 điểm gộp chung)
+        let symMatrixKey = (symptomScore <= 1) ? "0-1" : symptomScore.toString();
+
+        // 4. Đếm số yếu tố nguy cơ
+        let rfCheckboxes = document.querySelectorAll('.rf-checkbox');
+        let rfCount = 0;
+        rfCheckboxes.forEach(function(cb) {
+            if (cb.checked) rfCount++;
+        });
+
+        // Quy đổi số YTNC sang cột trong Ma trận (0-1 YTNC -> Cột 0, 2-3 YTNC -> Cột 1, 4-5 YTNC -> Cột 2)
+        let rfColIndex = 0;
+        if (rfCount >= 2 && rfCount <= 3) rfColIndex = 1;
+        else if (rfCount >= 4) rfColIndex = 2;
+
+        // 5. TRUY XUẤT KẾT QUẢ TỪ MA TRẬN ESC
+        let finalScore = rfclMatrix[gender][symMatrixKey][ageGroup][rfColIndex];
+
+        // 6. Phân loại và đưa ra Khuyến cáo
+        document.getElementById("scoreResult").innerText = finalScore + "%";
+        let riskCat = "";
+        let recommendation = "";
+        
+        if (finalScore <= 5) {
+            riskCat = "RẤT THẤP (Very Low)";
+            document.getElementById("riskCategory").style.color = "#3498db";
+            recommendation = "Trì hoãn xét nghiệm hình ảnh. Nguy cơ mắc bệnh mạch vành tắc nghẽn cực thấp (≤ 5%). <br>• Tìm nguyên nhân khác gây đau ngực (ví dụ: cơ xương khớp, dạ dày).<br>• Cân nhắc đánh giá thêm điểm vôi hóa mạch vành (CACS) nếu cần tái phân loại nguy cơ.";
+            document.getElementById("recommendationText").style.color = "#27ae60";
+        } 
+        else if (finalScore > 5 && finalScore <= 15) {
+            riskCat = "THẤP (Low)";
+            document.getElementById("riskCategory").style.color = "#2ecc71";
+            recommendation = "Khả năng mắc bệnh thấp (> 5% đến 15%). <br>• Khuyến cáo nhóm IIa: Có thể sử dụng CACS (điểm vôi hóa) hoặc Điện tâm đồ gắng sức để tái phân loại bệnh nhân về nhóm 'Rất thấp' nhằm tránh xét nghiệm chuyên sâu không cần thiết.<br>• Nếu cần chẩn đoán xác định, ưu tiên CCTA (MSCT mạch vành).";
+            document.getElementById("recommendationText").style.color = "#27ae60";
+        }
+        else if (finalScore > 15 && finalScore <= 50) {
+            riskCat = "TRUNG BÌNH (Moderate)";
+            document.getElementById("riskCategory").style.color = "#f1c40f";
+            recommendation = "Khuyến cáo nhóm I cho chẩn đoán hình ảnh không xâm lấn.<br>• Ưu tiên CCTA (MSCT mạch vành) để chẩn đoán tắc nghẽn và đánh giá mảng xơ vữa.<br>• Hoặc sử dụng Test chức năng (Siêu âm tim gắng sức, SPECT, PET) nếu nghi ngờ có sẵn tổn thương vi mạch hoặc vôi hóa nặng.";
+            document.getElementById("recommendationText").style.color = "#f39c12";
+        }
+        else {
+            // Theo ESC 2024, RF-CL bằng bảng sẽ kết thúc ở mốc 45%. Bệnh nhân > 50% hoặc 85% sẽ cần thêm YTNC định tính khác
+            riskCat = "CAO (High / >45%)";
+            document.getElementById("riskCategory").style.color = "#e74c3c";
+            recommendation = "Bệnh nhân thuộc nhóm nguy cơ cao (Cần kết hợp thêm các yếu tố định tính như siêu âm tim, bất thường ECG tĩnh).<br>• Ưu tiên Test chức năng (Functional Imaging) để đánh giá thiếu máu cơ tim.<br>• Nếu lâm sàng rất điển hình và giới hạn gắng sức thấp, cân nhắc Chụp mạch vành xâm lấn (ICA) trực tiếp có sử dụng FFR/iFR.";
+            document.getElementById("recommendationText").style.color = "#c0392b";
+        }
+
+        document.getElementById("riskCategory").innerText = riskCat;
+        document.getElementById("recommendationText").innerHTML = recommendation;
+        
+        // Hiển thị khung kết quả
+        document.getElementById("resultBox").style.display = "block";
+    }
+</script>
+
+</body>
+</html>
