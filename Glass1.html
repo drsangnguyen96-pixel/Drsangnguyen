@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống đánh giá GLASS chi tiết (GVG 2019)</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-color: #333;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #eef2f5;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        h2 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .section-title {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .radio-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--secondary-color);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .radio-item:hover {
+            border-color: var(--primary-color);
+            background-color: #eef5ff;
+        }
+        .radio-item input[type="radio"] {
+            margin-top: 4px;
+            margin-right: 12px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+        .grade-title {
+            font-weight: bold;
+            color: #d35400;
+        }
+        .grade-desc {
+            font-size: 0.95em;
+            color: #555;
+            margin-top: 4px;
+        }
+        .btn-calc {
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        .btn-calc:hover {
+            background-color: #218838;
+        }
+        #result-container {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 6px solid;
+            background-color: #f8f9fa;
+        }
+        .stage-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .guidance-text {
+            font-size: 1.05em;
+        }
+        /* Color coding for stages */
+        .stage-1 { border-color: #28a745; color: #28a745; }
+        .stage-2 { border-color: #ffc107; color: #d39e00; }
+        .stage-3 { border-color: #dc3545; color: #dc3545; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Thang điểm GLASS chi tiết<br><span style="font-size: 0.6em; font-weight: normal; color: #666;">Dành cho bệnh nhân Thiếu máu cục bộ đe dọa chi (CLTI)</span></h2>
+    
+    <p style="font-style: italic; color: #666; text-align: center;">Vui lòng chọn đặc điểm tổn thương trên hình ảnh chụp mạch cho từng phân đoạn.</p>
+
+    <!-- Đoạn Đùi Khoeo -->
+    <div class="section-title">1. Đánh giá đoạn Đùi - Khoeo (Femoropopliteal - FP Grade)</div>
+    <div class="radio-group" id="fp-group">
+        <label class="radio-item">
+            <input type="radio" name="fp_grade" value="0">
+            <div>
+                <div class="grade-title">Grade 0</div>
+                <div class="grade-desc">Hẹp &lt; 50% (Không có tổn thương có ý nghĩa huyết động).</div>
+            </div>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="fp_grade" value="1">
+            <div>
+                <div class="grade-title">Grade 1</div>
+                <div class="grade-desc">Hẹp &lt; 5 cm <strong>HOẶC</strong> Tắc hoàn toàn (CTO) &lt; 5 cm.</div>
+            </div>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="fp_grade" value="2">
+            <div>
+                <div class="grade-title">Grade 2</div>
+                <div class="grade-desc">Hẹp / Tắc dài 5 – 15 cm <strong>HOẶC</strong> Đa tổn thương khu trú (&lt; 5 cm mỗi tổn thương).</div>
+            </div>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="fp_grade" value="3">
+            <div>
+                <div class="grade-title">Grade 3</div>
+                <div class="grade-desc">Hẹp / Tắc kéo dài &gt; 15 cm <strong>HOẶC</strong> Tắc trong stent (In-stent occlusion) dù độ dài bao nhiêu.</div>
+            </div>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="fp_grade" value="4">
+            <div>
+                <div class="grade-title">Grade 4</div>
+                <div class="grade-desc">Tắc toàn bộ đoạn đùi - khoeo <strong>HOẶC</strong> Tắc kéo dài liên quan đến lỗ xuất phát ĐM đùi nông (SFA ostium) hoặc chỗ chia nhánh động mạch khoeo (Popliteal trifurcation).</div>
+            </div>
+        </label>
+    </div>
+
+    <!-- Đoạn Dưới Khoeo -->
+    <div class="section-title">2. Đánh giá đoạn Dưới khoeo / Động mạch đích (Infrapopliteal - IP Grade)</div>
+    <div class="radio-group" id="ip-group">
+        <label class="radio-item">
+            <input type="radio" name="ip_grade" value="0">
+            <div>
+                <div class="grade-title">Grade 0</div>
+                <div class="grade-desc">Hẹp &lt; 50% (Mạch đích thông thoáng).</div>
+            </div>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="ip_grade" value="1">
+            <div>
+                <div class="grade-title">Grade 1</div>
+                <div class="grade-desc">Hẹp khu trú &lt; 3 cm.</div>
+            </div>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="ip_grade" value="2">
+            <div>
+                <div class="grade-title">Grade 2</div>
+                <div class="grade-desc">Hẹp từ 3 – 10 cm <strong>HOẶC</strong> Tắc hoàn toàn (CTO) &lt; 3 cm.</div>
+            </div>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="ip_grade" value="3">
+            <div>
+                <div class="grade-title">Grade 3</div>
+                <div class="grade-desc">Hẹp &gt; 10 cm <strong>HOẶC</strong> Tắc hoàn toàn (CTO) từ 3 – 10 cm <strong>HOẶC</strong> Vôi hóa cực nặng.</div>
+            </div>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="ip_grade" value="4">
+            <div>
+                <div class="grade-title">Grade 4</div>
+                <div class="grade-desc">Tắc hoàn toàn (CTO) &gt; 10 cm <strong>HOẶC</strong> Phá hủy toàn bộ hệ thống mạch dưới khoeo, không có dòng chảy liên tục xuống bàn chân.</div>
+            </div>
+        </label>
+    </div>
+
+    <button class="btn-calc" onclick="calculateGlassStage()">Tính Giai đoạn GLASS</button>
+
+    <!-- Khung hiển thị kết quả -->
+    <div id="result-container">
+        <div id="stage-result" class="stage-title"></div>
+        <div id="guidance-result" class="guidance-text"></div>
+    </div>
+</div>
+
+<script>
+    function calculateGlassStage() {
+        // Lấy giá trị được check
+        const fpRadios = document.getElementsByName('fp_grade');
+        const ipRadios = document.getElementsByName('ip_grade');
+        
+        let fpVal = -1;
+        let ipVal = -1;
+
+        for (let radio of fpRadios) {
+            if (radio.checked) fpVal = parseInt(radio.value);
+        }
+        for (let radio of ipRadios) {
+            if (radio.checked) ipVal = parseInt(radio.value);
+        }
+
+        if (fpVal === -1 || ipVal === -1) {
+            alert("Vui lòng check chọn đầy đủ đặc điểm tổn thương cho cả hai đoạn FP và IP!");
+            return;
+        }
+
+        let stage = "";
+        let stageClass = "";
+        let guidance = "";
+
+        // Ma trận tính Stage của GLASS (GVG 2019)
+        if (fpVal <= 1) {
+            if (ipVal <= 2) stage = "I";
+            else if (ipVal === 3) stage = "II";
+            else if (ipVal === 4) stage = "III";
+        } else if (fpVal === 2) {
+            if (ipVal <= 1) stage = "I";
+            else if (ipVal <= 3) stage = "II";
+            else if (ipVal === 4) stage = "III";
+        } else if (fpVal === 3) {
+            if (ipVal <= 2) stage = "II";
+            else stage = "III";
+        } else if (fpVal === 4) {
+            stage = "III"; // Nếu FP là Grade 4, auto Stage III bất kể IP
+        }
+
+        // Tạo nội dung tư vấn
+        const resultContainer = document.getElementById('result-container');
+        const stageEl = document.getElementById('stage-result');
+        const guidanceEl = document.getElementById('guidance-result');
+
+        // Reset class
+        resultContainer.className = "";
+        stageEl.className = "stage-title";
+
+        if (stage === "I") {
+            resultContainer.classList.add("stage-1");
+            stageEl.classList.add("stage-1");
+            stageEl.innerHTML = "Kết quả: GLASS STAGE I (Độ phức tạp thấp)";
+            guidance = "<strong>Chiến lược tiếp cận:</strong> Ưu tiên <strong>Can thiệp nội mạch (Endovascular first)</strong>. Tổn thương có giải phẫu đơn giản, tiên lượng thành công về mặt kỹ thuật và thông mạch trên 1 năm tốt.";
+        } else if (stage === "II") {
+            resultContainer.classList.add("stage-2");
+            stageEl.classList.add("stage-2");
+            stageEl.innerHTML = "Kết quả: GLASS STAGE II (Độ phức tạp trung bình)";
+            guidance = "<strong>Chiến lược tiếp cận:</strong> Vùng xám (Gray zone). Cần đánh giá thêm <strong>Nguy cơ phẫu thuật (WIfI score, hình thái tĩnh mạch hiển)</strong> để đưa ra quyết định cá thể hóa. Có thể áp dụng phẫu thuật Bypass hoặc Can thiệp nội mạch tùy kinh nghiệm trung tâm.";
+        } else if (stage === "III") {
+            resultContainer.classList.add("stage-3");
+            stageEl.classList.add("stage-3");
+            stageEl.innerHTML = "Kết quả: GLASS STAGE III (Độ phức tạp cao)";
+            guidance = "<strong>Chiến lược tiếp cận:</strong> Ưu tiên <strong>Phẫu thuật bắc cầu (Bypass first)</strong> nếu bệnh nhân có tĩnh mạch hiển tốt (GSV) và đủ điều kiện sức khỏe. Can thiệp nội mạch ở nhóm này có tỷ lệ duy trì thông mạch rất thấp và dễ thất bại kỹ thuật.";
+        }
+
+        guidanceEl.innerHTML = guidance;
+        resultContainer.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
