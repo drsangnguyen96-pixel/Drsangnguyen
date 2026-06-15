@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tiêu chuẩn JTA (Akamizu) - Đánh giá Bão Giáp</title>
+    <style>
+        /* CSS Cơ bản */
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #2c3e50;
+            line-height: 1.5;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        
+        /* Container mở rộng */
+        .container {
+            width: 100%;
+            max-width: 1200px; 
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        h2 {
+            text-align: center;
+            color: #1a5276;
+            margin-top: 0;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        /* Thanh tiến trình */
+        .progress-bg {
+            background-color: #ecf0f1;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #2980b9;
+            width: 16.66%; /* 1/6 steps */
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .step-counter {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        /* Các bước (Step) */
+        .step-container {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .step-container.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .category h3 {
+            font-size: 1.4em;
+            color: #2471a3;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        /* Lưới các lựa chọn */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        input[type="radio"] { display: none; } 
+        
+        .option-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 20px;
+            margin: 0;
+            border: 2px solid #bdc3c7;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #fdfdfd;
+            color: #34495e;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.15em;
+        }
+        .option-label:hover {
+            border-color: #5dade2;
+            background-color: #ebf5fb;
+        }
+        input[type="radio"]:checked + .option-label {
+            background-color: #d4e6f1;
+            border-color: #2980b9;
+            color: #154360;
+            box-shadow: 0 4px 12px rgba(41, 128, 185, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Nút điều hướng */
+        .btn-back {
+            background: none;
+            border: none;
+            color: #7f8c8d;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 20px 0 0 0;
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            transition: color 0.2s;
+        }
+        .btn-back:hover { color: #34495e; }
+
+        /* Hộp kết quả */
+        .result-step { display: none; text-align: center; }
+        .result-box {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 40px 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        /* Thay vì Tổng điểm, JTA dùng Kết luận logic */
+        .interpretation { 
+            font-size: 2.2em; 
+            font-weight: 800; 
+            line-height: 1.3;
+            margin: 10px 0;
+            text-transform: uppercase;
+        }
+        .sub-text {
+            font-size: 1.15em;
+            color: #ecf0f1;
+            margin-top: 15px;
+            font-style: italic;
+            font-weight: 400;
+            padding: 0 10%;
+        }
+        
+        /* Nhóm nút kết quả */
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        .btn {
+            flex: 1;
+            max-width: 300px;
+            padding: 18px;
+            font-size: 1.1em;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            color: white;
+            transition: all 0.2s;
+        }
+        .btn-save { background-color: #27ae60; }
+        .btn-save:hover { background-color: #2ecc71; }
+        .btn-restart { background-color: #7f8c8d; }
+        .btn-restart:hover { background-color: #95a5a6; }
+        .btn:active { transform: scale(0.98); }
+
+        /* Responsive Mobile */
+        @media screen and (max-width: 600px) {
+            body { padding: 10px; align-items: center; }
+            .container { padding: 25px 15px; }
+            h2 { font-size: 1.4em; margin-bottom: 20px; }
+            .category h3 { font-size: 1.2em; }
+            .option-label { padding: 15px; font-size: 1.05em; }
+            .interpretation { font-size: 1.6em; }
+            .sub-text { padding: 0 5%; font-size: 1.05em; }
+            .btn-group { flex-direction: column; gap: 12px; align-items: center; }
+            .btn { max-width: 100%; width: 100%; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Tiêu chuẩn chẩn đoán Bão giáp JTA (Akamizu)</h2>
+    
+    <div id="wizardHeader">
+        <div class="step-counter" id="stepCounter">Bước 1 / 6</div>
+        <div class="progress-bg">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <form id="jtaForm">
+        <div class="step-container active" data-step="0">
+            <div class="category">
+                <h3>1. Bằng chứng nhiễm độc giáp (Tiêu chuẩn bắt buộc)</h3>
+                <div class="options-grid">
+                    <input type="radio" id="ft1" name="ft" value="1"><label for="ft1" class="option-label">CÓ (Tăng FT3 hoặc FT4)</label>
+                    <input type="radio" id="ft2" name="ft" value="2"><label for="ft2" class="option-label">Đang chờ / Chưa có kết quả XN</label>
+                    <input type="radio" id="ft0" name="ft" value="0"><label for="ft0" class="option-label">KHÔNG (FT3, FT4 bình thường / giảm)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="step-container" data-step="1">
+            <div class="category">
+                <h3>2. Rối loạn hệ thần kinh trung ương (CNS)</h3>
+                <div class="options-grid">
+                    <input type="radio" id="cns0" name="cns" value="0"><label for="cns0" class="option-label">KHÔNG CÓ</label>
+                    <input type="radio" id="cns1" name="cns" value="1"><label for="cns1" class="option-label">CÓ (Kích động, sảng, loạn thần, ngủ lịm, hoặc hôn mê GCS ≤ 14)</label>
+                </div>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Trở lại bước trước</button>
+        </div>
+
+        <div class="step-container" data-step="2">
+            <div class="category">
+                <h3>3. Rối loạn điều hòa thân nhiệt (Sốt)</h3>
+                <div class="options-grid">
+                    <input type="radio" id="fever0" name="fever" value="0"><label for="fever0" class="option-label">Nhiệt độ < 38°C</label>
+                    <input type="radio" id="fever1" name="fever" value="1"><label for="fever1" class="option-label">Nhiệt độ ≥ 38°C</label>
+                </div>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Trở lại bước trước</button>
+        </div>
+
+        <div class="step-container" data-step="3">
+            <div class="category">
+                <h3>4. Rối loạn nhịp tim (Tachycardia)</h3>
+                <div class="options-grid">
+                    <input type="radio" id="tachy0" name="tachy" value="0"><label for="tachy0" class="option-label">Nhịp tim < 130 lần/phút</label>
+                    <input type="radio" id="tachy1" name="tachy" value="1"><label for="tachy1" class="option-label">Nhịp tim ≥ 130 lần/phút (kể cả rung nhĩ)</label>
+                </div>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Trở lại bước trước</button>
+        </div>
+
+        <div class="step-container" data-step="4">
+            <div class="category">
+                <h3>5. Suy tim (Heart Failure)</h3>
+                <div class="options-grid">
+                    <input type="radio" id="chf0" name="chf" value="0"><label for="chf0" class="option-label">KHÔNG CÓ</label>
+                    <input type="radio" id="chf1" name="chf" value="1"><label for="chf1" class="option-label">CÓ (Phù phổi, rales ẩm > 1/2 phổi, sốc tim, NYHA IV hoặc Killip ≥ III)</label>
+                </div>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Trở lại bước trước</button>
+        </div>
+
+        <div class="step-container" data-step="5">
+            <div class="category">
+                <h3>6. Rối loạn Tiêu hóa - Gan (GI/Hepatic)</h3>
+                <div class="options-grid">
+                    <input type="radio" id="gi0" name="gi" value="0"><label for="gi0" class="option-label">KHÔNG CÓ</label>
+                    <input type="radio" id="gi1" name="gi" value="1"><label for="gi1" class="option-label">CÓ (Buồn nôn, nôn, tiêu chảy, hoặc Bilirubin ≥ 3.0 mg/dL)</label>
+                </div>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Trở lại bước trước</button>
+        </div>
+    </form>
+
+    <div class="result-step" id="resultStep">
+        <h3 style="color: #1a5276; margin: 0 0 10px 0; font-size: 1.6em;">KẾT QUẢ ĐÁNH GIÁ (JTA)</h3>
+        <div class="result-box">
+            <div style="font-size: 1.1em; color: #bdc3c7; text-transform: uppercase;">Phân loại mức độ:</div>
+            <div class="interpretation" id="resultText">Nghi ngờ bão giáp</div>
+            <div class="sub-text" id="subText">Biện luận lâm sàng: ...</div>
+        </div>
+        
+        <div class="btn-group">
+            <button type="button" class="btn btn-save" id="btnCopy" onclick="saveToClipboard()">📋 SAO CHÉP VÀO BỆNH ÁN</button>
+            <button type="button" class="btn btn-restart" onclick="restartForm()">🔄 ĐÁNH GIÁ CA MỚI</button>
+        </div>
+        <button type="button" class="btn-back" onclick="prevStep()" style="margin-top: 30px;">← Xem lại câu trả lời</button>
+    </div>
+
+</div>
+
+<script>
+    let currentStep = 0;
+    const totalSteps = 6;
+    
+    let currentInterpretation = "";
+    let currentSubText = "";
+
+    const steps = document.querySelectorAll('.step-container');
+    const stepCounter = document.getElementById('stepCounter');
+    const progressBar = document.getElementById('progressBar');
+    const resultStep = document.getElementById('resultStep');
+    const wizardHeader = document.getElementById('wizardHeader');
+    const form = document.getElementById('jtaForm');
+    const btnCopy = document.getElementById('btnCopy');
+
+    // Tự động chuyển bước
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            setTimeout(() => { nextStep(); }, 250);
+        });
+    });
+
+    function showStep(stepIndex) {
+        steps.forEach((step, index) => {
+            step.classList.remove('active');
+            if (index === stepIndex) step.classList.add('active');
+        });
+
+        if (stepIndex >= totalSteps) {
+            wizardHeader.style.display = 'none';
+            form.style.display = 'none';
+            resultStep.style.display = 'block';
+            calculateResult();
+            btnCopy.innerText = "📋 SAO CHÉP VÀO BỆNH ÁN"; 
+        } else {
+            wizardHeader.style.display = 'block';
+            form.style.display = 'block';
+            resultStep.style.display = 'none';
+            
+            stepCounter.innerText = `Bước ${stepIndex + 1} / ${totalSteps}`;
+            progressBar.style.width = `${((stepIndex + 1) / totalSteps) * 100}%`;
+        }
+    }
+
+    function nextStep() {
+        if (currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 0) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    }
+
+    function calculateResult() {
+        // Thu thập các giá trị radio
+        const ftNode = document.querySelector(`input[name="ft"]:checked`);
+        const cnsNode = document.querySelector(`input[name="cns"]:checked`);
+        if (!ftNode || !cnsNode) return; // Bảo vệ lỗi
+
+        let ft = parseInt(ftNode.value);
+        let cns = parseInt(cnsNode.value);
+        
+        let otherSum = 0;
+        ['fever', 'tachy', 'chf', 'gi'].forEach(cat => {
+            let sel = document.querySelector(`input[name="${cat}"]:checked`);
+            if(sel) otherSum += parseInt(sel.value);
+        });
+
+        // Áp dụng thuật toán của JTA
+        let meetsTS1 = (cns === 1 && otherSum >= 1) || (cns === 0 && otherSum >= 3);
+        let meetsTS2 = (cns === 0 && otherSum === 2);
+
+        const resultText = document.getElementById('resultText');
+        const subText = document.getElementById('subText');
+
+        if (ft === 0) {
+            currentInterpretation = "KHÔNG ĐỦ TIÊU CHUẨN";
+            currentSubText = "Loại trừ bão giáp do không có bằng chứng nhiễm độc giáp (FT3/FT4 bình thường hoặc giảm).";
+            resultText.style.color = "#95a5a6"; // Xám
+        } else if (ft === 1) { // Tăng FT3/FT4
+            if (meetsTS1) {
+                currentInterpretation = "BÃO GIÁP CHẮC CHẮN (TS1)";
+                currentSubText = "Thỏa mãn: Nhiễm độc giáp + " + (cns === 1 ? "Rối loạn thần kinh trung ương + ≥ 1 triệu chứng khác." : "≥ 3 triệu chứng khác (Không có triệu chứng thần kinh).");
+                resultText.style.color = "#e74c3c"; // Đỏ
+            } else if (meetsTS2) {
+                currentInterpretation = "NGHI NGỜ BÃO GIÁP (TS2)";
+                currentSubText = "Thỏa mãn: Nhiễm độc giáp + 2 triệu chứng (Không có triệu chứng thần kinh). Yêu cầu theo dõi sát.";
+                resultText.style.color = "#f39c12"; // Cam
+            } else {
+                currentInterpretation = "KHÔNG ĐỦ TIÊU CHUẨN";
+                currentSubText = "Chưa đủ tổ hợp triệu chứng lâm sàng để chẩn đoán bão giáp theo tiêu chuẩn JTA.";
+                resultText.style.color = "#2ecc71"; // Xanh
+            }
+        } else if (ft === 2) { // Chưa có kết quả XN
+            if (meetsTS1) {
+                currentInterpretation = "NGHI NGỜ BÃO GIÁP (TS2)";
+                currentSubText = "Bệnh nhân thỏa mãn các triệu chứng lâm sàng của Bão giáp chắc chắn (TS1), nhưng chưa có kết quả FT3/FT4. Khuyến cáo xử trí như bão giáp trong lúc chờ xét nghiệm.";
+                resultText.style.color = "#e67e22"; // Cam đậm
+            } else {
+                currentInterpretation = "KHÔNG ĐỦ TIÊU CHUẨN";
+                currentSubText = "Bệnh nhân không có đủ tổ hợp triệu chứng lâm sàng và cũng chưa có kết quả xét nghiệm hormone tuyến giáp.";
+                resultText.style.color = "#2ecc71"; // Xanh
+            }
+        }
+
+        resultText.innerText = currentInterpretation;
+        subText.innerText = "Biện luận lâm sàng: " + currentSubText;
+    }
+
+    function saveToClipboard() {
+        const textToCopy = `Tiêu chuẩn JTA (Akamizu): ${currentInterpretation}. Biện luận: ${currentSubText}`;
+        
+        navigator.clipboard.writeText(textToCopy).then(function() {
+            btnCopy.innerText = "✓ ĐÃ SAO CHÉP";
+            setTimeout(() => { btnCopy.innerText = "📋 SAO CHÉP VÀO BỆNH ÁN"; }, 2000);
+        }).catch(function(err) {
+            console.error('Lỗi sao chép', err);
+        });
+    }
+
+    function restartForm() {
+        form.reset(); 
+        currentStep = 0;
+        showStep(currentStep);
+    }
+</script>
+
+</body>
+</html>
