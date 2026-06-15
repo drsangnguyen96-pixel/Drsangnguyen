@@ -23,7 +23,7 @@
         /* Container mở rộng tối đa */
         .container {
             width: 100%;
-            max-width: 1200px; /* Rộng vừa vặn với màn hình lớn */
+            max-width: 1200px;
             background: #fff;
             padding: 40px;
             border-radius: 12px;
@@ -80,7 +80,7 @@
             font-weight: 600;
         }
         
-        /* Lưới các lựa chọn - Tự động dàn hàng dựa trên chiều rộng màn hình */
+        /* Lưới các lựa chọn */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -155,6 +155,37 @@
         }
         .interpretation { font-size: 1.6em; font-weight: 700; }
         
+        /* Box hướng xử trí */
+        #managementBox {
+            margin-top: 25px; 
+            padding-top: 20px; 
+            border-top: 1px solid rgba(255,255,255,0.2); 
+            text-align: left; 
+            display: none;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        #managementBox strong {
+            color: #f1c40f;
+            font-size: 1.2em;
+            display: block;
+            margin-bottom: 10px;
+        }
+        #managementText {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #ecf0f1;
+        }
+        #managementText ul {
+            margin-top: 5px;
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+        #managementText li {
+            margin-bottom: 8px;
+        }
+
         /* Nhóm nút kết quả */
         .btn-group {
             display: flex;
@@ -181,23 +212,18 @@
         .btn-restart:hover { background-color: #95a5a6; }
         .btn:active { transform: scale(0.98); }
 
-        /* ==================================================
-           TỐI ƯU GIAO DIỆN ĐIỆN THOẠI (MOBILE)
-           ================================================== */
+        /* Mobile */
         @media screen and (max-width: 600px) {
             body { padding: 10px; align-items: center; }
             .container { padding: 25px 15px; }
             h2 { font-size: 1.5em; margin-bottom: 20px; }
             .category h3 { font-size: 1.2em; }
-            .option-label { 
-                padding: 15px; 
-                font-size: 1.05em; 
-            }
+            .option-label { padding: 15px; font-size: 1.05em; }
             .score-display { font-size: 4em; }
             .interpretation { font-size: 1.3em; }
-            
             .btn-group { flex-direction: column; gap: 12px; align-items: center; }
             .btn { max-width: 100%; width: 100%; padding: 16px; }
+            #managementText { font-size: 1em; }
         }
     </style>
 </head>
@@ -311,7 +337,12 @@
             <div style="font-size: 1.3em; color: #bdc3c7;">Tổng điểm BWPS:</div>
             <span class="score-display" id="totalScore">0</span>
             <div class="interpretation" id="resultText">Ít có khả năng bão giáp</div>
-        </div>
+            
+            <div id="managementBox">
+                <strong>Hướng xử trí ban đầu:</strong>
+                <div id="managementText"></div>
+            </div>
+            </div>
         
         <div class="btn-group">
             <button type="button" class="btn btn-save" id="btnCopy" onclick="saveToClipboard()">📋 SAO CHÉP KẾT QUẢ</button>
@@ -336,7 +367,6 @@
     const form = document.getElementById('bwpsForm');
     const btnCopy = document.getElementById('btnCopy');
 
-    // Tự động chuyển bước
     document.querySelectorAll('input[type="radio"]').forEach(radio => {
         radio.addEventListener('change', function() {
             setTimeout(() => { nextStep(); }, 250);
@@ -354,7 +384,7 @@
             form.style.display = 'none';
             resultStep.style.display = 'block';
             calculateScore();
-            btnCopy.innerText = "📋 SAO CHÉP KẾT QUẢ"; // Reset nút copy
+            btnCopy.innerText = "📋 SAO CHÉP KẾT QUẢ"; 
         } else {
             wizardHeader.style.display = 'block';
             form.style.display = 'block';
@@ -390,28 +420,40 @@
 
         const scoreDisplay = document.getElementById('totalScore');
         const resultText = document.getElementById('resultText');
+        const managementBox = document.getElementById('managementBox');
+        const managementText = document.getElementById('managementText');
 
         scoreDisplay.innerText = currentScore;
+        managementBox.style.display = "block"; // Hiển thị khung xử trí
 
+        // Phân loại và gán hướng xử trí tương ứng
         if (currentScore < 25) {
             currentInterpretation = "Ít có khả năng bão giáp";
             resultText.style.color = "#2ecc71"; // Xanh
+            managementText.innerHTML = "Tích cực tìm kiếm và điều trị các nguyên nhân khác gây ra bệnh cảnh lâm sàng hiện tại.";
         } else if (currentScore >= 25 && currentScore <= 44) {
             currentInterpretation = "Đe dọa bão giáp";
             resultText.style.color = "#f39c12"; // Cam
+            managementText.innerHTML = "Nhập viện và theo dõi sát. Cân nhắc bắt đầu điều trị chuyên biệt (chẹn beta, thuốc kháng giáp) tùy thuộc vào tình trạng diễn tiến lâm sàng.";
         } else {
             currentInterpretation = "Nhiều khả năng bão giáp";
             resultText.style.color = "#e74c3c"; // Đỏ
+            managementText.innerHTML = `
+                <ul>
+                    <li><b>Kháng giáp:</b> PTU (ưu tiên) hoặc Methimazole.</li>
+                    <li><b>Kiểm soát nhịp/giao cảm:</b> Propranolol (IV hoặc PO).</li>
+                    <li><b>Ức chế giải phóng hormone:</b> Dung dịch Iod vô cơ (Lugol/SSKI) - <i>Chỉ dùng sau thuốc kháng giáp ít nhất 1 giờ</i>.</li>
+                    <li><b>Corticosteroid:</b> Hydrocortisone hoặc Dexamethasone.</li>
+                    <li><b>Hỗ trợ:</b> Bù dịch, kiểm soát thân nhiệt (<b>Tránh dùng Aspirin</b> do làm tăng hormone tự do), oxy và điều trị yếu tố khởi phát.</li>
+                </ul>`;
         }
         resultText.innerText = currentInterpretation;
     }
 
     function saveToClipboard() {
-        const textToCopy = `Thang điểm BWPS: ${currentScore} điểm. Kết luận: ${currentInterpretation}.`;
+        const textToCopy = `Thang điểm BWPS: ${currentScore} điểm. Phân loại: ${currentInterpretation}.`;
         
-        // Sao chép im lặng (không có thông báo popup)
         navigator.clipboard.writeText(textToCopy).then(function() {
-            // Đổi chữ trên nút để bác sĩ biết là đã click thành công, sau 2s đổi lại
             btnCopy.innerText = "✓ ĐÃ SAO CHÉP";
             setTimeout(() => { btnCopy.innerText = "📋 SAO CHÉP KẾT QUẢ"; }, 2000);
         }).catch(function(err) {
