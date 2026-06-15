@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thang điểm BWPS - Đa nền tảng</title>
+    <style>
+        /* CSS Cơ bản */
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f5;
+            color: #333;
+            line-height: 1.5;
+            padding: 20px 15px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Thay vì center để tránh lỗi khuất nội dung trên mobile */
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 650px; /* Rộng rãi hơn cho Web */
+            background: #fff;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        h2 {
+            text-align: center;
+            color: #1565c0;
+            margin-top: 0;
+            font-size: 1.6em;
+            margin-bottom: 25px;
+        }
+        
+        /* Thanh tiến trình */
+        .progress-bg {
+            background-color: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #1976d2;
+            width: 14.28%;
+            transition: width 0.4s ease;
+        }
+        .step-counter {
+            text-align: center;
+            color: #78909c;
+            font-size: 0.95em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        /* Các bước (Step) */
+        .step-container {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+        .step-container.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .category h3 {
+            font-size: 1.25em;
+            color: #0d47a1;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        /* Thiết kế dạng ô (Card) */
+        input[type="radio"] { display: none; }
+        
+        .option-label {
+            display: block;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #fafafa;
+            color: #424242;
+            font-weight: 500;
+            text-align: center;
+            font-size: 1.05em;
+        }
+        .option-label:hover {
+            border-color: #90caf9;
+            background-color: #f5f9ff;
+        }
+        input[type="radio"]:checked + .option-label {
+            background-color: #e3f2fd;
+            border-color: #1976d2;
+            color: #0d47a1;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(25, 118, 210, 0.2);
+            transform: scale(0.98);
+        }
+
+        /* Nút điều hướng */
+        .btn-back {
+            background: none;
+            border: none;
+            color: #1976d2;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 15px 0;
+            display: inline-block;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .btn-back:hover { text-decoration: underline; }
+
+        /* Hộp kết quả */
+        .result-step { display: none; text-align: center; }
+        .result-box {
+            background: #263238;
+            color: #fff;
+            padding: 30px 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .score-display {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #ffca28;
+            display: block;
+            margin: 10px 0;
+            line-height: 1;
+        }
+        .interpretation { font-size: 1.4em; font-weight: bold; }
+        
+        /* Nhóm nút kết quả */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .btn {
+            flex: 1;
+            padding: 16px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            transition: 0.2s;
+            text-align: center;
+        }
+        .btn-save { background-color: #2e7d32; }
+        .btn-restart { background-color: #546e7a; }
+        .btn:active { transform: scale(0.98); }
+
+        /* Toast thông báo */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 15px;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .toast.show { visibility: visible; opacity: 1; }
+
+        /* ==================================================
+           RESPONSIVE DESIGN CHO ĐIỆN THOẠI (MOBILE)
+           ================================================== */
+        @media screen and (max-width: 600px) {
+            body { padding: 10px; align-items: center; } /* Căn giữa lại trên mobile nếu form ngắn */
+            .container { padding: 20px 15px; border-radius: 12px; }
+            h2 { font-size: 1.3em; margin-bottom: 15px; }
+            .category h3 { font-size: 1.1em; }
+            .option-label { 
+                padding: 14px 10px; 
+                font-size: 1em; 
+                margin-bottom: 10px; 
+            }
+            .score-display { font-size: 2.8em; }
+            .interpretation { font-size: 1.2em; }
+            
+            /* Xếp dọc 2 nút ở màn hình kết quả */
+            .btn-group { flex-direction: column; gap: 10px; }
+            .btn { padding: 14px; font-size: 1.05em; }
+            .btn-back { padding: 10px 0; margin-top: 5px;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Thang điểm BWPS</h2>
+    
+    <div id="wizardHeader">
+        <div class="step-counter" id="stepCounter">Bước 1 / 7</div>
+        <div class="progress-bg">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <form id="bwpsForm">
+        <div class="step-container active" data-step="0">
+            <div class="category">
+                <h3>1. Nhiệt độ cơ thể (°C)</h3>
+                <input type="radio" id="t1" name="temp" value="0"><label for="t1" class="option-label">≤ 37.1 (0 điểm)</label>
+                <input type="radio" id="t2" name="temp" value="5"><label for="t2" class="option-label">37.2 – 37.7 (5 điểm)</label>
+                <input type="radio" id="t3" name="temp" value="10"><label for="t3" class="option-label">37.8 – 38.2 (10 điểm)</label>
+                <input type="radio" id="t4" name="temp" value="15"><label for="t4" class="option-label">38.3 – 38.8 (15 điểm)</label>
+                <input type="radio" id="t5" name="temp" value="20"><label for="t5" class="option-label">38.9 – 39.2 (20 điểm)</label>
+                <input type="radio" id="t6" name="temp" value="25"><label for="t6" class="option-label">39.3 – 39.9 (25 điểm)</label>
+                <input type="radio" id="t7" name="temp" value="30"><label for="t7" class="option-label">≥ 40.0 (30 điểm)</label>
+            </div>
+        </div>
+
+        <div class="step-container" data-step="1">
+            <div class="category">
+                <h3>2. Rối loạn hệ thần kinh trung ương</h3>
+                <input type="radio" id="c1" name="cns" value="0"><label for="c1" class="option-label">Không có (0 điểm)</label>
+                <input type="radio" id="c2" name="cns" value="10"><label for="c2" class="option-label">Nhẹ: Kích động (10 điểm)</label>
+                <input type="radio" id="c3" name="cns" value="20"><label for="c3" class="option-label">Vừa: Sảng, loạn thần, ngủ lịm (20 điểm)</label>
+                <input type="radio" id="c4" name="cns" value="30"><label for="c4" class="option-label">Nặng: Co giật, hôn mê (30 điểm)</label>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Quay lại</button>
+        </div>
+
+        <div class="step-container" data-step="2">
+            <div class="category">
+                <h3>3. Rối loạn tiêu hóa - gan</h3>
+                <input type="radio" id="g1" name="gi" value="0"><label for="g1" class="option-label">Không có (0 điểm)</label>
+                <input type="radio" id="g2" name="gi" value="10"><label for="g2" class="option-label">Vừa: Tiêu chảy, buồn nôn, đau bụng (10 điểm)</label>
+                <input type="radio" id="g3" name="gi" value="20"><label for="g3" class="option-label">Nặng: Vàng da không rõ nguyên nhân (20 điểm)</label>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Quay lại</button>
+        </div>
+
+        <div class="step-container" data-step="3">
+            <div class="category">
+                <h3>4. Nhịp tim (lần/phút)</h3>
+                <input type="radio" id="h1" name="hr" value="0"><label for="h1" class="option-label">< 90 (0 điểm)</label>
+                <input type="radio" id="h2" name="hr" value="5"><label for="h2" class="option-label">90 – 109 (5 điểm)</label>
+                <input type="radio" id="h3" name="hr" value="10"><label for="h3" class="option-label">110 – 119 (10 điểm)</label>
+                <input type="radio" id="h4" name="hr" value="15"><label for="h4" class="option-label">120 – 139 (15 điểm)</label>
+                <input type="radio" id="h5" name="hr" value="20"><label for="h5" class="option-label">140 – 149 (20 điểm)</label>
+                <input type="radio" id="h6" name="hr" value="25"><label for="h6" class="option-label">≥ 150 (25 điểm)</label>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Quay lại</button>
+        </div>
+
+        <div class="step-container" data-step="4">
+            <div class="category">
+                <h3>5. Suy tim</h3>
+                <input type="radio" id="hf1" name="hf" value="0"><label for="hf1" class="option-label">Không có (0 điểm)</label>
+                <input type="radio" id="hf2" name="hf" value="5"><label for="hf2" class="option-label">Nhẹ: Phù chân (5 điểm)</label>
+                <input type="radio" id="hf3" name="hf" value="10"><label for="hf3" class="option-label">Vừa: Ran ở đáy phổi (10 điểm)</label>
+                <input type="radio" id="hf4" name="hf" value="15"><label for="hf4" class="option-label">Nặng: Phù phổi cấp (15 điểm)</label>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Quay lại</button>
+        </div>
+
+        <div class="step-container" data-step="5">
+            <div class="category">
+                <h3>6. Rung nhĩ</h3>
+                <input type="radio" id="af1" name="af" value="0"><label for="af1" class="option-label">Không có (0 điểm)</label>
+                <input type="radio" id="af2" name="af" value="10"><label for="af2" class="option-label">Có (10 điểm)</label>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Quay lại</button>
+        </div>
+
+        <div class="step-container" data-step="6">
+            <div class="category">
+                <h3>7. Yếu tố khởi phát (Precipitant)</h3>
+                <input type="radio" id="p1" name="precip" value="0"><label for="p1" class="option-label">Không có (0 điểm)</label>
+                <input type="radio" id="p2" name="precip" value="10"><label for="p2" class="option-label">Có (10 điểm)</label>
+            </div>
+            <button type="button" class="btn-back" onclick="prevStep()">← Quay lại</button>
+        </div>
+    </form>
+
+    <div class="result-step" id="resultStep">
+        <h3 style="color: #1565c0; margin: 0 0 10px 0;">HOÀN THÀNH ĐÁNH GIÁ</h3>
+        <div class="result-box">
+            <div style="font-size: 1.1em;">Tổng điểm BWPS:</div>
+            <span class="score-display" id="totalScore">0</span>
+            <div class="interpretation" id="resultText">Ít có khả năng bão giáp</div>
+        </div>
+        
+        <div class="btn-group">
+            <button type="button" class="btn btn-save" onclick="saveToClipboard()">📋 LƯU & COPY</button>
+            <button type="button" class="btn btn-restart" onclick="restartForm()">🔄 LÀM LẠI</button>
+        </div>
+        <button type="button" class="btn-back" onclick="prevStep()" style="margin-top: 20px;">← Xem lại câu trả lời</button>
+    </div>
+
+</div>
+
+<div id="toast">Đã copy! Bác sĩ có thể dán (Ctrl+V) vào Bệnh án.</div>
+
+<script>
+    let currentStep = 0;
+    const totalSteps = 7;
+    let currentScore = 0;
+    let currentInterpretation = "";
+
+    const steps = document.querySelectorAll('.step-container');
+    const stepCounter = document.getElementById('stepCounter');
+    const progressBar = document.getElementById('progressBar');
+    const resultStep = document.getElementById('resultStep');
+    const wizardHeader = document.getElementById('wizardHeader');
+    const form = document.getElementById('bwpsForm');
+
+    // Chuyển bước sau khi chọn
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            setTimeout(() => { nextStep(); }, 350);
+        });
+    });
+
+    function showStep(stepIndex) {
+        steps.forEach((step, index) => {
+            step.classList.remove('active');
+            if (index === stepIndex) step.classList.add('active');
+        });
+
+        if (stepIndex >= totalSteps) {
+            wizardHeader.style.display = 'none';
+            form.style.display = 'none';
+            resultStep.style.display = 'block';
+            calculateScore();
+        } else {
+            wizardHeader.style.display = 'block';
+            form.style.display = 'block';
+            resultStep.style.display = 'none';
+            
+            stepCounter.innerText = `Bước ${stepIndex + 1} / ${totalSteps}`;
+            progressBar.style.width = `${((stepIndex + 1) / totalSteps) * 100}%`;
+        }
+    }
+
+    function nextStep() {
+        if (currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 0) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    }
+
+    function calculateScore() {
+        currentScore = 0;
+        const categories = ['temp', 'cns', 'gi', 'hr', 'hf', 'af', 'precip'];
+        
+        categories.forEach(cat => {
+            const selected = document.querySelector(`input[name="${cat}"]:checked`);
+            if (selected) currentScore += parseInt(selected.value);
+        });
+
+        const scoreDisplay = document.getElementById('totalScore');
+        const resultText = document.getElementById('resultText');
+
+        scoreDisplay.innerText = currentScore;
+
+        if (currentScore < 25) {
+            currentInterpretation = "Ít có khả năng bão giáp";
+            resultText.style.color = "#4caf50"; 
+        } else if (currentScore >= 25 && currentScore <= 44) {
+            currentInterpretation = "Đe dọa bão giáp";
+            resultText.style.color = "#ffb300"; 
+        } else {
+            currentInterpretation = "Nhiều khả năng bão giáp";
+            resultText.style.color = "#e53935"; 
+        }
+        resultText.innerText = currentInterpretation;
+    }
+
+    function saveToClipboard() {
+        const textToCopy = `Thang điểm BWPS: ${currentScore} điểm. Kết luận: ${currentInterpretation}.`;
+        
+        navigator.clipboard.writeText(textToCopy).then(function() {
+            const toast = document.getElementById("toast");
+            toast.className = "toast show";
+            setTimeout(function(){ toast.className = toast.className.replace("toast show", "toast"); }, 3000);
+        }).catch(function() {
+            alert('Trình duyệt không hỗ trợ copy tự động.');
+        });
+    }
+
+    function restartForm() {
+        form.reset(); 
+        currentStep = 0;
+        showStep(currentStep);
+    }
+</script>
+
+</body>
+</html>
