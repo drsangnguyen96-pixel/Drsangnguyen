@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>STS Ultimate Registry - Thong Nhat Hospital</title>
+    <style>
+        /* ================= GIAO DIỆN MÀN HÌNH ================= */
+        :root {
+            --primary: #1e40af; --primary-hover: #1e3a8a; --secondary: #0f172a;
+            --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --border: #cbd5e1;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; justify-content: center; }
+        .app { max-width: 950px; width: 100%; background: var(--card); border-radius: 10px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
+        
+        .header { background: var(--card); padding: 20px; border-bottom: 1px solid var(--border); text-align: center; }
+        .header h2 { margin: 0 0 5px 0; font-size: 1.4rem; color: var(--secondary); }
+        .header p { margin: 0; color: #64748b; font-size: 0.9rem; }
+
+        .tabs { display: flex; background: #f8fafc; border-bottom: 1px solid var(--border); overflow-x: auto; scroll-behavior: smooth; }
+        .tabs::-webkit-scrollbar { height: 0px; }
+        .tab-btn { flex: 1; white-space: nowrap; padding: 12px; background: none; border: none; border-bottom: 3px solid transparent; font-weight: 600; color: #64748b; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--card); }
+
+        .tab-content { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .title { font-size: 1.05rem; font-weight: 700; color: var(--primary); margin: 15px 0 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
+        .title:first-child { margin-top: 0; }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+        .fg { margin-bottom: 10px; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; color: #334155; }
+        input[type="number"], input[type="text"], select { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 0.95rem; background: #fff; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(30,64,175,0.2); }
+
+        .chk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+        .chk-item { display: flex; align-items: flex-start; background: #f8fafc; padding: 8px; border-radius: 5px; border: 1px solid var(--border); }
+        .chk-item input { margin-top: 2px; margin-right: 8px; accent-color: var(--primary); }
+        .chk-item label { margin-bottom: 0; font-weight: 500; font-size: 0.85rem; cursor: pointer; flex: 1; }
+
+        .footer { padding: 15px 20px; background: #f8fafc; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+        .btn { padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 0.9rem; }
+        .btn-blue { background: var(--primary); color: white; }
+        .btn-dark { background: var(--secondary); color: white; }
+        .btn-out { background: white; border: 1px solid var(--border); color: var(--text); }
+
+        @media (max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } .btn { width: 100%; margin-bottom: 5px; } .footer { flex-direction: column; } }
+
+        /* ================= CSS IN PDF (MẬT ĐỘ CAO - A4 1 TRANG) ================= */
+        .print-only { display: none; }
+        @media print {
+            .app { display: none !important; }
+            body, html { background: white !important; margin: 0; padding: 0; font-family: "Times New Roman", Times, serif; font-size: 10pt; color: #000; }
+            @page { size: A4; margin: 10mm; }
+            .print-only { display: block; }
+            
+            .p-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px; }
+            .p-title { text-align: center; font-size: 14pt; font-weight: bold; text-transform: uppercase; margin: 10px 0; }
+            
+            .p-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 9.5pt; }
+            .p-table th, .p-table td { border: 1px solid #000; padding: 3px 6px; text-align: left; vertical-align: top; }
+            .p-table th { background: #e5e7eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; width: 15%; }
+            .p-table td { width: 35%; }
+
+            .p-chk-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; font-size: 9pt; }
+            .p-chk-item { display: flex; align-items: center; }
+            .box { display: inline-block; width: 10px; height: 10px; border: 1px solid #000; margin-right: 4px; }
+            .box-on { background: #000; -webkit-print-color-adjust: exact; }
+
+            .p-sigs { display: flex; justify-content: space-between; margin-top: 20px; text-align: center; font-size: 10pt; }
+            .sig-box { width: 30%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <div class="header">
+        <h2>STS v4.2x Data Collection</h2>
+        <p>Bệnh viện Đa khoa Thống Nhất - Khoa Ngoại Lồng Ngực</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 't1')">1. Hành chính & Phẫu thuật</button>
+        <button class="tab-btn" onclick="openTab(event, 't2')">2. Bệnh nền</button>
+        <button class="tab-btn" onclick="openTab(event, 't3')">3. Cận lâm sàng & Thuốc</button>
+        <button class="tab-btn" onclick="openTab(event, 't4')">4. Mạch vành & Giải phẫu</button>
+        <button class="tab-btn" onclick="openTab(event, 't5')">5. Hồi sức & Tim mạch</button>
+    </div>
+
+    <form id="stsForm">
+        <div id="t1" class="tab-content active">
+            <div class="title">Bệnh nhân</div>
+            <div class="grid-4">
+                <div class="fg"><label>Mã BA</label><input type="text" id="pid"></div>
+                <div class="fg"><label>Tuổi</label><input type="number" id="age"></div>
+                <div class="fg"><label>Giới tính</label><select id="gender"><option value="Nam">Nam</option><option value="Nữ">Nữ</option></select></div>
+                <div class="fg"><label>Chủng tộc</label><select id="race"><option value="Asian">Châu Á</option><option value="White">Da trắng</option></select></div>
+            </div>
+            <div class="grid-3">
+                <div class="fg"><label>Chiều cao (cm)</label><input type="number" id="height"></div>
+                <div class="fg"><label>Cân nặng (kg)</label><input type="number" id="weight"></div>
+                <div class="fg"><label>Hút thuốc</label><select id="smoking"><option value="Chưa từng">Chưa từng</option><option value="Đã bỏ">Đã bỏ</option><option value="Đang hút">Đang hút</option></select></div>
+            </div>
+            <div class="title">Can thiệp & Khẩn cấp</div>
+            <div class="grid-3">
+                <div class="fg"><label>Phân loại phẫu thuật</label>
+                    <select id="proc">
+                        <option value="CABG">CABG đơn thuần</option><option value="AVR">AVR (Van ĐMC)</option>
+                        <option value="MVR">MVR (Van 2 lá)</option><option value="CABG+Valve">CABG + Van</option>
+                        <option value="Aorta">Phẫu thuật ĐM Chủ</option><option value="Other">Khác</option>
+                    </select>
+                </div>
+                <div class="fg"><label>Mức độ khẩn</label>
+                    <select id="urgency"><option value="Elective">Mổ phiên (Elective)</option><option value="Urgent">Khẩn (Urgent)</option><option value="Emergent">Cấp cứu (Emergent)</option><option value="Salvage">Tối cấp (Salvage)</option></select>
+                </div>
+                <div class="fg"><label>Lần mổ tim hở (Incidence)</label>
+                    <select id="incidence"><option value="Lần đầu">Lần đầu (First)</option><option value="Mổ lại lần 1">Mổ lại lần 1</option><option value="Mổ lại lần 2+">Mổ lại ≥ 2 lần</option></select>
+                </div>
+            </div>
+        </div>
+
+        <div id="t2" class="tab-content">
+            <div class="grid-2">
+                <div class="fg"><label>Đái tháo đường</label><select id="diab"><option value="Không">Không</option><option value="Ăn kiêng">Chỉ ăn kiêng</option><option value="Thuốc uống">Dùng thuốc</option><option value="Insulin">Dùng Insulin</option></select></div>
+                <div class="fg"><label>COPD (Phổi tắc nghẽn)</label><select id="copd"><option value="Không">Không</option><option value="Nhẹ">Nhẹ</option><option value="Trung bình">Trung bình</option><option value="Nặng">Nặng</option></select></div>
+            </div>
+            <div class="title" style="margin-top: 10px;">Comorbidities (Tick nếu có)</div>
+            <div class="chk-grid">
+                <div class="chk-item"><input type="checkbox" id="m_htn" value="Tăng huyết áp"><label>Tăng huyết áp</label></div>
+                <div class="chk-item"><input type="checkbox" id="m_pad" value="Bệnh ĐM ngoại biên"><label>Bệnh ĐM ngoại biên (PAD)</label></div>
+                <div class="chk-item"><input type="checkbox" id="m_cvd" value="Tiền sử Đột quỵ/TIA"><label>Tiền sử Đột quỵ / TIA</label></div>
+                <div class="chk-item"><input type="checkbox" id="m_carotid" value="Hẹp ĐM Cảnh > 80%"><label>Hẹp ĐM cảnh > 80%</label></div>
+                <div class="chk-item"><input type="checkbox" id="m_liver" value="Bệnh gan/Xơ gan"><label>Bệnh gan / Xơ gan</label></div>
+                <div class="chk-item"><input type="checkbox" id="m_immuno" value="Ức chế miễn dịch"><label>Dùng ức chế miễn dịch</label></div>
+                <div class="chk-item"><input type="checkbox" id="m_endo" value="Viêm nội tâm mạc"><label>Viêm nội tâm mạc</label></div>
+                <div class="chk-item"><input type="checkbox" id="m_pneu" value="Viêm phổi gần đây"><label>Viêm phổi gần đây</label></div>
+            </div>
+        </div>
+
+        <div id="t3" class="tab-content">
+            <div class="title">Xét nghiệm huyết học</div>
+            <div class="grid-4">
+                <div class="fg"><label>Creatinine (mg/dL)</label><input type="number" step="0.1" id="creat"></div>
+                <div class="fg"><label>Lọc máu định kỳ</label><select id="dialysis"><option value="Không">Không</option><option value="Có">Có</option></select></div>
+                <div class="fg"><label>Hematocrit (%)</label><input type="number" id="hct"></div>
+                <div class="fg"><label>Tiểu cầu (x10^3)</label><input type="number" id="plt"></div>
+            </div>
+            <div class="grid-4">
+                <div class="fg"><label>HbA1c (%)</label><input type="number" step="0.1" id="hba1c"></div>
+            </div>
+            
+            <div class="title">Thuốc (Trong 5 ngày trước mổ)</div>
+            <div class="chk-grid">
+                <div class="chk-item"><input type="checkbox" id="rx_asp" value="Aspirin"><label>Aspirin</label></div>
+                <div class="chk-item"><input type="checkbox" id="rx_p2y" value="P2Y12 (Clopidogrel)"><label>P2Y12 Inhibitor</label></div>
+                <div class="chk-item"><input type="checkbox" id="rx_ac" value="Kháng đông/Heparin"><label>Kháng đông/Heparin</label></div>
+                <div class="chk-item"><input type="checkbox" id="rx_bb" value="Beta-blocker"><label>Beta-blocker</label></div>
+                <div class="chk-item"><input type="checkbox" id="rx_ace" value="ACEi/ARB"><label>ACEi/ARB</label></div>
+                <div class="chk-item"><input type="checkbox" id="rx_st" value="Statin"><label>Statin</label></div>
+                <div class="chk-item"><input type="checkbox" id="rx_amio" value="Amiodarone"><label>Amiodarone</label></div>
+            </div>
+        </div>
+
+        <div id="t4" class="tab-content">
+            <div class="title">Giải phẫu mạch vành (Coronary Anatomy)</div>
+            <div class="grid-3">
+                <div class="fg"><label>Hẹp Left Main (≥ 50%)</label><select id="lm"><option value="Không">Không</option><option value="Có">Có</option></select></div>
+                <div class="fg"><label>Hẹp nhánh LAD (≥ 70%)</label><select id="lad"><option value="Không">Không</option><option value="Có">Có</option></select></div>
+                <div class="fg"><label>Tổng số nhánh hẹp (≥ 70%)</label><select id="vessels"><option value="0">0 nhánh</option><option value="1">1 nhánh</option><option value="2">2 nhánh</option><option value="3">3 nhánh</option></select></div>
+            </div>
+            <div class="chk-grid" style="margin-bottom: 15px;">
+                <div class="chk-item"><input type="checkbox" id="c_pci" value="Tiền sử đặt Stent (PCI)"><label>Đã từng can thiệp PCI</label></div>
+            </div>
+
+            <div class="title">Nguyên nhân bệnh van tim (Valve Etiology)</div>
+            <div class="fg"><label>Đánh giá khi làm AVR / MVR</label>
+                <select id="valve_etio"><option value="Không áp dụng">N/A (Chỉ làm CABG)</option><option value="Thoái hóa">Thoái hóa (Degenerative)</option><option value="Thấp tim">Thấp tim (Rheumatic)</option><option value="Bẩm sinh">Bẩm sinh (Congenital)</option><option value="Viêm nội tâm mạc">Viêm nội tâm mạc</option></select>
+            </div>
+        </div>
+
+        <div id="t5" class="tab-content">
+            <div class="title">Chức năng cơ tim & Echo</div>
+            <div class="grid-3">
+                <div class="fg"><label>LVEF (%)</label><input type="number" id="lvef"></div>
+                <div class="fg"><label>Suy tim NYHA</label><select id="nyha"><option value="I">Class I</option><option value="II">II</option><option value="III">III</option><option value="IV">IV</option></select></div>
+                <div class="fg"><label>Nhồi máu cơ tim (MI)</label><select id="mi"><option value="Không">Không</option><option value="≤ 24 giờ">≤ 24h</option><option value="1-7 ngày">1-7 ngày</option><option value="8-21 ngày">8-21 ngày</option><option value="> 21 ngày">> 21 ngày</option></select></div>
+            </div>
+            <div class="grid-3">
+                <div class="fg"><label>Áp lực ĐMP Tâm thu (sPAP)</label><input type="number" id="spap" placeholder="mmHg"></div>
+                <div class="fg"><label>Rung nhĩ/Cuồng nhĩ</label><select id="afib"><option value="Không">Không</option><option value="Có">Có</option></select></div>
+                <div class="fg"><label>RL nhịp thất (VT/VF)</label><select id="vtvf"><option value="Không">Không</option><option value="Có">Có</option></select></div>
+            </div>
+
+            <div class="title">Tình trạng nguy kịch trước mổ (Hemodynamics)</div>
+            <div class="chk-grid">
+                <div class="chk-item"><input type="checkbox" id="h_shock" value="Sốc tim (Shock)"><label>Sốc tim</label></div>
+                <div class="chk-item"><input type="checkbox" id="h_resus" value="Hồi sức 24h qua"><label>Hồi sức tim phổi (24h)</label></div>
+                <div class="chk-item"><input type="checkbox" id="h_iabp" value="IABP / ECMO"><label>Đang chạy IABP/ECMO</label></div>
+                <div class="chk-item"><input type="checkbox" id="h_ino" value="Inotropes tĩnh mạch"><label>Truyền Inotropes</label></div>
+                <div class="chk-item"><input type="checkbox" id="h_vent" value="Thở máy"><label>Đang thở máy</label></div>
+            </div>
+        </div>
+    </form>
+
+    <div class="footer">
+        <button class="btn btn-out" onclick="document.getElementById('stsForm').reset()">Xóa form</button>
+        <button class="btn btn-dark" onclick="window.print()">🖨️ In Phiếu STS (PDF)</button>
+    </div>
+</div>
+
+<div class="print-only">
+    <div class="p-header">
+        <div><b>SỞ Y TẾ ĐỒNG NAI - BVĐK THỐNG NHẤT</b><br>Khoa Ngoại Lồng Ngực - Tim mạch</div>
+        <div style="border: 1px solid #000; padding: 5px; width: 250px;">
+            Mã BA: <b id="p_pid"></b><br>Khoa: ........................... Giường: ........
+        </div>
+    </div>
+    
+    <div class="p-title">PHIẾU THU THẬP BIẾN SỐ TIỀN PHẪU STS (V4.2x)</div>
+
+    <table class="p-table">
+        <tr>
+            <th>BN & Thể trạng</th><td colspan="3">Tuổi: <b id="p_age"></b> | Giới: <b id="p_gender"></b> | Chủng tộc: <b id="p_race"></b> | BMI: <b id="p_bmi"></b> (C: <span id="p_h"></span>cm, N: <span id="p_w"></span>kg) | Hút thuốc: <span id="p_smk"></span></td>
+        </tr>
+        <tr>
+            <th>Phẫu thuật</th><td><b id="p_proc"></b> (Lần mổ: <b id="p_inc"></b>)</td>
+            <th>Độ khẩn</th><td><b id="p_urg"></b></td>
+        </tr>
+    </table>
+
+    <table class="p-table">
+        <tr>
+            <th>Huyết học</th><td>Creatinine: <b id="p_cre"></b> mg/dL (Lọc máu: <b id="p_dial"></b>) | Hct: <b id="p_hct"></b>% | PLT: <b id="p_plt"></b> x10³</td>
+            <th>Nội tiết</th><td>ĐTĐ: <b id="p_diab"></b> | HbA1c: <b id="p_hba1c"></b>%</td>
+        </tr>
+        <tr>
+            <th>Tim mạch (Echo)</th><td>LVEF: <b id="p_ef"></b>% | NYHA: <b id="p_nyha"></b> | sPAP: <b id="p_spap"></b> mmHg | MI: <b id="p_mi"></b></td>
+            <th>Hô hấp</th><td>COPD: <b id="p_copd"></b></td>
+        </tr>
+        <tr>
+            <th>Giải phẫu MV/Van</th><td colspan="3">Số nhánh hẹp: <b id="p_vess"></b> | Left Main: <b id="p_lm"></b> | LAD: <b id="p_lad"></b> || Nguyên nhân Van: <b id="p_valve"></b></td>
+        </tr>
+        <tr>
+            <th>Thuốc/Nhịp học</th><td colspan="3">Afib: <span id="p_afib"></span> | VT/VF: <span id="p_vtvf"></span> || <b>Thuốc:</b> <span id="p_rx"></span></td>
+        </tr>
+    </table>
+
+    <div style="font-weight: bold; margin: 10px 0 5px;">Yếu tố bệnh nền & Hồi sức (Checklist):</div>
+    <div class="p-chk-grid" id="p_chk"></div>
+
+    <table class="p-table" style="width: 60%; margin-top: 15px; border: 2px solid #000;">
+        <tr><th style="font-size: 11pt; background:#fff!important;">STS Mortality (Tử vong):</th><td></td></tr>
+        <tr><th style="font-size: 11pt; background:#fff!important;">STS Morbidity (Biến chứng):</th><td></td></tr>
+    </table>
+
+    <div class="p-sigs">
+        <div class="sig-box"><b>BÁC SĨ ĐIỀU TRỊ</b><br><br><br><br>(Ký, ghi rõ họ tên)</div>
+        <div class="sig-box"><b>BÁC SĨ GÂY MÊ HỒI SỨC</b><br><br><br><br>(Ký, ghi rõ họ tên)</div>
+        <div class="sig-box"><b>PHẪU THUẬT VIÊN CHÍNH</b><br><br><br><br>(Ký, ghi rõ họ tên)</div>
+    </div>
+</div>
+
+<script>
+    function openTab(e, id) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        e.currentTarget.classList.add('active');
+    }
+
+    window.onbeforeprint = function() {
+        // Hành chính
+        document.getElementById('p_pid').innerText = document.getElementById('pid').value || '................';
+        document.getElementById('p_age').innerText = document.getElementById('age').value || '....';
+        document.getElementById('p_gender').innerText = document.getElementById('gender').value;
+        document.getElementById('p_race').innerText = document.getElementById('race').value;
+        document.getElementById('p_smk').innerText = document.getElementById('smoking').value;
+        let h = document.getElementById('height').value, w = document.getElementById('weight').value;
+        document.getElementById('p_h').innerText = h || '..'; document.getElementById('p_w').innerText = w || '..';
+        document.getElementById('p_bmi').innerText = (h && w) ? (w / Math.pow(h/100, 2)).toFixed(1) : '..';
+        
+        // Phẫu thuật & Mức độ
+        document.getElementById('p_proc').innerText = document.getElementById('proc').value;
+        document.getElementById('p_inc').innerText = document.getElementById('incidence').value;
+        document.getElementById('p_urg').innerText = document.getElementById('urgency').value;
+
+        // Cận lâm sàng
+        document.getElementById('p_cre').innerText = document.getElementById('creat').value || '..';
+        document.getElementById('p_dial').innerText = document.getElementById('dialysis').value;
+        document.getElementById('p_hct').innerText = document.getElementById('hct').value || '..';
+        document.getElementById('p_plt').innerText = document.getElementById('plt').value || '..';
+        document.getElementById('p_diab').innerText = document.getElementById('diab').value;
+        document.getElementById('p_hba1c').innerText = document.getElementById('hba1c').value || '..';
+        document.getElementById('p_ef').innerText = document.getElementById('lvef').value || '..';
+        document.getElementById('p_nyha').innerText = document.getElementById('nyha').value;
+        document.getElementById('p_spap').innerText = document.getElementById('spap').value || '..';
+        document.getElementById('p_mi').innerText = document.getElementById('mi').value;
+        document.getElementById('p_copd').innerText = document.getElementById('copd').value;
+
+        // Giải phẫu MV & Van
+        document.getElementById('p_vess').innerText = document.getElementById('vessels').value;
+        document.getElementById('p_lm').innerText = document.getElementById('lm').value;
+        document.getElementById('p_lad').innerText = document.getElementById('lad').value;
+        document.getElementById('p_valve').innerText = document.getElementById('valve_etio').value;
+        document.getElementById('p_afib').innerText = document.getElementById('afib').value;
+        document.getElementById('p_vtvf').innerText = document.getElementById('vtvf').value;
+
+        // Xử lý chuỗi Thuốc
+        let rxList = [];
+        document.querySelectorAll('input[id^="rx_"]:checked').forEach(cb => rxList.push(cb.value));
+        document.getElementById('p_rx').innerText = rxList.length > 0 ? rxList.join(', ') : 'Không có';
+
+        // Xử lý Checklist In (Gộp m_, c_, h_)
+        let chkHtml = '';
+        document.querySelectorAll('input[id^="m_"]:checked, input[id^="c_"]:checked, input[id^="h_"]:checked').forEach(cb => {
+            chkHtml += `<div class="p-chk-item"><span class="box box-on"></span> ${cb.value}</div>`;
+        });
+        document.getElementById('p_chk').innerHTML = chkHtml || '<div>Không ghi nhận yếu tố.</div>';
+    };
+</script>
+</body>
+</html>
