@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SF-36 Dashboard - Đánh Giá HRQoL</title>
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; 
+            --success: #10b981; --bg-body: #f1f5f9; --bg-card: #ffffff;
+            --text-main: #0f172a; --text-muted: #64748b;
+            --border: #cbd5e1; --radius: 12px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding: 15px; display: flex; justify-content: center; }
+        
+        .container { max-width: 800px; width: 100%; background: var(--bg-card); border-radius: var(--radius); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow: hidden; position: relative; min-height: 80vh; display: flex; flex-direction: column; }
+        
+        .header { background: var(--primary); color: white; padding: 25px 20px; text-align: center; }
+        .header h2 { margin: 0 0 5px; font-size: 1.4rem; }
+        .header p { margin: 0; opacity: 0.9; font-size: 0.9rem; }
+
+        /* DASHBOARD GRID */
+        .dashboard { padding: 20px; flex: 1; }
+        .grid-8 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        
+        .card { background: #f8fafc; border: 2px solid var(--border); border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; }
+        .card:active { transform: scale(0.97); }
+        .card .icon { font-size: 2rem; margin-bottom: 8px; }
+        .card .title { font-weight: 700; font-size: 0.9rem; color: var(--text-main); margin-bottom: 5px; }
+        .card .status { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; background: #e2e8f0; padding: 2px 8px; border-radius: 10px; }
+        
+        /* Trạng thái hoàn thành */
+        .card.completed { border-color: var(--success); background: #ecfdf5; }
+        .card.completed .status { background: var(--success); color: white; }
+
+        /* OVERLAY MODAL (POPUP CÂU HỎI) */
+        .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-card); z-index: 100; flex-direction: column; animation: slideUp 0.3s forwards; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); background: #f8fafc; }
+        .modal-header h3 { margin: 0; font-size: 1.1rem; color: var(--primary); }
+        .btn-close { background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+
+        .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid var(--border); background: #f8fafc; text-align: right; }
+        
+        .btn-save { background: var(--primary); color: white; border: none; padding: 12px 25px; font-size: 1rem; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; }
+
+        /* STYLE CÂU HỎI */
+        .question { margin-bottom: 25px; }
+        .q-text { font-weight: 600; margin-bottom: 12px; font-size: 1rem; line-height: 1.4; color: #1e293b; }
+        .options-group { display: flex; flex-direction: column; gap: 8px; }
+        .radio-item { display: flex; align-items: center; background: #f8fafc; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: 0.1s; }
+        .radio-item:active { background: #e0f2fe; }
+        .radio-item input { margin-right: 12px; accent-color: var(--primary); width: 18px; height: 18px; }
+        .radio-item label { width: 100%; cursor: pointer; font-size: 0.95rem; }
+
+        /* MAIN FOOTER */
+        .main-footer { padding: 20px; text-align: center; border-top: 1px solid var(--border); }
+        .btn-submit-all { background: var(--success); color: white; border: none; padding: 15px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; display: none; }
+
+        /* KẾT QUẢ CSS */
+        #resultArea { display: none; padding: 20px; animation: slideUp 0.4s; }
+        .domain-row { margin-bottom: 15px; }
+        .domain-label { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; }
+        .bar-bg { background: #e2e8f0; height: 10px; border-radius: 5px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 5px; transition: width 1s ease-in-out; }
+        .summary-box { background: #f0f9ff; border: 2px solid #bae6fd; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center; }
+        
+        @media (max-width: 480px) {
+            .grid-8 { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .card { padding: 10px; min-height: 90px; }
+            .card .icon { font-size: 1.5rem; }
+            .card .title { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="mainDashboard">
+        <div class="header">
+            <h2>Khảo Sát SF-36</h2>
+            <p>Vui lòng hoàn thành 8 mục dưới đây</p>
+        </div>
+        
+        <div class="dashboard">
+            <div class="grid-8" id="cardGrid">
+                </div>
+        </div>
+
+        <div class="main-footer">
+            <button id="btnSubmitAll" class="btn-submit-all" onclick="calculateScore()">XEM KẾT QUẢ SF-36</button>
+            <div id="pendingMsg" style="color: var(--text-muted); font-size: 0.9rem; font-weight: bold;">Bạn cần hoàn thành tất cả các ô để tính điểm.</div>
+        </div>
+    </div>
+
+    <div id="questionModal" class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Tiêu đề mục</h3>
+            <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            </div>
+        <div class="modal-footer">
+            <button class="btn-save" onclick="saveSection()">Lưu & Quay Lại</button>
+        </div>
+    </div>
+
+    <div id="resultArea">
+        <h2 style="text-align: center; color: var(--primary); margin-top: 0;">ĐIỂM CHẤT LƯỢNG CUỘC SỐNG</h2>
+        
+        <h3 style="font-size: 1rem; color: var(--text-muted); border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">I. Thể Chất (Physical)</h3>
+        <div id="charts-pcs"></div>
+
+        <h3 style="font-size: 1rem; color: var(--text-muted); border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-top: 20px;">II. Tinh Thần (Mental)</h3>
+        <div id="charts-mcs"></div>
+
+        <div class="summary-box">
+            <h3 style="margin: 0 0 10px; color: #0369a1;">ĐIỂM TRUNG BÌNH</h3>
+            <div style="display: flex; justify-content: space-around; font-size: 1.1rem; font-weight: bold;">
+                <div>Thể chất: <span id="avg-pcs" style="color: var(--primary);">0</span></div>
+                <div>Tinh thần: <span id="avg-mcs" style="color: var(--primary);">0</span></div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn-submit-all" style="display: inline-block; background: #64748b;" onclick="location.reload()">Đánh giá lại</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------------------------------------------------------
+    // CẤU TRÚC DỮ LIỆU & ĐIỂM
+    // ---------------------------------------------------------
+    const opt_5_F = [{l:"Rất tốt", v:100}, {l:"Tốt", v:75}, {l:"Khá", v:50}, {l:"Kém", v:25}, {l:"Rất kém", v:0}];
+    const opt_5_R = [{l:"Chắc chắn đúng", v:0}, {l:"Phần lớn đúng", v:25}, {l:"Không biết", v:50}, {l:"Phần lớn sai", v:75}, {l:"Chắc chắn sai", v:100}];
+    const opt_5_R2 = [{l:"Hoàn toàn đúng", v:100}, {l:"Phần lớn đúng", v:75}, {l:"Không biết", v:50}, {l:"Phần lớn sai", v:25}, {l:"Hoàn toàn sai", v:0}];
+    const opt_3_PF = [{l:"Bị hạn chế nhiều", v:0}, {l:"Bị hạn chế ít", v:50}, {l:"Không bị hạn chế", v:100}];
+    const opt_2_YN = [{l:"Có", v:0}, {l:"Không", v:100}];
+    const opt_6_F = [{l:"Luôn luôn", v:100}, {l:"Phần lớn", v:80}, {l:"Khá thường xuyên", v:60}, {l:"Thỉnh thoảng", v:40}, {l:"Hiếm khi", v:20}, {l:"Không bao giờ", v:0}];
+    const opt_6_R = [{l:"Luôn luôn", v:0}, {l:"Phần lớn", v:20}, {l:"Khá thường xuyên", v:40}, {l:"Thỉnh thoảng", v:60}, {l:"Hiếm khi", v:80}, {l:"Không bao giờ", v:100}];
+
+    // CHIA 36 CÂU THÀNH 8 MỤC GỌN GÀNG CHO DASHBOARD
+    const blocks = [
+        {
+            id: 1, icon: "👤", title: "Sức khỏe chung",
+            desc: "Đánh giá sơ bộ về tình trạng của bạn",
+            questions: [
+                { id: 1, domain: 'GH', text: "1. Nhìn chung, bạn đánh giá sức khỏe của mình là:", opts: opt_5_F },
+                { id: 2, domain: 'NONE', text: "2. So với 1 năm trước, sức khỏe hiện tại của bạn thế nào?", opts: [{l:"Tốt hơn nhiều", v:100}, {l:"Tốt hơn chút", v:75}, {l:"Như cũ", v:50}, {l:"Kém hơn chút", v:25}, {l:"Kém hơn nhiều", v:0}] }
+            ]
+        },
+        {
+            id: 2, icon: "🏃", title: "Vận động thể lực",
+            desc: "Sức khỏe hiện tại có cản trở các hoạt động này không?",
+            questions: [
+                { id: 3, domain: 'PF', text: "3. Chạy, nâng vật nặng, chơi thể thao mạnh?", opts: opt_3_PF },
+                { id: 4, domain: 'PF', text: "4. Di chuyển bàn ghế, hút bụi, thể thao nhẹ?", opts: opt_3_PF },
+                { id: 5, domain: 'PF', text: "5. Xách hoặc mang túi đồ ăn đi chợ?", opts: opt_3_PF },
+                { id: 6, domain: 'PF', text: "6. Đi lên vài tầng cầu thang?", opts: opt_3_PF },
+                { id: 7, domain: 'PF', text: "7. Đi lên một tầng cầu thang?", opts: opt_3_PF },
+                { id: 8, domain: 'PF', text: "8. Cúi người, quỳ gối, hoặc lom khom?", opts: opt_3_PF },
+                { id: 9, domain: 'PF', text: "9. Đi bộ hơn 1 km?", opts: opt_3_PF },
+                { id: 10, domain: 'PF', text: "10. Đi bộ vài con phố?", opts: opt_3_PF },
+                { id: 11, domain: 'PF', text: "11. Đi bộ một con phố?", opts: opt_3_PF },
+                { id: 12, domain: 'PF', text: "12. Tự tắm rửa hoặc mặc quần áo?", opts: opt_3_PF }
+            ]
+        },
+        {
+            id: 3, icon: "💼", title: "Công việc (Thể chất)",
+            desc: "Trong 4 tuần qua, do sức khỏe THỂ CHẤT, bạn có:",
+            questions: [
+                { id: 13, domain: 'RP', text: "13. Phải cắt giảm thời gian làm việc/hoạt động?", opts: opt_2_YN },
+                { id: 14, domain: 'RP', text: "14. Hoàn thành được ít việc hơn mong muốn?", opts: opt_2_YN },
+                { id: 15, domain: 'RP', text: "15. Bị hạn chế về loại hình công việc?", opts: opt_2_YN },
+                { id: 16, domain: 'RP', text: "16. Gặp khó khăn, tốn nhiều sức hơn bình thường?", opts: opt_2_YN }
+            ]
+        },
+        {
+            id: 4, icon: "😟", title: "Công việc (Cảm xúc)",
+            desc: "Trong 4 tuần qua, do vấn đề CẢM XÚC (lo lắng, buồn), bạn có:",
+            questions: [
+                { id: 17, domain: 'RE', text: "17. Phải cắt giảm thời gian làm việc/hoạt động?", opts: opt_2_YN },
+                { id: 18, domain: 'RE', text: "18. Hoàn thành được ít việc hơn mong muốn?", opts: opt_2_YN },
+                { id: 19, domain: 'RE', text: "19. Làm việc kém cẩn thận hơn bình thường?", opts: opt_2_YN }
+            ]
+        },
+        {
+            id: 5, icon: "😖", title: "Mức độ đau đớn",
+            desc: "Đánh giá cơn đau trong 4 tuần qua",
+            questions: [
+                { id: 21, domain: 'BP', text: "21. Bạn bị đau cơ thể ở mức độ nào?", opts: [{l:"Không đau", v:100}, {l:"Rất nhẹ", v:80}, {l:"Nhẹ", v:60}, {l:"Vừa", v:40}, {l:"Nặng", v:20}, {l:"Rất nặng", v:0}] },
+                { id: 22, domain: 'BP', text: "22. Cơn đau cản trở công việc của bạn đến mức nào?", opts: [{l:"Không hề", v:100}, {l:"Hơi hơi", v:75}, {l:"Vừa phải", v:50}, {l:"Nhiều", v:25}, {l:"Rất nhiều", v:0}] }
+            ]
+        },
+        {
+            id: 6, icon: "🤝", title: "Giao tiếp xã hội",
+            desc: "Ảnh hưởng đến việc gặp gỡ gia đình, bạn bè",
+            questions: [
+                { id: 20, domain: 'SF', text: "20. Sức khỏe cản trở hoạt động xã hội của bạn đến mức nào?", opts: [{l:"Không hề", v:100}, {l:"Hơi hơi", v:75}, {l:"Vừa phải", v:50}, {l:"Nhiều", v:25}, {l:"Rất nhiều", v:0}] },
+                { id: 32, domain: 'SF', text: "32. Sức khỏe cản trở hoạt động xã hội bao nhiêu thời gian?", opts: [{l:"Luôn luôn", v:0}, {l:"Phần lớn", v:25}, {l:"Thỉnh thoảng", v:50}, {l:"Hiếm khi", v:75}, {l:"Không bao giờ", v:100}] }
+            ]
+        },
+        {
+            id: 7, icon: "🔋", title: "Năng lượng & Tinh thần",
+            desc: "Cảm giác của bạn trong 4 tuần qua",
+            questions: [
+                { id: 23, domain: 'VT', text: "23. Cảm thấy tràn đầy sức sống?", opts: opt_6_F },
+                { id: 24, domain: 'MH', text: "24. Cảm thấy rất bồn chồn, lo lắng?", opts: opt_6_R },
+                { id: 25, domain: 'MH', text: "25. Chán nản đến mức không gì làm bạn vui lên được?", opts: opt_6_R },
+                { id: 26, domain: 'MH', text: "26. Cảm thấy bình yên và thanh thản?", opts: opt_6_F },
+                { id: 27, domain: 'VT', text: "27. Tràn đầy năng lượng?", opts: opt_6_F },
+                { id: 28, domain: 'MH', text: "28. Vui vẻ, hạnh phúc?", opts: opt_6_F },
+                { id: 29, domain: 'VT', text: "29. Cảm thấy kiệt sức?", opts: opt_6_R },
+                { id: 30, domain: 'MH', text: "30. Buồn bã, ủ rũ?", opts: opt_6_R },
+                { id: 31, domain: 'VT', text: "31. Cảm thấy mệt mỏi?", opts: opt_6_R }
+            ]
+        },
+        {
+            id: 8, icon: "🏥", title: "Niềm tin sức khỏe",
+            desc: "Mức độ đúng/sai đối với bạn",
+            questions: [
+                { id: 33, domain: 'GH', text: "33. Tôi có vẻ dễ bị ốm hơn những người khác.", opts: opt_5_R },
+                { id: 34, domain: 'GH', text: "34. Tôi khỏe mạnh như bất kỳ ai mà tôi biết.", opts: opt_5_R2 },
+                { id: 35, domain: 'GH', text: "35. Tôi cho rằng sức khỏe của mình sẽ tệ hơn.", opts: opt_5_R },
+                { id: 36, domain: 'GH', text: "36. Sức khỏe của tôi hiện đang rất xuất sắc.", opts: opt_5_R2 }
+            ]
+        }
+    ];
+
+    const domainsInfo = {
+        PF: { name: "Hoạt động thể lực", type: 'PCS' },
+        RP: { name: "Giới hạn do thể chất", type: 'PCS' },
+        BP: { name: "Đau đớn cơ thể", type: 'PCS' },
+        GH: { name: "Sức khỏe chung", type: 'PCS' },
+        VT: { name: "Sức sống/Năng lượng", type: 'MCS' },
+        SF: { name: "Chức năng xã hội", type: 'MCS' },
+        RE: { name: "Giới hạn do cảm xúc", type: 'MCS' },
+        MH: { name: "Sức khỏe tinh thần", type: 'MCS' }
+    };
+
+    // Bộ nhớ lưu đáp án
+    let answers = {};
+    let currentBlockId = null;
+
+    // ---------------------------------------------------------
+    // RENDER GIAO DIỆN
+    // ---------------------------------------------------------
+    function initDashboard() {
+        const grid = document.getElementById('cardGrid');
+        let html = '';
+        blocks.forEach(b => {
+            html += `<div class="card" id="card_${b.id}" onclick="openBlock(${b.id})">
+                        <div class="icon">${b.icon}</div>
+                        <div class="title">${b.title}</div>
+                        <div class="status" id="status_${b.id}">0/${b.questions.length} câu</div>
+                     </div>`;
+        });
+        grid.innerHTML = html;
+    }
+
+    function openBlock(blockId) {
+        currentBlockId = blockId;
+        const block = blocks.find(b => b.id === blockId);
+        
+        document.getElementById('modalTitle').innerText = block.title;
+        let html = `<p style="color:#64748b; font-size:0.9rem; margin-bottom:15px;">${block.desc}</p>`;
+        
+        block.questions.forEach(q => {
+            html += `<div class="question">
+                        <div class="q-text">${q.text}</div>
+                        <div class="options-group">`;
+            q.opts.forEach(opt => {
+                const isChecked = answers[q.id] === opt.v ? 'checked' : '';
+                html += `<label class="radio-item">
+                            <input type="radio" name="q${q.id}" value="${opt.v}" ${isChecked} onchange="saveAnswer(${q.id}, ${opt.v})">
+                            <span>${opt.l}</span>
+                         </label>`;
+            });
+            html += `</div></div>`;
+        });
+        
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('questionModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('questionModal').style.display = 'none';
+        updateCardStatus(currentBlockId);
+        checkAllCompleted();
+    }
+
+    function saveAnswer(qId, val) {
+        answers[qId] = val;
+    }
+
+    function saveSection() {
+        closeModal();
+    }
+
+    function updateCardStatus(blockId) {
+        const block = blocks.find(b => b.id === blockId);
+        let answeredCount = 0;
+        block.questions.forEach(q => {
+            if(answers[q.id] !== undefined) answeredCount++;
+        });
+
+        const statusEl = document.getElementById(`status_${blockId}`);
+        const cardEl = document.getElementById(`card_${blockId}`);
+        
+        statusEl.innerText = `${answeredCount}/${block.questions.length} câu`;
+        
+        if(answeredCount === block.questions.length) {
+            cardEl.classList.add('completed');
+            statusEl.innerText = "Đã xong ✓";
+        } else {
+            cardEl.classList.remove('completed');
+        }
+    }
+
+    function checkAllCompleted() {
+        const totalQuestions = 36;
+        const answeredQuestions = Object.keys(answers).length;
+        
+        if (answeredQuestions === totalQuestions) {
+            document.getElementById('btnSubmitAll').style.display = 'block';
+            document.getElementById('pendingMsg').style.display = 'none';
+        } else {
+            document.getElementById('btnSubmitAll').style.display = 'none';
+            document.getElementById('pendingMsg').style.display = 'block';
+        }
+    }
+
+    // ---------------------------------------------------------
+    // TÍNH ĐIỂM
+    // ---------------------------------------------------------
+    function calculateScore() {
+        let domainScores = { PF: [], RP: [], BP: [], GH: [], VT: [], SF: [], RE: [], MH: [] };
+        
+        blocks.forEach(b => {
+            b.questions.forEach(q => {
+                if(q.domain !== 'NONE' && answers[q.id] !== undefined) {
+                    domainScores[q.domain].push(answers[q.id]);
+                }
+            });
+        });
+
+        let finalScores = {};
+        let sumPCS = 0, sumMCS = 0;
+
+        Object.keys(domainScores).forEach(key => {
+            const arr = domainScores[key];
+            const avg = arr.reduce((a, b) => a + b, 0) / arr.length;
+            finalScores[key] = Math.round(avg);
+            if(domainsInfo[key].type === 'PCS') sumPCS += avg;
+            else sumMCS += avg;
+        });
+
+        renderCharts(finalScores, Math.round(sumPCS/4), Math.round(sumMCS/4));
+    }
+
+    function renderCharts(scores, avgPCS, avgMCS) {
+        document.getElementById('mainDashboard').style.display = 'none';
+        document.getElementById('resultArea').style.display = 'block';
+
+        let htmlPCS = '', htmlMCS = '';
+
+        Object.keys(scores).forEach(key => {
+            const score = scores[key];
+            const info = domainsInfo[key];
+            const color = score < 50 ? '#ef4444' : (score < 75 ? '#f59e0b' : '#10b981');
+            
+            const row = `<div class="domain-row">
+                            <div class="domain-label"><span>${info.name}</span> <span style="color:${color}">${score}</span></div>
+                            <div class="bar-bg"><div class="bar-fill" style="width: ${score}%; background-color: ${color}"></div></div>
+                         </div>`;
+            
+            if (info.type === 'PCS') htmlPCS += row;
+            else htmlMCS += row;
+        });
+
+        document.getElementById('charts-pcs').innerHTML = htmlPCS;
+        document.getElementById('charts-mcs').innerHTML = htmlMCS;
+        document.getElementById('avg-pcs').innerText = avgPCS;
+        document.getElementById('avg-mcs').innerText = avgMCS;
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.onload = initDashboard;
+</script>
+
+</body>
+</html>
