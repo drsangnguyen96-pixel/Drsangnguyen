@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sơ đồ Theo dõi AAA (Watchful Waiting)</title>
+    <style>
+        :root {
+            --primary-color: #2980b9;
+            --danger-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+        }
+
+        .subtitle {
+            display: block;
+            font-size: 0.65em;
+            color: #7f8c8d;
+            font-weight: normal;
+            margin-top: 5px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+
+        .section h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .form-group label {
+            flex: 1 1 60%;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input[type="number"], .form-group select {
+            flex: 1 1 35%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(41, 128, 185, 0.2);
+        }
+
+        .note {
+            display: block;
+            font-size: 0.8em;
+            color: #7f8c8d;
+            margin-top: 4px;
+            font-weight: normal;
+        }
+
+        button.submit-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(41, 128, 185, 0.3);
+        }
+
+        button.submit-btn:hover {
+            background-color: #2471a3;
+        }
+
+        button.submit-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(41, 128, 185, 0.3);
+        }
+
+        /* --- Modal Styles --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 9999; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            background-color: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto; 
+            padding: 0;
+            border-radius: 12px;
+            width: 90%; 
+            max-width: 650px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.2rem;
+        }
+
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 5px;
+        }
+
+        .close-btn:hover, .close-btn:focus {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Alerts inside Modal */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        
+        .alert h4 { margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; }
+        .alert ul { margin-bottom: 0; padding-left: 20px; }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #fff;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .data-table th, .data-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .data-table th { background-color: #e9ecef; font-weight: 600; }
+
+        .medical-checklist {
+            background-color: #e8f4f8;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+        }
+        .medical-checklist h4 { margin-top: 0; color: var(--primary-color); margin-bottom: 10px;}
+
+        .reference-footer {
+            margin-top: 25px;
+            font-size: 0.75rem;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            padding-top: 15px;
+            text-align: center;
+        }
+
+        /* Responsive cho Mobile */
+        @media screen and (max-width: 600px) {
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .form-group label {
+                width: 100%;
+                margin-bottom: 6px;
+            }
+            .form-group input[type="number"], .form-group select {
+                width: 100%;
+                flex: none;
+            }
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+                max-height: 85vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>SƠ ĐỒ THEO DÕI AAA & TỐI ƯU HÓA NỘI KHOA
+        <span class="subtitle">Nhóm chưa có chỉ định can thiệp (Watchful Waiting)</span>
+    </h2>
+
+    <div class="section">
+        <h3>1. Thông tin lâm sàng hiện tại</h3>
+        <div class="form-group">
+            <label>Giới tính:</label>
+            <select id="gender">
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Đường kính ngang tối đa hiện tại (mm):
+                <span class="note">Đo bằng siêu âm Doppler (DUS) vuông góc trục</span>
+            </label>
+            <input type="number" id="current_diameter" placeholder="VD: 42" required inputmode="decimal">
+        </div>
+        <div class="form-group">
+            <label>Có triệu chứng nghi ngờ không?
+                <span class="note">Đau lưng/bụng kiểu mạch máu, ấn đau tại khối phình</span>
+            </label>
+            <select id="symptoms">
+                <option value="no">Không</option>
+                <option value="yes">Có</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>2. Đánh giá tốc độ tăng trưởng (Không bắt buộc)</h3>
+        <div class="form-group">
+            <label>Đường kính lần đo trước (mm):</label>
+            <input type="number" id="prev_diameter" placeholder="VD: 38" inputmode="decimal">
+        </div>
+        <div class="form-group">
+            <label>Khoảng thời gian giữa 2 lần đo (Tháng):</label>
+            <input type="number" id="months_passed" placeholder="VD: 12" inputmode="numeric">
+        </div>
+    </div>
+
+    <button class="submit-btn" onclick="evaluateSurveillance()">TRÍCH XUẤT KẾT QUẢ ĐÁNH GIÁ</button>
+
+    <div class="reference-footer">
+        <strong>Tài liệu y văn tham chiếu:</strong><br>
+        Wanhainen, A., et al. (2024). <i>European Society for Vascular Surgery (ESVS) 2024 Clinical Practice Guidelines on the Management of Abdominal Aorto-Iliac Artery Aneurysms.</i> Eur J Vasc Endovasc Surg, 67(2), 192-331.<br>
+        DOI: <a href="https://doi.org/10.1016/j.ejvs.2023.11.002" target="_blank" style="color: #2980b9;">10.1016/j.ejvs.2023.11.002</a> | PMID: 38262706
+    </div>
+</div>
+
+<!-- Modal Hộp thoại Hiển thị Kết quả -->
+<div id="resultModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Kết Quả & Phác Đồ Đề Xuất</h3>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Nội dung kết quả sẽ được chèn bằng JavaScript -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Đóng modal khi click ra ngoài vùng nội dung
+    window.onclick = function(event) {
+        let modal = document.getElementById('resultModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('resultModal').style.display = "none";
+        document.body.style.overflow = "auto"; // Mở khóa cuộn trang nền
+    }
+
+    function evaluateSurveillance() {
+        let gender = document.getElementById('gender').value;
+        let currentDiameter = parseFloat(document.getElementById('current_diameter').value);
+        let symptoms = document.getElementById('symptoms').value;
+        let prevDiameter = parseFloat(document.getElementById('prev_diameter').value);
+        let monthsPassed = parseFloat(document.getElementById('months_passed').value);
+
+        if (isNaN(currentDiameter) || currentDiameter <= 0) {
+            alert("Vui lòng nhập đường kính túi phình hiện tại hợp lệ!");
+            document.getElementById('current_diameter').focus();
+            return;
+        }
+
+        let modalBody = document.getElementById('modalBody');
+        let htmlContent = "";
+        
+        // 1. Cấp cứu
+        if (symptoms === 'yes') {
+            htmlContent = `
+                <div class='alert alert-danger'>
+                    <h4>&#9888; CẢNH BÁO ĐỎ: PHÌNH CÓ TRIỆU CHỨNG</h4>
+                    <p>Bệnh nhân có triệu chứng cần được xử trí như phình động mạch chủ có nguy cơ vỡ hoặc đang vỡ.</p>
+                    <strong>Hành động khẩn cấp:</strong>
+                    <ul>
+                        <li>Chuyển ngay đến phòng cấp cứu / chuyên khoa phẫu thuật mạch máu.</li>
+                        <li>Chỉ định chụp CTA khẩn cấp toàn bộ động mạch chủ.</li>
+                        <li>Chuẩn bị sẵn sàng can thiệp bán khẩn/khẩn cấp.</li>
+                    </ul>
+                </div>`;
+            showModal(htmlContent);
+            return; 
+        }
+
+        // 2. Tính toán tốc độ
+        let isRapidGrowth = false;
+        let growthMessage = "";
+        if (!isNaN(prevDiameter) && !isNaN(monthsPassed) && monthsPassed > 0) {
+            let growth = currentDiameter - prevDiameter;
+            let annualGrowth = (growth / monthsPassed) * 12;
+            
+            if (annualGrowth >= 10) {
+                isRapidGrowth = true;
+                growthMessage = `<strong>Cảnh báo:</strong> Tốc độ tăng trưởng &ge; 10 mm/năm (${annualGrowth.toFixed(1)} mm/năm). Làm tăng rủi ro vỡ túi phình. Yêu cầu xem xét hội chẩn can thiệp sớm.`;
+            } else if (annualGrowth > 0) {
+                growthMessage = `Tốc độ tăng trưởng ước tính: ${annualGrowth.toFixed(1)} mm/năm.`;
+            }
+        }
+
+        // 3. Logic ESVS 2024
+        let thresholdReached = false;
+        let surveillanceInterval = "";
+        
+        if (gender === 'male') {
+            if (currentDiameter >= 55) thresholdReached = true;
+            else if (currentDiameter >= 50) surveillanceInterval = "Mỗi 6 tháng";
+            else if (currentDiameter >= 40) surveillanceInterval = "Hàng năm (Mỗi 12 tháng)";
+            else if (currentDiameter >= 30) surveillanceInterval = "Mỗi 3 năm";
+            else if (currentDiameter >= 25) surveillanceInterval = "Mỗi 5 năm";
+            else surveillanceInterval = "Kích thước bình thường, không cần theo dõi";
+        } else {
+            if (currentDiameter >= 50) thresholdReached = true;
+            else if (currentDiameter >= 45) surveillanceInterval = "Mỗi 6 tháng";
+            else if (currentDiameter >= 40) surveillanceInterval = "Hàng năm (Mỗi 12 tháng)";
+            else if (currentDiameter >= 30) surveillanceInterval = "Mỗi 3 năm";
+            else if (currentDiameter >= 25) surveillanceInterval = "Mỗi 5 năm";
+            else surveillanceInterval = "Kích thước bình thường, không cần theo dõi";
+        }
+
+        // 4. Render HTML
+        if (thresholdReached) {
+            htmlContent += `
+                <div class='alert alert-danger'>
+                    <h4>&#9888; ĐÃ ĐẠT NGƯỠNG CHỈ ĐỊNH CAN THIỆP</h4>
+                    <p>Kích thước <strong>${currentDiameter} mm</strong> đã vượt ngưỡng khuyến cáo can thiệp chương trình (${gender === 'male' ? '&ge; 55 mm ở Nam' : '&ge; 50 mm ở Nữ'}).</p>
+                    <strong>Hành động:</strong>
+                    <ul>
+                        <li>Chuyển đến phẫu thuật viên mạch máu theo lộ trình Fast-track.</li>
+                        <li>Chỉ định chụp CTA để lên kế hoạch can thiệp (EVAR / Mổ mở).</li>
+                    </ul>
+                </div>`;
+        } else {
+            htmlContent += `
+                <div class='alert alert-success'>
+                    <h4>&#9989; TIẾP TỤC THEO DÕI (WATCHFUL WAITING)</h4>
+                    <p>Chưa đạt chỉ định phẫu thuật. Tiếp tục theo dõi hình ảnh định kỳ.</p>
+                    <table class="data-table">
+                        <tr>
+                            <th style="width: 40%;">Chu kỳ tái khám</th>
+                            <td><strong>${surveillanceInterval}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Chẩn đoán hình ảnh</th>
+                            <td>Siêu âm Doppler (DUS)</td>
+                        </tr>
+                    </table>
+                </div>`;
+        }
+
+        if (isRapidGrowth) {
+            htmlContent += `<div class='alert alert-warning'>${growthMessage}</div>`;
+        } else if (growthMessage) {
+            htmlContent += `<p style="font-size: 0.9em; color: #555; text-align: center;"><em>${growthMessage}</em></p>`;
+        }
+
+        htmlContent += `
+            <div class="medical-checklist">
+                <h4>Tối Ưu Hóa Nội Khoa (Checklist)</h4>
+                <ul style="margin: 0; padding-left: 20px; font-size: 0.95rem;">
+                    <li><strong>Cai thuốc lá:</strong> Tư vấn và hỗ trợ cai nghiện bắt buộc.</li>
+                    <li><strong>Statin:</strong> Chỉ định bắt buộc.</li>
+                    <li><strong>Huyết áp:</strong> Kiểm soát chặt chẽ mục tiêu.</li>
+                    <li><strong>Kháng tiểu cầu:</strong> Khi có bệnh lý xơ vữa đi kèm.</li>
+                </ul>
+            </div>`;
+
+        showModal(htmlContent);
+    }
+
+    function showModal(content) {
+        document.getElementById('modalBody').innerHTML = content;
+        document.getElementById('resultModal').style.display = "block";
+        document.body.style.overflow = "hidden"; // Khóa cuộn trang nền để tránh lỗi giao diện mobile
+    }
+</script>
+
+</body>
+</html>

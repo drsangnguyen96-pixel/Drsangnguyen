@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng kiểm Phân tích CTA Tiền phẫu - AAA</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #2980b9;
+            font-size: 1.1em;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .form-group label {
+            flex: 1;
+            font-weight: 500;
+        }
+        .form-group input[type="number"], .form-group select {
+            width: 150px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .note {
+            display: block;
+            font-size: 0.85em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #219150;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>BẢNG KIỂM PHÂN TÍCH CTA TIỀN PHẪU - AAA<br><span style="font-size: 0.6em; color: #7f8c8d;">Tham chiếu Hướng dẫn ESVS 2024</span></h2>
+
+    <div class="section">
+        <h3>1. Đánh giá vùng cổ túi phình (Proximal Neck)</h3>
+        <div class="form-group">
+            <label>Chiều dài cổ túi phình (mm):<span class="note">Yêu cầu &ge; 10 - 15 mm</span></label>
+            <input type="number" id="neck_length" placeholder="VD: 15" required>
+        </div>
+        <div class="form-group">
+            <label>Đường kính cổ túi phình (mm):<span class="note">Giới hạn 16 - 32 mm</span></label>
+            <input type="number" id="neck_diameter" placeholder="VD: 20" required>
+        </div>
+        <div class="form-group">
+            <label>Góc gập góc dưới thận (Góc &alpha;):<span class="note">Tối đa 60 độ</span></label>
+            <input type="number" id="angle_alpha" placeholder="VD: 45">
+        </div>
+        <div class="form-group">
+            <label>Mức độ vôi hóa tại cổ túi phình:</label>
+            <select id="calcification">
+                <option value="0">Không có / Rất ít</option>
+                <option value="25">&lt; 25% chu vi</option>
+                <option value="50">25 - 50% chu vi</option>
+                <option value="75">&gt; 50% chu vi</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Huyết khối bám thành tại cổ:</label>
+            <select id="thrombus">
+                <option value="0">Không có / Rất ít</option>
+                <option value="25">&lt; 25% chu vi</option>
+                <option value="50">25 - 50% chu vi</option>
+                <option value="75">&gt; 50% chu vi</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>2. Đánh giá thân túi phình và Nhánh tạng</h3>
+        <div class="form-group">
+            <label>Đường kính ngang tối đa của túi phình (mm):</label>
+            <input type="number" id="sac_diameter" placeholder="VD: 55">
+        </div>
+        <div class="form-group">
+            <label>Tình trạng mảng xơ vữa lan tỏa (Shaggy aorta):</label>
+            <select id="shaggy">
+                <option value="0">Không có</option>
+                <option value="1">Có hiện diện</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>3. Đánh giá động mạch chậu và Đường vào</h3>
+        <div class="form-group">
+            <label>Đường kính động mạch chậu chung vùng neo (mm):<span class="note">Từ 7 - 25 mm</span></label>
+            <input type="number" id="cia_diameter" placeholder="VD: 12">
+        </div>
+        <div class="form-group">
+            <label>Đường kính ĐM chậu ngoài/đùi đường vào nhỏ nhất (mm):<span class="note">Tối thiểu 5 - 7 mm</span></label>
+            <input type="number" id="access_diameter" placeholder="VD: 6.5" required>
+        </div>
+    </div>
+
+    <button onclick="evaluateAnatomy()">XEM KẾT QUẢ ĐÁNH GIÁ</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    function evaluateAnatomy() {
+        // Lấy giá trị
+        let neckLength = parseFloat(document.getElementById('neck_length').value);
+        let neckDiameter = parseFloat(document.getElementById('neck_diameter').value);
+        let angleAlpha = parseFloat(document.getElementById('angle_alpha').value) || 0;
+        let calcification = parseInt(document.getElementById('calcification').value);
+        let thrombus = parseInt(document.getElementById('thrombus').value);
+        let accessDiameter = parseFloat(document.getElementById('access_diameter').value);
+        let shaggy = parseInt(document.getElementById('shaggy').value);
+
+        // Kiểm tra nhập liệu
+        if (isNaN(neckLength) || isNaN(neckDiameter) || isNaN(accessDiameter)) {
+            alert("Vui lòng nhập các thông số bắt buộc (Chiều dài cổ, đường kính cổ, đường kính đường vào)!");
+            return;
+        }
+
+        let isComplex = false;
+        let reasons = [];
+
+        // Logic đánh giá dựa trên IFU chung và ESVS
+        if (neckLength < 10) { 
+            isComplex = true; 
+            reasons.push("Cổ túi phình ngắn (&lt; 10 mm)"); 
+        }
+        if (neckDiameter < 16 || neckDiameter > 32) { 
+            isComplex = true; 
+            reasons.push("Đường kính cổ ngoài giới hạn an toàn (16 - 32 mm)"); 
+        }
+        if (angleAlpha > 60) { 
+            isComplex = true; 
+            reasons.push("Góc gập cổ túi phình lớn (&gt; 60 độ)"); 
+        }
+        if (calcification > 50) { 
+            isComplex = true; 
+            reasons.push("Vôi hóa cổ túi phình &gt; 50% chu vi"); 
+        }
+        if (thrombus > 50) { 
+            isComplex = true; 
+            reasons.push("Huyết khối bám thành vùng neo &gt; 50% chu vi"); 
+        }
+        if (accessDiameter < 5) { 
+            isComplex = true; 
+            reasons.push("Đường kính mạch máu đường vào hẹp (&lt; 5 mm)"); 
+        }
+        if (shaggy === 1) {
+            isComplex = true;
+            reasons.push("Có tình trạng xơ vữa lan tỏa (nguy cơ thuyên tắc mạch)");
+        }
+
+        let resultDiv = document.getElementById('result');
+        
+        if (isComplex) {
+            let reasonHtml = "<ul>" + reasons.map(r => "<li>" + r + "</li>").join("") + "</ul>";
+            resultDiv.innerHTML = `
+                <div class='alert alert-danger'>
+                    <h4 style="margin-top:0;">&#9888; CẤU TRÚC GIẢI PHẪU PHỨC TẠP</h4>
+                    <p>Giải phẫu nằm ngoài tiêu chuẩn IFU của phần lớn các loại stent-graft thông thường.</p>
+                    <strong>Nguyên nhân:</strong>
+                    ${reasonHtml}
+                    <hr style="border-top: 1px solid #f5c6cb; margin: 10px 0;">
+                    <strong>Hướng dẫn xử trí lâm sàng:</strong> 
+                    <ul>
+                        <li>Không khuyến cáo EVAR tiêu chuẩn.</li>
+                        <li>Ưu tiên xem xét Phẫu thuật mổ mở (OSR) nếu rủi ro phẫu thuật cho phép.</li>
+                        <li>Cân nhắc can thiệp nội mạch có nhánh/cửa sổ (fEVAR/bEVAR) nếu bệnh nhân nguy cơ phẫu thuật cao.</li>
+                    </ul>
+                </div>`;
+        } else {
+            resultDiv.innerHTML = `
+                <div class='alert alert-success'>
+                    <h4 style="margin-top:0;">&#9989; CẤU TRÚC GIẢI PHẪU THUẬN LỢI</h4>
+                    <p>Các thông số nằm trong tiêu chuẩn IFU, phù hợp với can thiệp nội mạch (EVAR) tiêu chuẩn.</p>
+                    <hr style="border-top: 1px solid #c3e6cb; margin: 10px 0;">
+                    <strong>Bước tiếp theo:</strong>
+                    <ul>
+                        <li>Tiến hành đo đạc chi tiết trên trạm xử lý hình ảnh 3D để chọn kích cỡ (sizing) Stent-graft.</li>
+                        <li>Lên lịch can thiệp chương trình và hoàn thiện hồ sơ bệnh án số.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+</script>
+
+</body>
+</html>

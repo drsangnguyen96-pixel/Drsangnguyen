@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đánh Giá Toàn Diện & Quyết Định Điều Trị AAA</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --accent: #2563eb;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: #334155;
+            line-height: 1.5;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--primary);
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 15px;
+            margin-top: 0;
+            font-size: 1.4rem;
+        }
+        
+        .subtitle {
+            display: block;
+            font-size: 0.65em;
+            color: #64748b;
+            font-weight: normal;
+            margin-top: 5px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        .section-header {
+            color: var(--primary);
+            font-size: 1.15rem;
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .section-header::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background-color: var(--accent);
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .radio-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .radio-card {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        .radio-card:hover { border-color: var(--accent); background: #eff6ff; }
+        .radio-card input { margin-right: 15px; transform: scale(1.2); accent-color: var(--accent); }
+        .radio-card .title { font-weight: 600; display: block; margin-bottom: 2px; }
+        .radio-card .desc { font-size: 0.85em; color: #64748b; }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .form-row label { font-weight: 600; margin-bottom: 8px; }
+        
+        .form-row select {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: #fff;
+        }
+        
+        .form-row select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+
+        .rcri-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .check-item { display: flex; align-items: flex-start; }
+        .check-item input { margin-top: 4px; margin-right: 10px; transform: scale(1.2); accent-color: var(--accent); }
+        .check-item label { font-size: 0.95em; cursor: pointer; }
+
+        .score-display {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 15px;
+            border: 1px solid #c7d2fe;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-submit:hover { background-color: #1d4ed8; }
+
+        /* Modal Styles */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: #fff; margin: 5% auto; border-radius: 10px; width: 92%; max-width: 750px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); display: flex; flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 18px 20px; background-color: var(--primary); color: white; border-radius: 10px 10px 0 0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .modal-header h3 { margin: 0; font-size: 1.25rem; }
+        .close { color: rgba(255,255,255,0.8); font-size: 28px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .close:hover { color: white; }
+
+        .modal-body { padding: 25px; }
+
+        .res-block {
+            margin-bottom: 20px; border-left: 4px solid #cbd5e1; padding: 15px; background: #f8fafc; border-radius: 0 8px 8px 0;
+        }
+
+        .res-block h4 {
+            margin-top: 0; margin-bottom: 10px; text-transform: uppercase; font-size: 0.9em; color: #64748b; letter-spacing: 1px;
+        }
+
+        .decision-highlight { font-size: 1.2rem; font-weight: bold; color: var(--primary); margin-bottom: 10px; }
+        
+        .tag { padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: 600; display: inline-block; margin-bottom: 8px;}
+        .tag-danger { background: #fee2e2; color: #991b1b; }
+        .tag-warning { background: #fef3c7; color: #92400e; }
+        .tag-success { background: #dcfce7; color: #166534; }
+        .tag-info { background: #e0e7ff; color: #3730a3; }
+
+        @media screen and (min-width: 600px) {
+            .radio-group { grid-template-columns: 1fr 1fr 1fr; }
+            .rcri-grid { grid-template-columns: 1fr 1fr; }
+            .form-row { flex-direction: row; align-items: center; justify-content: space-between; }
+            .form-row select { width: 55%; margin-top: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>ĐÁNH GIÁ TOÀN DIỆN & QUYẾT ĐỊNH ĐIỀU TRỊ AAA
+        <span class="subtitle">Tích hợp Thể trạng toàn thân (ASA & CFS) - ESVS 2024</span>
+    </h2>
+
+    <div class="section">
+        <h3 class="section-header">1. Chỉ định Lâm sàng (Triage)</h3>
+        <div class="radio-group">
+            <label class="radio-card" style="border-color: var(--danger);">
+                <input type="radio" name="triage" value="emergency">
+                <div>
+                    <span class="title" style="color: var(--danger);">Cấp cứu / Bán khẩn</span>
+                    <span class="desc">Phình vỡ / Đang vỡ / Có triệu chứng đau.</span>
+                </div>
+            </label>
+            <label class="radio-card" style="border-color: var(--accent);">
+                <input type="radio" name="triage" value="elective" checked>
+                <div>
+                    <span class="title" style="color: var(--accent);">Chương trình</span>
+                    <span class="desc">Kích thước đạt ngưỡng (&ge;5.5cm Nam / &ge;5.0cm Nữ).</span>
+                </div>
+            </label>
+            <label class="radio-card">
+                <input type="radio" name="triage" value="monitor">
+                <div>
+                    <span class="title">Theo dõi nội khoa</span>
+                    <span class="desc">Kích thước nhỏ, chưa đạt chuẩn can thiệp.</span>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <!-- KHỐI ĐÁNH GIÁ CHI TIẾT (Bị mờ nếu chọn Cấp cứu/Theo dõi) -->
+    <div id="detailed_workup">
+        <div class="section" style="border-color: var(--primary);">
+            <h3 class="section-header">2. Đánh giá Toàn thân & Lão khoa (Systemic & Frailty)</h3>
+            
+            <div class="form-row">
+                <label>Phân loại ASA (Thể trạng vật lý):</label>
+                <select id="asa_score">
+                    <option value="1">ASA I - Khỏe mạnh bình thường</option>
+                    <option value="2">ASA II - Bệnh hệ thống nhẹ (VD: THA/ĐTĐ kiểm soát tốt)</option>
+                    <option value="3" selected>ASA III - Bệnh hệ thống nặng, giới hạn hoạt động (VD: Tiền sử NMCT, COPD)</option>
+                    <option value="4">ASA IV - Bệnh hệ thống đe dọa tính mạng (VD: Suy tim nặng, Suy thận cuối)</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <label>Thang điểm Suy yếu Lâm sàng (CFS):</label>
+                <select id="cfs_score">
+                    <option value="1">CFS 1-3: Rất khỏe đến Khỏe (Hoạt động độc lập tốt)</option>
+                    <option value="4">CFS 4: Dễ bị tổn thương (Hoạt động chậm chạp hơn)</option>
+                    <option value="5">CFS 5-6: Suy yếu nhẹ/Trung bình (Cần hỗ trợ các việc nặng/việc nhà)</option>
+                    <option value="7">CFS 7-9: Suy yếu nặng / Nằm liệt giường (Phụ thuộc hoàn toàn)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3 class="section-header">3. Nguy cơ Tim mạch & Hô hấp (RCRI & METs)</h3>
+            
+            <div class="rcri-grid">
+                <div class="check-item">
+                    <input type="checkbox" checked disabled>
+                    <label>Phẫu thuật Mạch máu lớn <b style="color: var(--danger);">[+1đ mặc định]</b></label>
+                </div>
+                <div class="check-item"><input type="checkbox" class="rcri-calc" value="1"><label>Tiền sử Bệnh mạch vành</label></div>
+                <div class="check-item"><input type="checkbox" class="rcri-calc" value="1"><label>Tiền sử Suy tim sung huyết</label></div>
+                <div class="check-item"><input type="checkbox" class="rcri-calc" value="1"><label>Bệnh lý mạch máu não (TIA/Đột quỵ)</label></div>
+                <div class="check-item"><input type="checkbox" class="rcri-calc" value="1"><label>ĐTĐ đang tiêm Insulin</label></div>
+                <div class="check-item"><input type="checkbox" class="rcri-calc" value="1"><label>Creatinine trước mổ &gt; 2.0 mg/dL</label></div>
+            </div>
+            
+            <div class="score-display">
+                Tổng điểm RCRI: <span id="rcri_score" style="font-size: 1.2em;">1</span> (<span id="rcri_risk">Nguy cơ Tăng nhẹ</span>)
+            </div>
+
+            <div class="form-row" style="margin-top: 15px;">
+                <label>Khả năng gắng sức (METs):</label>
+                <select id="mets_score">
+                    <option value="good">&ge; 4 METs (Leo được 2 tầng lầu không mệt)</option>
+                    <option value="poor">&lt; 4 METs (Không leo nổi 2 tầng lầu) hoặc Không rõ</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3 class="section-header">4. Hình thái Giải phẫu (CTA)</h3>
+            <div class="form-row">
+                <label>Sự phù hợp với EVAR (Theo IFU):</label>
+                <select id="anatomy_evar">
+                    <option value="suitable">Thuận lợi (Cổ &ge;10-15mm, góc &lt;60 độ, đường vào tốt)</option>
+                    <option value="complex">Phức tạp (Cổ ngắn, gập góc nặng, vôi hóa hẹp chậu)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-submit" onclick="generateDecision()">PHÂN TÍCH & ĐỀ XUẤT PHÁC ĐỒ</button>
+</div>
+
+<!-- Modal Kết Quả -->
+<div id="resultModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>BÁO CÁO HỘI CHẨN LÂM SÀNG</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Content injected here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Xử lý làm mờ form nếu chọn Cấp cứu / Theo dõi
+    const triageRadios = document.querySelectorAll('input[name="triage"]');
+    const detailedWorkup = document.getElementById('detailed_workup');
+
+    triageRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'emergency' || this.value === 'monitor') {
+                detailedWorkup.style.opacity = '0.4';
+                detailedWorkup.style.pointerEvents = 'none';
+            } else {
+                detailedWorkup.style.opacity = '1';
+                detailedWorkup.style.pointerEvents = 'auto';
+            }
+        });
+    });
+
+    // Tính điểm RCRI
+    const rcriCheckboxes = document.querySelectorAll('.rcri-calc');
+    function updateRCRI() {
+        let score = 1; 
+        rcriCheckboxes.forEach(cb => { if (cb.checked) score += parseInt(cb.value); });
+        document.getElementById('rcri_score').textContent = score;
+        
+        let riskSpan = document.getElementById('rcri_risk');
+        if (score === 1) { riskSpan.textContent = "Nguy cơ Tăng nhẹ"; riskSpan.style.color = "#3730a3"; }
+        else if (score === 2) { riskSpan.textContent = "Nguy cơ Trung bình"; riskSpan.style.color = "#b45309"; }
+        else { riskSpan.textContent = "Nguy cơ Cao"; riskSpan.style.color = "#b91c1c"; }
+    }
+    rcriCheckboxes.forEach(cb => cb.addEventListener('change', updateRCRI));
+
+    function closeModal() {
+        document.getElementById('resultModal').style.display = "none";
+        document.body.style.overflow = "auto";
+    }
+
+    function generateDecision() {
+        let triage = document.querySelector('input[name="triage"]:checked').value;
+        let html = "";
+
+        // 1. Ngoại lệ Cấp cứu / Theo dõi
+        if (triage === 'emergency') {
+            html = `
+                <div class="res-block" style="border-left-color: var(--danger);">
+                    <h4>Phân luồng khẩn cấp</h4>
+                    <div class="decision-highlight" style="color: var(--danger);">MỔ CẤP CỨU (DOOR-TO-INTERVENTION &lt; 90 PHÚT)</div>
+                    <p>Bỏ qua các thang điểm toàn thân để bảo toàn thời gian vàng. Ưu tiên EVAR nếu giải phẫu phù hợp, hồi sức truyền dịch giới hạn.</p>
+                </div>`;
+            showModal(html); return;
+        }
+        if (triage === 'monitor') {
+            html = `
+                <div class="res-block" style="border-left-color: var(--success);">
+                    <h4>Chiến lược hiện tại</h4>
+                    <div class="decision-highlight" style="color: var(--success);">THEO DÕI NỘI KHOA (WATCHFUL WAITING)</div>
+                    <p>Chưa có chỉ định can thiệp. Tối ưu hóa huyết áp, Statin và bắt buộc cai thuốc lá.</p>
+                </div>`;
+            showModal(html); return;
+        }
+
+        // 2. Logic cho Mổ Chương trình
+        let asa = parseInt(document.getElementById('asa_score').value);
+        let cfs = parseInt(document.getElementById('cfs_score').value);
+        let rcriScore = parseInt(document.getElementById('rcri_score').textContent);
+        let mets = document.getElementById('mets_score').value;
+        let anatomy = document.getElementById('anatomy_evar').value;
+
+        // A. Phân tích Tim mạch (Tiền phẫu)
+        let cardioAction = "";
+        if (rcriScore >= 2 && mets === 'poor') {
+            cardioAction = `<span class="tag tag-danger">Cảnh báo Tim mạch Đỏ</span> <br>Bệnh nhân có RCRI &ge; 2 + Gắng sức kém. <strong>Bắt buộc thực hiện Test gắng sức</strong> (Siêu âm tim/Xạ hình) hoặc chụp ĐMV trước khi xếp lịch mổ.`;
+        } else if (rcriScore >= 2 || (rcriScore === 1 && mets === 'poor')) {
+            cardioAction = `<span class="tag tag-warning">Cảnh báo Tim mạch Vàng</span> <br>Nguy cơ tim mạch hiện hữu. Hội chẩn chuyên khoa Tim mạch tiền phẫu để tối ưu hóa nội khoa.`;
+        } else {
+            cardioAction = `<span class="tag tag-success">Tim mạch Ổn định</span> <br>Rủi ro tim mạch ở mức chấp nhận được. Có thể tiến hành phẫu thuật.`;
+        }
+
+        // B. Quyết định Phương pháp Can thiệp dựa trên Toàn trạng (ASA/CFS) & Giải phẫu
+        let modalityDecision = "";
+        let modalityDetails = "";
+
+        // Tình huống 1: Rủi ro phẫu thuật quá mức (Prohibitive Risk)
+        if (asa === 4 || cfs === 7) {
+            modalityDecision = `<span style="color: var(--danger);">CHỐNG CHỈ ĐỊNH PHẪU THUẬT</span>`;
+            modalityDetails = `Bệnh nhân có bệnh lý nền đe dọa tính mạng (ASA IV) hoặc suy yếu rất nặng/nằm liệt giường (CFS &ge; 7). Rủi ro tử vong do can thiệp vượt xa lợi ích phòng ngừa vỡ túi phình. <strong>Khuyến cáo: Chăm sóc giảm nhẹ và điều trị bảo tồn.</strong>`;
+        } 
+        // Tình huống 2: Bệnh nhân Suy yếu / Nguy cơ cao (Frail / High Risk)
+        else if (asa === 3 || cfs >= 4) {
+            if (anatomy === 'suitable') {
+                modalityDecision = `<span style="color: var(--accent);">CHỈ ĐỊNH CAN THIỆP NỘI MẠCH (EVAR)</span>`;
+                modalityDetails = `Bệnh nhân có thể trạng suy yếu hoặc nhiều bệnh nền (ASA III / CFS 4-6). EVAR là lựa chọn tối ưu nhất giúp giảm rủi ro chu phẫu so với mổ mở.`;
+            } else {
+                modalityDecision = `<span style="color: var(--warning);">CÂN NHẮC fEVAR HOẶC BẢO TỒN</span>`;
+                modalityDetails = `Giải phẫu không phù hợp EVAR thường quy, nhưng bệnh nhân không đủ sức khỏe chịu đựng mổ mở (OSR). Khuyến cáo chuyển tuyến can thiệp EVAR có nhánh (fEVAR) hoặc cân nhắc lại việc tiếp tục bảo tồn.`;
+            }
+        } 
+        // Tình huống 3: Bệnh nhân Trẻ / Khỏe mạnh (Fit / Low Risk)
+        else { // ASA 1-2, CFS 1-3
+            if (anatomy === 'suitable') {
+                modalityDecision = `<span style="color: var(--success);">MỔ MỞ (OSR) HOẶC EVAR</span>`;
+                modalityDetails = `Thể trạng bệnh nhân rất tốt (ASA I-II, hoàn toàn độc lập). <strong>Mổ mở (OSR)</strong> là một lựa chọn cực kỳ tốt do mang lại độ bền lâu dài, không lo Endoleak. Tuy nhiên, có thể thảo luận chọn <strong>EVAR</strong> nếu bệnh nhân ưu tiên phục hồi nhanh (Shared-decision making).`;
+            } else {
+                modalityDecision = `<span style="color: var(--success);">ƯU TIÊN MỔ MỞ (OSR)</span>`;
+                modalityDetails = `Giải phẫu phức tạp không hợp EVAR. Do bệnh nhân còn rất khỏe mạnh, Mổ mở (OSR) là tiêu chuẩn vàng.`;
+            }
+        }
+
+        html = `
+            <div class="res-block" style="border-left-color: #64748b;">
+                <h4>1. Tình trạng Lão khoa & Sinh lý Toàn thân</h4>
+                <p style="margin-bottom: 5px;"><strong>Phân loại ASA:</strong> Lớp ${asa} | <strong>Độ suy yếu (CFS):</strong> Mức ${cfs}</p>
+                <p style="font-size: 0.9em; margin-top: 5px;"><em>Việc đánh giá toàn diện giúp tránh can thiệp quá mức trên bệnh nhân suy kiệt, tối ưu hóa lợi ích sống còn.</em></p>
+            </div>
+
+            <div class="res-block" style="border-left-color: #3b82f6;">
+                <h4>2. Đánh giá Nguy cơ Tim mạch (RCRI: ${rcriScore}đ)</h4>
+                <p style="margin-top: 5px; font-size: 0.95em;">${cardioAction}</p>
+            </div>
+
+            <div class="res-block" style="border-left-color: var(--primary); background: #eff6ff;">
+                <h4>3. Phác đồ Điều trị Chung cuộc</h4>
+                <div class="decision-highlight">${modalityDecision}</div>
+                <p style="margin-bottom: 0; font-size: 0.95em;">${modalityDetails}</p>
+            </div>
+        `;
+        showModal(html);
+    }
+
+    function showModal(content) {
+        document.getElementById('modalBody').innerHTML = content;
+        document.getElementById('resultModal').style.display = "block";
+        document.body.style.overflow = "hidden";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('resultModal')) {
+            closeModal();
+        }
+    }
+</script>
+
+</body>
+</html>
