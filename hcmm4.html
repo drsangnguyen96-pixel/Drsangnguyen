@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Hội Chẩn Mạch Máu Ngoại Biên - Trải Đều A4</title>
+    <style>
+        /* BASE THEME COLORS FOR SCREEN */
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #e53e3e;
+            --bg-screen: #edf2f7;
+            --border-color: #cbd5e0;
+            --text-dark: #2d3748;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg-screen);
+            color: var(--text-dark);
+            line-height: 1.4;
+            margin: 0;
+            padding: 15px;
+        }
+        
+        .screen-container { max-width: 1100px; margin: 0 auto; }
+        .card { background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 15px; border-top: 4px solid var(--secondary); }
+        .card-title { font-size: 1.2em; font-weight: bold; color: var(--primary); margin-top: 0; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; text-transform: uppercase; }
+        
+        .row-table { display: table; width: 100%; table-layout: fixed; }
+        .col-cell { display: table-cell; vertical-align: top; padding: 0 10px; }
+        .col-cell:first-child { padding-left: 0; }
+        .col-cell:last-child { padding-right: 0; }
+        .w-33 { width: 33.33%; }
+        .w-50 { width: 50%; }
+
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-weight: bold; font-size: 0.9em; margin-bottom: 4px; color: #4a5568; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        input[readonly] { background-color: #f7fafc; cursor: not-allowed; }
+
+        .checkbox-label { display: block; margin-bottom: 6px; font-size: 0.9em; cursor: pointer; }
+        .checkbox-label input { margin-right: 8px; }
+
+        .sub-section { background: #f7fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 6px; margin-bottom: 10px; }
+        .sub-title { font-weight: bold; font-size: 0.95em; color: var(--secondary); margin-bottom: 6px; }
+
+        .actions-bar { position: sticky; bottom: 0; background: #ffffff; padding: 12px; border-radius: 8px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); text-align: center; z-index: 999; }
+        .btn { padding: 12px 25px; font-size: 1em; font-weight: bold; color: #ffffff; border: none; border-radius: 4px; cursor: pointer; margin: 0 10px; text-transform: uppercase; }
+        .btn-update { background-color: #2b6cb0; }
+        .btn-update:hover { background-color: #1a365d; }
+        .btn-print { background-color: #dd6b20; }
+        .btn-print:hover { background-color: #c05621; }
+
+        #print-report { display: none; }
+
+        .print-only-rec { display: none; }
+        .screen-only-rec { display: block; }
+
+        /* ======================================================= */
+        /* PERFECT 1-PAGE A4 PRINT LAYOUT - EVENLY DISTRIBUTED     */
+        /* ======================================================= */
+        @media print {
+            @page {
+                size: A4;
+                margin: 12mm 15mm 12mm 15mm; 
+            }
+            
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                font-family: "Times New Roman", Times, serif !important;
+                font-size: 11pt !important; 
+                line-height: 1.4 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .no-print, .actions-bar { display: none !important; }
+            .screen-only-rec { display: none !important; }
+            .print-only-rec { display: block !important; }
+
+            #print-report {
+                display: block !important;
+                width: 100% !important;
+                height: 270mm !important; 
+                position: relative;
+            }
+
+            .p-header { width: 100%; margin-bottom: 12px; }
+            .p-header td { vertical-align: top; font-size: 10pt; line-height: 1.3; }
+            
+            .p-title {
+                text-align: center;
+                font-size: 15pt;
+                font-weight: bold;
+                color: #000000;
+                margin: 10px 0 15px 0;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            
+            .p-section-title {
+                font-size: 11.5pt;
+                font-weight: bold;
+                border-bottom: 1.5px solid #000000;
+                margin-top: 14px;
+                margin-bottom: 6px;
+                padding-bottom: 4px;
+                text-transform: uppercase;
+            }
+
+            .p-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 8px;
+            }
+            .p-table th, .p-table td {
+                border: 1px solid #000000;
+                padding: 5px 6px; 
+                font-size: 10.5pt;
+                text-align: left;
+                vertical-align: top;
+            }
+            .p-table th { background-color: #f2f2f2 !important; font-weight: bold; }
+
+            .p-box-container {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+                margin-bottom: 8px;
+            }
+            .p-box-cell {
+                display: table-cell;
+                vertical-align: top;
+                border: 1px solid #000000;
+                padding: 6px 8px; 
+                background: #ffffff;
+            }
+            .p-box-cell:first-child { border-right: none; }
+
+            .p-box-header {
+                font-weight: bold;
+                font-size: 10.5pt;
+                border-bottom: 1px dashed #000000;
+                margin-bottom: 5px;
+                padding-bottom: 3px;
+                text-transform: uppercase;
+            }
+
+            .highlight-bold { font-weight: bold; }
+            
+            .p-recommendation-box {
+                border: 1.5px solid #000000;
+                padding: 10px 12px; 
+                background-color: #fafafa !important;
+                margin-top: 6px;
+                font-size: 11pt;
+                line-height: 1.5;
+            }
+
+            .p-signatures {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+                margin-top: 25px; 
+                margin-bottom: 10px;
+                page-break-inside: avoid;
+            }
+            .p-sig-cell {
+                display: table-cell;
+                text-align: center;
+                vertical-align: top;
+                font-size: 11pt;
+                line-height: 1.4;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="screen-container no-print">
+    <div style="text-align: center; margin-bottom: 15px;">
+        <h2 style="color: var(--primary); margin: 0 0 5px 0; text-transform: uppercase;">Biểu Mẫu Hội Chẩn Mạch Máu Ngoại Biên</h2>
+        <p style="color: #4a5568; margin: 0; font-size: 0.95em;">Khoa Ngoại Lồng Ngực - Bệnh viện Đa khoa Thống Nhất Đồng Nai</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">1. Thông tin bệnh nhân & Chẩn đoán</div>
+        <div class="row-table">
+            <div class="col-cell w-33">
+                <div class="form-group"><label>Họ và tên bệnh nhân:</label><input type="text" id="in-name" placeholder="VD: NGUYỄN VĂN SANG"></div>
+            </div>
+            <div class="col-cell w-33">
+                <div class="form-group"><label>Tuổi:</label><input type="number" id="in-age" placeholder="Nhập tuổi" oninput="autoSyncAge()"></div>
+            </div>
+            <div class="col-cell w-33">
+                <div class="form-group"><label>Mã hồ sơ (ID BA):</label><input type="text" id="in-id" placeholder="Mã số bệnh án"></div>
+            </div>
+        </div>
+        <div class="row-table" style="margin-top: 5px;">
+            <div class="col-cell w-33">
+                <div class="form-group"><label>Chiều cao (cm):</label><input type="number" id="in-height" oninput="calcBMI()" placeholder="VD: 165"></div>
+            </div>
+            <div class="col-cell w-33">
+                <div class="form-group"><label>Cân nặng (kg):</label><input type="number" id="in-weight" oninput="calcBMI()" placeholder="VD: 65"></div>
+            </div>
+            <div class="col-cell w-33">
+                <div class="form-group"><label>Chỉ số BMI:</label><input type="text" id="in-bmi" readonly placeholder="Tự động tính toán"></div>
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 5px;">
+            <label>Chẩn đoán lâm sàng:</label>
+            <input type="text" id="in-dx" placeholder="VD: Thiếu máu cục bộ mạn tính đe dọa chi dưới (CLTI) chân Trái">
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">2. Đánh giá lâm sàng & Nguy cơ chu phẫu</div>
+        <div class="row-table">
+            
+            <div class="col-cell w-50">
+                <div class="sub-section">
+                    <div class="sub-title">Phân độ Lâm sàng Mạch máu</div>
+                    <div class="row-table">
+                        <div class="col-cell w-50" style="padding:0 4px 0 0;">
+                            <label style="font-size:0.85em;">Leriche-Fontaine:</label>
+                            <select id="sel-fontaine">
+                                <option value="I">GĐ I: Không triệu chứng</option>
+                                <option value="IIa">GĐ IIa: Đau cách hồi > 200m</option>
+                                <option value="IIb">GĐ IIb: Đau cách hồi < 200m</option>
+                                <option value="III">GĐ III: Đau khi nghỉ</option>
+                                <option value="IV">GĐ IV: Loét/Hoại tử</option>
+                            </select>
+                        </div>
+                        <div class="col-cell w-50" style="padding:0 0 0 4px;">
+                            <label style="font-size:0.85em;">Rutherford:</label>
+                            <select id="sel-rutherford">
+                                <option value="0">Độ 0: Không triệu chứng</option>
+                                <option value="1">Độ 1: Cách hồi nhẹ</option>
+                                <option value="2">Độ 2: Cách hồi vừa</option>
+                                <option value="3">Độ 3: Cách hồi nặng</option>
+                                <option value="4">Độ 4: Đau khi nghỉ</option>
+                                <option value="5">Độ 5: Mất mô nhỏ</option>
+                                <option value="6">Độ 6: Mất mô lớn</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-section">
+                    <div class="sub-title">Mức độ đe dọa chi hệ thống WIfI</div>
+                    <div class="row-table">
+                        <div class="col-cell w-33" style="padding:0 4px 0 0;">
+                            <label style="font-size:0.8em;">Vết thương (W)</label>
+                            <select id="sel-wifi-w"><option value="0">W0: Không loét</option><option value="1">W1: Loét nông</option><option value="2">W2: Loét sâu/Lộ xương</option><option value="3">W3: Hoại tử gót</option></select>
+                        </div>
+                        <div class="col-cell w-33" style="padding:0 4px;">
+                            <label style="font-size:0.8em;">Thiếu máu (I)</label>
+                            <select id="sel-wifi-i"><option value="0">I0: ABI ≥ 0.8</option><option value="1">I1: ABI 0.60-0.79</option><option value="2">I2: ABI 0.40-0.59</option><option value="3">I3: ABI ≤ 0.39</option></select>
+                        </div>
+                        <div class="col-cell w-33" style="padding:0 0 0 4px;">
+                            <label style="font-size:0.8em;">Nhiễm trùng (fI)</label>
+                            <select id="sel-wifi-fi"><option value="0">fI0: Sạch</option><option value="1">fI1: Nhẹ</option><option value="2">fI2: Vừa</option><option value="3">fI3: Nặng (SIRS)</option></select>
+                        </div>
+                    </div>
+                    <div style="margin-top: 8px;">
+                        <label>Khảo sát Tĩnh mạch ghép bắc cầu:</label>
+                        <select id="sel-vein"><option value="1">ĐẠT CHUẨN (Tĩnh mạch hiển lớn ≥ 3mm, liên tục)</option><option value="0">KHÔNG ĐẠT (Kích thước &lt; 3mm hoặc đứt đoạn)</option></select>
+                    </div>
+                </div>
+
+                <div class="sub-section">
+                    <div class="sub-title">Nguy cơ Tim mạch (Chỉ số RCRI)</div>
+                    <label class="checkbox-label"><input type="checkbox" class="cb-rcri"> Phẫu thuật nguy cơ cao (bụng/ngực/bẹn)</label>
+                    <label class="checkbox-label"><input type="checkbox" class="cb-rcri"> Bệnh tim thiếu máu cục bộ (IHD)</label>
+                    <label class="checkbox-label"><input type="checkbox" class="cb-rcri"> Suy tim sung huyết (CHF)</label>
+                    <label class="checkbox-label"><input type="checkbox" class="cb-rcri"> Bệnh lý mạch máu não (CVD/TIA)</label>
+                    <label class="checkbox-label"><input type="checkbox" class="cb-rcri"> Đái tháo đường đang sử dụng Insulin</label>
+                    <label class="checkbox-label"><input type="checkbox" class="cb-rcri"> Creatinine huyết thanh trước mổ > 2.0 mg/dL</label>
+                </div>
+            </div>
+
+            <div class="col-cell w-50">
+                <div class="sub-section">
+                    <div class="sub-title">Mức độ Thiếu máu (Hemoglobin)</div>
+                    <select id="sel-hb">
+                        <option value="Normal">Bình thường (Nam ≥13 g/dL, Nữ ≥12 g/dL)</option>
+                        <option value="Mild">Thiếu máu Nhẹ (11 - 12.9 g/dL)</option>
+                        <option value="Moderate">Thiếu máu Vừa (8 - 10.9 g/dL)</option>
+                        <option value="Severe">Thiếu máu Nặng (< 8 g/dL)</option>
+                    </select>
+                </div>
+
+                <div class="sub-section">
+                    <div class="sub-title">Nguy cơ Thận (Thang điểm Mehran CI-AKI)</div>
+                    <label class="checkbox-label"><input type="checkbox" class="cb-mehran" value="5"> Tụt huyết áp hoặc Sốc tim</label>
+                    <label class="checkbox-label"><input type="checkbox" class="cb-mehran" value="5"> Suy tim sung huyết (CHF)</label>
+                    <label class="checkbox-label"><input type="checkbox" id="cb-mehran-age" class="cb-mehran" value="4"> Tuổi > 75 (Tự động)</label>
+                    <label class="checkbox-label"><input type="checkbox" class="cb-mehran" value="3"> Đái tháo đường</label>
+                    <div class="row-table" style="margin-top: 5px;">
+                        <div class="col-cell w-50" style="padding-left:0;">
+                            <label style="font-size:0.85em;">Mức lọc cầu thận (eGFR):</label>
+                            <select id="sel-mehran-egfr"><option value="0">≥ 60 mL/min (0đ)</option><option value="2">40 - 59 mL/min (2đ)</option><option value="4">20 - 39 mL/min (4đ)</option><option value="6">&lt; 20 mL/min (6đ)</option></select>
+                        </div>
+                        <div class="col-cell w-50" style="padding-right:0;">
+                            <label style="font-size:0.85em;">Lượng cản quang dự kiến:</label>
+                            <select id="sel-mehran-vol"><option value="1">&lt; 100 mL (+1đ)</option><option value="2">100 - 200 mL (+2đ)</option><option value="3">> 200 mL (+3đ)</option></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-section">
+                    <div class="sub-title">Nguy cơ Hô hấp (Thang điểm ARISCAT)</div>
+                    <div class="row-table">
+                        <div class="col-cell w-50" style="padding-left:0;">
+                            <label style="font-size:0.8em;">Độ tuổi:</label>
+                            <select id="sel-ariscat-age"><option value="0">≤ 50 tuổi (0đ)</option><option value="3">51 - 80 tuổi (3đ)</option><option value="16">> 80 tuổi (16đ)</option></select>
+                        </div>
+                        <div class="col-cell w-50" style="padding-right:0;">
+                            <label style="font-size:0.8em;">SpO2 khí trời:</label>
+                            <select id="sel-ariscat-spo2"><option value="0">≥ 96% (0đ)</option><option value="8">91 - 95% (8đ)</option><option value="24">≤ 90% (24đ)</option></select>
+                        </div>
+                    </div>
+                    <div class="row-table" style="margin-top: 4px;">
+                        <div class="col-cell w-50" style="padding-left:0;">
+                            <label style="font-size:0.8em;">Vị trí rạch da mổ:</label>
+                            <select id="sel-ariscat-inc"><option value="0">Ngoại vi (Chi dưới) (0đ)</option><option value="15">Bụng trên (15đ)</option><option value="24">Lồng ngực (24đ)</option></select>
+                        </div>
+                        <div class="col-cell w-50" style="padding-right:0;">
+                            <label style="font-size:0.8em;">Thời gian phẫu thuật:</label>
+                            <select id="sel-ariscat-dur"><option value="0">&lt; 2 giờ (0đ)</option><option value="16">2 - 3 giờ (16đ)</option><option value="23">> 3 giờ (23đ)</option></select>
+                        </div>
+                    </div>
+                    <div style="margin-top: 5px;">
+                        <label class="checkbox-label"><input type="checkbox" id="cb-ariscat-inf" value="17"> Viêm nhiễm hô hấp cấp (1 tháng qua)</label>
+                        <label class="checkbox-label"><input type="checkbox" id="cb-ariscat-ane" value="11"> Thiếu máu mạn tính (Hb ≤ 10 g/dL)</label>
+                        <label class="checkbox-label"><input type="checkbox" id="cb-ariscat-em" value="8"> Phẫu thuật cấp cứu</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">3. Hình thái giải phẫu hệ mạch (MSCT) & Phân loại</div>
+        <div class="form-group">
+            <label>Tầng Dòng Vào (Inflow - Hệ Chủ & Chậu):</label>
+            <input type="text" id="in-msct-inflow" placeholder="VD: Xơ vữa lan tỏa, hẹp 70% ĐM chậu ngoài chung hai bên">
+        </div>
+        <div class="form-group">
+            <label>Tầng Dòng Ra (Outflow - Hệ Đùi & Khoeo):</label>
+            <input type="text" id="in-msct-outflow" placeholder="VD: Tắc hoàn toàn ĐM đùi nông đoạn giữa (SFA) khoảng 12 cm">
+        </div>
+        <div class="form-group">
+            <label>Tầng Giường Mạch Nhận (Run-off - Cẳng chân & Bàn chân):</label>
+            <input type="text" id="in-msct-runoff" placeholder="VD: ĐM chày trước hẹp nặng, ĐM chày sau thông suốt liên tục">
+        </div>
+
+        <div class="row-table" style="margin-top: 10px;">
+            <div class="col-cell w-50">
+                <div class="sub-section">
+                    <div class="sub-title">Phân loại TASC II</div>
+                    <label>Tầng Chủ - Chậu (Aortoiliac Lesions):</label>
+                    <select id="sel-tasc-iliac">
+                        <option value="A">TASC II Loại A: Hẹp ĐM chậu chung (CIA) 1 hoặc 2 bên; Hẹp ngắn (<3cm) ĐM chậu ngoài (EIA) 1 hoặc 2 bên.</option>
+                        <option value="B">TASC II Loại B: Hẹp ngắn (<3cm) ĐM chủ bụng dưới thận; Tắc CIA 1 bên; Hẹp EIA tổng chiều dài 3-10cm không lan vào ĐM đùi chung (CFA); Tắc EIA 1 bên không khu trú vào gốc ĐM chậu trong/CFA.</option>
+                        <option value="C">TASC II Loại C: Tắc CIA 2 bên; Hẹp EIA 2 bên dài 3-10cm không lan vào CFA; Tắc EIA 1 bên lan vào CFA hoặc kèm tổn thương gốc ĐM chậu trong; Tắc EIA vôi hóa nặng 1 bên.</option>
+                        <option value="D">TASC II Loại D: Tắc hoàn toàn ĐM chủ dưới thận; Tổn thương lan tỏa ĐM chủ và chậu 2 bên cần phẫu thuật; Tắc EIA và CIA cùng bên; Tắc EIA 2 bên; Hẹp chậu ở BN có phình ĐM chủ bụng (AAA).</option>
+                    </select>
+                    
+                    <label style="margin-top:5px;">Tầng Đùi - Khoeo (Femoropopliteal Lesions):</label>
+                    <select id="sel-tasc-fem">
+                        <option value="A">TASC II Loại A: Hẹp đơn độc chiều dài <10 cm; Tắc mạch đoạn ngắn chiều dài <5 cm.</option>
+                        <option value="B">TASC II Loại B: Nhiều tổn thương (hẹp hoặc tắc) mỗi đoạn <5 cm; Hẹp hoặc tắc tổng chiều dài <15 cm không lan đến ĐM khoeo dưới gối; Tắc mạch đoạn ngắn (<5cm) vôi hóa nặng; Hẹp ĐM khoeo đơn độc.</option>
+                        <option value="C">TASC II Loại C: Nhiều đoạn hẹp hoặc tắc lan tỏa tổng chiều dài >15 cm; Tái hẹp hoặc tái tắc mạn tính cần điều trị sau khi đã qua 2 lần can thiệp nội mạch.</option>
+                        <option value="D">TASC II Loại D: Tắc hoàn toàn mạn tính ĐM đùi chung (CFA) hoặc ĐM đùi nông (SFA) đoạn dài (>20 cm, lan vào ĐM khoeo); Tắc hoàn toàn ĐM khoeo và đoạn thân chung các động mạch dưới gối.</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-cell w-50">
+                <div class="sub-section">
+                    <div class="sub-title">Phân loại GLASS (Global Anatomic Staging)</div>
+                    <label>Đoạn Đùi - Khoeo (FP Grade):</label>
+                    <select id="sel-glass-fp"><option value="0">Grade 0</option><option value="1">Grade 1: Hẹp/Tắc &lt; 5 cm</option><option value="2">Grade 2: Hẹp/Tắc 5 - 15 cm</option><option value="3">Grade 3: Hẹp/Tắc &gt; 15 cm</option><option value="4">Grade 4: Tắc toàn bộ SFA</option></select>
+                    <label style="margin-top:5px;">Đoạn Dưới Khoeo (IP Grade):</label>
+                    <select id="sel-glass-ip"><option value="0">Grade 0</option><option value="1">Grade 1: Hẹp &lt; 3 cm</option><option value="2">Grade 2: Hẹp 3-10 cm hoặc Tắc &lt; 3 cm</option><option value="3">Grade 3: Hẹp &gt; 10 cm hoặc Tắc 3-10 cm</option><option value="4">Grade 4: Tắc hoàn toàn &gt; 10 cm</option></select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions-bar">
+        <button class="btn btn-update" onclick="compileClinicalData()">Xác nhận & Cập nhật kết quả</button>
+        <button class="btn btn-print" onclick="executePrintLayout()">🖨️ In Phiếu Hội Chẩn</button>
+    </div>
+</div>
+
+<div id="print-report">
+    <table class="p-header">
+        <tr>
+            <td style="width: 45%; text-align: center; text-transform: uppercase; font-weight: bold;">
+                SỞ Y TẾ THÀNH PHỐ ĐỒNG NAI<br>
+                <span style="font-size: 10.5pt;">BỆNH VIỆN ĐA KHOA THỐNG NHẤT</span><br>
+                <span style="font-size: 10pt; font-weight: normal; text-decoration: underline;">KHOA NGOẠI LỒNG NGỰC </span>
+            </td>
+            <td style="width: 55%; text-align: center; font-style: italic; font-size: 10.5pt;">
+                <strong>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong><br>
+                <span style="font-weight: bold; font-style: normal; font-size: 10.5pt;">Độc lập - Tự do - Hạnh phúc</span><br>
+                <span style="font-size: 9.5pt; font-weight: normal;">***</span>
+            </td>
+        </tr>
+    </table>
+
+    <div class="p-title">PHIẾU HỘI CHẨN ĐÁNH GIÁ TIỀN PHẪU MẠCH MÁU</div>
+
+    <div class="p-section-title">I. Hành chính & Chẩn đoán sơ bộ</div>
+    <table class="p-table">
+        <tr>
+            <td style="width: 45%;"><strong>Họ tên:</strong> <span id="pr-name" class="highlight-bold" style="text-transform: uppercase;">......................................................</span></td>
+            <td style="width: 25%;"><strong>Tuổi:</strong> <span id="pr-age">......</span></td>
+            <td style="width: 30%;"><strong>Mã số BA (ID):</strong> <span id="pr-id" class="highlight-bold">...........................</span></td>
+        </tr>
+        <tr>
+            <td colspan="3"><strong>Chẩn đoán bệnh lý:</strong> <span id="pr-dx">...........................................................................................................................................................</span></td>
+        </tr>
+    </table>
+
+    <div class="p-section-title">II. Đánh giá đa cơ quan & Điểm nguy cơ chu phẫu</div>
+    <div class="p-box-container">
+        <div class="p-box-cell" style="width: 50%;">
+            <div class="p-box-header">1. Nguy cơ toàn thân chu phẫu</div>
+            <table style="width: 100%; border: none; line-height: 1.45;">
+                <tr>
+                    <td style="padding: 2px 0; border:none;">• Dinh dưỡng (BMI):</td>
+                    <td style="padding: 2px 0; border:none; text-align: right;" id="pr-bmi" class="highlight-bold">Chưa đánh giá</td>
+                </tr>
+                <tr>
+                    <td style="padding: 2px 0; border:none;">• Mức độ Thiếu máu (Hb):</td>
+                    <td style="padding: 2px 0; border:none; text-align: right;" id="pr-hb" class="highlight-bold">Bình thường</td>
+                </tr>
+                <tr>
+                    <td style="padding: 2px 0; border:none;">• Tim mạch (RCRI):</td>
+                    <td style="padding: 2px 0; border:none; text-align: right;" id="pr-rcri" class="highlight-bold">Class I (0đ)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 2px 0; border:none;">• Thận (Mehran):</td>
+                    <td style="padding: 2px 0; border:none; text-align: right;" id="pr-mehran" class="highlight-bold">0đ (Thấp)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 2px 0; border:none;">• Hô hấp (ARISCAT):</td>
+                    <td style="padding: 2px 0; border:none; text-align: right;" id="pr-ariscat" class="highlight-bold">0đ (Thấp)</td>
+                </tr>
+            </table>
+        </div>
+        <div class="p-box-cell" style="width: 50%;">
+            <div class="p-box-header">2. Tình trạng chi & Phân loại lâm sàng</div>
+            <table style="width: 100%; border: none; line-height: 1.45;">
+                <tr>
+                    <td style="padding: 2px 0; border:none;">• Fontaine / Rutherford:</td>
+                    <td style="padding: 2px 0; border:none; text-align: right;" id="pr-clin-class" class="highlight-bold">GĐ I / Độ 0</td>
+                </tr>
+                <tr>
+                    <td style="padding: 2px 0; border:none;">• Đe dọa chi (WIfI):</td>
+                    <td style="padding: 2px 0; border:none; text-align: right;" id="pr-wifi" class="highlight-bold">Stage 1 (W0-I0-fI0)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 2px 0; border:none;" colspan="2">
+                        • Khảo sát TM hiển tự thân làm cầu nối:<br>
+                        <span id="pr-vein" class="highlight-bold" style="font-style: italic;">Đạt chuẩn (đường kính ≥ 3mm, liên tục)</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="p-section-title">III. Đặc điểm tổn thương hình thái hệ mạch (MSCT Top-down Approach)</div>
+    <table class="p-table">
+        <tr>
+            <th style="width: 30%;">Phân đoạn giải phẫu</th>
+            <th style="width: 70%;">Mô tả chi tiết tổn thương (Xơ vữa / Hẹp / Tắc / Vôi hóa)</th>
+        </tr>
+        <tr>
+            <td><strong>1. Tầng Dòng Vào (Inflow)</strong><br><span style="font-size:9.5pt; font-weight:normal; font-style:italic;">Hệ Động mạch Chủ bụng & Chậu</span></td>
+            <td id="pr-msct-inflow">........................................................................................................................................................................</td>
+        </tr>
+        <tr>
+            <td><strong>2. Tầng Dòng Ra (Outflow)</strong><br><span style="font-size:9.5pt; font-weight:normal; font-style:italic;">Hệ Động mạch Đùi & Khoeo</span></td>
+            <td id="pr-msct-outflow">........................................................................................................................................................................</td>
+        </tr>
+        <tr>
+            <td><strong>3. Giường Mạch Nhận (Run-off)</strong><br><span style="font-size:9.5pt; font-weight:normal; font-style:italic;">Hệ Động mạch Dưới gối & Bàn chân</span></td>
+            <td id="pr-msct-runoff">........................................................................................................................................................................</td>
+        </tr>
+    </table>
+
+    <div class="p-section-title">IV. Bảng phân loại hình thái quốc tế</div>
+    <table class="p-table">
+        <tr>
+            <td style="width: 50%;"><strong>Hệ phân loại TASC II:</strong> <span id="pr-class-tasc" class="highlight-bold">Tầng Chậu: A | Tầng Đùi: A</span></td>
+            <td style="width: 50%;"><strong>Hệ phân loại giải phẫu GLASS:</strong> <span id="pr-class-glass" class="highlight-bold">Stage I (FP1, IP0)</span></td>
+        </tr>
+    </table>
+
+    <div class="p-section-title">V. Định hướng xử trí & Khuyến cáo đồng thuận lâm sàng</div>
+    <div class="p-recommendation-box">
+        <strong class="screen-only-rec">▶ Chiến lược tiếp cận đề xuất (Gợi ý máy tính):</strong>
+        <div id="pr-final-recommendation" class="screen-only-rec" style="margin-top: 6px; text-align: justify; line-height: 1.5;">
+            Chưa có đủ dữ liệu. Vui lòng bấm nút "Xác nhận & Cập nhật kết quả".
+        </div>
+
+        <strong class="print-only-rec">▶ Ý kiến hội chẩn & Quyết định can thiệp:</strong>
+        <div class="print-only-rec" style="margin-top: 15px; margin-bottom: 5px;">
+            <div style="border-bottom: 1px dotted #000; margin-bottom: 24px; width: 100%;"></div>
+            <div style="border-bottom: 1px dotted #000; margin-bottom: 24px; width: 100%;"></div>
+            <div style="border-bottom: 1px dotted #000; margin-bottom: 24px; width: 100%;"></div>
+            <div style="border-bottom: 1px dotted #000; margin-bottom: 10px; width: 100%;"></div>
+        </div>
+    </div>
+
+    <div class="p-signatures">
+        <div class="p-sig-cell">
+            <strong>BÁC SĨ ĐIỀU TRỊ / LẬP BẢNG</strong><br>
+            <span style="font-size: 9.5pt; font-style: italic;">(Ký, ghi rõ họ tên)</span>
+            <br><br><br><br>
+            <span>............................................................</span>
+        </div>
+        <div class="p-sig-cell">
+            <i>Đồng Nai, ngày ..... tháng ..... năm 2026</i><br>
+            <strong>CHỦ TỌA HỘI CHẨN / TRƯỞNG KHOA</strong><br>
+            <span style="font-size: 9.5pt; font-style: italic;">(Ký tên, đóng dấu bản bệnh án)</span>
+            <br><br><br><br>
+            <span>............................................................</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const wifi_matrix = [
+        [ [1,1,2,3], [1,1,2,3], [1,2,3,4], [2,3,4,4] ],
+        [ [1,2,3,4], [2,2,3,4], [3,3,4,4], [3,4,4,4] ],
+        [ [2,3,4,4], [3,3,4,4], [4,4,4,4], [4,4,4,4] ],
+        [ [3,4,4,4], [4,4,4,4], [4,4,4,4], [4,4,4,4] ]
+    ];
+
+    function autoSyncAge() {
+        let ageValue = parseInt(document.getElementById('in-age').value);
+        if (!isNaN(ageValue)) {
+            document.getElementById('cb-mehran-age').checked = (ageValue > 75);
+            let ariscatAgeSel = document.getElementById('sel-ariscat-age');
+            if (ageValue <= 50) ariscatAgeSel.value = "0";
+            else if (ageValue <= 80) ariscatAgeSel.value = "3";
+            else ariscatAgeSel.value = "16";
+        }
+    }
+
+    function calcBMI() {
+        let h = parseFloat(document.getElementById('in-height').value) / 100; 
+        let w = parseFloat(document.getElementById('in-weight').value);
+        if (h > 0 && w > 0) {
+            let bmi = (w / (h * h)).toFixed(1);
+            let status = "";
+            if (bmi < 18.5) status = " (Thiếu cân)";
+            else if (bmi < 23) status = " (Bình thường)"; 
+            else if (bmi < 25) status = " (Tiền béo phì)";
+            else status = " (Béo phì)";
+            document.getElementById('in-bmi').value = bmi + status;
+        } else {
+            document.getElementById('in-bmi').value = "";
+        }
+    }
+
+    function compileClinicalData() {
+        let pName = document.getElementById('in-name').value || "......................................................";
+        let pAge = document.getElementById('in-age').value || "......";
+        let pId = document.getElementById('in-id').value || "...........................";
+        let pDx = document.getElementById('in-dx').value || "...........................................................................................................................................................";
+
+        document.getElementById('pr-name').innerText = pName;
+        document.getElementById('pr-age').innerText = pAge + " tuổi";
+        document.getElementById('pr-id').innerText = pId;
+        document.getElementById('pr-dx').innerText = pDx;
+
+        // BMI & Thiếu máu
+        let bmiText = document.getElementById('in-bmi').value || "Chưa ghi nhận";
+        document.getElementById('pr-bmi').innerText = bmiText;
+        
+        let selHb = document.getElementById('sel-hb');
+        let hbText = selHb.options[selHb.selectedIndex].text;
+        document.getElementById('pr-hb').innerText = hbText.split('(')[0].trim(); 
+
+        // Fontaine & Rutherford
+        let fontaine = document.getElementById('sel-fontaine').value;
+        let rutherford = document.getElementById('sel-rutherford').value;
+        document.getElementById('pr-clin-class').innerText = `GĐ ${fontaine} / Độ ${rutherford}`;
+
+        // RCRI
+        let rcriScore = 0;
+        document.querySelectorAll('.cb-rcri').forEach(cb => { if (cb.checked) rcriScore++; });
+        let rcriClass = (rcriScore === 0) ? "Class I (0đ)" : (rcriScore === 1) ? "Class II (1đ)" : (rcriScore === 2) ? "Class III (2đ)" : "Class IV (≥3đ)";
+        let rcriMace = (rcriScore === 0) ? "0.4%" : (rcriScore === 1) ? "0.9%" : (rcriScore === 2) ? "6.6%" : "≥11%";
+        document.getElementById('pr-rcri').innerText = `${rcriClass} [MACE: ${rcriMace}]`;
+
+        // Mehran
+        let mehranScore = 0;
+        document.querySelectorAll('.cb-mehran').forEach(cb => { if (cb.checked) mehranScore += parseInt(cb.value); });
+        mehranScore += parseInt(document.getElementById('sel-mehran-egfr').value);
+        mehranScore += parseInt(document.getElementById('sel-mehran-vol').value);
+        let mehranRisk = (mehranScore <= 5) ? "Thấp" : (mehranScore <= 10) ? "Trung bình" : "Cao";
+        document.getElementById('pr-mehran').innerText = `${mehranScore}đ (${mehranRisk})`;
+
+        // ARISCAT
+        let ariscatScore = parseInt(document.getElementById('sel-ariscat-age').value) +
+                           parseInt(document.getElementById('sel-ariscat-spo2').value) +
+                           parseInt(document.getElementById('sel-ariscat-inc').value) +
+                           parseInt(document.getElementById('sel-ariscat-dur').value);
+        if (document.getElementById('cb-ariscat-inf').checked) ariscatScore += 17;
+        if (document.getElementById('cb-ariscat-ane').checked) ariscatScore += 11;
+        if (document.getElementById('cb-ariscat-em').checked) ariscatScore += 8;
+        let ariscatRisk = (ariscatScore < 26) ? "Thấp" : (ariscatScore <= 44) ? "Trung bình" : "Cao";
+        document.getElementById('pr-ariscat').innerText = `${ariscatScore}đ (PPC: ${ariscatRisk})`;
+
+        // WIfI & Vein
+        let w = parseInt(document.getElementById('sel-wifi-w').value);
+        let i = parseInt(document.getElementById('sel-wifi-i').value);
+        let fi = parseInt(document.getElementById('sel-wifi-fi').value);
+        let wifiStage = wifi_matrix[fi][i][w];
+        document.getElementById('pr-wifi').innerText = `Stage ${wifiStage} (W${w}-I${i}-fI${fi})`;
+
+        let veinVal = document.getElementById('sel-vein').value;
+        let veinText = (veinVal === "1") ? "ĐẠT CHUẨN (Đủ tiêu chuẩn làm cầu nối tự thân)" : "KHÔNG ĐẠT CHUẨN (Kích thước bé hoặc đứt đoạn)";
+        document.getElementById('pr-vein').innerText = veinText;
+
+        // MSCT
+        document.getElementById('pr-msct-inflow').innerText = document.getElementById('in-msct-inflow').value || "Chưa phát hiện tổn thương hẹp tắc khu trú rõ ràng.";
+        document.getElementById('pr-msct-outflow').innerText = document.getElementById('in-msct-outflow').value || "Thông suốt liên tục, không mảng xơ vữa lớn.";
+        document.getElementById('pr-msct-runoff').innerText = document.getElementById('in-msct-runoff').value || "Mạch ngoại vi lưu thông tốt xuống mu chân.";
+
+        // TASC & GLASS
+        let tascIliac = document.getElementById('sel-tasc-iliac').value;
+        let tascFem = document.getElementById('sel-tasc-fem').value;
+        document.getElementById('pr-class-tasc').innerText = `Tầng Chậu: Loại ${tascIliac} | Tầng Đùi-Khoeo: Loại ${tascFem}`;
+
+        let fpGrade = parseInt(document.getElementById('sel-glass-fp').value);
+        let ipGrade = parseInt(document.getElementById('sel-glass-ip').value);
+        let glassStage = "I";
+        if (fpGrade <= 1) { glassStage = (ipGrade <= 2) ? "I" : (ipGrade === 3) ? "II" : "III"; } 
+        else if (fpGrade === 2) { glassStage = (ipGrade <= 1) ? "I" : (ipGrade <= 3) ? "II" : "III"; } 
+        else if (fpGrade === 3) { glassStage = (ipGrade <= 2) ? "II" : "III"; } 
+        else if (fpGrade === 4) { glassStage = "III"; }
+        document.getElementById('pr-class-glass').innerText = `Stage ${glassStage} (FP Grade ${fpGrade}, IP Grade ${ipGrade})`;
+
+        // Rationale
+        let rationale = "";
+        if (wifiStage === 1) {
+            rationale = "<strong>Khuyến cáo:</strong> Chi tổn thương ở Giai đoạn 1 (Nguy cơ cắt cụt cực thấp). Định hướng chủ đạo là <strong>ĐIỀU TRỊ NỘI KHOA TỐI ƯU</strong>, kiểm soát các yếu tố xơ vữa (Statin, chống ngưng tập tiểu cầu), tối ưu hóa đường huyết và chăm sóc giảm áp lực loét tại chỗ. Chưa có chỉ định can thiệp mạch máu can dự.";
+        } else if (wifiStage === 4 && fi === 3) {
+            rationale = "<strong>Khuyến cáo báo động đỏ:</strong> Bệnh nhân có tình trạng đe dọa chi Stage 4 kèm Hội chứng đáp ứng viêm hệ thống (SIRS) do nhiễm trùng chi nặng. Ưu tiên hàng đầu là <strong>CẮT LỌC RỘNG KHẨN CẤP / CẮT CỤT CHỦ ĐỘNG KHỬ KHUẨN</strong> kết hợp kháng sinh phổ rộng liều cao để cứu tính mạng bệnh nhân trước, trì hoãn mọi can thiệp mạch máu giai đoạn nhiễm độc.";
+        } else {
+            rationale = `<strong>Khuyến cáo:</strong> Bệnh nhân có chỉ định rõ rệt để thực hiện can thiệp <strong>TÁI LƯU THÔNG MẠCH MÁU CỨU CHI</strong> (WIfI Clinical Stage ${wifiStage}). Biện pháp lựa chọn dựa trên sự phối hợp hình thái mạch và nguy cơ chu phẫu:<br>`;
+            if (glassStage === "I" || tascFem === "A") {
+                rationale += "• Tổn thương mạch máu phân đoạn đơn giản, ngắn (GLASS Stage I / TASC II A): Ưu tiên lựa chọn chiến lược <strong>CAN THIỆP NỘI MẠCH (Endovascular First)</strong> bằng nong bóng / đặt stent phủ nhằm đạt hiệu quả phục hồi dòng chảy nhanh, ít xâm lấn.";
+            } else if (glassStage === "III" || tascFem === "D") {
+                if (veinVal === "1" && rcriScore <= 1 && mehranScore <= 5) {
+                    rationale += "• Tổn thương mạch máu phức tạp, lan tỏa (GLASS Stage III / TASC II D) + Có tĩnh mạch hiển tự thân lý tưởng + Nguy cơ chu phẫu (Tim, thận, hô hấp) ở mức THẤP: Khuyến cáo ưu tiên tiến hành <strong>PHẪU THUẬT MỞ BẮC CẦU MẠCH MÁU (Open Bypass Surgery)</strong> để mang lại tỷ lệ thông thoáng dài hạn tốt nhất.";
+                } else {
+                    rationale += "• Tổn thương mạch máu rất phức tạp nhưng bệnh nhân có <strong>NGUY CƠ CHU PHẪU CAO</strong> (hoặc không có tĩnh mạch ghép đạt tiêu chuẩn): Chuyển hướng ưu tiên lựa chọn can thiệp kỹ thuật cao <strong>NỘI MẠCH (Endovascular)</strong> hoặc áp dụng kỹ thuật phối hợp <strong>Hybrid Surgery</strong> để hạn chế tai biến chu phẫu nguy hiểm.";
+                }
+            } else {
+                rationale += "• Tổn thương thuộc nhóm trung gian (GLASS Stage II / TASC II B-C): Vùng xám lâm sàng. Quyết định can thiệp sẽ dựa vào sự thảo luận cá thể hóa giữa mong muốn của bệnh nhân và kinh nghiệm vật tư thực tế của trung tâm phẫu thuật.";
+            }
+        }
+        document.getElementById('pr-final-recommendation').innerHTML = rationale;
+    }
+
+    function executePrintLayout() {
+        compileClinicalData();
+        window.print();
+    }
+</script>
+
+</body>
+</html>
