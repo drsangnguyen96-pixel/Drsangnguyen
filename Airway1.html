@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Đánh Giá Đường Thở</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --hover-bg: #ebf5fb;
+            --danger: #e74c3c;
+            --success: #27ae60;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 26px;
+            text-transform: uppercase;
+            border-bottom: 3px solid var(--secondary);
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        /* Lưới hiển thị các hộp (Menu) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 25px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+            border-left: 5px solid var(--secondary);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            background-color: var(--hover-bg);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        /* Giao diện Đánh giá chi tiết */
+        .assessment-container {
+            display: none;
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-back {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .btn-back:hover {
+            background-color: #7f8c8d;
+        }
+
+        #assessmentTitle {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 22px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 6px;
+            transition: background 0.2s;
+            border: 1px solid #eee;
+        }
+
+        .check-item:hover {
+            background: var(--hover-bg);
+            border-color: #bcdcf1;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 15px;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            flex-shrink: 0;
+            accent-color: var(--secondary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #2980b9;
+        }
+
+        /* Kết quả */
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            display: none;
+            line-height: 1.5;
+        }
+
+        .alert-danger {
+            background-color: #fce4e4;
+            color: #cc0033;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background-color: #e5fad9;
+            color: #1e701e;
+            border: 1px solid #c3e6cb;
+        }
+
+        .result-box ul {
+            margin-top: 10px;
+            padding-left: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Đánh Giá Đường Thở Toàn Diện</h1>
+    </div>
+
+    <div id="mainGrid" class="grid-container">
+        </div>
+
+    <div id="assessmentView" class="assessment-container">
+        <button class="btn-back" onclick="goBack()">&#8592; Quay lại danh sách</button>
+        <h2 id="assessmentTitle">Tiêu đề</h2>
+        <form id="assessmentForm">
+            </form>
+        <button class="btn-submit" onclick="evaluateCurrent()">Xác nhận Đánh giá</button>
+        <div id="resultBox" class="result-box"></div>
+    </div>
+
+    <script>
+        // Cơ sở dữ liệu các thang điểm
+        const data = [
+            {
+                id: 0,
+                title: "Dự đoán soi thanh quản khó",
+                items: [
+                    "Miệng há nhỏ (< 3 cm là đặt NKQ khó)",
+                    "Nghiệm pháp cắn môi (-)",
+                    "Mallampati 3 hoặc 4",
+                    "Ngửa cổ giới hạn (< 90<sup>o</sup>)",
+                    "Khoảng cách giáp – cằm < 6 cm",
+                    "Khoảng cách ức cằm < 12,5 cm (hõm ức đến đỉnh xương hàm dưới, ngửa cổ tối đa không há miệng)"
+                ]
+            },
+            {
+                id: 1,
+                title: "Dự đoán thông khí qua mặt nạ khó",
+                items: [
+                    "Tuổi > 55",
+                    "Chỉ số khối cơ thể > 26 kg/m<sup>2</sup>",
+                    "Ngủ ngáy",
+                    "Râu rậm",
+                    "Thiếu răng",
+                    "Bất thường vùng mặt",
+                    "Cằm lẹm",
+                    "Hội chứng ngưng thở khi ngủ",
+                    "Mallampati 3 hoặc 4"
+                ]
+            },
+            {
+                id: 2,
+                title: "Tiêu chuẩn KHÔNG THỂ thông khí qua mặt nạ",
+                items: [
+                    "Khoảng cách giáp cằm < 6 cm + ngủ ngáy"
+                ]
+            },
+            {
+                id: 3,
+                title: "Yếu tố dự đoán nội soi mềm khó",
+                items: [
+                    "Người bệnh không có khả năng hợp tác",
+                    "Người thực hiện thiếu kinh nghiệm",
+                    "Máu hoặc dịch tiết trong đường thở không kiểm soát được"
+                ]
+            },
+            {
+                id: 4,
+                title: "Dự đoán đặt thiết bị trên nắp thanh môn khó",
+                items: [
+                    "Mở miệng < 2,5 cm (không thể đặt nếu < 2 cm)",
+                    "Khối chèn ép trong miệng/hầu (ví dụ: amiđan to)",
+                    "Béo phì",
+                    "Thiếu răng"
+                ]
+            },
+            {
+                id: 5,
+                title: "Dự đoán đặt NKQ khó",
+                items: [
+                    "Tiền căn đặt NKQ khó",
+                    "Điểm Mallampati 3 hoặc 4",
+                    "Khoảng cách giáp cằm < 6 cm",
+                    "Mở miệng < 3,5 cm",
+                    "Test cắn môi (-)",
+                    "Gập ngửa cổ giới hạn",
+                    "Chỉ số khối cơ thể > 35 kg/m<sup>2</sup>",
+                    "Hội chứng ngưng thở khi ngủ + vòng cổ > 45 cm",
+                    "Bệnh lý vùng đầu cổ",
+                    "Tiền sản giật"
+                ]
+            },
+            {
+                id: 6,
+                title: "Dự đoán đặt NKQ khó trong cấp cứu",
+                items: [
+                    "Chấn thương đầu mặt cổ",
+                    "Bệnh lý tai mũi họng",
+                    "Bỏng vùng mặt"
+                ]
+            },
+            {
+                id: 7,
+                title: "Yếu tố dự đoán mở khí quản khó",
+                items: [
+                    "Béo phì",
+                    "Nhiễm trùng hoặc sẹo vùng cổ",
+                    "Lệch khí quản",
+                    "Tiền căn phẫu thuật, xạ trị vùng cổ",
+                    "Bướu cổ"
+                ]
+            }
+        ];
+
+        let currentAssessmentId = null;
+
+        // Khởi tạo màn hình chính
+        function initApp() {
+            const grid = document.getElementById('mainGrid');
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => openAssessment(item.id);
+                card.innerHTML = `<h3>${item.title}</h3>`;
+                grid.appendChild(card);
+            });
+        }
+
+        // Mở màn hình đánh giá chi tiết
+        function openAssessment(id) {
+            currentAssessmentId = id;
+            const assessment = data.find(item => item.id === id);
+            
+            // Cập nhật tiêu đề
+            document.getElementById('assessmentTitle').innerHTML = assessment.title;
+            
+            // Tạo danh sách checkbox
+            const form = document.getElementById('assessmentForm');
+            form.innerHTML = ''; // Xóa cũ
+            assessment.items.forEach(text => {
+                const label = document.createElement('label');
+                label.className = 'check-item';
+                label.innerHTML = `<input type="checkbox" value="${text}"> ${text}`;
+                form.appendChild(label);
+            });
+
+            // Ẩn kết quả cũ
+            document.getElementById('resultBox').style.display = 'none';
+
+            // Đổi View
+            document.getElementById('mainGrid').style.display = 'none';
+            document.getElementById('assessmentView').style.display = 'block';
+        }
+
+        // Quay lại màn hình chính
+        function goBack() {
+            document.getElementById('assessmentView').style.display = 'none';
+            document.getElementById('mainGrid').style.display = 'grid';
+            currentAssessmentId = null;
+        }
+
+        // Thực hiện đánh giá
+        function evaluateCurrent() {
+            const form = document.getElementById('assessmentForm');
+            const checkboxes = form.querySelectorAll('input[type="checkbox"]:checked');
+            const resultBox = document.getElementById('resultBox');
+            const count = checkboxes.length;
+
+            if (count > 0) {
+                let factors = Array.from(checkboxes).map(cb => `<li>${cb.value}</li>`).join('');
+                resultBox.innerHTML = `<strong>CẢNH BÁO:</strong> Phát hiện <strong>${count}</strong> yếu tố nguy cơ:<br><ul>${factors}</ul>`;
+                resultBox.className = "result-box alert-danger";
+            } else {
+                resultBox.innerHTML = `<strong>An toàn:</strong> Chưa ghi nhận yếu tố nguy cơ nào trong danh mục này.`;
+                resultBox.className = "result-box alert-success";
+            }
+            resultBox.style.display = 'block';
+        }
+
+        // Chạy khởi tạo khi tải trang
+        window.onload = initApp;
+    </script>
+</body>
+</html>

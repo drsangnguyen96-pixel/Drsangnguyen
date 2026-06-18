@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Đánh Giá Nguy Cơ Tim Mạch</title>
+    <style>
+        :root {
+            --primary: #800000; /* Màu đỏ sẫm cho Tim mạch */
+            --secondary: #c0392b;
+            --bg-color: #fcf3f2;
+            --card-bg: #ffffff;
+            --hover-bg: #fdedec;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #27ae60;
+            --text: #333;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text); padding: 20px; }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: var(--primary); font-size: 26px; text-transform: uppercase; border-bottom: 3px solid var(--secondary); display: inline-block; padding-bottom: 10px; }
+
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+
+        .card { background-color: var(--card-bg); padding: 25px 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); text-align: center; cursor: pointer; transition: all 0.3s ease; border-left: 5px solid var(--secondary); display: flex; flex-direction: column; justify-content: center; min-height: 120px;}
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(192, 57, 43, 0.2); background-color: var(--hover-bg); }
+        .card h3 { color: var(--primary); font-size: 18px; line-height: 1.4; }
+
+        .assessment-container { display: none; max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        
+        .btn-back { background-color: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 14px; margin-bottom: 20px; font-weight: bold; }
+        .btn-back:hover { background-color: #7f8c8d; }
+
+        #assessmentTitle { color: var(--secondary); margin-bottom: 20px; font-size: 22px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+
+        .check-item { display: flex; align-items: flex-start; margin-bottom: 12px; font-size: 16px; cursor: pointer; padding: 12px; border-radius: 6px; transition: background 0.2s; border: 1px solid #eee; }
+        .check-item:hover { background: var(--hover-bg); border-color: #f1948a; }
+        
+        input[type="checkbox"], input[type="radio"] { margin-right: 15px; margin-top: 3px; width: 20px; height: 20px; cursor: pointer; flex-shrink: 0; accent-color: var(--secondary); }
+        
+        .section-title { margin: 15px 0 10px 0; color: var(--primary); font-size: 17px; }
+
+        .btn-submit { width: 100%; padding: 15px; background-color: var(--secondary); color: white; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: background 0.3s; }
+        .btn-submit:hover { background-color: #922b21; }
+
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 8px; font-size: 16px; display: none; line-height: 1.5; }
+        .alert-danger { background-color: #fce4e4; color: #cc0033; border: 1px solid #f5c6cb; }
+        .alert-warning { background-color: #fcf3cf; color: #8a6d3b; border: 1px solid #faebcc; }
+        .alert-success { background-color: #d4efdf; color: #1e8449; border: 1px solid #c3e6cb; }
+        .alert-info { background-color: #d6eaf8; color: #21618c; border: 1px solid #bce8f1; }
+        .result-box ul { margin-top: 10px; padding-left: 25px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Đánh Giá Nguy Cơ Tim Mạch Chu Phẫu</h1>
+    </div>
+
+    <div id="mainGrid" class="grid-container">
+        <div class="card" onclick="openTool('mets')">
+            <h3>1. Đánh giá Khả năng Thể lực (METs / DASI)</h3>
+        </div>
+        <div class="card" onclick="openTool('accaha')">
+            <h3>2. Phân tầng Nguy cơ Phẫu thuật (ACC/AHA)</h3>
+        </div>
+        <div class="card" onclick="openTool('lee')">
+            <h3>3. Thang điểm LEE (Revised Cardiac Risk Index)</h3>
+        </div>
+        <div class="card" onclick="openTool('chuphau')">
+            <h3>4. Yếu tố Nguy cơ Tim mạch Chu phẫu</h3>
+        </div>
+    </div>
+
+    <div id="assessmentView" class="assessment-container">
+        <button class="btn-back" onclick="goBack()">&#8592; Quay lại danh sách</button>
+        <h2 id="assessmentTitle">Tiêu đề</h2>
+        <div id="formContainer">
+            </div>
+        <button class="btn-submit" onclick="evaluateCurrent()">Xác nhận Đánh giá</button>
+        <div id="resultBox" class="result-box"></div>
+    </div>
+
+    <script>
+        let currentTool = '';
+
+        // Dữ liệu và Cấu trúc các Form
+        const tools = {
+            mets: {
+                title: "Khả năng Thể lực (METs) theo DASI",
+                render: function() {
+                    return `
+                        <p style="margin-bottom:15px;"><i>Chọn các hoạt động thể lực cao nhất mà bệnh nhân có thể thực hiện không triệu chứng:</i></p>
+                        <div class="section-title">Hoàn hảo (> 10 METs)</div>
+                        <label class="check-item"><input type="checkbox" data-score="4" value="Bơi lội, Tennis đơn, Trượt tuyết, Điền kinh"> Bơi lội, Tennis đơn, Trượt tuyết, Điền kinh</label>
+                        
+                        <div class="section-title">Rất tốt – Tốt (7 – 10 METs)</div>
+                        <label class="check-item"><input type="checkbox" data-score="3" value="Tennis đôi, bóng đá, Khiêu vũ, Sửa chữa nhà"> Tennis đôi, bóng đá, Khiêu vũ, Sửa chữa nhà</label>
+                        <label class="check-item"><input type="checkbox" data-score="3" value="Chạy quãng ngắn, Leo lên ngọn đồi, Leo >2 lầu, Đi nhanh"> Chạy quãng ngắn, Leo lên ngọn đồi, Leo lên trên 2 lầu, Đi nhanh trên đường phẳng</label>
+                        
+                        <div class="section-title">Trung bình (4 – 7 METs)</div>
+                        <label class="check-item"><input type="checkbox" data-score="2" value="Leo 2 lầu, Bóng rổ"> Leo 2 lầu, Bóng rổ</label>
+                        
+                        <div class="section-title">Thấp (< 4 METs)</div>
+                        <label class="check-item"><input type="checkbox" data-score="1" value="Đi trên đường thẳng 3 – 5km/giờ"> Đi trên đường thẳng 3 – 5km/giờ</label>
+                        <label class="check-item"><input type="checkbox" data-score="1" value="Đi lại trong nhà, Tự vệ sinh, thay đồ, ăn uống, Dọn dẹp nhà"> Đi lại trong nhà, Tự vệ sinh, thay đồ, ăn uống, Dọn dẹp nhà</label>
+                    `;
+                },
+                evaluate: function() {
+                    const checks = document.querySelectorAll('#formContainer input:checked');
+                    if (checks.length === 0) return { alert: 'alert-warning', html: 'Vui lòng chọn ít nhất một hoạt động.' };
+                    
+                    let maxScore = 0;
+                    checks.forEach(c => { if (parseInt(c.dataset.score) > maxScore) maxScore = parseInt(c.dataset.score); });
+                    
+                    if (maxScore === 4) return { alert: 'alert-success', html: '<strong>Đánh giá: HOÀN HẢO (> 10 METs)</strong><br>Nguy cơ phẫu thuật ước tính: <strong>THẤP</strong>.<br>VO2 ước tính: > 35 ml/kg/phút.' };
+                    if (maxScore === 3) return { alert: 'alert-info', html: '<strong>Đánh giá: RẤT TỐT - TỐT (7 - 10 METs)</strong><br>Nguy cơ phẫu thuật ước tính: <strong>THẤP</strong>.<br>VO2 ước tính: 24.5 – 35 ml/kg/phút.' };
+                    if (maxScore === 2) return { alert: 'alert-warning', html: '<strong>Đánh giá: TRUNG BÌNH (4 - 7 METs)</strong><br>Nguy cơ phẫu thuật ước tính: <strong>TRUNG BÌNH</strong>.<br>VO2 ước tính: 14 – 24.5 ml/kg/phút.' };
+                    return { alert: 'alert-danger', html: '<strong>Đánh giá: THẤP (< 4 METs)</strong><br>Nguy cơ phẫu thuật ước tính: <strong>TRUNG BÌNH - CAO</strong>.<br>VO2 ước tính: < 14 ml/kg/phút.' };
+                }
+            },
+            
+            accaha: {
+                title: "Phân tầng Nguy cơ Tim mạch theo PT ngoài tim (ACC/AHA)",
+                render: function() {
+                    return `
+                        <div class="section-title">Phẫu thuật Nguy cơ CAO (> 5%)</div>
+                        <label class="check-item"><input type="checkbox" data-risk="3" value="PT trên ĐM chủ hoặc mạch máu lớn"> PT trên ĐM chủ hoặc mạch máu lớn</label>
+                        <label class="check-item"><input type="checkbox" data-risk="3" value="PT mạch máu ngoại biên"> PT mạch máu ngoại biên</label>
+
+                        <div class="section-title">Phẫu thuật Nguy cơ TRUNG BÌNH (< 5%)</div>
+                        <label class="check-item"><input type="checkbox" data-risk="2" value="PT nội ĐM cảnh"> PT nội ĐM cảnh</label>
+                        <label class="check-item"><input type="checkbox" data-risk="2" value="PT vùng đầu, cổ"> PT vùng đầu, cổ</label>
+                        <label class="check-item"><input type="checkbox" data-risk="2" value="PT trong ổ bụng hoặc lồng ngực"> PT trong ổ bụng hoặc lồng ngực</label>
+                        <label class="check-item"><input type="checkbox" data-risk="2" value="PT chỉnh hình"> PT chỉnh hình</label>
+                        <label class="check-item"><input type="checkbox" data-risk="2" value="PT tuyến tiền liệt"> PT tuyến tiền liệt</label>
+
+                        <div class="section-title">Phẫu thuật Nguy cơ THẤP (< 1%)</div>
+                        <label class="check-item"><input type="checkbox" data-risk="1" value="PT trong ngày (Ambulatory surgery)"> PT trong ngày (Ambulatory surgery)</label>
+                        <label class="check-item"><input type="checkbox" data-risk="1" value="Các thủ thuật nội soi"> Các thủ thuật nội soi</label>
+                        <label class="check-item"><input type="checkbox" data-risk="1" value="PT nông ngoài da"> PT nông ngoài da</label>
+                        <label class="check-item"><input type="checkbox" data-risk="1" value="PT đục thủy tinh thể"> PT đục thủy tinh thể</label>
+                        <label class="check-item"><input type="checkbox" data-risk="1" value="PT tuyến vú"> PT tuyến vú</label>
+                    `;
+                },
+                evaluate: function() {
+                    const checks = document.querySelectorAll('#formContainer input:checked');
+                    if (checks.length === 0) return { alert: 'alert-warning', html: 'Vui lòng chọn loại phẫu thuật.' };
+                    
+                    let maxRisk = 0;
+                    checks.forEach(c => { if (parseInt(c.dataset.risk) > maxRisk) maxRisk = parseInt(c.dataset.risk); });
+
+                    if (maxRisk === 3) return { alert: 'alert-danger', html: '<strong>Đánh giá ACC/AHA: NGUY CƠ CAO (> 5%)</strong><br>Loại phẫu thuật này có nguy cơ biến cố tim mạch chu phẫu lớn hơn 5%.' };
+                    if (maxRisk === 2) return { alert: 'alert-warning', html: '<strong>Đánh giá ACC/AHA: NGUY CƠ TRUNG BÌNH (< 5%)</strong><br>Loại phẫu thuật này có nguy cơ biến cố tim mạch chu phẫu dưới 5%.' };
+                    return { alert: 'alert-success', html: '<strong>Đánh giá ACC/AHA: NGUY CƠ THẤP (< 1%)</strong><br>Loại phẫu thuật này an toàn, nguy cơ rất thấp (< 1%).' };
+                }
+            },
+
+            lee: {
+                title: "Thang điểm LEE (Revised Cardiac Risk Score)",
+                render: function() {
+                    return `
+                        <p style="margin-bottom:15px;"><i>Mỗi yếu tố được tính 1 điểm:</i></p>
+                        <label class="check-item"><input type="checkbox" class="lee-check"> <b>Phẫu thuật nguy cơ cao:</b> PT mạch máu trên vùng bẹn, trong lồng ngực hay trong phúc mạc</label>
+                        <label class="check-item"><input type="checkbox" class="lee-check"> <b>Bệnh mạch vành:</b> Tiền căn NMCT, đau ngực, sử dụng Nitrate, sóng Q trên ECG, test mạch vành không xâm lấn (+)</label>
+                        <label class="check-item"><input type="checkbox" class="lee-check"> <b>Suy tim:</b> Tiền căn ST sung huyết, phù phổi, khó thở kịch phát về đêm, ran 2 bên, ngựa phi T3, tái phân bố mạch máu</label>
+                        <label class="check-item"><input type="checkbox" class="lee-check"> <b>Đột quỵ:</b> Tiền căn đột quỵ não thiếu máu cục bộ hay cơn thoáng thiếu máu não (TIA)</label>
+                        <label class="check-item"><input type="checkbox" class="lee-check"> <b>Đái tháo đường:</b> Đang điều trị bằng Insuline</label>
+                        <label class="check-item"><input type="checkbox" class="lee-check"> <b>Suy thận mạn:</b> Creatinine > 177μmol/L hay > 2mg/dL</label>
+                    `;
+                },
+                evaluate: function() {
+                    const score = document.querySelectorAll('#formContainer .lee-check:checked').length;
+                    
+                    if (score === 0) return { alert: 'alert-success', html: `<strong>Tổng điểm: ${score} điểm (Nhóm I)</strong><br>Nguy cơ biến chứng tim mạch nặng: <strong>0,4%</strong>.` };
+                    if (score === 1) return { alert: 'alert-info', html: `<strong>Tổng điểm: ${score} điểm (Nhóm II)</strong><br>Nguy cơ biến chứng tim mạch nặng: <strong>0,9%</strong>.` };
+                    if (score === 2) return { alert: 'alert-warning', html: `<strong>Tổng điểm: ${score} điểm (Nhóm III)</strong><br>Nguy cơ biến chứng tim mạch nặng: <strong>7%</strong>.` };
+                    return { alert: 'alert-danger', html: `<strong>Tổng điểm: ${score} điểm (Nhóm IV)</strong><br>Nguy cơ biến chứng tim mạch nặng: <strong>11%</strong>.` };
+                }
+            },
+
+            chuphau: {
+                title: "Yếu tố Nguy cơ Tim mạch Chu phẫu",
+                render: function() {
+                    return `
+                        <div class="section-title" style="color: #c0392b;">NGUY CƠ CAO (Nặng)</div>
+                        <label class="check-item"><input type="checkbox" data-risk="3" value="NMCT gần đây (<1 tháng)"> NMCT gần đây (<1 tháng trước PT)</label>
+                        <label class="check-item"><input type="checkbox" data-risk="3" value="Đau TH không ổn định/nặng"> Đau thắt ngực ko ổn định hoặc nặng (điểm CCS)</label>
+                        <label class="check-item"><input type="checkbox" data-risk="3" value="TMCT cục bộ đang tiến triển"> TMCT cục bộ đang tiến triển sau nhồi máu</label>
+                        <label class="check-item"><input type="checkbox" data-risk="3" value="Suy tim mất bù"> Suy tim mất bù</label>
+                        <label class="check-item"><input type="checkbox" data-risk="3" value="RL nhịp nặng"> RL nhịp nặng (Block AV Mobitz II/III, có triệu chứng, nhịp nhanh trên thất ko kiểm soát)</label>
+                        <label class="check-item"><input type="checkbox" data-risk="3" value="Bệnh van tim nặng"> Bệnh lý van tim nặng (Hẹp chủ gradient >40mmHg, diện tích <1cm², hẹp 2 lá)</label>
+                        <label class="check-item"><input type="checkbox" data-risk="3" value="Mới PT bắt cầu vành/Nong mạch"> Mới PT bắt cầu ĐM vành (CABG/nong mạch vành)</label>
+
+                        <div class="section-title" style="color: #d35400;">NGUY CƠ TRUNG BÌNH</div>
+                        <label class="check-item"><input type="checkbox" data-risk="2" value="Tiền căn TMCT (IHD)"> Tiền căn bệnh tim thiếu máu cục bộ (IHD)</label>
+                        <label class="check-item"><input type="checkbox" data-risk="2" value="Tiền căn suy tim còn bù"> Tiền căn suy tim còn bù hoặc suy tim trước đó</label>
+                        <label class="check-item"><input type="checkbox" data-risk="2" value="Tiền căn bệnh mạch máu não"> Tiền căn bệnh mạch máu não (Nhồi máu, XH não, TIA)</label>
+                        <label class="check-item"><input type="checkbox" data-risk="2" value="Chức năng thận bất thường"> Chức năng thận bất thường</label>
+                        <label class="check-item"><input type="checkbox" data-risk="2" value="Đái tháo đường"> Đái tháo đường</label>
+
+                        <div class="section-title" style="color: #27ae60;">NGUY CƠ THẤP</div>
+                        <label class="check-item"><input type="checkbox" data-risk="1" value="Lớn tuổi"> Lớn tuổi (sinh lý)</label>
+                        <label class="check-item"><input type="checkbox" data-risk="1" value="ECG bất thường"> ECG bất thường</label>
+                        <label class="check-item"><input type="checkbox" data-risk="1" value="Không phải nhịp xoang"> Ko phải nhịp xoang</label>
+                        <label class="check-item"><input type="checkbox" data-risk="1" value="Khả năng chức năng thấp"> Khả năng chức năng thấp (Low functional capacity)</label>
+                        <label class="check-item"><input type="checkbox" data-risk="1" value="THA không kiểm soát"> THA ko kiểm soát</label>
+                    `;
+                },
+                evaluate: function() {
+                    const checks = document.querySelectorAll('#formContainer input:checked');
+                    if (checks.length === 0) return { alert: 'alert-success', html: '<strong>An toàn:</strong> Không ghi nhận yếu tố nguy cơ tim mạch chu phẫu nào.' };
+                    
+                    let maxRisk = 0;
+                    let factors = [];
+                    checks.forEach(c => { 
+                        factors.push(`<li>${c.value}</li>`);
+                        if (parseInt(c.dataset.risk) > maxRisk) maxRisk = parseInt(c.dataset.risk); 
+                    });
+
+                    let ul = `<ul>${factors.join('')}</ul>`;
+
+                    if (maxRisk === 3) return { alert: 'alert-danger', html: `<strong>CẢNH BÁO NGUY CƠ CAO</strong><br>Bệnh nhân có yếu tố nguy cơ nặng cần theo dõi/hội chẩn chuyên khoa tim mạch trước mổ:${ul}` };
+                    if (maxRisk === 2) return { alert: 'alert-warning', html: `<strong>NGUY CƠ TRUNG BÌNH</strong><br>Bệnh nhân có các yếu tố nguy cơ trung bình:${ul}` };
+                    return { alert: 'alert-info', html: `<strong>NGUY CƠ THẤP</strong><br>Ghi nhận các yếu tố nguy cơ nhẹ:${ul}` };
+                }
+            }
+        };
+
+        // Chuyển đổi giao diện
+        function openTool(toolKey) {
+            currentTool = toolKey;
+            const tool = tools[toolKey];
+            
+            document.getElementById('assessmentTitle').innerHTML = tool.title;
+            document.getElementById('formContainer').innerHTML = tool.render();
+            document.getElementById('resultBox').style.display = 'none';
+
+            document.getElementById('mainGrid').style.display = 'none';
+            document.getElementById('assessmentView').style.display = 'block';
+        }
+
+        // Quay lại màn hình chính
+        function goBack() {
+            document.getElementById('assessmentView').style.display = 'none';
+            document.getElementById('mainGrid').style.display = 'grid';
+            currentTool = '';
+        }
+
+        // Xử lý đánh giá
+        function evaluateCurrent() {
+            const resultBox = document.getElementById('resultBox');
+            const result = tools[currentTool].evaluate();
+            
+            resultBox.innerHTML = result.html;
+            resultBox.className = `result-box ${result.alert}`;
+            resultBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+
+```
