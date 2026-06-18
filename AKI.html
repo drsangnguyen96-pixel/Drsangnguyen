@@ -2,14 +2,14 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Đánh Giá Nguy Cơ Suy Thận Cấp Sau Mổ</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
             --primary: #2c3e50;
-            --secondary: #2980b9; /* Xanh dương hệ Thận - Tiết niệu */
+            --secondary: #2980b9; 
             --secondary-hover: #1f618d;
             --bg-gradient: linear-gradient(135deg, #f2f7fb 0%, #e8f1f5 100%);
             --card-bg: #ffffff;
@@ -21,81 +21,98 @@
             --text-muted: #636e72;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* RESET TOÀN BỘ ĐỂ TRÁNH LỖI PHẦN MỀM BỌC KHUNG */
+        * { 
+            box-sizing: border-box; 
+            margin: 0 !important; 
+            padding: 0; 
+        }
 
-        body { 
-            font-family: 'Inter', 'Segoe UI', sans-serif; 
-            background: var(--bg-gradient); 
-            color: var(--text-main); 
-            padding: 30px 20px; 
+        html, body {
+            width: 100% !important;
+            min-width: 100vw !important;
             min-height: 100vh;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
 
-        /* KHỐI SỬA LỖI TIÊU ĐỀ */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-start: flex-start;
+            padding: 20px !important;
+        }
+
+        /* SỬA LỖI KHUNG TIÊU ĐỀ BỊ THU NHỎ */
         .header { 
-            text-align: center; 
-            margin-bottom: 40px; 
-            width: 100%;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 0 10px;
+            width: 100% !important;
+            max-width: 900px !important;
+            text-align: center !important;
+            margin-top: 10px !important;
+            margin-bottom: 30px !important;
+            display: block !important;
+            clear: both !important;
         }
+        
         .header h1 { 
-            color: var(--primary); 
-            font-size: 26px; 
-            font-weight: 700;
-            text-transform: uppercase; 
-            letter-spacing: 0.5px;
-            line-height: 1.4;
-            display: block; /* Chuyển sang block để tự co giãn toàn chiều rộng */
-            width: 100%;
-            padding-bottom: 15px;
-            border-bottom: 4px solid var(--secondary); /* Tạo thanh gạch chân cố định không bị co méo */
+            color: var(--primary) !important; 
+            font-size: 24px !important; 
+            font-weight: 700 !important;
+            text-transform: uppercase !important; 
+            line-height: 1.4 !important;
+            display: block !important;
+            width: 100% !important;
+            padding-bottom: 12px !important;
+            border-bottom: 3px solid var(--secondary) !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
         }
 
-        /* Lưới Menu */
+        /* Lưới Menu chính */
         .grid-container { 
-            display: grid; 
+            display: grid !important; 
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 25px; 
-            max-width: 900px; 
-            margin: 0 auto; 
+            gap: 20px; 
+            width: 100% !important;
+            max-width: 900px !important;
             animation: fadeIn 0.5s ease-out;
         }
 
         .card { 
             background-color: var(--card-bg); 
-            padding: 30px 20px; 
+            padding: 25px 20px !important; 
             border-radius: 16px; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
             text-align: center; 
             cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            transition: all 0.3s ease; 
             border-top: 5px solid var(--secondary); 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
-            min-height: 140px;
+            min-height: 130px;
         }
         .card:hover { 
-            transform: translateY(-8px); 
+            transform: translateY(-5px); 
             box-shadow: 0 15px 30px rgba(41, 128, 185, 0.15); 
         }
         .card h3 { 
             color: var(--primary); 
-            font-size: 17px; 
+            font-size: 16px; 
             font-weight: 600;
             line-height: 1.5; 
+            margin: 0 !important;
         }
 
-        /* Giao diện Đánh giá */
+        /* Giao diện Đánh giá chi tiết */
         .assessment-container { 
             display: none; 
-            max-width: 800px; 
-            margin: 0 auto; 
+            width: 100% !important;
+            max-width: 800px !important;
             background: var(--card-bg); 
-            padding: 35px 30px; 
+            padding: 30px 20px !important; 
             border-radius: 16px; 
             box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
             animation: fadeIn 0.4s ease-out;
@@ -109,40 +126,36 @@
             border-radius: 8px; 
             cursor: pointer; 
             font-size: 14px; 
-            margin-bottom: 25px; 
+            margin-bottom: 25px !important; 
             font-weight: 600; 
-            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
-        .btn-back:hover { 
-            background-color: #f1f2f6; 
-            color: var(--primary);
-        }
 
         #assessmentTitle { 
             color: var(--primary); 
-            margin-bottom: 25px; 
-            font-size: 22px; 
+            margin-bottom: 25px !important; 
+            font-size: 20px; 
             font-weight: 700;
             border-bottom: 2px solid #f1f2f6; 
             padding-bottom: 15px; 
         }
 
         .section-title { 
-            margin: 20px 0 12px 0; 
+            margin-top: 20px !important;
+            margin-bottom: 12px !important; 
             color: var(--primary); 
             font-size: 16px; 
             font-weight: 700; 
         }
 
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 20px !important;
         }
         .input-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 8px !important;
             font-weight: 600;
             font-size: 15px;
         }
@@ -153,39 +166,28 @@
             border-radius: 8px;
             font-size: 16px;
             outline: none;
-            transition: border 0.2s;
-        }
-        .input-group input[type="number"]:focus {
-            border-color: var(--secondary);
         }
         
         .radio-group, .check-group { 
-            margin-bottom: 20px; 
+            margin-bottom: 20px !important; 
         }
 
         .check-item { 
             display: flex; 
             align-items: flex-start; 
-            margin-bottom: 10px; 
+            margin-bottom: 10px !important; 
             font-size: 15px; 
             cursor: pointer; 
             padding: 14px 18px; 
             border-radius: 10px; 
             border: 1px solid #dfe6e9;
             background: #ffffff;
-            transition: all 0.2s ease; 
-            font-weight: 500;
             line-height: 1.4;
-        }
-        .check-item:hover { 
-            border-color: var(--secondary); 
-            background: #f2f8fc; 
-            transform: translateX(3px);
         }
         
         input[type="checkbox"], input[type="radio"] { 
-            margin-right: 15px; 
-            margin-top: 2px;
+            margin-right: 15px !important; 
+            margin-top: 2px !important;
             width: 18px; 
             height: 18px; 
             cursor: pointer; 
@@ -201,13 +203,9 @@
             font-size: 15px;
             background-color: #fff;
             outline: none;
-            margin-bottom: 15px;
-        }
-        select:focus {
-            border-color: var(--secondary);
+            margin-bottom: 15px !important;
         }
 
-        /* Nút Submit */
         .btn-submit { 
             width: 100%; 
             padding: 16px; 
@@ -218,24 +216,17 @@
             font-size: 18px; 
             font-weight: 700; 
             cursor: pointer; 
-            margin-top: 25px; 
+            margin-top: 25px !important; 
             box-shadow: 0 4px 15px rgba(41, 128, 185, 0.3);
-            transition: all 0.3s ease; 
-        }
-        .btn-submit:hover { 
-            box-shadow: 0 6px 20px rgba(41, 128, 185, 0.4);
-            transform: translateY(-2px);
         }
 
-        /* Kết quả */
         .result-box { 
-            margin-top: 25px; 
+            margin-top: 25px !important; 
             padding: 20px; 
             border-radius: 12px; 
             font-size: 16px; 
             display: none; 
             line-height: 1.6; 
-            animation: fadeIn 0.5s ease;
             border-left: 5px solid;
         }
         
@@ -244,22 +235,17 @@
         .alert-success { border-left-color: var(--success); background: #f4faf5; color: #1e8449; }
         .alert-info { border-left-color: var(--secondary); background: #f2f7fb; color: #2980b9; }
 
-        /* Bảng KDIGO */
         .kdigo-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 15px !important;
             font-size: 14px;
         }
         .kdigo-table th, .kdigo-table td {
             border: 1px solid #dfe6e9;
             padding: 10px;
-            text-align: left;
         }
-        .kdigo-table th {
-            background-color: #f1f2f6;
-            font-weight: 600;
-        }
+        .kdigo-table th { background-color: #f1f2f6; font-weight: 600; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -267,9 +253,9 @@
         }
 
         @media (max-width: 600px) {
-            body { padding: 15px 10px; }
-            .header h1 { font-size: 20px; } /* Hạ cỡ chữ tiêu đề một chút trên điện thoại cho thanh thoát */
-            .assessment-container { padding: 25px 20px; }
+            body { padding: 10px !important; }
+            .header h1 { font-size: 18px !important; } 
+            .assessment-container { padding: 20px 15px !important; }
         }
     </style>
 </head>
@@ -281,16 +267,16 @@
 
     <div id="mainGrid" class="grid-container">
         <div class="card" onclick="openTool('cleveland')">
-            <h3>1. Cleveland Clinic Score<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Dự đoán AKI-RRT sau phẫu thuật tim hở</span></h3>
+            <h3>1. Cleveland Clinic Score<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px !important; display: block;">Dự đoán AKI-RRT sau phẫu thuật tim hở</span></h3>
         </div>
         <div class="card" onclick="openTool('mehta')">
-            <h3>2. Thang điểm Mehta (STS)<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Dự đoán AKI cần lọc máu sau phẫu thuật CABG</span></h3>
+            <h3>2. Thang điểm Mehta (STS)<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px !important; display: block;">Dự đoán AKI cần lọc máu sau phẫu thuật CABG</span></h3>
         </div>
         <div class="card" onclick="openTool('gupta')">
-            <h3>3. Thang điểm Gupta<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Tính nguy cơ suy thận toán học (Phẫu thuật chung)</span></h3>
+            <h3>3. Thang điểm Gupta<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px !important; display: block;">Tính nguy cơ suy thận toán học (Phẫu thuật chung)</span></h3>
         </div>
         <div class="card" onclick="openTool('kdigo')">
-            <h3>4. Tiêu chuẩn KDIGO hậu phẫu<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Bảng tra cứu tiêu chuẩn định nghĩa và phân độ AKI</span></h3>
+            <h3>4. Tiêu chuẩn KDIGO hậu phẫu<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px !important; display: block;">Bảng tra cứu tiêu chuẩn định nghĩa và phân độ AKI</span></h3>
         </div>
     </div>
 
@@ -300,8 +286,7 @@
             Quay lại
         </button>
         <h2 id="assessmentTitle">Tiêu đề</h2>
-        <div id="formContainer">
-            </div>
+        <div id="formContainer"></div>
         <button id="submitBtn" class="btn-submit" onclick="evaluateCurrent()">Xác nhận Đánh giá</button>
         <div id="resultBox" class="result-box"></div>
     </div>
@@ -314,7 +299,7 @@
                 title: "Thang điểm Cleveland Clinic Score",
                 render: function() {
                     return `
-                        <p style="margin-bottom:15px; color:var(--text-muted); font-size: 15px;"><i>Tích chọn các yếu tố nguy cơ hiện có của bệnh nhân:</i></p>
+                        <p style="margin-bottom:15px !important; color:var(--text-muted); font-size: 15px;"><i>Tích chọn các yếu tố nguy cơ hiện có của bệnh nhân:</i></p>
                         <div class="check-group">
                             <label class="check-item"><input type="checkbox" class="clev-check" value="2"> Phẫu thuật tim lại lần đầu hoặc các lần sau (Redo) [+2đ]</label>
                             <label class="check-item"><input type="checkbox" class="clev-check" value="2"> Suy tim sung huyết (CHF) NYHA III-IV hoặc giảm EF nặng [+2đ]</label>
@@ -324,7 +309,6 @@
                             <label class="check-item"><input type="checkbox" class="clev-check" value="1"> Đái tháo đường cần điều trị thuốc [+1đ]</label>
                             <label class="check-item"><input type="checkbox" class="clev-check" value="1"> Bệnh động mạch ngoại biên (PAD) [+1đ]</label>
                         </div>
-                        
                         <div class="radio-group">
                             <div class="section-title">Nồng độ Creatinine huyết thanh trước mổ</div>
                             <label class="check-item"><input type="radio" name="clev_cr" value="0" checked> < 1.2 mg/dL (< 106 µmol/L) [0đ]</label>
@@ -338,26 +322,18 @@
                     let score = 0;
                     document.querySelectorAll('.clev-check:checked').forEach(cb => score += parseInt(cb.value));
                     score += parseInt(document.querySelector('input[name="clev_cr"]:checked').value);
-
                     let baseHtml = `<strong>Tổng điểm Cleveland Clinic: ${score} điểm</strong><br><br>`;
-                    
-                    if (score <= 2) {
-                        return { alert: 'alert-success', html: baseHtml + 'Phân nhóm: <strong>Nguy cơ THẤP</strong>.<br>Tỷ lệ suy thận cấp cần lọc máu sau mổ ước tính: <strong>~0.4%</strong>.' };
-                    } else if (score <= 5) {
-                        return { alert: 'alert-info', html: baseHtml + 'Phân nhóm: <strong>Nguy cơ TRUNG BÌNH</strong>.<br>Tỷ lệ suy thận cấp cần lọc máu sau mổ ước tính: <strong>~2.3%</strong>.' };
-                    } else if (score <= 8) {
-                        return { alert: 'alert-warning', html: baseHtml + 'Phân nhóm: <strong>Nguy cơ CAO</strong>.<br>Tỷ lệ suy thận cấp cần lọc máu sau mổ ước tính: <strong>~9.7%</strong>.' };
-                    } else {
-                        return { alert: 'alert-danger', html: baseHtml + 'Phân nhóm: <strong>Nguy cơ CỰC KỲ CAO</strong>.<br>⚠️ Tỷ lệ suy thận cấp cần lọc máu sau mổ tăng vọt lên: <strong>~28.1%</strong>.' };
-                    }
+                    if (score <= 2) return { alert: 'alert-success', html: baseHtml + 'Phân nhóm: <strong>Nguy cơ THẤP</strong>.<br>Tỷ lệ suy thận cấp cần lọc máu sau mổ ước tính: <strong>~0.4%</strong>.' };
+                    if (score <= 5) return { alert: 'alert-info', html: baseHtml + 'Phân nhóm: <strong>Nguy cơ TRUNG BÌNH</strong>.<br>Tỷ lệ suy thận cấp cần lọc máu sau mổ ước tính: <strong>~2.3%</strong>.' };
+                    if (score <= 8) return { alert: 'alert-warning', html: baseHtml + 'Phân nhóm: <strong>Nguy cơ CAO</strong>.<br>Tỷ lệ suy thận cấp cần lọc máu sau mổ ước tính: <strong>~9.7%</strong>.' };
+                    return { alert: 'alert-danger', html: baseHtml + 'Phân nhóm: <strong>Nguy cơ CỰC KỲ CAO</strong>.<br>⚠️ Tỷ lệ suy thận cấp cần lọc máu sau mổ tăng vọt lên: <strong>~28.1%</strong>.' };
                 }
             },
-            
             mehta: {
                 title: "Thang điểm Mehta (Society of Thoracic Surgeons)",
                 render: function() {
                     return `
-                        <p style="margin-bottom:15px; color:var(--text-muted); font-size: 15px;"><i>Áp dụng cho phẫu thuật bắc cầu mạch vành (CABG):</i></p>
+                        <p style="margin-bottom:15px !important; color:var(--text-muted); font-size: 15px;"><i>Áp dụng cho phẫu thuật bắc cầu mạch vành (CABG):</i></p>
                         <div class="check-group">
                             <label class="check-item"><input type="checkbox" class="meh-check" value="1"> Nữ giới [+1đ]</label>
                             <label class="check-item"><input type="checkbox" class="meh-check" value="1"> Suy tim sung huyết (CHF) [+1đ]</label>
@@ -367,7 +343,6 @@
                             <label class="check-item"><input type="checkbox" class="meh-check" value="1"> Bệnh mạch máu ngoại biên (PVD) [+1đ]</label>
                             <label class="check-item"><input type="checkbox" class="meh-check" value="2"> Phẫu thuật cấp cứu [+2đ]</label>
                         </div>
-                        
                         <div class="radio-group">
                             <div class="section-title">Chức năng thận trước mổ (eGFR / CrCl)</div>
                             <label class="check-item"><input type="radio" name="meh_egfr" value="0" checked> eGFR ≥ 60 mL/min/1.73m² [0đ]</label>
@@ -380,19 +355,12 @@
                     let score = 0;
                     document.querySelectorAll('.meh-check:checked').forEach(cb => score += parseInt(cb.value));
                     score += parseInt(document.querySelector('input[name="meh_egfr"]:checked').value);
-
                     let baseHtml = `<strong>Tổng điểm Mehta Score: ${score} điểm</strong><br><br>`;
-                    
-                    if (score <= 2) {
-                        return { alert: 'alert-success', html: baseHtml + 'Đánh giá: <strong>Nguy cơ AKI THẤP (< 1%)</strong>.' };
-                    } else if (score <= 5) {
-                        return { alert: 'alert-warning', html: baseHtml + 'Đánh giá: <strong>Nguy cơ TRUNG BÌNH (1 - 5%)</strong>.' };
-                    } else {
-                        return { alert: 'alert-danger', html: baseHtml + 'Đánh giá: <strong>Nguy cơ AKI NẶNG & CẦN LỌC MÁU RẤT CAO (> 10%)</strong>.' };
-                    }
+                    if (score <= 2) return { alert: 'alert-success', html: baseHtml + 'Đánh giá: <strong>Nguy cơ AKI THẤP (< 1%)</strong>.' };
+                    if (score <= 5) return { alert: 'alert-warning', html: baseHtml + 'Đánh giá: <strong>Nguy cơ TRUNG BÌNH (1 - 5%)</strong>.' };
+                    return { alert: 'alert-danger', html: baseHtml + 'Đánh giá: <strong>Nguy cơ AKI NẶNG & CẦN LỌC MÁU RẤT CAO (> 10%)</strong>.' };
                 }
             },
-
             gupta: {
                 title: "Thang điểm Gupta (Mô hình Hồi quy Dự đoán AKI)",
                 render: function() {
@@ -401,21 +369,16 @@
                             <label>Tuổi bệnh nhân:</label>
                             <input type="number" id="g_age" min="1" max="120" placeholder="Nhập số tuổi (Ví dụ: 65)">
                         </div>
-                        
                         <div class="check-group">
                             <div class="section-title">Nồng độ Creatinine trước mổ</div>
-                            <label class="check-item">
-                                <input type="checkbox" id="g_cr_above"> Creatinine huyết thanh trước mổ > 1.5 mg/dL (> 132 µmol/L)
-                            </label>
+                            <label class="check-item"><input type="checkbox" id="g_cr_above"> Creatinine huyết thanh trước mổ > 1.5 mg/dL (> 132 µmol/L)</label>
                         </div>
-
                         <div class="radio-group">
-                            <div class="section-title">Trạng thái chức năng trước mổ (Functional Status)</div>
+                            <div class="section-title">Trạng thái chức năng trước mổ</div>
                             <label class="check-item"><input type="radio" name="g_func" value="independent" checked> Tự chủ hoàn toàn (Independent)</label>
                             <label class="check-item"><input type="radio" name="g_func" value="partially"> Phụ thuộc một phần (Partially dependent)</label>
                             <label class="check-item"><input type="radio" name="g_func" value="totally"> Phụ thuộc hoàn toàn (Totally dependent)</label>
                         </div>
-
                         <div class="radio-group">
                             <div class="section-title">Phân loại thể trạng ASA (Bao gồm cả CHF nếu có)</div>
                             <label class="check-item"><input type="radio" name="g_asa" value="1" checked> ASA 1</label>
@@ -424,7 +387,6 @@
                             <label class="check-item"><input type="radio" name="g_asa" value="4"> ASA 4</label>
                             <label class="check-item"><input type="radio" name="g_asa" value="5"> ASA 5</label>
                         </div>
-
                         <label class="section-title">Loại phẫu thuật dự kiến</label>
                         <select id="g_surgery_type">
                             <option value="superficial">Phẫu thuật nông ngoài da (Superficial)</option>
@@ -441,117 +403,57 @@
                 },
                 evaluate: function() {
                     const ageInput = document.getElementById('g_age').value;
-                    if (!ageInput || isNaN(parseInt(ageInput))) {
-                        return { alert: 'alert-warning', html: 'Vui lòng nhập số tuổi hợp lệ của bệnh nhân.' };
-                    }
-                    
+                    if (!ageInput || isNaN(parseInt(ageInput))) return { alert: 'alert-warning', html: 'Vui lòng nhập số tuổi hợp lệ.' };
                     const age = parseInt(ageInput);
                     const creatinineAbove15 = document.getElementById('g_cr_above').checked;
                     const functionalStatus = document.querySelector('input[name="g_func"]:checked').value;
                     const asaClass = parseInt(document.querySelector('input[name="g_asa"]:checked').value);
                     const surgeryType = document.getElementById('g_surgery_type').value;
 
-                    // --- Thuật toán Gupta ---
-                    let g_x = -4.2741;
-                    g_x += 0.0304 * age;
-                    
-                    if (creatinineAbove15) {
-                        g_x += 0.4184;
-                    }
-                    
-                    const functionalCoefs = {
-                        'independent': 0.0,
-                        'partially': 0.4746,
-                        'totally': 1.0175
-                    };
+                    let g_x = -4.2741 + (0.0304 * age);
+                    if (creatinineAbove15) g_x += 0.4184;
+                    const functionalCoefs = { 'independent': 0.0, 'partially': 0.4746, 'totally': 1.0175 };
                     g_x += functionalCoefs[functionalStatus] || 0.0;
-                    
-                    const asaCoefs = {
-                        1: 0.0, 2: 0.0, 3: 0.8980, 4: 1.6443, 5: 2.4570
-                    };
+                    const asaCoefs = { 1: 0.0, 2: 0.0, 3: 0.8980, 4: 1.6443, 5: 2.4570 };
                     g_x += asaCoefs[asaClass] || 0.0;
-                    
-                    const surgeryCoefs = {
-                        'superficial': 0.0,
-                        'neurosurgery': 0.2185,
-                        'orthopedic': 0.2223,
-                        'urology_gynecology': 0.3204,
-                        'otolaryngology': 0.4121,
-                        'musculoskeletal': 0.6698,
-                        'thoracic': 0.8351,
-                        'general': 0.9234,
-                        'vascular': 1.1837
-                    };
+                    const surgeryCoefs = { 'superficial': 0.0, 'neurosurgery': 0.2185, 'orthopedic': 0.2223, 'urology_gynecology': 0.3204, 'otolaryngology': 0.4121, 'musculoskeletal': 0.6698, 'thoracic': 0.8351, 'general': 0.9234, 'vascular': 1.1837 };
                     g_x += surgeryCoefs[surgeryType] || 0.0;
-                    
+
                     let riskProbability = Math.exp(g_x) / (1 + Math.exp(g_x));
                     let resultPercent = (riskProbability * 100).toFixed(2);
-
                     let baseHtml = `<strong>Tỷ lệ nguy cơ tổn thương thận cấp sau mổ (Gupta): <span style="font-size:20px; color:var(--danger);">${resultPercent}%</span></strong><br><br>`;
-                    
-                    if (parseFloat(resultPercent) < 1.0) {
-                        return { alert: 'alert-success', html: baseHtml + 'Đánh giá chu phẫu: Bệnh nhân thuộc nhóm <strong>Nguy cơ thấp</strong>.' };
-                    } else if (parseFloat(resultPercent) < 5.0) {
-                        return { alert: 'alert-warning', html: baseHtml + 'Đánh giá chu phẫu: Bệnh nhân thuộc nhóm <strong>Nguy cơ trung bình</strong>. Chú ý tối ưu hóa thể tích tuần hoàn.' };
-                    } else {
-                        return { alert: 'alert-danger', html: baseHtml + '⚠️ <strong>Cảnh báo chu phẫu: Nguy cơ tổn thương thận cấp tính ở mức CAO</strong>.<br>Cần tránh các thuốc độc cho thận (NSAIDs, Aminoglycosides), hạn chế tối đa chất cản quang và đảm bảo huyết áp động mạch trung bình MAP ổn định trong suốt cuộc phẫu thuật.' };
-                    }
+                    if (parseFloat(resultPercent) < 1.0) return { alert: 'alert-success', html: baseHtml + 'Đánh giá chu phẫu: Bệnh nhân thuộc nhóm <strong>Nguy cơ thấp</strong>.' };
+                    if (parseFloat(resultPercent) < 5.0) return { alert: 'alert-warning', html: baseHtml + 'Đánh giá chu phẫu: Bệnh nhân thuộc nhóm <strong>Nguy cơ trung bình</strong>.' };
+                    return { alert: 'alert-danger', html: baseHtml + '⚠️ <strong>Cảnh báo chu phẫu: Nguy cơ ở mức CAO</strong>.<br>Cần tránh các thuốc độc cho thận và đảm bảo duy trì huyết áp động mạch trung bình MAP ổn định chu phẫu.' };
                 }
             },
-
             kdigo: {
                 title: "Tiêu chuẩn chẩn đoán & Phân độ AKI theo KDIGO hậu phẫu",
                 render: function() {
                     return `
-                        <p style="margin-bottom:15px; color:var(--text-muted); font-size: 15px;"><i>Dùng để theo dõi sát tình trạng suy thận cấp trong vòng 7 ngày sau phẫu thuật:</i></p>
                         <table class="kdigo-table">
                             <thead>
-                                <tr>
-                                    <th>Giai đoạn</th>
-                                    <th>Tiêu chuẩn Creatinine huyết thanh</th>
-                                    <th>Tiêu chuẩn Thể tích nước tiểu</th>
-                                </tr>
+                                <tr><th>Giai đoạn</th><th>Tiêu chuẩn Creatinine huyết thanh</th><th>Tiêu chuẩn Thể tích nước tiểu</th></tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><b>Giai đoạn 1</b></td>
-                                    <td>Tăng ≥ 0.3 mg/dL (trong 48 giờ) HOẶC tăng gấp 1.5 - 1.9 lần so với nền.</td>
-                                    <td>< 0.5 mL/kg/giờ trong vòng 6 - 12 giờ.</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Giai đoạn 2</b></td>
-                                    <td>Tăng gấp 2.0 - 2.9 lần so với Creatinine nền.</td>
-                                    <td>< 0.5 mL/kg/giờ trong ≥ 12 giờ.</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Giai đoạn 3</b></td>
-                                    <td>Tăng gấp ≥ 3.0 lần so với nền HOẶC Creatinine tăng ≥ 4.0 mg/dL HOẶC bắt đầu điều trị thay thế thận (RRT).</td>
-                                    <td>< 0.3 mL/kg/giờ trong ≥ 24 giờ HOẶC Vô niệu trong ≥ 12 giờ.</td>
-                                </tr>
+                                <tr><td><b>Giai đoạn 1</b></td><td>Tăng ≥ 0.3 mg/dL (trong 48 giờ) HOẶC tăng gấp 1.5 - 1.9 lần so với nền.</td><td>< 0.5 mL/kg/giờ trong vòng 6 - 12 giờ.</td></tr>
+                                <tr><td><b>Giai đoạn 2</b></td><td>Tăng gấp 2.0 - 2.9 lần so với Creatinine nền.</td><td>< 0.5 mL/kg/giờ trong ≥ 12 giờ.</td></tr>
+                                <tr><td><b>Giai đoạn 3</b></td><td>Tăng gấp ≥ 3.0 lần so với nền HOẶC Creatinine tăng ≥ 4.0 mg/dL HOẶC bắt đầu điều trị thay thế thận (RRT).</td><td>< 0.3 mL/kg/giờ trong ≥ 24 giờ HOẶC Vô niệu trong ≥ 12 giờ.</td></tr>
                             </tbody>
                         </table>
                     `;
                 },
-                evaluate: function() {
-                    return { alert: 'alert-info', html: '<strong>Khuyến cáo theo dõi:</strong> Định lượng lại Creatinine huyết thanh mỗi 24 giờ ở bệnh nhân nguy cơ cao và thiết lập catheter tiểu để theo dõi chính xác thể tích nước tiểu từng giờ.' };
-                }
+                evaluate: function() { return { alert: 'alert-info', html: '<strong>Khuyến cáo theo dõi:</strong> Định lượng lại Creatinine huyết thanh mỗi 24 giờ và thiết lập catheter tiểu theo dõi sát lượng nước tiểu từng giờ.' }; }
             }
         };
 
         function openTool(toolKey) {
             currentTool = toolKey;
             const tool = tools[toolKey];
-            
             document.getElementById('assessmentTitle').innerHTML = tool.title;
             document.getElementById('formContainer').innerHTML = tool.render();
             document.getElementById('resultBox').style.display = 'none';
-
-            if(toolKey === 'kdigo') {
-                document.getElementById('submitBtn').style.display = 'none';
-            } else {
-                document.getElementById('submitBtn').style.display = 'block';
-            }
-
+            document.getElementById('submitBtn').style.display = (toolKey === 'kdigo') ? 'none' : 'block';
             document.getElementById('mainGrid').style.display = 'none';
             document.getElementById('assessmentView').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -566,11 +468,6 @@
         function evaluateCurrent() {
             const resultBox = document.getElementById('resultBox');
             const result = tools[currentTool].evaluate();
-            
-            resultBox.style.animation = 'none';
-            resultBox.offsetHeight; /* trigger reflow */
-            resultBox.style.animation = 'fadeIn 0.5s ease';
-            
             resultBox.innerHTML = result.html;
             resultBox.className = `result-box ${result.alert}`;
             resultBox.style.display = 'block';
