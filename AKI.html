@@ -31,25 +31,27 @@
             min-height: 100vh;
         }
 
-        .header { text-align: center; margin-bottom: 40px; }
+        /* KHỐI SỬA LỖI TIÊU ĐỀ */
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 10px;
+        }
         .header h1 { 
             color: var(--primary); 
-            font-size: 28px; 
+            font-size: 26px; 
             font-weight: 700;
             text-transform: uppercase; 
-            letter-spacing: 1px;
-            position: relative;
-            display: inline-block;
-        }
-        .header h1::after {
-            content: '';
-            position: absolute;
-            width: 60%;
-            height: 4px;
-            background: var(--secondary);
-            bottom: -10px;
-            left: 20%;
-            border-radius: 2px;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            display: block; /* Chuyển sang block để tự co giãn toàn chiều rộng */
+            width: 100%;
+            padding-bottom: 15px;
+            border-bottom: 4px solid var(--secondary); /* Tạo thanh gạch chân cố định không bị co méo */
         }
 
         /* Lưới Menu */
@@ -266,6 +268,7 @@
 
         @media (max-width: 600px) {
             body { padding: 15px 10px; }
+            .header h1 { font-size: 20px; } /* Hạ cỡ chữ tiêu đề một chút trên điện thoại cho thanh thoát */
             .assessment-container { padding: 25px 20px; }
         }
     </style>
@@ -273,7 +276,7 @@
 <body>
 
     <div class="header">
-        <h1>Dự Đoán Nguy Cơ Suy Thận Cấp Sau Mổ (Postoperative AKI)</h1>
+        <h1>Dự Đoán Nguy Cơ Suy Thận Cấp Sau Mổ</h1>
     </div>
 
     <div id="mainGrid" class="grid-container">
@@ -448,7 +451,7 @@
                     const asaClass = parseInt(document.querySelector('input[name="g_asa"]:checked').value);
                     const surgeryType = document.getElementById('g_surgery_type').value;
 
-                    // --- Thuật toán Gupta của bạn ---
+                    // --- Thuật toán Gupta ---
                     let g_x = -4.2741;
                     g_x += 0.0304 * age;
                     
@@ -483,7 +486,6 @@
                     
                     let riskProbability = Math.exp(g_x) / (1 + Math.exp(g_x));
                     let resultPercent = (riskProbability * 100).toFixed(2);
-                    // --------------------------------
 
                     let baseHtml = `<strong>Tỷ lệ nguy cơ tổn thương thận cấp sau mổ (Gupta): <span style="font-size:20px; color:var(--danger);">${resultPercent}%</span></strong><br><br>`;
                     
