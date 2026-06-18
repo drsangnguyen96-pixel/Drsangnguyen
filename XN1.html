@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chỉ Định Xét Nghiệm Chuẩn Bị Gây Mê</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #192a56;
+            --secondary: #0097e6; /* Xanh Y Tế */
+            --secondary-hover: #00a8ff;
+            --bg-gradient: linear-gradient(135deg, #f0f8ff 0%, #dcdde1 100%);
+            --card-bg: #ffffff;
+            --danger: #e84118;
+            --success: #4cd137;
+            --text-main: #2f3640;
+            --text-muted: #7f8fa6;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0 !important; 
+            padding: 0; 
+        }
+
+        html, body {
+            width: 100% !important;
+            min-width: 100vw !important;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px !important;
+        }
+
+        .header { 
+            width: 100% !important;
+            max-width: 900px !important;
+            text-align: center !important;
+            margin-top: 10px !important;
+            margin-bottom: 25px !important;
+            display: block !important;
+        }
+        
+        .header h1 { 
+            color: var(--primary) !important; 
+            font-size: 24px !important; 
+            font-weight: 700 !important;
+            text-transform: uppercase !important; 
+            line-height: 1.4 !important;
+            display: block !important;
+            width: 100% !important;
+            padding-bottom: 12px !important;
+            border-bottom: 3px solid var(--secondary) !important;
+        }
+
+        .assessment-container { 
+            width: 100% !important;
+            max-width: 900px !important;
+            background: var(--card-bg); 
+            padding: 30px 20px !important; 
+            border-radius: 16px; 
+            box-shadow: 0 15px 35px rgba(0, 151, 230, 0.08); 
+        }
+
+        .intro-text {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 20px !important;
+            text-align: center;
+        }
+
+        .grid-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px !important;
+        }
+
+        .section-box {
+            background: #f5f6fa;
+            border: 1px solid #dcdde1;
+            border-radius: 12px;
+            padding: 15px !important;
+        }
+
+        .section-title { 
+            margin-bottom: 12px !important; 
+            color: var(--secondary); 
+            font-size: 16px; 
+            font-weight: 700; 
+            border-bottom: 2px solid #dcdde1;
+            padding-bottom: 8px !important;
+            text-transform: uppercase;
+        }
+
+        .check-item { 
+            display: flex; 
+            align-items: flex-start; 
+            margin-bottom: 10px !important; 
+            font-size: 14px; 
+            cursor: pointer; 
+            padding: 10px 12px; 
+            border-radius: 8px; 
+            background: #ffffff;
+            border: 1px solid #dcdde1;
+            transition: all 0.2s ease;
+            line-height: 1.4;
+        }
+        .check-item:hover { 
+            border-color: var(--secondary); 
+            background: #f0f8ff; 
+            transform: translateX(2px);
+        }
+        
+        input[type="checkbox"] { 
+            margin-right: 12px !important; 
+            margin-top: 2px !important;
+            width: 16px; 
+            height: 16px; 
+            cursor: pointer; 
+            flex-shrink: 0; 
+            accent-color: var(--secondary); 
+        }
+
+        .btn-submit { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, var(--secondary), var(--primary)); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 18px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            margin-top: 15px !important; 
+            box-shadow: 0 4px 15px rgba(0, 151, 230, 0.3);
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 151, 230, 0.4); }
+
+        /* KẾT QUẢ ĐÃ ĐƯỢC TÂN TRANG */
+        .result-box { 
+            margin-top: 25px !important; 
+            padding: 25px; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            display: none; 
+            background: #ffffff;
+            border: 2px solid var(--secondary);
+            animation: fadeIn 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .result-title {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px !important;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Khối Nhóm Xét Nghiệm */
+        .category-block {
+            margin-bottom: 18px !important;
+            background: #f8f9fa;
+            border-left: 4px solid var(--secondary);
+            border-radius: 0 8px 8px 0;
+            padding: 12px 15px !important;
+        }
+        .category-block:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        .category-title {
+            color: var(--primary);
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 12px !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .test-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .test-tag {
+            background: #e1f5fe;
+            color: #0277bd;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid #81d4fa;
+        }
+
+        .empty-alert {
+            color: var(--success);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px !important; }
+            .header h1 { font-size: 18px !important; } 
+            .assessment-container { padding: 20px 15px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Chỉ Định Xét Nghiệm Tiền Phẫu</h1>
+    </div>
+
+    <div class="assessment-container">
+        <p class="intro-text">Tích chọn các vấn đề sức khỏe hoặc yếu tố nguy cơ của bệnh nhân để hệ thống tự động tổng hợp danh sách các xét nghiệm cần thiết.</p>
+
+        <div class="grid-sections">
+            <div class="section-box">
+                <div class="section-title">Thể trạng & Tiêu hóa</div>
+                <label class="check-item"><input type="checkbox" value="age65"> Tuổi > 65</label>
+                <label class="check-item"><input type="checkbox" value="bmi16"> BMI < 16</label>
+                <label class="check-item"><input type="checkbox" value="bmi50"> BMI > 50</label>
+                <label class="check-item"><input type="checkbox" value="diabetes"> Bệnh tiểu đường</label>
+                <label class="check-item"><input type="checkbox" value="goiter"> Bướu cổ</label>
+                <label class="check-item"><input type="checkbox" value="malnutrition"> Suy dinh dưỡng</label>
+                <label class="check-item"><input type="checkbox" value="malabsorption"> Hấp thu kém</label>
+                <label class="check-item"><input type="checkbox" value="ibd"> Bệnh viêm ruột</label>
+                <label class="check-item"><input type="checkbox" value="liver_disease"> Bệnh gan</label>
+            </div>
+
+            <div class="section-box">
+                <div class="section-title">Tim mạch & Hô hấp</div>
+                <label class="check-item"><input type="checkbox" value="arrhythmia"> Rối loạn nhịp tim (mới/chưa rõ)</label>
+                <label class="check-item"><input type="checkbox" value="chest_pain"> Đau ngực (mới/trầm trọng hơn)</label>
+                <label class="check-item"><input type="checkbox" value="heart_failure"> Suy tim (mất bù / NYHA 3-4)</label>
+                <label class="check-item"><input type="checkbox" value="murmur"> Âm thổi chưa được chẩn đoán</label>
+                <label class="check-item"><input type="checkbox" value="dyspnea"> Khó thở nặng / chưa chẩn đoán</label>
+                <label class="check-item"><input type="checkbox" value="cied"> Có máy tạo nhịp tim (CIED/ICD)</label>
+            </div>
+
+            <div class="section-box">
+                <div class="section-title">Huyết học & Yếu tố khác</div>
+                <label class="check-item"><input type="checkbox" value="anemia"> Thiếu máu</label>
+                <label class="check-item"><input type="checkbox" value="blood_loss"> Dự đoán mất máu đáng kể</label>
+                <label class="check-item"><input type="checkbox" value="bleeding_disorder"> Rối loạn chảy máu</label>
+                <label class="check-item"><input type="checkbox" value="hypercoagulable"> Tình trạng tăng đông</label>
+                <label class="check-item"><input type="checkbox" value="hema_disorder"> Bệnh bạch cầu, u tủy...</label>
+                <label class="check-item"><input type="checkbox" value="anasarca"> Phù toàn thân (Anasarca)</label>
+                <label class="check-item"><input type="checkbox" value="urinary_device"> Dụng cụ đường tiết niệu</label>
+                <label class="check-item"><input type="checkbox" value="alcohol"> Lạm dụng rượu</label>
+                <label class="check-item"><input type="checkbox" value="cocaine"> Lạm dụng cocain</label>
+                <label class="check-item"><input type="checkbox" value="contrast"> Dự kiến dùng thuốc cản quang</label>
+                <label class="check-item"><input type="checkbox" value="chemo"> Hóa trị (trong 30 ngày qua)</label>
+                <label class="check-item"><input type="checkbox" value="amiodarone"> Đang sử dụng Amiodarone</label>
+            </div>
+        </div>
+
+        <button class="btn-submit" onclick="generateTestList()">Tổng Hợp Xét Nghiệm</button>
+        <div id="resultBox" class="result-box"></div>
+    </div>
+
+    <script>
+        // Mapping điều kiện với danh sách xét nghiệm
+        const testMappings = {
+            'age65': ['Albumin', 'Creatinine', 'Huyết sắc tố'],
+            'alcohol': ['Điện tâm đồ (ECG)', 'Điện giải đồ', 'Hemoglobin', 'LFTs (Chức năng gan)', 'Số lượng tiểu cầu', 'PT / INR'],
+            'anasarca': ['Albumin', 'BUN', 'Creatinine', 'Điện tâm đồ (ECG)', 'Điện giải đồ', 'TSH', 'T3', 'T4'],
+            'anemia': ['Tổng phân tích tế bào máu (CBC)', 'Creatinine', 'Ferritin', 'Sắt', 'Độ bão hòa Transferrin', 'TSH', 'T3', 'T4', 'Vit B12'],
+            'bleeding_disorder': ['LFTs (Chức năng gan)', 'Số lượng tiểu cầu', 'PT / INR', 'PTT'],
+            'blood_loss': ['Hemoglobin', 'Định nhóm máu', 'Phản ứng chéo'],
+            'bmi16': ['Albumin', 'Điện tâm đồ (ECG)', 'Điện giải đồ', 'Hemoglobin', 'PT / INR', 'TSH', 'T3', 'T4'],
+            'bmi50': ['Điện tâm đồ (ECG)', 'HgA1c / Glucose'],
+            'arrhythmia': ['BNP', 'Điện tâm đồ (ECG)', 'Điện giải đồ', 'Hemoglobin', 'TSH', 'T3', 'T4'],
+            'chest_pain': ['BNP', 'Điện tâm đồ (ECG)', 'Hemoglobin'],
+            'heart_failure': ['BNP', 'X-quang phổi', 'Creatinine', 'Điện tâm đồ (ECG)', 'Điện giải đồ', 'Hemoglobin'],
+            'murmur': ['BNP', 'Điện tâm đồ (ECG)'],
+            'chemo': ['BUN', 'Tổng phân tích tế bào máu (CBC)', 'Creatinine', 'Số lượng tiểu cầu'],
+            'cied': ['Điện tâm đồ (ECG)'],
+            'cocaine': ['Điện tâm đồ (ECG)'],
+            'contrast': ['Creatinine'],
+            'diabetes': ['Creatinine', 'HgA1c / Glucose'],
+            'dyspnea': ['Albumin', 'BNP', 'BUN', 'X-quang phổi', 'Creatinine', 'Điện tâm đồ (ECG)', 'Điện giải đồ', 'Hemoglobin', 'TSH', 'T3', 'T4'],
+            'goiter': ['TSH', 'T3', 'T4'],
+            'hema_disorder': ['Tổng phân tích tế bào máu (CBC)', 'Số lượng tiểu cầu'],
+            'liver_disease': ['Albumin', 'BUN', 'Creatinine', 'Điện giải đồ', 'Hemoglobin', 'LFTs (Chức năng gan)', 'Số lượng tiểu cầu', 'PT / INR'],
+            'hypercoagulable': ['Số lượng tiểu cầu', 'PTT'],
+            'ibd': ['Điện giải đồ', 'Huyết sắc tố'],
+            'urinary_device': ['Tổng phân tích nước tiểu'],
+            'malabsorption': ['Albumin', 'BUN', 'Tổng phân tích tế bào máu (CBC)', 'Điện giải đồ', 'Hemoglobin', 'PT / INR'],
+            'malnutrition': ['Albumin', 'BUN', 'Tổng phân tích tế bào máu (CBC)', 'Creatinine', 'Điện giải đồ', 'Hemoglobin', 'PT / INR'],
+            'amiodarone': ['Điện tâm đồ (ECG)', 'TSH', 'T3', 'T4']
+        };
+
+        // Từ điển Phân loại nhóm xét nghiệm
+        const categoryMapping = {
+            '🩸 Huyết học & Đông máu': ['Tổng phân tích tế bào máu (CBC)', 'Huyết sắc tố', 'Hemoglobin', 'Số lượng tiểu cầu', 'PT / INR', 'PTT', 'Định nhóm máu', 'Phản ứng chéo', 'Sắt', 'Độ bão hòa Transferrin', 'Ferritin', 'Vit B12'],
+            '🧪 Sinh hóa máu': ['Albumin', 'Creatinine', 'BUN', 'Điện giải đồ', 'LFTs (Chức năng gan)', 'HgA1c / Glucose', 'BNP'],
+            '🧬 Nội tiết': ['TSH', 'T3', 'T4'],
+            '🩻 Thăm dò chức năng & CĐHA': ['Điện tâm đồ (ECG)', 'X-quang phổi'],
+            '📋 Xét nghiệm khác': ['Tổng phân tích nước tiểu']
+        };
+
+        function generateTestList() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const resultBox = document.getElementById('resultBox');
+            
+            resultBox.style.animation = 'none';
+            resultBox.offsetHeight; 
+            resultBox.style.animation = 'fadeIn 0.4s ease';
+
+            if (checkboxes.length === 0) {
+                resultBox.innerHTML = '<div class="empty-alert">Chưa ghi nhận yếu tố nguy cơ. Bệnh nhân chỉ cần thực hiện các xét nghiệm sinh hóa/huyết học cơ bản thường quy.</div>';
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            // Gộp tất cả xét nghiệm (loại bỏ trùng lặp bằng Set)
+            let requiredTestsSet = new Set();
+            checkboxes.forEach(cb => {
+                const condition = cb.value;
+                if (testMappings[condition]) {
+                    testMappings[condition].forEach(test => requiredTestsSet.add(test));
+                }
+            });
+
+            // Khởi tạo Object chứa các mảng trống cho từng nhóm
+            let categorizedTests = {
+                '🩸 Huyết học & Đông máu': [],
+                '🧪 Sinh hóa máu': [],
+                '🧬 Nội tiết': [],
+                '🩻 Thăm dò chức năng & CĐHA': [],
+                '📋 Xét nghiệm khác': []
+            };
+
+            // Phân loại các xét nghiệm vào đúng nhóm
+            requiredTestsSet.forEach(test => {
+                let placed = false;
+                for (const [category, testsInCategory] of Object.entries(categoryMapping)) {
+                    if (testsInCategory.includes(test)) {
+                        categorizedTests[category].push(test);
+                        placed = true;
+                        break;
+                    }
+                }
+                // Nếu có xét nghiệm nào chưa có trong từ điển phân loại, đưa vào nhóm "Khác"
+                if (!placed) categorizedTests['📋 Xét nghiệm khác'].push(test);
+            });
+
+            // Sinh mã HTML
+            let html = `<div class="result-title">Bảng Tổng Hợp Xét Nghiệm</div>`;
+            
+            for (const [category, tests] of Object.entries(categorizedTests)) {
+                if (tests.length > 0) {
+                    html += `
+                        <div class="category-block">
+                            <div class="category-title">${category}</div>
+                            <div class="test-tags">
+                                ${tests.sort().map(t => `<div class="test-tag">${t}</div>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            resultBox.innerHTML = html;
+            resultBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
