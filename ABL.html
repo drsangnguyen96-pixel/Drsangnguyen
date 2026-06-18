@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tính Toán Lượng Máu Mất & Truyền Máu Trong Mổ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #8b0000; /* Đỏ Burgundy hệ Huyết học */
+            --secondary-hover: #a30000;
+            --bg-gradient: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+            --card-bg: #ffffff;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #27ae60;
+            --info: #2980b9;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+        }
+
+        /* RESET TOÀN BỘ CHỐNG LỖI CO KHUNG CỦA TRÌNH DUYỆT BÊN NGOÀI */
+        * { 
+            box-sizing: border-box; 
+            margin: 0 !important; 
+            padding: 0; 
+        }
+
+        html, body {
+            width: 100% !important;
+            min-width: 100vw !important;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px !important;
+        }
+
+        .header { 
+            width: 100% !important;
+            max-width: 700px !important;
+            text-align: center !important;
+            margin-top: 10px !important;
+            margin-bottom: 25px !important;
+            display: block !important;
+        }
+        
+        .header h1 { 
+            color: var(--primary) !important; 
+            font-size: 22px !important; 
+            font-weight: 700 !important;
+            text-transform: uppercase !important; 
+            line-height: 1.4 !important;
+            display: block !important;
+            width: 100% !important;
+            padding-bottom: 12px !important;
+            border-bottom: 3px solid var(--secondary) !important;
+        }
+
+        .assessment-container { 
+            width: 100% !important;
+            max-width: 700px !important;
+            background: var(--card-bg); 
+            padding: 30px 20px !important; 
+            border-radius: 16px; 
+            box-shadow: 0 15px 35px rgba(139, 0, 0, 0.06); 
+        }
+
+        .section-title { 
+            margin-top: 15px !important;
+            margin-bottom: 15px !important; 
+            color: var(--secondary); 
+            font-size: 16px; 
+            font-weight: 700; 
+            border-left: 4px solid var(--secondary);
+            padding-left: 10px !important;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px !important;
+        }
+
+        .input-group {
+            margin-bottom: 15px !important;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 6px !important;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary);
+        }
+        .input-group input[type="number"], .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            background-color: #fff;
+        }
+        .input-group input[type="number"]:focus, .input-group select:focus {
+            border-color: var(--secondary);
+        }
+
+        .btn-submit { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, var(--secondary), #5a0000); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            margin-top: 15px !important; 
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.2);
+            text-transform: uppercase;
+        }
+        .btn-submit:hover {
+            background: linear-gradient(135deg, var(--secondary-hover), #440000);
+        }
+
+        .result-box { 
+            margin-top: 25px !important; 
+            padding: 20px; 
+            border-radius: 12px; 
+            font-size: 15px; 
+            display: none; 
+            line-height: 1.6; 
+            border-left: 5px solid var(--secondary);
+            background: #fff5f5;
+        }
+        
+        .result-item {
+            margin-bottom: 8px !important;
+            padding-bottom: 8px !important;
+            border-bottom: 1px dashed #f5c6cb;
+        }
+        .result-item:last-child {
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+            border-bottom: none;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px !important; }
+            .header h1 { font-size: 18px !important; } 
+            .assessment-container { padding: 20px 15px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Tính Toán Lượng Máu Mất & Truyền Máu Chu Phẫu</h1>
+    </div>
+
+    <div class="assessment-container">
+        <div class="section-title">1. Thông tin bệnh nhân & Thể tích máu (BV)</div>
+        <div class="grid-inputs">
+            <div class="input-group">
+                <label>Giới tính:</label>
+                <select id="gender">
+                    <option value="nam">Nam</option>
+                    <option value="nu">Nữ</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Cân nặng (kg):</label>
+                <input type="number" id="weight" step="0.1" placeholder="Ví dụ: 60">
+            </div>
+            <div class="input-group">
+                <label>Chỉ số BMI:</label>
+                <input type="number" id="bmi" step="0.1" placeholder="Ví dụ: 22.5">
+            </div>
+        </div>
+
+        <div class="section-title">2. Lượng máu mất cho phép tối đa (Maximum ABL)</div>
+        <div class="grid-inputs">
+            <div class="input-group">
+                <label>Hct hiện tại - Ha (%):</label>
+                <input type="number" id="hct_ha" step="0.1" placeholder="Ví dụ: 40">
+            </div>
+            <div class="input-group">
+                <label>Hct chấp nhận được - Hc (%):</label>
+                <select id="hct_hc">
+                    <option value="30">30% (Thông thường)</option>
+                    <option value="35">35% (Mạch vành / Tim máu cục bộ)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section-title">3. Ước tính nhu cầu truyền máu khối hồng cầu lắng</div>
+        <div class="grid-inputs">
+            <div class="input-group">
+                <label>Hct mong muốn - Hm (%):</label>
+                <select id="hct_hm">
+                    <option value="30">30% (Mục tiêu chuẩn)</option>
+                    <option value="35">35% (Mục tiêu cao)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Hct khối hồng cầu lắng - Hs (%):</label>
+                <input type="number" id="hct_hs" step="1" value="75" placeholder="Thường từ 70 - 85">
+            </div>
+        </div>
+
+        <button class="btn-submit" onclick="calculateBloodLoss()">Tính toán kết quả</button>
+        
+        <div id="resultBox" class="result-box"></div>
+    </div>
+
+    <script>
+        function calculateBloodLoss() {
+            const gender = document.getElementById('gender').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const bmi = parseFloat(document.getElementById('bmi').value);
+            const ha = parseFloat(document.getElementById('hct_ha').value);
+            const hc = parseFloat(document.getElementById('hct_hc').value);
+            const hm = parseFloat(document.getElementById('hct_hm').value);
+            const hs = parseFloat(document.getElementById('hct_hs').value);
+
+            // Kiểm tra nhập liệu hợp lệ
+            if (isNaN(weight) || isNaN(bmi) || isNaN(ha) || isNaN(hs)) {
+                const resultBox = document.getElementById('resultBox');
+                resultBox.innerHTML = "<span style='color:var(--danger); font-weight:600;'>Vui lòng nhập đầy đủ các thông số cân nặng, BMI, Hct hiện tại và Hct túi máu.</span>";
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            // 1. Xác định hệ số thể tích máu (ml/kg) dựa trên giới tính và BMI
+            let mlPerKg = 0;
+            if (bmi >= 70) {
+                mlPerKg = 40;
+            } else if (bmi >= 40) {
+                mlPerKg = 53;
+            } else {
+                mlPerKg = (gender === 'nam') ? 70 : 65;
+            }
+
+            // Tính lượng máu ước tính của người bệnh (BV)
+            const bv = weight * mlPerKg;
+
+            // 2. Tính lượng máu mất cho phép tối đa (Maximum ABL)
+            // Công thức: ABL = [(Ha - Hc) * BV] / [(Ha + Hc) / 2] -> Lưu ý: Ho trong tài liệu gốc biểu thị cho Hct ban đầu/hiện tại (Ha)
+            let abl = 0;
+            if (ha > hc) {
+                abl = ((ha - hc) * bv) / ((ha + hc) / 2);
+            }
+
+            // 3. Tính lượng máu cần truyền (Nếu Hct hiện tại Ha thấp hơn Hct mong muốn Hm)
+            let bloodToTransfuse = 0;
+            if (ha < hm) {
+                bloodToTransfuse = ((hm - ha) * bv) / hs;
+            }
+
+            // Xuất kết quả hiển thị
+            let html = `
+                <div class="result-item">
+                    • Hệ số thể tích máu theo thể trạng: <strong>${mlPerKg} mL/kg</strong><br>
+                    • Tổng thể tích máu ước tính (BV): <strong style="color:var(--info);">${bv.toFixed(0)} mL</strong>
+                </div>
+                <div class="result-item">
+                    • Lượng máu mất cho phép tối đa (Maximum ABL): <strong style="color:var(--danger); font-size:16px;Required">${abl > 0 ? abl.toFixed(0) + ' mL' : '0 mL (Đã vượt ngưỡng chấp nhận)'}</strong><br>
+                    <small style="color:var(--text-muted); display:block; margin-top:4px !important;">* Định hướng lâm sàng: Nếu lượng máu phẫu trường mất vượt quá thể tích này, bệnh nhân có nguy cơ rơi vào tình trạng nguy kịch nếu không được bù hoàn kịp thời.</small>
+                </div>
+            `;
+
+            if (ha < hm) {
+                html += `
+                    <div class="result-item">
+                        • Chỉ định: Hct hiện tại (${ha}%) thấp hơn mục tiêu mong muốn (${hm}%).<br>
+                        • Thể tích khối hồng cầu lắng (Hct ${hs}%) cần truyền bù chu phẫu: <strong style="color:var(--success); font-size:16px;">~${bloodToTransfuse.toFixed(0)} mL</strong>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="result-item" style="color:var(--success);">
+                        • Theo dõi: Hct hiện tại (${ha}%) đang nằm trong giới hạn an toàn so với mục tiêu đặt ra (${hm}%). Chưa có chỉ định truyền máu dựa trên nồng độ tế bào đơn thuần.
+                    </div>
+                `;
+            }
+
+            const resultBox = document.getElementById('resultBox');
+            resultBox.innerHTML = html;
+            resultBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
