@@ -134,6 +134,28 @@
             font-size: 16px; 
             font-weight: 700; 
         }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .input-group input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .input-group input[type="number"]:focus {
+            border-color: var(--secondary);
+        }
         
         .radio-group, .check-group { 
             margin-bottom: 20px; 
@@ -262,7 +284,7 @@
             <h3>2. Thang điểm Mehta (STS)<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Dự đoán AKI cần lọc máu sau phẫu thuật CABG</span></h3>
         </div>
         <div class="card" onclick="openTool('gupta')">
-            <h3>3. Thang điểm Gupta<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Dự đoán suy thận cấp ở phẫu thuật chung</span></h3>
+            <h3>3. Thang điểm Gupta<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Tính nguy cơ suy thận toán học (Phẫu thuật chung)</span></h3>
         </div>
         <div class="card" onclick="openTool('kdigo')">
             <h3>4. Tiêu chuẩn KDIGO hậu phẫu<br><span style="font-size: 13px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Bảng tra cứu tiêu chuẩn định nghĩa và phân độ AKI</span></h3>
@@ -369,46 +391,108 @@
             },
 
             gupta: {
-                title: "Thang điểm Gupta (Phẫu thuật ngoài tim mạch)",
+                title: "Thang điểm Gupta (Mô hình Hồi quy Dự đoán AKI)",
                 render: function() {
                     return `
-                        <p style="margin-bottom:15px; color:var(--text-muted); font-size: 15px;"><i>Thang điểm Gupta được tối ưu hóa dựa trên mô hình toán học đa biến của NSQIP. Điền các thông số dưới đây để xem lưu ý:</i></p>
-                        
-                        <label class="section-title">Loại phẫu thuật</label>
-                        <select id="g_surg">
-                            <option>Phẫu thuật mạch máu lớn / Lồng ngực / Ổ bụng (Nguy cơ Cao)</option>
-                            <option>Các phẫu thuật chung khác</option>
-                        </select>
-
-                        <label class="section-title">Tình trạng chức năng trước mổ (Functional Status)</label>
-                        <select id="g_func">
-                            <option>Tự chủ hoàn toàn (Independent)</option>
-                            <option>Phụ thuộc một phần (Partially dependent)</option>
-                            <option>Phụ thuộc hoàn toàn (Totally dependent)</option>
-                        </select>
-
-                        <label class="section-title">Phân loại thể trạng ASA</label>
-                        <select id="g_asa">
-                            <option>ASA 1 hoặc ASA 2</option>
-                            <option>ASA ≥ 3 (Tăng mạnh nguy cơ)</option>
-                        </select>
-
-                        <div class="check-group" style="margin-top:15px;">
-                            <label class="check-item"><input type="checkbox" id="g_cr"> Creatinine huyết thanh trước mổ > 1.2 mg/dL (106 µmol/L)</label>
-                            <label class="check-item"><input type="checkbox" id="g_chf"> Có tiền sử suy tim sung huyết (CHF)</label>
+                        <div class="input-group">
+                            <label>Tuổi bệnh nhân:</label>
+                            <input type="number" id="g_age" min="1" max="120" placeholder="Nhập số tuổi (Ví dụ: 65)">
                         </div>
+                        
+                        <div class="check-group">
+                            <div class="section-title">Nồng độ Creatinine trước mổ</div>
+                            <label class="check-item">
+                                <input type="checkbox" id="g_cr_above"> Creatinine huyết thanh trước mổ > 1.5 mg/dL (> 132 µmol/L)
+                            </label>
+                        </div>
+
+                        <div class="radio-group">
+                            <div class="section-title">Trạng thái chức năng trước mổ (Functional Status)</div>
+                            <label class="check-item"><input type="radio" name="g_func" value="independent" checked> Tự chủ hoàn toàn (Independent)</label>
+                            <label class="check-item"><input type="radio" name="g_func" value="partially"> Phụ thuộc một phần (Partially dependent)</label>
+                            <label class="check-item"><input type="radio" name="g_func" value="totally"> Phụ thuộc hoàn toàn (Totally dependent)</label>
+                        </div>
+
+                        <div class="radio-group">
+                            <div class="section-title">Phân loại thể trạng ASA (Bao gồm cả CHF nếu có)</div>
+                            <label class="check-item"><input type="radio" name="g_asa" value="1" checked> ASA 1</label>
+                            <label class="check-item"><input type="radio" name="g_asa" value="2"> ASA 2</label>
+                            <label class="check-item"><input type="radio" name="g_asa" value="3"> ASA 3 (Tăng rõ nguy cơ)</label>
+                            <label class="check-item"><input type="radio" name="g_asa" value="4"> ASA 4</label>
+                            <label class="check-item"><input type="radio" name="g_asa" value="5"> ASA 5</label>
+                        </div>
+
+                        <label class="section-title">Loại phẫu thuật dự kiến</label>
+                        <select id="g_surgery_type">
+                            <option value="superficial">Phẫu thuật nông ngoài da (Superficial)</option>
+                            <option value="neurosurgery">Phẫu thuật Thần kinh (Neurosurgery)</option>
+                            <option value="orthopedic">Phẫu thuật Chỉnh hình (Orthopedic)</option>
+                            <option value="urology_gynecology">Sản phụ khoa / Tiết niệu (Urology/Gynecology)</option>
+                            <option value="otolaryngology">Tai Mũi Họng (Otolaryngology)</option>
+                            <option value="musculoskeletal">Cơ xương khớp phức tạp (Musculoskeletal)</option>
+                            <option value="thoracic">Phẫu thuật Lồng ngực (Thoracic)</option>
+                            <option value="general" selected>Phẫu thuật chung / Ổ bụng (General)</option>
+                            <option value="vascular">Phẫu thuật Mạch máu lớn (Vascular)</option>
+                        </select>
                     `;
                 },
                 evaluate: function() {
-                    let hasRisk = document.getElementById('g_cr').checked || document.getElementById('g_chf').checked || document.getElementById('g_asa').value.includes('≥ 3');
+                    const ageInput = document.getElementById('g_age').value;
+                    if (!ageInput || isNaN(parseInt(ageInput))) {
+                        return { alert: 'alert-warning', html: 'Vui lòng nhập số tuổi hợp lệ của bệnh nhân.' };
+                    }
                     
-                    let html = `<strong>Hướng dẫn lâm sàng cho Thang điểm Gupta:</strong><br><br>
-                    • Thang điểm này được xây dựng trên dữ liệu hồi quy đa biến. Để có tỷ lệ phần trăm chính xác tuyệt đối phục vụ giải thích cho thân nhân, khuyến cáo bác sĩ nhập dữ liệu trực tiếp vào bộ máy tính trực tuyến (như MDCalc).<br><br>`;
+                    const age = parseInt(ageInput);
+                    const creatinineAbove15 = document.getElementById('g_cr_above').checked;
+                    const functionalStatus = document.querySelector('input[name="g_func"]:checked').value;
+                    const asaClass = parseInt(document.querySelector('input[name="g_asa"]:checked').value);
+                    const surgeryType = document.getElementById('g_surgery_type').value;
+
+                    // --- Thuật toán Gupta của bạn ---
+                    let g_x = -4.2741;
+                    g_x += 0.0304 * age;
                     
-                    if (hasRisk) {
-                        return { alert: 'alert-warning', html: html + '⚠️ <strong>Nhận định nhanh:</strong> Bệnh nhân có các yếu tố nguy cơ cao (ASA ≥ 3, tăng Creatinine hoặc tiền sử CHF). Cần theo dõi sát bilan dịch vào - ra, duy trì áp lực tưới máu thận tối ưu chu phẫu.' };
+                    if (creatinineAbove15) {
+                        g_x += 0.4184;
+                    }
+                    
+                    const functionalCoefs = {
+                        'independent': 0.0,
+                        'partially': 0.4746,
+                        'totally': 1.0175
+                    };
+                    g_x += functionalCoefs[functionalStatus] || 0.0;
+                    
+                    const asaCoefs = {
+                        1: 0.0, 2: 0.0, 3: 0.8980, 4: 1.6443, 5: 2.4570
+                    };
+                    g_x += asaCoefs[asaClass] || 0.0;
+                    
+                    const surgeryCoefs = {
+                        'superficial': 0.0,
+                        'neurosurgery': 0.2185,
+                        'orthopedic': 0.2223,
+                        'urology_gynecology': 0.3204,
+                        'otolaryngology': 0.4121,
+                        'musculoskeletal': 0.6698,
+                        'thoracic': 0.8351,
+                        'general': 0.9234,
+                        'vascular': 1.1837
+                    };
+                    g_x += surgeryCoefs[surgeryType] || 0.0;
+                    
+                    let riskProbability = Math.exp(g_x) / (1 + Math.exp(g_x));
+                    let resultPercent = (riskProbability * 100).toFixed(2);
+                    // --------------------------------
+
+                    let baseHtml = `<strong>Tỷ lệ nguy cơ tổn thương thận cấp sau mổ (Gupta): <span style="font-size:20px; color:var(--danger);">${resultPercent}%</span></strong><br><br>`;
+                    
+                    if (parseFloat(resultPercent) < 1.0) {
+                        return { alert: 'alert-success', html: baseHtml + 'Đánh giá chu phẫu: Bệnh nhân thuộc nhóm <strong>Nguy cơ thấp</strong>.' };
+                    } else if (parseFloat(resultPercent) < 5.0) {
+                        return { alert: 'alert-warning', html: baseHtml + 'Đánh giá chu phẫu: Bệnh nhân thuộc nhóm <strong>Nguy cơ trung bình</strong>. Chú ý tối ưu hóa thể tích tuần hoàn.' };
                     } else {
-                        return { alert: 'alert-success', html: html + '✅ <strong>Nhận định nhanh:</strong> Bước đầu ghi nhận bệnh nhân thuộc nhóm nguy cơ nền thấp.' };
+                        return { alert: 'alert-danger', html: baseHtml + '⚠️ <strong>Cảnh báo chu phẫu: Nguy cơ tổn thương thận cấp tính ở mức CAO</strong>.<br>Cần tránh các thuốc độc cho thận (NSAIDs, Aminoglycosides), hạn chế tối đa chất cản quang và đảm bảo huyết áp động mạch trung bình MAP ổn định trong suốt cuộc phẫu thuật.' };
                     }
                 }
             },
@@ -460,7 +544,6 @@
             document.getElementById('formContainer').innerHTML = tool.render();
             document.getElementById('resultBox').style.display = 'none';
 
-            // Ẩn/hiện nút submit tùy theo công cụ (Bảng tra cứu KDIGO không cần submit tính điểm)
             if(toolKey === 'kdigo') {
                 document.getElementById('submitBtn').style.display = 'none';
             } else {
