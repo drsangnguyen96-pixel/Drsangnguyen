@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đánh Giá Lão Khoa - CFS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        * { box-sizing: border-box; margin: 0 !important; padding: 0; }
+        html, body { width: 100% !important; min-width: 100vw !important; min-height: 100vh; background: linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%); color: #212121; font-family: 'Inter', sans-serif; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 20px !important; }
+        .header { width: 100% !important; max-width: 700px !important; text-align: center !important; margin-bottom: 25px !important; display: block !important; }
+        .header h1 { color: #d35400 !important; font-size: 24px !important; font-weight: 700 !important; text-transform: uppercase !important; line-height: 1.4 !important; display: block !important; padding-bottom: 12px !important; border-bottom: 3px solid #e67e22 !important; }
+        .container { width: 100% !important; max-width: 700px !important; background: #ffffff; padding: 30px 20px !important; border-radius: 16px; box-shadow: 0 15px 35px rgba(211, 84, 0, 0.15); }
+        .intro { margin-bottom: 20px !important; color: #555; font-size: 15px; line-height: 1.5; text-align: center; }
+        .check-item { display: flex; align-items: flex-start; margin-bottom: 10px !important; font-size: 15px; cursor: pointer; padding: 14px 18px; border-radius: 10px; border: 1px solid #e0e0e0; background: #fafafa; line-height: 1.4; transition: all 0.2s ease; }
+        .check-item:hover { border-color: #d35400; background: #fdf2e9; }
+        .check-item b { color: #d35400; }
+        input[type="radio"] { margin-right: 15px !important; margin-top: 2px !important; width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; accent-color: #d35400; }
+        .btn-submit { width: 100%; padding: 16px; background: #d35400; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 25px !important; transition: all 0.3s ease; text-transform: uppercase; }
+        .btn-submit:hover { background: #a04000; box-shadow: 0 6px 20px rgba(211, 84, 0, 0.3); }
+        .result-box { margin-top: 25px !important; padding: 20px; border-radius: 12px; font-size: 16px; display: none; line-height: 1.6; border-left: 5px solid; }
+        .alert-danger { border-left-color: #c0392b; background: #fadbd8; color: #b71c1c; }
+        .alert-warning { border-left-color: #f39c12; background: #fef5e7; color: #d35400; }
+        .alert-success { border-left-color: #27ae60; background: #e8f8f5; color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Thang Điểm CFS (Frailty)</h1>
+    </div>
+    <div class="container">
+        <p class="intro">Đánh giá mức độ yếu ớt (Frailty) của bệnh nhân lão khoa để tiên lượng khả năng chịu đựng cuộc mổ và tốc độ phục hồi.</p>
+        <div class="form-group">
+            <label class="check-item"><input type="radio" name="cfs_score" value="1" checked> <div><b>1. Rất khỏe mạnh (Very Fit):</b> Năng động, tràn đầy năng lượng, tập thể dục thường xuyên.</div></label>
+            <label class="check-item"><input type="radio" name="cfs_score" value="2"> <div><b>2. Khỏe mạnh (Well):</b> Không có bệnh lý đang hoạt động, thỉnh thoảng có tập thể dục.</div></label>
+            <label class="check-item"><input type="radio" name="cfs_score" value="3"> <div><b>3. Quản lý tốt (Managing Well):</b> Bệnh lý nội khoa được kiểm soát tốt, ít vận động ngoài thói quen đi bộ.</div></label>
+            <label class="check-item"><input type="radio" name="cfs_score" value="4"> <div><b>4. Dễ tổn thương (Vulnerable):</b> Chậm chạp, có triệu chứng bệnh, nhưng không phụ thuộc người khác trong sinh hoạt.</div></label>
+            <label class="check-item"><input type="radio" name="cfs_score" value="5"> <div><b>5. Mỏng manh nhẹ (Mildly Frail):</b> Tự lo được sinh hoạt cá nhân cơ bản, nhưng cần giúp đỡ việc nặng (tài chính, việc nhà nặng, di chuyển xa).</div></label>
+            <label class="check-item"><input type="radio" name="cfs_score" value="6"> <div><b>6. Mỏng manh trung bình (Moderately Frail):</b> Cần giúp đỡ tất cả các hoạt động ngoài trời và việc nhà. Cần hỗ trợ một phần khi tắm rửa/thay đồ.</div></label>
+            <label class="check-item"><input type="radio" name="cfs_score" value="7"> <div><b>7. Mỏng manh nặng (Severely Frail):</b> Hoàn toàn phụ thuộc vào người khác trong sinh hoạt cá nhân (ăn, tắm, vệ sinh), nhưng tình trạng nội khoa ổn định.</div></label>
+            <label class="check-item"><input type="radio" name="cfs_score" value="8"> <div><b>8. Rất nặng (Very Severely Frail):</b> Phụ thuộc hoàn toàn, nằm liệt giường, chức năng sống suy kiệt.</div></label>
+            <label class="check-item"><input type="radio" name="cfs_score" value="9"> <div><b>9. Bệnh giai đoạn cuối (Terminally Ill):</b> Tuổi thọ dự kiến < 6 tháng (Mắc bệnh nan y).</div></label>
+        </div>
+        <button class="btn-submit" onclick="evaluateTool()">Xác nhận Điểm CFS</button>
+        <div id="resultBox" class="result-box"></div>
+    </div>
+    <script>
+        function evaluateTool() {
+            const cfs = parseInt(document.querySelector('input[name="cfs_score"]:checked').value);
+            const box = document.getElementById('resultBox');
+            let html = `<strong>Điểm số CFS: ${cfs}/9</strong><br><br>`;
+            if (cfs <= 3) { box.className = 'result-box alert-success'; html += 'Nhận định: <strong>Khỏe mạnh</strong>, dự trữ cơ năng tốt. Sức chịu đựng phẫu thuật cao.'; }
+            else if (cfs === 4) { box.className = 'result-box alert-warning'; html += 'Nhận định: Bệnh nhân ở mức <strong>Dễ tổn thương (Vulnerable)</strong>. Khả năng phục hồi sau mổ có thể kéo dài.'; }
+            else if (cfs <= 6) { box.className = 'result-box alert-danger'; html += '⚠️ Nhận định: <strong>Hội chứng mỏng manh (Frail)</strong>.<br>Bệnh nhân có nguy cơ cao suy giảm chức năng, viêm phổi và loét tỳ đè sau mổ. Cần kế hoạch phục hồi chức năng sớm.'; }
+            else { box.className = 'result-box alert-danger'; html += '❌ Nhận định: <strong>Mỏng manh nặng / Giai đoạn cuối</strong>.<br>Tiên lượng tử vong và tàn phế chu phẫu cực cao. Cần hội chẩn chuyên sâu và thảo luận kỹ với gia đình về mục tiêu chăm sóc.'; }
+            box.innerHTML = html; box.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

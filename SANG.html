@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nguy Cơ Sảng Sau Mổ (Delirium)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        * { box-sizing: border-box; margin: 0 !important; padding: 0; }
+        html, body { width: 100% !important; min-width: 100vw !important; min-height: 100vh; background: linear-gradient(135deg, #f3e5f5 0%, #d1c4e9 100%); color: #212121; font-family: 'Inter', sans-serif; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 20px !important; }
+        .header { width: 100% !important; max-width: 700px !important; text-align: center !important; margin-bottom: 25px !important; display: block !important; }
+        .header h1 { color: #4527a0 !important; font-size: 24px !important; font-weight: 700 !important; text-transform: uppercase !important; line-height: 1.4 !important; display: block !important; padding-bottom: 12px !important; border-bottom: 3px solid #512da8 !important; }
+        .container { width: 100% !important; max-width: 700px !important; background: #ffffff; padding: 30px 20px !important; border-radius: 16px; box-shadow: 0 15px 35px rgba(69, 39, 160, 0.15); }
+        .intro { margin-bottom: 20px !important; color: #555; font-size: 15px; line-height: 1.5; text-align: center; }
+        .check-item { display: flex; align-items: flex-start; margin-bottom: 12px !important; font-size: 15px; cursor: pointer; padding: 15px 18px; border-radius: 10px; border: 1px solid #e0e0e0; background: #fafafa; line-height: 1.4; transition: all 0.2s ease; }
+        .check-item:hover { border-color: #512da8; background: #ede7f6; }
+        input[type="checkbox"] { margin-right: 15px !important; margin-top: 3px !important; width: 20px; height: 20px; cursor: pointer; flex-shrink: 0; accent-color: #512da8; }
+        .btn-submit { width: 100%; padding: 16px; background: #4527a0; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 25px !important; transition: all 0.3s ease; text-transform: uppercase; }
+        .btn-submit:hover { background: #311b92; box-shadow: 0 6px 20px rgba(69, 39, 160, 0.3); }
+        .result-box { margin-top: 25px !important; padding: 20px; border-radius: 12px; font-size: 16px; display: none; line-height: 1.6; border-left: 5px solid; }
+        .alert-danger { border-left-color: #c62828; background: #ffcdd2; color: #b71c1c; }
+        .alert-warning { border-left-color: #f57c00; background: #fff9c4; color: #e65100; }
+        .alert-success { border-left-color: #2e7d32; background: #e8f5e9; color: #1b5e20; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Nguy Cơ Sảng Sau Mổ (Delirium)</h1>
+    </div>
+    <div class="container">
+        <p class="intro">Đánh giá các yếu tố dự báo tình trạng lú lẫn, kích động hoặc ngủ gà (Delirium) ở bệnh nhân giai đoạn hậu phẫu.</p>
+        <div class="form-group">
+            <label class="check-item"><input type="checkbox" value="1"> <div>Tuổi cao (≥ 65 tuổi).</div></label>
+            <label class="check-item"><input type="checkbox" value="2"> <div>Có bệnh lý nền về Thần kinh: Suy giảm nhận thức, Sa sút trí tuệ (Dementia), hoặc tiền sử đột quỵ.</div></label>
+            <label class="check-item"><input type="checkbox" value="1"> <div>Suy giảm giác quan nặng: Thị lực kém hoặc khiếm thính (Điếc).</div></label>
+            <label class="check-item"><input type="checkbox" value="1"> <div>Tiền sử lạm dụng rượu hoặc đang sử dụng thuốc an thần thường xuyên.</div></label>
+            <label class="check-item"><input type="checkbox" value="1"> <div>Bệnh lý nội khoa phức tạp đi kèm (ASA ≥ 3, Suy thận mạn, Suy gan).</div></label>
+            <label class="check-item"><input type="checkbox" value="1"> <div>Đặc thù phẫu thuật: Phẫu thuật lớn, mất máu nhiều (Ví dụ: Tim mạch, Cột sống, Thay khớp háng, Phẫu thuật cấp cứu).</div></label>
+        </div>
+        <button class="btn-submit" onclick="evaluateTool()">Kiểm Tra Nguy Cơ</button>
+        <div id="resultBox" class="result-box"></div>
+    </div>
+    <script>
+        function evaluateTool() {
+            let score = 0;
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => score += parseInt(cb.value));
+            const box = document.getElementById('resultBox');
+            let html = `<strong>Tổng điểm các yếu tố nguy cơ: ${score} điểm</strong><br><br>`;
+            if (score === 0) { box.className = 'result-box alert-success'; html += 'Đánh giá: <strong>Nguy cơ Thấp</strong>. Bệnh nhân ít có khả năng bị sảng sau mổ.'; }
+            else if (score <= 2) { box.className = 'result-box alert-warning'; html += 'Đánh giá: <strong>Nguy cơ Trung bình</strong>.<br>Nên giải thích trước cho người nhà về khả năng lú lẫn tạm thời sau thoát mê.'; }
+            else { box.className = 'result-box alert-danger'; html += 'Đánh giá: <strong>Nguy cơ RẤT CAO bị Sảng sau mổ</strong>.<br>⚠️ <strong>Dự phòng Y khoa:</strong> Ưu tiên gây tê vùng nếu được. Tránh tuyệt đối thuốc kháng cholinergic. Hạn chế sử dụng Benzodiazepine và chỉnh liều Opioid chặt chẽ. Đảm bảo cung cấp lại kính mắt/máy trợ thính ngay tại phòng hồi tỉnh.'; }
+            box.innerHTML = html; box.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
