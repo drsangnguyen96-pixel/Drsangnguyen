@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh Giá Nguy Cơ Chảy Máu Chu Phẫu</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #2d3436;
+            --secondary: #d63031; /* Màu Đỏ cho chủ đề Chảy máu */
+            --secondary-hover: #b33939;
+            --bg-gradient: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+            --card-bg: #ffffff;
+            --danger: #ff7675;
+            --warning: #fdcb6e;
+            --success: #00b894;
+            --info: #74b9ff;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            background: var(--bg-gradient); 
+            color: var(--text-main); 
+            padding: 30px 20px; 
+            min-height: 100vh;
+        }
+
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { 
+            color: var(--primary); 
+            font-size: 28px; 
+            font-weight: 700;
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+        }
+        .header h1::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 4px;
+            background: var(--secondary);
+            bottom: -10px;
+            left: 20%;
+            border-radius: 2px;
+        }
+
+        /* Lưới Menu */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 25px; 
+            max-width: 850px; 
+            margin: 0 auto; 
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .card { 
+            background-color: var(--card-bg); 
+            padding: 30px 20px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            border-top: 5px solid var(--secondary); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            min-height: 140px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 30px rgba(214, 48, 49, 0.15); 
+        }
+        .card h3 { 
+            color: var(--primary); 
+            font-size: 18px; 
+            font-weight: 600;
+            line-height: 1.5; 
+        }
+
+        /* Giao diện Đánh giá */
+        .assessment-container { 
+            display: none; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: var(--card-bg); 
+            padding: 35px 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        .btn-back { 
+            background-color: transparent; 
+            color: var(--text-muted); 
+            border: 1px solid #dfe6e9; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            margin-bottom: 25px; 
+            font-weight: 600; 
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-back:hover { 
+            background-color: #f1f2f6; 
+            color: var(--primary);
+        }
+
+        #assessmentTitle { 
+            color: var(--primary); 
+            margin-bottom: 25px; 
+            font-size: 24px; 
+            font-weight: 700;
+            border-bottom: 2px solid #f1f2f6; 
+            padding-bottom: 15px; 
+        }
+
+        .section-title { 
+            margin: 20px 0 12px 0; 
+            color: var(--primary); 
+            font-size: 16px; 
+            font-weight: 700; 
+        }
+        
+        .radio-group, .check-group { 
+            margin-bottom: 20px; 
+        }
+
+        /* Tuỳ chỉnh Label (Checkbox / Radio) */
+        .check-item { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 10px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            padding: 14px 18px; 
+            border-radius: 10px; 
+            border: 1px solid #dfe6e9;
+            background: #ffffff;
+            transition: all 0.2s ease; 
+            font-weight: 500;
+        }
+        .check-item:hover { 
+            border-color: var(--secondary); 
+            background: #fff8f8; 
+            transform: translateX(3px);
+        }
+        
+        input[type="checkbox"], input[type="radio"] { 
+            margin-right: 15px; 
+            width: 20px; 
+            height: 20px; 
+            cursor: pointer; 
+            flex-shrink: 0; 
+            accent-color: var(--secondary); 
+        }
+
+        /* Nút Submit */
+        .btn-submit { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, #ff7675, var(--secondary)); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 18px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            margin-top: 25px; 
+            box-shadow: 0 4px 15px rgba(214, 48, 49, 0.3);
+            transition: all 0.3s ease; 
+        }
+        .btn-submit:hover { 
+            box-shadow: 0 6px 20px rgba(214, 48, 49, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        /* Kết quả */
+        .result-box { 
+            margin-top: 25px; 
+            padding: 20px; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            display: none; 
+            line-height: 1.6; 
+            animation: fadeIn 0.5s ease;
+            border-left: 5px solid;
+        }
+        .result-box strong { font-weight: 700; }
+        
+        .alert-danger { background-color: #ffeaa7; color: #d63031; border-color: var(--danger); background: #ff76751a; }
+        .alert-warning { background-color: #ffeaa7; color: #e17055; border-color: var(--warning); background: #fdcb6e1a; }
+        .alert-success { background-color: #55efc4; color: #00b894; border-color: var(--success); background: #00b8941a; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 15px 10px; }
+            .assessment-container { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Nguy Cơ Chảy Máu Chu Phẫu</h1>
+    </div>
+
+    <div id="mainGrid" class="grid-container">
+        <div class="card" onclick="openTool('hasbled')">
+            <h3>1. Thang điểm HAS-BLED<br><span style="font-size: 14px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Đánh giá nguy cơ chảy máu lớn ở bệnh nhân</span></h3>
+        </div>
+        <div class="card" onclick="openTool('surg_risk')">
+            <h3>2. Phân loại Phẫu thuật<br><span style="font-size: 14px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Mức độ chảy máu theo loại thủ thuật (ESC/ESA)</span></h3>
+        </div>
+    </div>
+
+    <div id="assessmentView" class="assessment-container">
+        <button class="btn-back" onclick="goBack()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Quay lại
+        </button>
+        <h2 id="assessmentTitle">Tiêu đề</h2>
+        <div id="formContainer">
+            </div>
+        <button class="btn-submit" onclick="evaluateCurrent()">Xác nhận Đánh giá</button>
+        <div id="resultBox" class="result-box"></div>
+    </div>
+
+    <script>
+        let currentTool = '';
+
+        const tools = {
+            hasbled: {
+                title: "Thang điểm HAS-BLED",
+                render: function() {
+                    return `
+                        <p style="margin-bottom:20px; color:var(--text-muted); font-size: 15px;"><i>Đánh dấu vào các yếu tố có ở bệnh nhân (Mỗi yếu tố tương ứng 1 điểm):</i></p>
+                        
+                        <div class="check-group">
+                            <label class="check-item"><input type="checkbox" class="hb-check"> <b>H</b> - Tăng huyết áp (HA tâm thu > 160 mmHg)</label>
+                            
+                            <div class="section-title" style="font-size:14px; margin-left: 5px;"><b>A</b> - Chức năng gan/thận bất thường (Tối đa 2đ):</div>
+                            <label class="check-item"><input type="checkbox" class="hb-check"> Bất thường chức năng thận (Creatinin > 200 µmol/L, chạy thận, ghép thận)</label>
+                            <label class="check-item"><input type="checkbox" class="hb-check"> Bất thường chức năng gan (Xơ gan, Bilirubin > 2x, AST/ALT > 3x giới hạn trên)</label>
+                            
+                            <label class="check-item"><input type="checkbox" class="hb-check" style="margin-top: 15px;"> <b>S</b> - Tiền sử đột quỵ (Stroke)</label>
+                            <label class="check-item"><input type="checkbox" class="hb-check"> <b>B</b> - Tiền sử chảy máu lớn, hoặc thể tạng dễ chảy máu</label>
+                            <label class="check-item"><input type="checkbox" class="hb-check"> <b>L</b> - Lability of INR (INR dao động/không ổn định nếu dùng kháng VK)</label>
+                            <label class="check-item"><input type="checkbox" class="hb-check"> <b>E</b> - Tuổi cao (Elderly) > 65 tuổi</label>
+                            
+                            <div class="section-title" style="font-size:14px; margin-left: 5px;"><b>D</b> - Thuốc và Rượu (Tối đa 2đ):</div>
+                            <label class="check-item"><input type="checkbox" class="hb-check"> Đang dùng thuốc làm tăng nguy cơ chảy máu (Aspirin, NSAID...)</label>
+                            <label class="check-item"><input type="checkbox" class="hb-check"> Lạm dụng rượu / thức uống có cồn</label>
+                        </div>
+                    `;
+                },
+                evaluate: function() {
+                    const score = document.querySelectorAll('#formContainer .hb-check:checked').length;
+                    
+                    let baseHtml = `<strong>Tổng điểm HAS-BLED: ${score} điểm</strong><br><br>`;
+                    
+                    if (score <= 2) {
+                        return { alert: 'alert-success', html: baseHtml + 'Đánh giá: <strong>NGUY CƠ CHẢY MÁU THẤP</strong>.<br>Lợi ích của việc dùng thuốc chống đông (nếu có chỉ định) thường vượt trội hơn nguy cơ chảy máu.' };
+                    } else {
+                        return { alert: 'alert-danger', html: baseHtml + 'Đánh giá: <strong>NGUY CƠ CHẢY MÁU CAO (≥ 3 điểm)</strong>.<br>Cần hết sức thận trọng. Hãy xem xét theo dõi sát lâm sàng và điều chỉnh các yếu tố nguy cơ có thể thay đổi được (ví dụ: kiểm soát HA, hạn chế rượu, xem xét lại NSAID).' };
+                    }
+                }
+            },
+            
+            surg_risk: {
+                title: "Nguy cơ theo Loại Phẫu thuật",
+                render: function() {
+                    return `
+                        <p style="margin-bottom:20px; color:var(--text-muted); font-size: 15px;"><i>Phân tầng phẫu thuật theo nguy cơ chảy máu (hướng dẫn chu phẫu):</i></p>
+                        
+                        <div class="radio-group">
+                            <div class="section-title">Nguy cơ THẤP</div>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="1"> Phẫu thuật nha khoa (nhổ răng, trám răng)</label>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="1"> Phẫu thuật mắt (đục thủy tinh thể, glaucoma)</label>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="1"> Phẫu thuật da nông / tiểu phẫu</label>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="1"> Thủ thuật nội soi (không cắt/sinh thiết sâu)</label>
+
+                            <div class="section-title">Nguy cơ TRUNG BÌNH</div>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="2"> Phẫu thuật ổ bụng (cắt ruột, túi mật, thoát vị)</label>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="2"> Phẫu thuật chỉnh hình (không phải đại phẫu)</label>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="2"> Sinh thiết tạng (gan, thận, tuyến tiền liệt)</label>
+
+                            <div class="section-title">Nguy cơ CAO</div>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="3"> Phẫu thuật thần kinh (nội sọ, cột sống)</label>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="3"> Phẫu thuật tim mạch / Lồng ngực lớn</label>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="3"> Phẫu thuật cắt bỏ gan / thận</label>
+                            <label class="check-item"><input type="radio" name="surg_risk" value="3"> Đại phẫu chỉnh hình (thay khớp háng/gối lớn)</label>
+                        </div>
+                    `;
+                },
+                evaluate: function() {
+                    const checked = document.querySelector('input[name="surg_risk"]:checked');
+                    if (!checked) return { alert: 'alert-warning', html: 'Vui lòng chọn một loại phẫu thuật tương ứng.' };
+                    
+                    const val = parseInt(checked.value);
+                    
+                    if (val === 1) {
+                        return { alert: 'alert-success', html: '<strong>Đánh giá: PHẪU THUẬT NGUY CƠ CHẢY MÁU THẤP</strong><br><br>Có thể không cần ngưng hoàn toàn thuốc chống đông/chống kết tập tiểu cầu (tuỳ phác đồ), do nguy cơ chảy máu dễ cầm và không đe doạ tính mạng.' };
+                    } else if (val === 2) {
+                        return { alert: 'alert-warning', html: '<strong>Đánh giá: PHẪU THUẬT NGUY CƠ CHẢY MÁU TRUNG BÌNH</strong><br><br>Cần hội chẩn để xem xét cân bằng giữa nguy cơ huyết khối (nếu ngưng thuốc) và nguy cơ chảy máu phẫu thuật.' };
+                    } else {
+                        return { alert: 'alert-danger', html: '<strong>Đánh giá: PHẪU THUẬT NGUY CƠ CHẢY MÁU CAO</strong><br><br>Chảy máu ở các cơ quan này có thể gây biến chứng nghiêm trọng (ví dụ: chèn ép não/tủy sống). Cần có phác đồ ngưng thuốc chống đông/bắt cầu (bridging) chặt chẽ trước mổ.' };
+                    }
+                }
+            }
+        };
+
+        function openTool(toolKey) {
+            currentTool = toolKey;
+            const tool = tools[toolKey];
+            
+            document.getElementById('assessmentTitle').innerHTML = tool.title;
+            document.getElementById('formContainer').innerHTML = tool.render();
+            document.getElementById('resultBox').style.display = 'none';
+
+            document.getElementById('mainGrid').style.display = 'none';
+            document.getElementById('assessmentView').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goBack() {
+            document.getElementById('assessmentView').style.display = 'none';
+            document.getElementById('mainGrid').style.display = 'grid';
+            currentTool = '';
+        }
+
+        function evaluateCurrent() {
+            const resultBox = document.getElementById('resultBox');
+            const result = tools[currentTool].evaluate();
+            
+            // Xóa animation cũ để có thể chạy lại
+            resultBox.style.animation = 'none';
+            resultBox.offsetHeight; /* trigger reflow */
+            resultBox.style.animation = 'fadeIn 0.5s ease';
+            
+            resultBox.innerHTML = result.html;
+            resultBox.className = `result-box ${result.alert}`;
+            resultBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

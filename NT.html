@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh Giá Nguy Cơ Nhiễm Trùng Sau Mổ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #2d3436;
+            --secondary: #009432; /* Xanh ngọc bích phòng mổ */
+            --secondary-hover: #006266;
+            --bg-gradient: linear-gradient(135deg, #f1f8f5 0%, #e0f2ea 100%);
+            --card-bg: #ffffff;
+            --danger: #ea2027;
+            --warning: #f39c12;
+            --success: #1abc9c;
+            --info: #0652dd;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            background: var(--bg-gradient); 
+            color: var(--text-main); 
+            padding: 30px 20px; 
+            min-height: 100vh;
+        }
+
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { 
+            color: var(--primary); 
+            font-size: 28px; 
+            font-weight: 700;
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+        }
+        .header h1::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 4px;
+            background: var(--secondary);
+            bottom: -10px;
+            left: 20%;
+            border-radius: 2px;
+        }
+
+        /* Lưới Menu */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 25px; 
+            max-width: 850px; 
+            margin: 0 auto; 
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .card { 
+            background-color: var(--card-bg); 
+            padding: 30px 20px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            border-top: 5px solid var(--secondary); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            min-height: 140px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 30px rgba(0, 148, 50, 0.15); 
+        }
+        .card h3 { 
+            color: var(--primary); 
+            font-size: 18px; 
+            font-weight: 600;
+            line-height: 1.5; 
+        }
+
+        /* Giao diện Đánh giá */
+        .assessment-container { 
+            display: none; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: var(--card-bg); 
+            padding: 35px 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        .btn-back { 
+            background-color: transparent; 
+            color: var(--text-muted); 
+            border: 1px solid #dfe6e9; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            margin-bottom: 25px; 
+            font-weight: 600; 
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-back:hover { 
+            background-color: #f1f2f6; 
+            color: var(--primary);
+        }
+
+        #assessmentTitle { 
+            color: var(--primary); 
+            margin-bottom: 25px; 
+            font-size: 24px; 
+            font-weight: 700;
+            border-bottom: 2px solid #f1f2f6; 
+            padding-bottom: 15px; 
+        }
+
+        .section-title { 
+            margin: 20px 0 12px 0; 
+            color: var(--primary); 
+            font-size: 16px; 
+            font-weight: 700; 
+        }
+        
+        .radio-group, .check-group { 
+            margin-bottom: 20px; 
+        }
+
+        /* Tuỳ chỉnh Label (Checkbox / Radio) */
+        .check-item { 
+            display: flex; 
+            align-items: flex-start; 
+            margin-bottom: 12px; 
+            font-size: 15px; 
+            cursor: pointer; 
+            padding: 14px 18px; 
+            border-radius: 10px; 
+            border: 1px solid #dfe6e9;
+            background: #ffffff;
+            transition: all 0.2s ease; 
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .check-item:hover { 
+            border-color: var(--secondary); 
+            background: #f4fbf7; 
+            transform: translateX(3px);
+        }
+        
+        input[type="checkbox"], input[type="radio"] { 
+            margin-right: 15px; 
+            margin-top: 3px;
+            width: 20px; 
+            height: 20px; 
+            cursor: pointer; 
+            flex-shrink: 0; 
+            accent-color: var(--secondary); 
+        }
+
+        /* Nút Submit */
+        .btn-submit { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, #1abc9c, var(--secondary)); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 18px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            margin-top: 25px; 
+            box-shadow: 0 4px 15px rgba(0, 148, 50, 0.3);
+            transition: all 0.3s ease; 
+        }
+        .btn-submit:hover { 
+            box-shadow: 0 6px 20px rgba(0, 148, 50, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        /* Kết quả */
+        .result-box { 
+            margin-top: 25px; 
+            padding: 20px; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            display: none; 
+            line-height: 1.6; 
+            animation: fadeIn 0.5s ease;
+            border-left: 5px solid;
+        }
+        .result-box strong { font-weight: 700; }
+        
+        /* Màu sắc cho Altemeier */
+        .border-type1 { border-left-color: #bdc3c7; background: #f8f9fa; }
+        .border-type2 { border-left-color: #f1c40f; background: #fffcf0; }
+        .border-type3 { border-left-color: #e74c3c; background: #fdf2f1; }
+        .border-type4 { border-left-color: #8e44ad; background: #f9f4fb; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 15px 10px; }
+            .assessment-container { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Nguy Cơ Nhiễm Trùng Sau Mổ</h1>
+    </div>
+
+    <div id="mainGrid" class="grid-container">
+        <div class="card" onclick="openTool('altemeier')">
+            <h3>1. Phân loại Altemeier<br><span style="font-size: 14px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Phân loại mức độ sạch - dơ của vết mổ</span></h3>
+        </div>
+        <div class="card" onclick="openTool('nnis')">
+            <h3>2. Thang điểm NNIS<br><span style="font-size: 14px; font-weight: 400; color: #636e72; margin-top: 8px; display: block;">Đánh giá nguy cơ nhiễm trùng bệnh viện</span></h3>
+        </div>
+    </div>
+
+    <div id="assessmentView" class="assessment-container">
+        <button class="btn-back" onclick="goBack()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Quay lại
+        </button>
+        <h2 id="assessmentTitle">Tiêu đề</h2>
+        <div id="formContainer">
+            </div>
+        <button class="btn-submit" onclick="evaluateCurrent()">Xác nhận Đánh giá</button>
+        <div id="resultBox" class="result-box"></div>
+    </div>
+
+    <script>
+        let currentTool = '';
+
+        const tools = {
+            altemeier: {
+                title: "Phân loại vết mổ theo Altemeier",
+                render: function() {
+                    return `
+                        <p style="margin-bottom:20px; color:var(--text-muted); font-size: 15px;"><i>Chọn loại phẫu thuật phù hợp nhất với tình trạng của bệnh nhân:</i></p>
+                        
+                        <div class="radio-group">
+                            <label class="check-item"><input type="radio" name="alt_type" value="1"> 
+                                <div><span style="color: #7f8c8d; font-weight:bold;">Loại I - Phẫu thuật SẠCH (Trắng)</span><br>
+                                <span style="font-size:14px; font-weight:normal;">Vết mổ may kín, không dẫn lưu, không chấn thương, không viêm. Mổ trong điều kiện vô trùng. Không mở thông với các xoang miệng, ống tiêu hóa, tiết niệu sinh dục, đường hô hấp.</span></div>
+                            </label>
+                            
+                            <label class="check-item"><input type="radio" name="alt_type" value="2"> 
+                                <div><span style="color: #f39c12; font-weight:bold;">Loại II - Phẫu thuật SẠCH NHIỄM (Vàng)</span><br>
+                                <span style="font-size:14px; font-weight:normal;">Phẫu thuật có mở cơ quan TN-SD mà cấy nước tiểu vô trùng. Mở đường hô hấp, ống tiêu hóa trong điều kiện tốt không gây nhiễm, mở xoang miệng, ống mật không nhiễm trùng mật, lỗi vô trùng nhẹ, vết mổ có dẫn lưu.</span></div>
+                            </label>
+
+                            <label class="check-item"><input type="radio" name="alt_type" value="3"> 
+                                <div><span style="color: #e74c3c; font-weight:bold;">Loại III - Phẫu thuật NHIỄM (Đỏ)</span><br>
+                                <span style="font-size:14px; font-weight:normal;">Vết thương do chấn thương mới, mở ống mật/TN-SD khi có nhiễm trùng, nhiễm khuẩn do dịch ống tiêu hóa, lỗi vô trùng nặng, mổ trong vùng viêm cấp chưa tụ mủ.</span></div>
+                            </label>
+
+                            <label class="check-item"><input type="radio" name="alt_type" value="4"> 
+                                <div><span style="color: #8e44ad; font-weight:bold;">Loại IV - Phẫu thuật DƠ</span><br>
+                                <span style="font-size:14px; font-weight:normal;">Vết thương dơ hay đến muộn, có nhiều mô chết, nhiễm trùng có mủ, bị nhiễm phân hay có vật lạ, thủng tạng rỗng.</span></div>
+                            </label>
+                        </div>
+                    `;
+                },
+                evaluate: function() {
+                    const checked = document.querySelector('input[name="alt_type"]:checked');
+                    if (!checked) return { alert: 'border-type1', html: '<span style="color:#e74c3c;">Vui lòng chọn một phân loại vết mổ.</span>' };
+                    
+                    const val = parseInt(checked.value);
+                    let resultHtml = "";
+                    let alertClass = "";
+
+                    if (val === 1) {
+                        alertClass = "border-type1";
+                        resultHtml = `<strong>Kết luận: LOẠI I - PHẪU THUẬT SẠCH</strong><br><br>• Tỉ lệ nhiễm trùng (Không KS dự phòng): <strong>1% - 2%</strong><br>• Tỉ lệ nhiễm trùng (Có KS dự phòng): <strong>< 1%</strong>`;
+                    } else if (val === 2) {
+                        alertClass = "border-type2";
+                        resultHtml = `<strong>Kết luận: LOẠI II - PHẪU THUẬT SẠCH NHIỄM</strong><br><br>• Tỉ lệ nhiễm trùng (Không KS dự phòng): <strong>10% - 20%</strong><br>• Tỉ lệ nhiễm trùng (Có KS dự phòng): <strong>< 7%</strong>`;
+                    } else if (val === 3) {
+                        alertClass = "border-type3";
+                        resultHtml = `<strong>Kết luận: LOẠI III - PHẪU THUẬT NHIỄM</strong><br><br>• Tỉ lệ nhiễm trùng (Không KS dự phòng): <strong>20%</strong><br>• Tỉ lệ nhiễm trùng (Có KS dự phòng): <strong>< 15%</strong>`;
+                    } else {
+                        alertClass = "border-type4";
+                        resultHtml = `<strong>Kết luận: LOẠI IV - PHẪU THUẬT DƠ</strong><br><br>• Tỉ lệ nhiễm trùng (Không KS dự phòng): <strong>> 30%</strong><br>• Tỉ lệ nhiễm trùng (Có KS dự phòng): <strong>Giảm đáng kể</strong> (Bắt buộc dùng KS điều trị)`;
+                    }
+
+                    return { alert: alertClass, html: resultHtml };
+                }
+            },
+            
+            nnis: {
+                title: "Thang điểm NNIS",
+                render: function() {
+                    return `
+                        <p style="margin-bottom:20px; color:var(--text-muted); font-size: 15px;"><i>Đánh giá nguy cơ nhiễm trùng bệnh viện (Mỗi yếu tố tương ứng 1 điểm):</i></p>
+                        
+                        <div class="check-group">
+                            <label class="check-item"><input type="checkbox" class="nnis-check"> Độ nguy cơ phẫu thuật (ASA) từ 3, 4, hoặc 5</label>
+                            <label class="check-item"><input type="checkbox" class="nnis-check"> Phân loại vết mổ theo Polk/Altemeier là Loại III (Nhiễm) hoặc Loại IV (Dơ)</label>
+                            <label class="check-item"><input type="checkbox" class="nnis-check"> Thời gian phẫu thuật dài hơn thời gian trung bình chuẩn (T length)</label>
+                        </div>
+                    `;
+                },
+                evaluate: function() {
+                    const score = document.querySelectorAll('#formContainer .nnis-check:checked').length;
+                    let rate = "";
+                    let color = "";
+                    
+                    if(score === 0) { rate = "1.5%"; color = "border-type1"; }
+                    else if(score === 1) { rate = "2.9%"; color = "border-type2"; }
+                    else if(score === 2) { rate = "6.8%"; color = "border-type3"; }
+                    else { rate = "13%"; color = "border-type4"; }
+                    
+                    let html = `<strong>Tổng điểm NNIS: ${score} điểm</strong><br><br>Tỉ lệ nguy cơ nhiễm trùng bệnh viện ước tính: <strong style="font-size:18px;">${rate}</strong>`;
+                    
+                    return { alert: color, html: html };
+                }
+            }
+        };
+
+        function openTool(toolKey) {
+            currentTool = toolKey;
+            const tool = tools[toolKey];
+            
+            document.getElementById('assessmentTitle').innerHTML = tool.title;
+            document.getElementById('formContainer').innerHTML = tool.render();
+            document.getElementById('resultBox').style.display = 'none';
+
+            document.getElementById('mainGrid').style.display = 'none';
+            document.getElementById('assessmentView').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goBack() {
+            document.getElementById('assessmentView').style.display = 'none';
+            document.getElementById('mainGrid').style.display = 'grid';
+            currentTool = '';
+        }
+
+        function evaluateCurrent() {
+            const resultBox = document.getElementById('resultBox');
+            const result = tools[currentTool].evaluate();
+            
+            // Xóa animation cũ để có thể chạy lại
+            resultBox.style.animation = 'none';
+            resultBox.offsetHeight; /* trigger reflow */
+            resultBox.style.animation = 'fadeIn 0.5s ease';
+            
+            resultBox.innerHTML = result.html;
+            resultBox.className = `result-box ${result.alert}`;
+            resultBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
