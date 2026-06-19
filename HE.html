@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính toán Heparin - Tích hợp Bơm Tiêm Điện</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result-box {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e8f8f5;
+            border-left: 5px solid #1abc9c;
+            border-radius: 4px;
+            display: none;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .highlight {
+            color: #c0392b;
+            font-size: 1.1em;
+        }
+        .warning {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Phác đồ Heparin (Dành cho Bơm Tiêm Điện)</h2>
+    
+    <h3>1. Cài đặt Bơm tiêm điện</h3>
+    <div class="form-group">
+        <label for="heparinUI">Tổng lượng Heparin (UI):</label>
+        <input type="number" id="heparinUI" value="10000" step="100">
+    </div>
+    <div class="form-group">
+        <label for="volumeML">Tổng thể tích xi-lanh (ml):</label>
+        <input type="number" id="volumeML" value="50" step="1">
+    </div>
+
+    <h3>2. Liều khởi đầu ban đầu</h3>
+    <div class="form-group">
+        <label for="weightKG">Cân nặng bệnh nhân (kg):</label>
+        <input type="number" id="weightKG" placeholder="Nhập cân nặng...">
+    </div>
+    <button onclick="calculateInitialDose()">Tính Liều Khởi Đầu</button>
+    
+    <div id="initialResult" class="result-box">
+        <strong>Nồng độ thuốc:</strong> <span id="concentrationVal">0</span> UI/ml<br><hr>
+        <strong>Bước 1 - Nạp liều (Bolus 80 UI/kg):</strong> <br>
+        &rarr; Sử dụng phím Bolus trên máy bơm, cài đặt thể tích: <strong class="highlight"><span id="bolusML">0</span> ml</strong> (<span id="bolusUI">0</span> UI).<br><br>
+        <strong>Bước 2 - Chạy duy trì (18 UI/kg/h):</strong> <br>
+        &rarr; Cài đặt tốc độ truyền trên máy: <strong class="highlight"><span id="infusionML">0</span> ml/h</strong> (<span id="infusionUI">0</span> UI/h).
+    </div>
+
+    <h3>3. Chỉnh liều theo aPTT (Mỗi 6 giờ)</h3>
+    <div class="form-group">
+        <label for="apttSec">Giá trị aPTT hiện tại (giây):</label>
+        <input type="number" id="apttSec" placeholder="Nhập aPTT...">
+    </div>
+    <button onclick="calculateAdjustment()">Tính Toán Chỉnh Liều</button>
+
+    <div id="adjustResult" class="result-box">
+        <strong>Hành động trên Bơm tiêm điện:</strong><br>
+        <p id="actionText" style="margin-top: 5px;"></p>
+    </div>
+
+    <p class="warning">* Lưu ý: Phác đồ ACCP. Việc sử dụng tính năng Bolus tự động trên bơm tiêm điện cần đảm bảo đường truyền tĩnh mạch thông suốt, không bị gập góc hoặc thoát mạch.</p>
+</div>
+
+<script>
+    function getConcentration() {
+        let ui = parseFloat(document.getElementById('heparinUI').value);
+        let ml = parseFloat(document.getElementById('volumeML').value);
+        if(ui > 0 && ml > 0) return ui / ml;
+        return 0;
+    }
+
+    function calculateInitialDose() {
+        let weight = parseFloat(document.getElementById('weightKG').value);
+        let conc = getConcentration();
+
+        if (!weight || weight <= 0 || conc <= 0) {
+            alert("Vui lòng nhập đầy đủ Cân nặng, lượng Heparin và thể tích xilanh.");
+            return;
+        }
+
+        let bolusUI = weight * 80;
+        let infusionUI = weight * 18;
+
+        document.getElementById('concentrationVal').innerText = conc.toFixed(1);
+        document.getElementById('bolusUI').innerText = bolusUI.toFixed(0);
+        document.getElementById('bolusML').innerText = (bolusUI / conc).toFixed(1);
+        
+        document.getElementById('infusionUI').innerText = infusionUI.toFixed(0);
+        document.getElementById('infusionML').innerText = (infusionUI / conc).toFixed(1);
+
+        document.getElementById('initialResult').style.display = "block";
+    }
+
+    function calculateAdjustment() {
+        let aptt = parseFloat(document.getElementById('apttSec').value);
+        let weight = parseFloat(document.getElementById('weightKG').value);
+        let actionText = "";
+
+        if (!aptt || aptt <= 0) {
+            alert("Vui lòng nhập giá trị aPTT hợp lệ.");
+            return;
+        }
+        if (!weight || weight <= 0) {
+            alert("Vui lòng nhập cân nặng ở phần 2 để lấy dữ kiện tính liều.");
+            return;
+        }
+
+        let conc = getConcentration();
+
+        if (aptt < 35) {
+            let bolus = weight * 80;
+            let bolusMl = bolus / conc;
+            let incRate = weight * 4;
+            let incMl = incRate / conc;
+            actionText = `aPTT < 35s (Cần tăng liều):<br> 
+                          1. <strong>Sử dụng phím Bolus</strong> bơm thêm <strong class="highlight">${bolusMl.toFixed(1)} ml</strong> (${bolus.toFixed(0)} UI).<br> 
+                          2. <strong>Tăng</strong> tốc độ truyền duy trì trên máy thêm <strong class="highlight">${incMl.toFixed(1)} ml/h</strong>.`;
+        } else if (aptt >= 35 && aptt <= 45) {
+            let bolus = weight * 40;
+            let bolusMl = bolus / conc;
+            let incRate = weight * 2;
+            let incMl = incRate / conc;
+            actionText = `aPTT 35-45s (Cần tăng liều nhẹ):<br> 
+                          1. <strong>Sử dụng phím Bolus</strong> bơm thêm <strong class="highlight">${bolusMl.toFixed(1)} ml</strong> (${bolus.toFixed(0)} UI).<br> 
+                          2. <strong>Tăng</strong> tốc độ truyền duy trì trên máy thêm <strong class="highlight">${incMl.toFixed(1)} ml/h</strong>.`;
+        } else if (aptt >= 46 && aptt <= 70) {
+            actionText = `aPTT 46-70s (Đạt mục tiêu):<br> 
+                          &rarr; <strong>Không thay đổi</strong> tốc độ trên Bơm tiêm điện. Tiếp tục theo dõi.`;
+        } else if (aptt >= 71 && aptt <= 90) {
+            let decRate = weight * 2;
+            let decMl = decRate / conc;
+            actionText = `aPTT 71-90s (Quá liều nhẹ):<br> 
+                          &rarr; <strong>Giảm</strong> tốc độ truyền duy trì trên máy đi <strong class="highlight">${decMl.toFixed(1)} ml/h</strong>.`;
+        } else {
+            let decRate = weight * 3;
+            let decMl = decRate / conc;
+            actionText = `aPTT > 90s (Nguy cơ xuất huyết cao):<br> 
+                          1. <strong>Tạm stop (ngừng)</strong> Bơm tiêm điện trong 1 giờ.<br> 
+                          2. Sau 1 giờ, khởi động lại và <strong>giảm</strong> tốc độ truyền đi <strong class="highlight">${decMl.toFixed(1)} ml/h</strong>.`;
+        }
+
+        document.getElementById('actionText').innerHTML = actionText;
+        document.getElementById('adjustResult').style.display = "block";
+    }
+</script>
+
+</body>
+</html>
