@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phác đồ Noradrenaline - Bơm Tiêm Điện</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #8e44ad;
+            border-bottom: 2px solid #9b59b6;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+            border-left: 4px solid #8e44ad;
+            padding-left: 10px;
+            background: #fdfefe;
+            padding: 8px 10px;
+            border-radius: 4px;
+            border: 1px solid #eaeded;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #34495e;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        .checkbox-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            color: #c0392b;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            margin-top: 3px;
+            transform: scale(1.2);
+        }
+        .radio-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+        .radio-group input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .btn-start {
+            background-color: #8e44ad;
+        }
+        .btn-start:hover {
+            background-color: #732d91;
+        }
+        .btn-adjust {
+            background-color: #2980b9;
+        }
+        .btn-adjust:hover {
+            background-color: #2471a3;
+        }
+        .result-box {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f4ecf7;
+            border-left: 5px solid #8e44ad;
+            border-radius: 4px;
+            display: none;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .alert-box {
+            background-color: #fdedec;
+            border-left: 5px solid #e74c3c;
+            color: #c0392b;
+        }
+        .highlight {
+            color: #8e44ad;
+            font-size: 1.2em;
+        }
+        .reference-box {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #dcdde1;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #555;
+            line-height: 1.5;
+        }
+        .reference-box strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Máy Tính Truyền Noradrenaline (Norepinephrine)</h2>
+    
+    <h3 style="border-left-color: #e67e22; background-color: #fdf2e9;">⚠️ BƯỚC 0: Sàng lọc Lâm sàng</h3>
+    <div class="form-group checkbox-group">
+        <label style="color: #d35400;"><input type="checkbox" id="hypovolemia"> Bệnh nhân CHƯA được bù đủ dịch (Hypovolemia). <br><em>* Nguyên tắc Hồi sức: Phải đảm bảo khối lượng tuần hoàn trước / trong khi dùng vận mạch.</em></label>
+    </div>
+
+    <h3>1. Cân nặng & Pha thuốc (Xi-lanh 50ml)</h3>
+    <div class="form-group">
+        <label for="weightKg">Cân nặng bệnh nhân (kg):</label>
+        <input type="number" id="weightKg" placeholder="Nhập cân nặng..." step="0.1">
+    </div>
+    <div class="form-group" style="display: flex; gap: 15px;">
+        <div style="flex: 1;">
+            <label for="noraMg">Số mg Noradrenaline:</label>
+            <input type="number" id="noraMg" value="4" step="1">
+            <small style="color:#7f8c8d;">(VD: 4mg hoặc 8mg)</small>
+        </div>
+        <div style="flex: 1;">
+            <label for="noraMl">Tổng thể tích (ml):</label>
+            <input type="number" id="noraMl" value="50" step="1">
+        </div>
+    </div>
+
+    <h3>2. Khởi động Bơm tiêm điện</h3>
+    <div class="form-group">
+        <label for="startDose">Liều khởi đầu (mcg/kg/phút):</label>
+        <input type="number" id="startDose" value="0.05" step="0.01" min="0.01">
+    </div>
+    <div class="form-group">
+        <button class="btn-start" onclick="calculateInitial()">Tính Tốc Độ Khởi Đầu (ml/h)</button>
+    </div>
+    <div id="initialResult" class="result-box"></div>
+
+    <h3>3. Rà liều theo Huyết Áp Trung Bình (MAP)</h3>
+    <div class="form-group" style="display: flex; gap: 15px;">
+        <div style="flex: 1;">
+            <label for="currentDose">Liều đang truyền (mcg/kg/phút):</label>
+            <input type="number" id="currentDose" value="0.05" step="0.01" min="0">
+        </div>
+        <div style="flex: 1;">
+            <label for="stepDose" style="color: #2980b9;">Biên độ chỉnh (mcg/kg/phút):</label>
+            <input type="number" id="stepDose" value="0.02" step="0.01" min="0.01">
+        </div>
+    </div>
+
+    <div class="form-group radio-group">
+        <label style="font-weight: bold; margin-top: 10px;">Đánh giá MAP (Mục tiêu chuẩn &ge; 65 mmHg):</label>
+        <label><input type="radio" name="mapStatus" value="low" checked> MAP < 65 mmHg &rarr; TĂNG liều</label>
+        <label><input type="radio" name="mapStatus" value="target"> MAP 65 - 75 mmHg &rarr; DUY TRÌ liều hiện tại</label>
+        <label><input type="radio" name="mapStatus" value="high"> MAP > 75 mmHg &rarr; GIẢM liều từ từ</label>
+    </div>
+
+    <div class="form-group">
+        <button class="btn-adjust" onclick="calculateAdjustment()">Tính Liều Rà (ml/h)</button>
+    </div>
+    <div id="resultBox" class="result-box"></div>
+
+    <div class="reference-box">
+        <strong>Tài liệu tham khảo & Cơ sở khoa học:</strong>
+        <ul>
+            <li><strong>Mục tiêu điều trị & Chỉ định:</strong> Evans L, et al. <em>Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2021</em>. Intensive Care Med 47, 1181–1247 (2021). Noradrenaline là thuốc vận mạch lựa chọn đầu tay (first-line) với mục tiêu MAP khởi đầu &ge; 65 mmHg.</li>
+            <li><strong>Nguyên tắc Hồi sức:</strong> Bù dịch đầy đủ (Fluid Resuscitation) là nền tảng trước và trong khi sử dụng thuốc vận mạch. Tuy nhiên, có thể dùng vận mạch sớm để phục hồi tưới máu trong lúc đang bù dịch.</li>
+            <li><strong>Công thức tính toán Bơm tiêm điện:</strong> Tốc độ truyền (ml/h) = [Liều (mcg/kg/phút) × Cân nặng (kg) × 60] / Nồng độ thuốc (mcg/ml).</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function checkHypovolemia() {
+        return document.getElementById('hypovolemia').checked;
+    }
+
+    function getConcentrationMcg() {
+        let mg = parseFloat(document.getElementById('noraMg').value);
+        let ml = parseFloat(document.getElementById('noraMl').value);
+        if(mg > 0 && ml > 0) {
+            return (mg * 1000) / ml; // Tính ra mcg/ml
+        }
+        return 0;
+    }
+
+    function calculateInitial() {
+        let box = document.getElementById('initialResult');
+        
+        if (checkHypovolemia()) {
+            box.innerHTML = `<strong>LƯU Ý LÂM SÀNG:</strong> Bệnh nhân đang thiếu dịch.<br>
+                             &rarr; Mặc dù có thể bắt đầu dùng Noradrenaline sớm để duy trì tưới máu, xin đảm bảo việc <strong>truyền dịch hồi sức (Fluid Resuscitation)</strong> đang được tiến hành đồng thời.`;
+            box.className = "result-box alert-box";
+            box.style.display = "block";
+        } else {
+            box.className = "result-box";
+        }
+
+        let weight = parseFloat(document.getElementById('weightKg').value);
+        let startDose = parseFloat(document.getElementById('startDose').value);
+        let concMcg = getConcentrationMcg();
+
+        if (!weight || weight <= 0 || !startDose || startDose <= 0 || concMcg <= 0) {
+            alert("Vui lòng nhập đầy đủ cân nặng, liều khởi đầu và thông số pha thuốc.");
+            return;
+        }
+
+        let rateMl = (startDose * weight * 60) / concMcg;
+        
+        let content = `<strong>BƯỚC 1: KHỞI ĐỘNG BƠM TIÊM ĐIỆN</strong><br>
+                         - Liều y lệnh: <strong>${startDose} mcg/kg/phút</strong><br>
+                         - Nồng độ thực tế: ${concMcg.toFixed(0)} mcg/ml<br>
+                         &rarr; Cài đặt tốc độ máy: <strong style="font-size: 1.3em; color: #8e44ad;">${rateMl.toFixed(1)} ml/h</strong>.`;
+        
+        if (checkHypovolemia()) {
+            box.innerHTML += `<hr>${content}`;
+        } else {
+            box.innerHTML = content;
+        }
+        
+        box.style.display = "block";
+        document.getElementById('currentDose').value = startDose;
+    }
+
+    function calculateAdjustment() {
+        let weight = parseFloat(document.getElementById('weightKg').value);
+        let currentDose = parseFloat(document.getElementById('currentDose').value);
+        let stepDose = parseFloat(document.getElementById('stepDose').value);
+        let status = document.querySelector('input[name="mapStatus"]:checked').value;
+        let concMcg = getConcentrationMcg();
+        let resultBox = document.getElementById('resultBox');
+
+        if (!weight || weight <= 0 || currentDose < 0 || stepDose <= 0 || concMcg <= 0) {
+            alert("Vui lòng kiểm tra lại cân nặng và các thông số nhập vào.");
+            return;
+        }
+
+        let resultHtml = "";
+
+        if (status === "low") {
+            let newDose = currentDose + stepDose;
+            let newRate = (newDose * weight * 60) / concMcg;
+            
+            resultHtml = `<strong>TĂNG LIỀU (MAP < 65):</strong><br>
+                          - Tổng liều mới: <strong>${newDose.toFixed(2)} mcg/kg/phút</strong>.<br>
+                          &rarr; Chỉnh tốc độ máy lên: <strong class="highlight">${newRate.toFixed(1)} ml/h</strong>.<br>
+                          <small style="color: #7f8c8d;">(Chờ 3-5 phút để đánh giá lại đáp ứng)</small>`;
+            resultBox.className = "result-box";
+            document.getElementById('currentDose').value = newDose.toFixed(2); 
+        } 
+        else if (status === "target") {
+            let targetRate = (currentDose * weight * 60) / concMcg;
+            
+            resultHtml = `<strong>DUY TRÌ LIỀU (ĐẠT ĐÍCH):</strong><br>
+                          - MAP đã đạt mục tiêu, duy trì mức <strong>${currentDose} mcg/kg/phút</strong>.<br>
+                          &rarr; Giữ nguyên tốc độ máy: <strong style="font-size: 1.3em; color: #27ae60;">${targetRate.toFixed(1)} ml/h</strong>.<br>
+                          <small style="color: #7f8c8d;">(Tiếp tục theo dõi sát, đánh giá tưới máu mô: Lactate, nước tiểu)</small>`;
+            resultBox.className = "result-box";
+        } 
+        else if (status === "high") {
+            let newDose = currentDose - stepDose;
+            if (newDose <= 0) {
+                resultHtml = `<strong>CAI VẬN MẠCH:</strong><br>
+                              Liều đã rà về 0. Xem xét ngừng Noradrenaline nếu HA vẫn ổn định.`;
+                document.getElementById('currentDose').value = 0;
+            } else {
+                let newRate = (newDose * weight * 60) / concMcg;
+                resultHtml = `<strong>GIẢM LIỀU CAI MÁY (MAP > 75):</strong><br>
+                              - Tổng liều mới: <strong>${newDose.toFixed(2)} mcg/kg/phút</strong>.<br>
+                              &rarr; Chỉnh tốc độ máy xuống: <strong class="highlight">${newRate.toFixed(1)} ml/h</strong>.<br>
+                              <small style="color: #7f8c8d;">(Giảm liều từ từ để tránh tụt HA dội ngược)</small>`;
+                document.getElementById('currentDose').value = newDose.toFixed(2);
+            }
+            resultBox.className = "result-box";
+        }
+
+        resultBox.innerHTML = resultHtml;
+        resultBox.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
