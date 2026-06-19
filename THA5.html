@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Tăng Huyết Áp (AHA/ACC 2025)</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; padding: 20px; 
+            background-color: #eef2f5; 
+            color: #333;
+        }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; font-size: 26px; }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-top: 5px solid #3498db;
+            display: flex;
+            flex-direction: column;
+        }
+        .box.emergency-box { border-top-color: #e74c3c; }
+        .box.drug-box { border-top-color: #2ecc71; }
+
+        h2 { margin-top: 0; font-size: 18px; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .box h2 { color: #2980b9; }
+        .box.emergency-box h2 { color: #c0392b; }
+        .box.drug-box h2 { color: #27ae60; }
+
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: 600; display: block; margin-bottom: 5px; color: #34495e; font-size: 14px;}
+        input[type="number"], select { 
+            width: 100%; padding: 10px; box-sizing: border-box; 
+            border: 1px solid #bdc3c7; border-radius: 5px; font-size: 15px;
+        }
+        .checkbox-group { 
+            background: #f8f9fa; padding: 10px; border-radius: 5px; 
+            border: 1px solid #ecf0f1; font-size: 14px;
+        }
+        .checkbox-group label { font-weight: normal; display: inline-block; margin-left: 5px; margin-bottom: 5px; cursor: pointer;}
+        
+        button { 
+            width: 100%; padding: 12px; border: none; border-radius: 5px; 
+            font-size: 15px; cursor: pointer; font-weight: bold; margin-top: auto;
+            transition: 0.2s;
+        }
+        .btn-primary { background-color: #2980b9; color: white; }
+        .btn-primary:hover { background-color: #3498db; }
+        .btn-danger { background-color: #e74c3c; color: white; }
+        .btn-danger:hover { background-color: #c0392b; }
+
+        .result { margin-top: 20px; padding: 15px; border-radius: 5px; display: none; font-size: 14px; line-height: 1.6; }
+        .result-primary { border: 1px solid #27ae60; background-color: #eafaf1; }
+        .result-danger { border: 1px solid #e67e22; background-color: #fdf2e9; }
+        .result-info { border: 1px solid #b8daff; background-color: #cce5ff; }
+
+        .drug-recommendation { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #27ae60; }
+        .drug-item { margin-bottom: 10px; padding: 10px; background: #fff; border-left: 4px solid #3498db; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .preferred { color: #27ae60; font-weight: bold; }
+        .avoid { color: #c0392b; font-weight: bold; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; font-size: 14px;}
+        th, td { padding: 8px; border: 1px solid #dee2e6; text-align: left; }
+        th { background-color: #27ae60; color: white; }
+        .note { font-size: 13px; color: #c0392b; margin-top: 15px; font-style: italic; }
+        
+        .step-box { background: #fff; border-left: 4px solid #f39c12; padding: 10px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .step-title { font-weight: bold; color: #d35400; margin-bottom: 5px; }
+        
+        /* Ẩn citation để không rối mắt UI */
+        .hide-cite { display: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Dashboard Quản Lý Tăng Huyết Áp Lâm Sàng (AHA/ACC 2025)</h1>
+
+    <div class="dashboard">
+        
+        <!-- HỘP 1: ĐÁNH GIÁ BAN ĐẦU -->
+        <div class="box">
+            <h2>1. Đánh giá & Định hướng Thuốc</h2>
+            <div class="form-group">
+                <label>Huyết áp tâm thu (SBP - mm Hg):</label>
+                <input type="number" id="sbp_init" placeholder="Ví dụ: 145">
+            </div>
+            <div class="form-group">
+                <label>Huyết áp tâm trương (DBP - mm Hg):</label>
+                <input type="number" id="dbp_init" placeholder="Ví dụ: 90">
+            </div>
+            <div class="form-group">
+                <label>Bệnh đồng mắc (Quyết định ưu tiên thuốc):</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="ckd"> <label for="ckd">Bệnh Thận Mạn / ĐTĐ có albumin niệu</label><br>
+                    <input type="checkbox" id="hfref"> <label for="hfref">Suy tim giảm EF (HFrEF)</label><br>
+                    <input type="checkbox" id="ccd"> <label for="ccd">Bệnh mạch vành mạn (CCD)</label><br>
+                    <input type="checkbox" id="stroke_init"> <label for="stroke_init">Tiền sử Đột quỵ / TIA</label><br>
+                    <input type="checkbox" id="pad"> <label for="pad">Bệnh ĐM ngoại biên (PAD)</label><br>
+                    <input type="checkbox" id="prevent"> <label for="prevent">Nguy cơ CVD (PREVENT) >= 7.5%</label>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="calculateInitial()">Phân Loại & Xem Xử Trí</button>
+            <div class="result result-primary" id="result_init"></div>
+        </div>
+
+        <!-- HỘP 2: ĐÁNH GIÁ CẤP CỨU -->
+        <div class="box emergency-box">
+            <h2>2. Sàng Lọc THA Cấp Cứu</h2>
+            <div class="form-group">
+                <label>Huyết áp tâm thu (SBP - mm Hg):</label>
+                <input type="number" id="sbp_em" placeholder="Ví dụ: 190">
+            </div>
+            <div class="form-group">
+                <label>Huyết áp tâm trương (DBP - mm Hg):</label>
+                <input type="number" id="dbp_em" placeholder="Ví dụ: 125">
+            </div>
+            <div class="form-group">
+                <label>Tổn thương cơ quan đích cấp tính:</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="aortic"> <label for="aortic">Bóc tách động mạch chủ cấp</label><br>
+                    <input type="checkbox" id="pheo"> <label for="pheo">Cơn bão Phaeochromocytoma</label><br>
+                    <input type="checkbox" id="stroke_em"> <label for="stroke_em">Đột quỵ cấp / Xuất huyết não</label><br>
+                    <input type="checkbox" id="other_tod"> <label for="other_tod">Khác (Suy tim cấp, HC vành cấp...)</label>
+                </div>
+            </div>
+            <button class="btn-danger" onclick="evaluateEmergency()">Kiểm Tra Cấp Cứu</button>
+            <div class="result result-danger" id="result_em"></div>
+        </div>
+
+        <!-- HỘP 3: TRA CỨU THUỐC & TINH CHỈNH LIỀU -->
+        <div class="box drug-box">
+            <h2>3. Tra cứu Thuốc & Tinh Chỉnh Liều</h2>
+            <div class="form-group">
+                <label>Chọn chế độ hiển thị:</label>
+                <select id="viewMode" onchange="toggleDrugView()">
+                    <option value="basic">A. Tra cứu Liều Khởi Trị (Đầu tay)</option>
+                    <option value="titration">B. Phác đồ Tinh chỉnh & THA Kháng trị</option>
+                </select>
+            </div>
+
+            <!-- Chế độ A: Liều khởi trị -->
+            <div id="basicDrugView">
+                <div class="form-group">
+                    <label>Chọn nhóm thuốc:</label>
+                    <select id="drugClass" onchange="showDrugInfo()">
+                        <option value="">-- Vui lòng chọn nhóm thuốc --</option>
+                        <option value="thiazide">Lợi tiểu Thiazide-type</option>
+                        <option value="acei">Ức chế men chuyển (ACEi)</option>
+                        <option value="arb">Chẹn thụ thể Angiotensin (ARB)</option>
+                        <option value="ccb">Chẹn kênh Canxi (CCB - DHP)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="drugResult" class="result result-info" style="display: block; min-height: 200px; margin-top: 0;">
+                <p style="color: #666; text-align: center; margin-top: 50px;"><em>Chọn chế độ và nhóm thuốc để xem thông tin chi tiết.</em></p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // HÀM 1: ĐÁNH GIÁ BAN ĐẦU & ĐỊNH HƯỚNG THUỐC
+        // ==========================================
+        function calculateInitial() {
+            const sbp = parseInt(document.getElementById('sbp_init').value);
+            const dbp = parseInt(document.getElementById('dbp_init').value);
+            const ckd = document.getElementById('ckd').checked;
+            const hfref = document.getElementById('hfref').checked;
+            const ccd = document.getElementById('ccd').checked;
+            const stroke = document.getElementById('stroke_init').checked;
+            const pad = document.getElementById('pad').checked;
+            const prevent = document.getElementById('prevent').checked;
+
+            if (!sbp || !dbp) { alert('Vui lòng nhập SBP và DBP ở Hộp 1!'); return; }
+
+            const highRisk = ckd || hfref || ccd || stroke || pad || prevent;
+            let category = "", action = "", requireDrugs = false;
+
+            if (sbp >= 140 || dbp >= 90) {
+                category = "<strong style='color:#c0392b;'>Tăng huyết áp Giai đoạn 2</strong>";
+                action = "Khởi trị bằng <strong>2 thuốc hạ áp</strong> từ các nhóm khác nhau (ưu tiên viên phối hợp SPC).<span class='hide-cite'>[cite: 1]</span> Mục tiêu: < 130/80 mm Hg.<span class='hide-cite'>[cite: 1]</span>";
+                requireDrugs = true;
+            } else if ((sbp >= 130 && sbp <= 139) || (dbp >= 80 && dbp <= 89)) {
+                category = "<strong style='color:#d35400;'>Tăng huyết áp Giai đoạn 1</strong>";
+                if (highRisk) {
+                    action = "Khởi trị bằng <strong>1 thuốc hạ áp</strong> để giảm nguy cơ biến cố.<span class='hide-cite'>[cite: 1]</span> Mục tiêu: < 130/80 mm Hg.<span class='hide-cite'>[cite: 1]</span>";
+                    requireDrugs = true;
+                } else {
+                    action = "Thay đổi lối sống 3-6 tháng.<span class='hide-cite'>[cite: 1]</span> Nếu HA vẫn >= 130/80 mm Hg thì mới bắt đầu dùng thuốc.<span class='hide-cite'>[cite: 1]</span>";
+                }
+            } else if (sbp >= 120 && sbp <= 129 && dbp < 80) {
+                category = "<strong style='color:#f39c12;'>Huyết áp Tăng cao (Elevated BP)</strong>";
+                action = "Thay đổi lối sống và đánh giá lại sau 3-6 tháng.<span class='hide-cite'>[cite: 1]</span>";
+            } else {
+                category = "<strong style='color:#27ae60;'>Huyết áp Bình thường</strong>";
+                action = "Duy trì lối sống lành mạnh. Đánh giá lại sau 1 năm.<span class='hide-cite'>[cite: 1]</span>";
+            }
+
+            let drugAdvice = "";
+            if (requireDrugs) {
+                drugAdvice += "<div class='drug-recommendation'><strong>LỰA CHỌN THUỐC LÂM SÀNG:</strong><br>";
+                if (ckd) drugAdvice += "<div class='drug-item'><span class='preferred'>✔ ƯU TIÊN (CKD / Albumin niệu):</span> Nhóm Ức chế men chuyển (ACEi) hoặc Chẹn thụ thể (ARB).<span class='hide-cite'>[cite: 1]</span></div>";
+                if (hfref) drugAdvice += "<div class='drug-item'><span class='preferred'>✔ ƯU TIÊN (HFrEF):</span> Phác đồ GDMT (Chẹn beta, MRA, ACEi/ARB/ARNi, SGLT2i).<span class='hide-cite'>[cite: 1]</span><br><span class='avoid'>✘ TRÁNH DÙNG:</span> Chẹn kênh canxi Non-DHP (Diltiazem, Verapamil).<span class='hide-cite'>[cite: 1]</span></div>";
+                if (ccd) drugAdvice += "<div class='drug-item'><span class='preferred'>✔ ƯU TIÊN (Mạch vành mạn):</span> ACEi, ARB, hoặc Chẹn beta.<span class='hide-cite'>[cite: 1]</span></div>";
+                if (stroke) drugAdvice += "<div class='drug-item'><span class='preferred'>✔ ƯU TIÊN (Đột quỵ/TIA):</span> Lợi tiểu Thiazide, ACEi, hoặc ARB.<span class='hide-cite'>[cite: 1]</span></div>";
+                if (pad) drugAdvice += "<div class='drug-item'><span class='preferred'>✔ ƯU TIÊN (Bệnh ĐM ngoại biên):</span> ACEi hoặc ARB.<span class='hide-cite'>[cite: 1]</span></div>";
+                if (!highRisk) {
+                    drugAdvice += "<div class='drug-item'><span class='preferred'>✔ ƯU TIÊN (Không có bệnh đồng mắc):</span> Lợi tiểu Thiazide, CCB DHP, ACEi, hoặc ARB đều là lựa chọn đầu tay.<span class='hide-cite'>[cite: 1]</span></div>";
+                }
+                drugAdvice += "<div class='drug-item' style='border-left-color: #c0392b; background: #fff3f3;'><span class='avoid'>⚠️ CHỐNG CHỈ ĐỊNH CHUNG:</span> KHÔNG phối hợp đồng thời ACEi, ARB và/hoặc thuốc ức chế renin trực tiếp.<span class='hide-cite'>[cite: 1]</span></div></div>";
+            }
+
+            const resDiv = document.getElementById('result_init');
+            resDiv.style.display = 'block';
+            resDiv.innerHTML = `Phân loại: ${category}<br>Xử trí: ${action} ${drugAdvice}`;
+        }
+
+        // ==========================================
+        // HÀM 2: ĐÁNH GIÁ CẤP CỨU
+        // ==========================================
+        function evaluateEmergency() {
+            const sbp = parseInt(document.getElementById('sbp_em').value);
+            const dbp = parseInt(document.getElementById('dbp_em').value);
+            const isAortic = document.getElementById('aortic').checked;
+            const isPheo = document.getElementById('pheo').checked;
+            const isStroke = document.getElementById('stroke_em').checked;
+            const isOtherTOD = document.getElementById('other_tod').checked;
+
+            if (!sbp || !dbp) { alert('Vui lòng nhập SBP và DBP ở Hộp 2!'); return; }
+
+            const hasTOD = isAortic || isPheo || isStroke || isOtherTOD;
+            const resDiv = document.getElementById('result_em');
+            resDiv.style.display = 'block';
+
+            if (sbp <= 180 && dbp <= 120) {
+                resDiv.innerHTML = `<strong>Chưa đạt mức THA nặng (>180/120).</strong><br>Vui lòng xử trí theo Hộp 1 (Ban đầu).`;
+                return;
+            }
+
+            if (!hasTOD) {
+                resDiv.innerHTML = `<strong style='color:#d35400;'>THA Mức Độ Nặng (Không tổn thương CQĐ)</strong><br>
+                                    - Điều trị ngoại trú (Khởi trị hoặc tăng liều thuốc uống).<span class='hide-cite'>[cite: 1]</span><br>
+                                    <span style='color:red; font-weight:bold;'>- CHỐNG CHỈ ĐỊNH (HARM):</span> Không dùng thuốc hạ áp tĩnh mạch hoặc ngậm dưới lưỡi cấp tốc.<span class='hide-cite'>[cite: 1]</span>`;
+            } else {
+                let mgt = `<strong style='color:#c0392b;'>THA Cấp Cứu (Hypertensive Emergency)</strong><br>
+                           - Nhập ICU, dùng thuốc hạ áp tĩnh mạch (IV) liên tục.<span class='hide-cite'>[cite: 1]</span><hr style='border:0; border-top:1px dashed #e67e22; margin:10px 0;'>`;
+                
+                if (isAortic) {
+                    mgt += `<strong>Mục tiêu:</strong> Giảm SBP < 120 mm Hg trong giờ đầu tiên.<span class='hide-cite'>[cite: 1]</span><br>
+                            <strong>Thuốc ưu tiên:</strong> Esmolol, labetalol.<span class='hide-cite'>[cite: 1]</span>`;
+                } else if (isPheo) {
+                    mgt += `<strong>Mục tiêu:</strong> Giảm SBP < 140 mm Hg trong giờ đầu tiên.<span class='hide-cite'>[cite: 1]</span><br>
+                            <strong>Thuốc ưu tiên:</strong> Clevidipine, nicardipine, phentolamine.<span class='hide-cite'>[cite: 1]</span>`;
+                } else if (isStroke) {
+                    mgt += `<strong>Mục tiêu:</strong><br>
+                            - Thiếu máu cục bộ có tiêu sọ huyết: Hạ < 185/110 mmHg trước tiêm, duy trì < 180/105 mmHg trong 24h.<span class='hide-cite'>[cite: 1]</span><br>
+                            - Xuất huyết não (ICH): Hạ SBP 130 - <140 mmHg an toàn.<span class='hide-cite'>[cite: 1]</span><br>
+                            <strong>Thuốc ưu tiên:</strong> Clevidipine, nicardipine, labetalol.<span class='hide-cite'>[cite: 1]</span>`;
+                } else {
+                    mgt += `<strong>Mục tiêu:</strong> Giảm SBP tối đa 25% trong giờ đầu, sau đó < 160/100-110 mmHg trong 2-6 giờ tới.<span class='hide-cite'>[cite: 1]</span><br>
+                            <strong>Thuốc ưu tiên:</strong> Nitroglycerin, clevidipine, nicardipine.<span class='hide-cite'>[cite: 1]</span>`;
+                }
+                resDiv.innerHTML = mgt;
+            }
+        }
+
+        // ==========================================
+        // HÀM 3: TRA CỨU THUỐC & TINH CHỈNH
+        // ==========================================
+        const drugData = {
+            thiazide: {
+                name: "Lợi tiểu Thiazide-type",
+                drugs: [
+                    { name: "Chlorthalidone", dose: "12.5 - 25 mg/ngày" },
+                    { name: "Hydrochlorothiazide", dose: "25 - 50 mg/ngày" },
+                    { name: "Indapamide", dose: "1.25 - 2.5 mg/ngày" }
+                ],
+                notes: "Chlorthalidone có thời gian bán thải dài hơn, được ưu tiên.<span class='hide-cite'>[cite: 1]</span> Theo dõi điện giải đồ (Na+, K+, Ca++) và Acid Uric.<span class='hide-cite'>[cite: 1]</span>"
+            },
+            acei: {
+                name: "Ức chế men chuyển (ACEi)",
+                drugs: [
+                    { name: "Lisinopril", dose: "10 - 40 mg/ngày" },
+                    { name: "Enalapril", dose: "5 - 40 mg/ngày" },
+                    { name: "Perindopril", dose: "4 - 16 mg/ngày" }
+                ],
+                notes: "Tác dụng phụ gây ho khan. Nguy cơ tăng K+ máu.<span class='hide-cite'>[cite: 1]</span> Chống chỉ định tuyệt đối phụ nữ có thai.<span class='hide-cite'>[cite: 1]</span>"
+            },
+            arb: {
+                name: "Chẹn thụ thể Angiotensin (ARB)",
+                drugs: [
+                    { name: "Losartan", dose: "50 - 100 mg/ngày" },
+                    { name: "Valsartan", dose: "80 - 320 mg/ngày" },
+                    { name: "Telmisartan", dose: "20 - 80 mg/ngày" }
+                ],
+                notes: "Dung nạp tốt hơn ACEi (ít ho). Nguy cơ tăng K+ máu.<span class='hide-cite'>[cite: 1]</span> Chống chỉ định phụ nữ có thai.<span class='hide-cite'>[cite: 1]</span>"
+            },
+            ccb: {
+                name: "Chẹn kênh Canxi (CCB - DHP)",
+                drugs: [
+                    { name: "Amlodipine", dose: "2.5 - 10 mg/ngày" },
+                    { name: "Felodipine", dose: "2.5 - 10 mg/ngày" },
+                    { name: "Nifedipine LA", dose: "30 - 90 mg/ngày" }
+                ],
+                notes: "Tác dụng phụ thường gặp: Phù ngoại vi phụ thuộc liều. Việc phối hợp cùng ACEi/ARB giúp giảm nguy cơ phù.<span class='hide-cite'>[cite: 1]</span>"
+            }
+        };
+
+        function toggleDrugView() {
+            const mode = document.getElementById("viewMode").value;
+            const basicView = document.getElementById("basicDrugView");
+            const resDiv = document.getElementById("drugResult");
+
+            if (mode === "basic") {
+                basicView.style.display = "block";
+                document.getElementById("drugClass").value = "";
+                resDiv.innerHTML = `<p style="color: #666; text-align: center; margin-top: 50px;"><em>Chọn nhóm thuốc ở phía trên để xem liều lượng.</em></p>`;
+            } else {
+                basicView.style.display = "none";
+                showTitrationProtocol();
+            }
+        }
+
+        function showDrugInfo() {
+            const selected = document.getElementById("drugClass").value;
+            const resDiv = document.getElementById("drugResult");
+
+            if (!selected) {
+                resDiv.innerHTML = `<p style="color: #666; text-align: center; margin-top: 50px;"><em>Chọn nhóm thuốc ở phía trên để xem liều lượng.</em></p>`;
+                return;
+            }
+
+            const data = drugData[selected];
+            let html = `<h3 style='margin-top:0; color:#27ae60;'>${data.name}</h3>`;
+            html += `<table><tr><th>Hoạt chất</th><th>Liều thông thường</th></tr>`;
+            data.drugs.forEach(d => {
+                html += `<tr><td><strong>${d.name}</strong></td><td>${d.dose}</td></tr>`;
+            });
+            html += `</table><div class='note'><strong>Lưu ý lâm sàng:</strong> ${data.notes}</div>`;
+            
+            resDiv.innerHTML = html;
+        }
+
+        function showTitrationProtocol() {
+            const resDiv = document.getElementById("drugResult");
+            let html = `<h3 style='margin-top:0; color:#d35400;'>Phác đồ Tinh chỉnh & THA Kháng trị</h3>`;
+            
+            html += `<p style='font-size: 13px; color: #555;'><strong>THA Kháng trị:</strong> Không kiểm soát được HA (>=130/80 mmHg) dù đã dùng >=3 thuốc (gồm 1 lợi tiểu) ở liều tối đa, HOẶC cần >=4 thuốc để kiểm soát HA.<span class='hide-cite'>[cite: 1]</span></p>`;
+
+            html += `
+            <div class='step-box'>
+                <div class='step-title'>Bước 1: Tinh chỉnh cơ bản & Loại trừ</div>
+                - Đánh giá tuân thủ điều trị và đo HA đúng chuẩn.<span class='hide-cite'>[cite: 1]</span><br>
+                - Đo HA tại nhà (HBPM) hoặc liên tục (ABPM) để loại trừ hiệu ứng áo choàng trắng.<span class='hide-cite'>[cite: 1]</span><br>
+                - Loại bỏ các chất/thuốc làm tăng HA (NSAIDs, thuốc cường giao cảm...).<span class='hide-cite'>[cite: 1]</span>
+            </div>
+            
+            <div class='step-box'>
+                <div class='step-title'>Bước 2: Tối ưu hóa liệu pháp Lợi tiểu</div>
+                - Đổi lợi tiểu Thiazide-type thông thường sang <strong>Chlorthalidone</strong> (12.5-25 mg/ngày) hoặc <strong>Indapamide</strong> (1.25-2.5 mg/ngày) do hiệu lực cao hơn.<span class='hide-cite'>[cite: 1]</span><br>
+                - Chuyển sang dùng lợi tiểu quai nếu eGFR < 30 mL/min/1.73 m2.<span class='hide-cite'>[cite: 1]</span>
+            </div>
+
+            <div class='step-box'>
+                <div class='step-title'>Bước 3: Thêm thuốc Kháng Aldosterone (MRA)</div>
+                - Bổ sung <strong>Spironolactone</strong> (25-50 mg/ngày) hoặc Eplerenone nếu eGFR >= 45 mL/min/1.73 m2 và Kali máu < 5.0 mEq/L.<span class='hide-cite'>[cite: 1]</span>
+            </div>
+
+            <div class='step-box'>
+                <div class='step-title'>Bước 4: Thêm thuốc cơ chế khác</div>
+                - Nếu không dung nạp MRA hoặc chưa đạt mục tiêu, có thể thêm: Amiloride, Chẹn beta, Chẹn alpha, Thuốc tác động thần kinh trung ương, hoặc Giãn mạch trực tiếp.<span class='hide-cite'>[cite: 1]</span>
+            </div>
+
+            <div class='step-box'>
+                <div class='step-title'>Bước 5: Hội chẩn chuyên gia</div>
+                - Chuyển tuyến/Hội chẩn nếu nghi ngờ THA thứ phát hoặc HA vẫn không kiểm soát được sau 6 tháng.<span class='hide-cite'>[cite: 1]</span>
+            </div>
+            `;
+
+            resDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
