@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hệ Thống Đánh Giá, Xử Trí & Chỉnh Liều DKA</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f0f4f8; color: #333; line-height: 1.6;}
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        h1 { text-align: center; color: #0056b3; font-size: 1.5em; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-top: 0;}
+        h2 { font-size: 1.1em; color: #2d3748; margin-top: 0; margin-bottom: 15px; border-left: 4px solid #0056b3; padding-left: 10px;}
+        
+        /* Giao diện Tabs */
+        .tabs { display: flex; border-bottom: 2px solid #cbd5e0; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px 10px; cursor: pointer; border: none; background: #f8fafc; font-weight: bold; color: #718096; font-size: 1em; border-bottom: 3px solid transparent; transition: all 0.3s;}
+        .tab-btn:hover { background: #e2e8f0; }
+        .tab-btn.active { color: #0056b3; border-bottom-color: #0056b3; background: #fff; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .section { margin-bottom: 25px; padding: 20px; border-radius: 6px; border: 1px solid #e2e8f0; background: #f8fafc; }
+        .step-label { display: inline-block; background: #0056b3; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9em; font-weight: bold; margin-bottom: 15px;}
+        .step-2-label { background: #e53e3e; }
+        .step-3-label { background: #6b46c1; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #4a5568; font-size: 0.9em;}
+        input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; box-sizing: border-box; font-size: 1em;}
+        .inline-group { display: flex; gap: 15px; align-items: flex-end;}
+        .inline-group > div { flex: 1; }
+        
+        button { padding: 12px; color: white; border: none; border-radius: 4px; width: 100%; font-size: 1em; font-weight: bold; cursor: pointer; transition: background 0.3s;}
+        .btn-primary { background-color: #0056b3; } .btn-primary:hover { background-color: #004494; }
+        .btn-action { background-color: #28a745; margin-top: 10px;} .btn-action:hover { background-color: #218838; }
+        .btn-adjust { background-color: #6b46c1; margin-top: 10px;} .btn-adjust:hover { background-color: #553c9a; }
+        .btn-switch-tab { background-color: #4a5568; margin-top: 15px; } .btn-switch-tab:hover { background-color: #2d3748; }
+        
+        .alert { margin-top: 15px; padding: 15px; border-radius: 4px; display: none; line-height: 1.6; }
+        .alert-severe { background-color: #fed7d7; color: #c53030; border-left: 4px solid #c53030; }
+        .alert-moderate { background-color: #feebc8; color: #c05621; border-left: 4px solid #c05621; }
+        .alert-mild { background-color: #c6f6d5; color: #276749; border-left: 4px solid #276749; }
+        .alert-warning { background-color: #fff3cd; color: #856404; border-left: 4px solid #ffc107; font-size: 0.9em; margin-bottom: 15px; display: block;}
+        
+        .calc-form { display: none; margin-top: 15px; padding: 20px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;}
+        .final-result { margin-top: 15px; padding: 20px; background-color: #ebf8ff; border: 1px solid #bee3f8; border-radius: 6px; color: #2b6cb0; display: none; font-size: 1.05em;}
+        .drug-name { background: #ffebee; color: #c62828; padding: 2px 6px; border-radius: 3px; font-family: monospace; font-weight: bold;}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Phác Đồ Tiếp Cận, Xử Trí & Chỉnh Liều DKA</h1>
+
+        <!-- Thanh Điều Hướng Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" id="btn-tab-initial" onclick="switchTab('tab-initial', 'btn-tab-initial')">1. Giờ 0: Đánh Giá & Khởi Đầu</button>
+            <button class="tab-btn" id="btn-tab-titration" onclick="switchTab('tab-titration', 'btn-tab-titration')">2. Giờ 1+: Chỉnh Liều (Titration)</button>
+        </div>
+
+        <!-- TAB 1: GIỜ 0 (ĐÁNH GIÁ & KHỞI ĐẦU) -->
+        <div id="tab-initial" class="tab-content active">
+            <!-- BƯỚC 1: ĐÁNH GIÁ -->
+            <div class="section">
+                <div class="step-label">Bước 1: Đánh giá lâm sàng & Cận lâm sàng</div>
+                <div class="inline-group form-group">
+                    <div style="flex: 2;">
+                        <label>Đường huyết ban đầu</label>
+                        <input type="number" id="bgValue" step="0.1" placeholder="Nhập mức đường huyết...">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Đơn vị</label>
+                        <select id="bgUnit">
+                            <option value="mmol">mmol/L</option>
+                            <option value="mgdl">mg/dL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="inline-group form-group">
+                    <div>
+                        <label>pH Động mạch</label>
+                        <input type="number" id="ph" step="0.01" placeholder="Ví dụ: 7.15">
+                    </div>
+                    <div>
+                        <label>HCO3- (mEq/L)</label>
+                        <input type="number" id="hco3" step="0.1" placeholder="Ví dụ: 12">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tình trạng tri giác</label>
+                    <select id="mental">
+                        <option value="alert">Tỉnh táo (Alert)</option>
+                        <option value="drowsy">Lơ mơ / Ngủ gà (Drowsy)</option>
+                        <option value="coma">Hôn mê (Stupor / Coma)</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="assessAndRoute()">Đánh Giá & Chuyển Hướng Xử Trí</button>
+                <div id="assessmentResult" class="alert"></div>
+            </div>
+
+            <!-- BƯỚC 2: XỬ TRÍ KHỞI ĐẦU -->
+            <div id="treatmentSection" style="display: none;">
+                <div class="section">
+                    <div class="step-label step-2-label">Bước 2: Ra y lệnh khởi đầu</div>
+                    <div class="alert alert-warning">
+                        <strong>⚠️ LƯU Ý LÂM SÀNG:</strong><br>
+                        - <strong>IV:</strong> Bắt buộc dùng <strong>Insulin Regular</strong> (Actrapid/Humulin R).<br>
+                        - <strong>SC:</strong> Ưu tiên <strong>Insulin Tác Dụng Nhanh</strong> (NovoRapid/Humalog).
+                    </div>
+                    <div class="form-group">
+                        <label>Đường dùng được hệ thống đề xuất:</label>
+                        <select id="routeSelect" onchange="toggleCalculator()">
+                            <option value="iv">Truyền Tĩnh Mạch Qua Bơm Tiêm Điện (IV)</option>
+                            <option value="sc">Tiêm Dưới Da Bơm Tay (SC)</option>
+                        </select>
+                    </div>
+
+                    <!-- Form Tính IV -->
+                    <div id="formIV" class="calc-form">
+                        <h2>Cài đặt Bơm Tiêm Điện (<span class="drug-name">Insulin Regular</span>)</h2>
+                        <div class="form-group">
+                            <label>Cân nặng (kg)</label>
+                            <input type="number" id="wtIV" step="0.1" placeholder="Nhập cân nặng...">
+                        </div>
+                        <div class="form-group">
+                            <label>Tỷ lệ pha (UI Regular trong ml NaCl 0.9%)</label>
+                            <div class="inline-group">
+                                <input type="number" id="uiIV" value="50" placeholder="UI">
+                                <input type="number" id="mlIV" value="50" placeholder="ml">
+                            </div>
+                        </div>
+                        <button class="btn-action" onclick="calcIV()">Tính Liều Khởi Đầu BTĐ</button>
+                    </div>
+
+                    <!-- Form Tính SC -->
+                    <div id="formSC" class="calc-form">
+                        <h2>Cài đặt Tiêm Dưới Da (<span class="drug-name">Insulin Tác Dụng Nhanh</span>)</h2>
+                        <div class="form-group">
+                            <label>Cân nặng (kg)</label>
+                            <input type="number" id="wtSC" step="0.1" placeholder="Nhập cân nặng...">
+                        </div>
+                        <button class="btn-action" onclick="calcSC()">Tính Liều SC Khởi Đầu</button>
+                    </div>
+
+                    <div id="finalOrder" class="final-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: GIỜ 1+ (CHỈNH LIỀU MỚI) -->
+        <div id="tab-titration" class="tab-content">
+            <div class="section" style="border-color: #b794f4;">
+                <div class="step-label step-3-label">Bước 3: Chỉnh liều IV sau 1 giờ (Titration)</div>
+                <p style="font-size: 0.9em; color: #555; margin-top: 0;">Mục tiêu: Đường huyết giảm <strong>50 - 75 mg/dL/giờ</strong> (2.8 - 4.2 mmol/L/giờ).</p>
+                
+                <div class="inline-group form-group">
+                    <div style="flex: 2;">
+                        <label>Cân nặng (kg)</label>
+                        <input type="number" id="wtTitration" step="0.1" placeholder="Cân nặng BN">
+                    </div>
+                    <div style="flex: 2;">
+                        <label>Tốc độ BTĐ hiện tại (ml/giờ)</label>
+                        <input type="number" id="currentRate" step="0.1" placeholder="Tốc độ máy đang chạy">
+                    </div>
+                </div>
+
+                <div class="inline-group form-group">
+                    <div style="flex: 1;">
+                        <label>ĐH 1 giờ trước</label>
+                        <input type="number" id="bgOld" step="0.1" placeholder="Lần trước">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>ĐH hiện tại</label>
+                        <input type="number" id="bgNew" step="0.1" placeholder="Hiện tại">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Đơn vị</label>
+                        <select id="bgUnitTitration">
+                            <option value="mmol">mmol/L</option>
+                            <option value="mgdl">mg/dL</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tỷ lệ pha mặc định (UI/ml NaCl 0.9%)</label>
+                    <div class="inline-group" style="width: 50%;">
+                        <input type="number" id="uiTitration" value="50" placeholder="UI">
+                        <input type="number" id="mlTitration" value="50" placeholder="ml">
+                    </div>
+                </div>
+
+                <button class="btn-adjust" onclick="adjustDose()">Phân Tích & Chỉnh Liều Mới</button>
+                <div id="titrationResult" class="final-result" style="border-color: #d6bcfa; background-color: #faf5ff; color: #44337a;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- ĐIỀU HƯỚNG TABS ---
+        function switchTab(tabId, btnId) {
+            // Ẩn tất cả nội dung
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            // Bỏ highlight tất cả nút
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            
+            // Hiển thị nội dung được chọn
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById(btnId).classList.add('active');
+        }
+
+        // --- BƯỚC 1 ---
+        function assessAndRoute() {
+            const bgValue = parseFloat(document.getElementById('bgValue').value);
+            const ph = parseFloat(document.getElementById('ph').value);
+            const hco3 = parseFloat(document.getElementById('hco3').value);
+            const mental = document.getElementById('mental').value;
+            
+            if (!bgValue || !ph || !hco3) return alert("Vui lòng nhập đầy đủ thông số Bước 1!");
+
+            const resultBox = document.getElementById('assessmentResult');
+            const routeSelect = document.getElementById('routeSelect');
+            
+            document.getElementById('treatmentSection').style.display = "block";
+            document.getElementById('finalOrder').style.display = 'none';
+
+            let severityText = "";
+            if (ph < 7.00 || hco3 < 10 || mental === "coma") {
+                resultBox.className = "alert alert-severe";
+                severityText = "Chẩn đoán: DKA MỨC ĐỘ NẶNG.<br>Điều hướng: Truyền Tĩnh Mạch (IV).";
+                routeSelect.value = "iv";
+            } else if ((ph >= 7.00 && ph < 7.24) || (hco3 >= 10 && hco3 < 15) || mental === "drowsy") {
+                resultBox.className = "alert alert-moderate";
+                severityText = "Chẩn đoán: DKA MỨC ĐỘ TRUNG BÌNH.<br>Điều hướng: Truyền Tĩnh Mạch (IV).";
+                routeSelect.value = "iv";
+            } else {
+                resultBox.className = "alert alert-mild";
+                severityText = "Chẩn đoán: DKA MỨC ĐỘ NHẸ.<br>Điều hướng: Tiêm Dưới Da (SC).";
+                routeSelect.value = "sc";
+            }
+
+            resultBox.innerHTML = severityText;
+            resultBox.style.display = "block";
+            toggleCalculator();
+            
+            // Tự động đồng bộ đơn vị từ Bước 1 xuống Bước 3
+            document.getElementById('bgUnitTitration').value = document.getElementById('bgUnit').value;
+        }
+
+        // --- BƯỚC 2 ---
+        function toggleCalculator() {
+            const route = document.getElementById('routeSelect').value;
+            document.getElementById('finalOrder').style.display = 'none'; 
+            if (route === "iv") {
+                document.getElementById('formIV').style.display = "block";
+                document.getElementById('formSC').style.display = "none";
+            } else {
+                document.getElementById('formIV').style.display = "none";
+                document.getElementById('formSC').style.display = "block";
+            }
+        }
+
+        function calcIV() {
+            const weight = parseFloat(document.getElementById('wtIV').value);
+            const ui = parseFloat(document.getElementById('uiIV').value);
+            const ml = parseFloat(document.getElementById('mlIV').value);
+            if (!weight || !ui || !ml) return alert("Nhập đủ thông số tĩnh mạch!");
+
+            // Đồng bộ cân nặng và tỷ lệ pha xuống Tab 2 cho tiện
+            document.getElementById('wtTitration').value = weight;
+            document.getElementById('uiTitration').value = ui;
+            document.getElementById('mlTitration').value = ml;
+
+            const concentration = ui / ml; 
+            let bolusUI = weight * 0.1;
+            let infusionUI = weight * 0.1;
+            
+            const bolusVol = (bolusUI / concentration).toFixed(1);
+            const infusionVol = (infusionUI / concentration).toFixed(1);
+
+            let html = `<strong>[Y LỆNH KHỞI ĐẦU - BƠM TIÊM ĐIỆN]</strong><br><br>
+                        1. <strong>Bolus trên máy:</strong> Thể tích <strong>${bolusVol} ml</strong> (${bolusUI.toFixed(1)} UI).<br>
+                        2. <strong>Duy trì:</strong> Tốc độ <strong>${infusionVol} ml/giờ</strong>.<br>
+                        <em>* Vui lòng đo lại đường huyết mao mạch sau 1 giờ.</em><br>
+                        <button class="btn-switch-tab" onclick="switchTab('tab-titration', 'btn-tab-titration')">👉 Chuyển nhanh sang Giao diện Chỉnh liều</button>`;
+            
+            // Tự động điền tốc độ hiện tại xuống Tab 2
+            document.getElementById('currentRate').value = infusionVol;
+            document.getElementById('bgOld').value = document.getElementById('bgValue').value; // Mượn đường huyết đầu làm mốc
+
+            showFinalOrder('finalOrder', html);
+        }
+
+        function calcSC() {
+            const weight = parseFloat(document.getElementById('wtSC').value);
+            if (!weight) return alert("Vui lòng nhập cân nặng!");
+            const initialSC = (weight * 0.3).toFixed(1);
+            const maintenanceSC = (weight * 0.2).toFixed(1);
+            let html = `<strong>[Y LỆNH KHỞI ĐẦU - TIÊM DƯỚI DA]</strong><br><br>
+                        1. Khởi đầu (Tiêm SC ngay): <strong>${initialSC} UI</strong>.<br>
+                        2. Duy trì: <strong>${maintenanceSC} UI</strong> tiêm SC mỗi 2 giờ.`;
+            showFinalOrder('finalOrder', html);
+        }
+
+        // --- BƯỚC 3: CHỈNH LIỀU (TITRATION) ---
+        function adjustDose() {
+            const weight = parseFloat(document.getElementById('wtTitration').value);
+            const currentRate = parseFloat(document.getElementById('currentRate').value);
+            const bgOldInput = parseFloat(document.getElementById('bgOld').value);
+            const bgNewInput = parseFloat(document.getElementById('bgNew').value);
+            const unit = document.getElementById('bgUnitTitration').value;
+            const ui = parseFloat(document.getElementById('uiTitration').value) || 50; 
+            const ml = parseFloat(document.getElementById('mlTitration').value) || 50;
+            
+            if (!weight || !currentRate || !bgOldInput || !bgNewInput) return alert("Vui lòng nhập đầy đủ Cân nặng, Tốc độ hiện tại và 2 mức Đường huyết!");
+
+            let bgOld = bgOldInput;
+            let bgNew = bgNewInput;
+            if (unit === "mmol") {
+                bgOld = bgOldInput * 18;
+                bgNew = bgNewInput * 18;
+            }
+
+            const drop = bgOld - bgNew;
+            const concentration = ui / ml;
+            
+            // Xử lý hiển thị đơn vị
+            const dropDisplay = unit === "mmol" ? (drop / 18).toFixed(1) : drop.toFixed(1);
+            const unitLabel = unit === "mmol" ? "mmol/L/giờ" : "mg/dL/giờ";
+            const targetLabel = unit === "mmol" ? "2.8 - 4.2" : "50 - 75";
+
+            let resultHtml = `<strong>[KẾT QUẢ PHÂN TÍCH SAU 1 GIỜ]</strong><br>`;
+            resultHtml += `Mức giảm đường huyết: <strong>${dropDisplay} ${unitLabel}</strong> (Mục tiêu: ${targetLabel}).<br><br>`;
+
+            if (bgNew <= 200) {
+                const targetInfusionUI = weight * 0.05; 
+                const newRate = (targetInfusionUI / concentration).toFixed(1);
+                const thresholdLabel = unit === "mmol" ? "11.1 mmol/L" : "200 mg/dL";
+                resultHtml += `<strong style="color:#d69e2e;">⚠️ Đường huyết đã chạm ngưỡng an toàn (${thresholdLabel})</strong><br>
+                               <strong>Y lệnh đề xuất:</strong><br>
+                               1. Giảm tốc độ truyền Insulin xuống còn <strong>0.05 UI/kg/giờ</strong> -> Cài đặt máy: <strong>${newRate} ml/giờ</strong>.<br>
+                               2. <strong>Bắt buộc:</strong> Thêm Dextrose 5% vào dịch truyền tĩnh mạch để duy trì ĐH 150 - 200 mg/dL.`;
+            } 
+            else if (drop < 50) {
+                const newRate = (currentRate * 2).toFixed(1);
+                const dropCondLabel = unit === "mmol" ? "< 2.8 mmol/L/giờ" : "< 50 mg/dL/giờ";
+                resultHtml += `<strong style="color:#e53e3e;">📉 Đường huyết giảm không đạt mục tiêu (${dropCondLabel})</strong><br>
+                               <strong>Y lệnh đề xuất:</strong><br>
+                               1. Kiểm tra lại sự thông suốt của đường truyền và tình trạng bù dịch bù nước (rất quan trọng).<br>
+                               2. Tăng tốc độ Bơm tiêm điện lên gấp đôi -> Cài đặt máy: <strong>${newRate} ml/giờ</strong>.`;
+            }
+            else if (drop >= 50 && drop <= 75) {
+                resultHtml += `<strong style="color:#38a169;">✅ Đường huyết giảm ĐÚNG mục tiêu</strong><br>
+                               <strong>Y lệnh đề xuất:</strong><br>
+                               Tiếp tục giữ nguyên tốc độ Bơm tiêm điện: <strong>${currentRate} ml/giờ</strong>. Cập nhật "ĐH 1 giờ trước" bằng số hiện tại và kiểm tra lại sau 1 giờ.`;
+            }
+            else {
+                const newRate = (currentRate * 0.5).toFixed(1);
+                const dropCondLabel = unit === "mmol" ? "> 4.2 mmol/L/giờ" : "> 75 mg/dL/giờ";
+                resultHtml += `<strong style="color:#e53e3e;">⚠️ Đường huyết giảm quá nhanh (${dropCondLabel})</strong> - Nguy cơ phù não/hạ ĐH.<br>
+                               <strong>Y lệnh đề xuất:</strong><br>
+                               Giảm tốc độ Bơm tiêm điện xuống một nửa (50%) -> Cài đặt máy: <strong>${newRate} ml/giờ</strong>.`;
+            }
+
+            showFinalOrder('titrationResult', resultHtml);
+        }
+
+        function showFinalOrder(elementId, content) {
+            const orderBox = document.getElementById(elementId);
+            orderBox.innerHTML = content;
+            orderBox.style.display = "block";
+        }
+    </script>
+</body>
+</html>
