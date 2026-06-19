@@ -99,6 +99,24 @@
             box-shadow: 0 0 0 2px rgba(41, 128, 185, 0.2);
         }
 
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+            font-size: 0.95rem;
+            flex: 1;
+            margin-bottom: 0;
+        }
+
         .note {
             display: block;
             font-size: 0.8em;
@@ -200,7 +218,6 @@
             overflow-y: auto;
         }
 
-        /* Alerts inside Modal */
         .alert {
             padding: 15px;
             border-radius: 8px;
@@ -243,10 +260,9 @@
             color: #6c757d;
             border-top: 1px solid #dee2e6;
             padding-top: 15px;
-            text-align: center;
+            text-align: left;
         }
 
-        /* Responsive cho Mobile */
         @media screen and (max-width: 600px) {
             .form-group {
                 flex-direction: column;
@@ -313,12 +329,86 @@
         </div>
     </div>
 
+    <div class="section">
+        <h3>3. Đánh giá nguy cơ Kháng tiểu cầu (ASCVD & HAS-BLED)</h3>
+        <p style="font-size: 0.85em; color: #555; margin-top: 0; margin-bottom: 15px;">Dựa trên sự cân bằng giữa rủi ro thiếu máu cục bộ và nguy cơ xuất huyết.</p>
+        
+        <h4 style="font-size: 0.95rem; color: #2c3e50; margin-bottom: 10px;">Tiêu chuẩn Dự phòng thứ phát (Bệnh lý xơ vữa đã xác lập - ASCVD)</h4>
+        <p style="font-size: 0.85em; color: #555; margin-top: 0; margin-bottom: 10px;">Đánh dấu nếu bệnh nhân có bất kỳ yếu tố nào dưới đây (Tự động xếp vào nhóm Nguy cơ Rất Cao):</p>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="ascvd_mi" class="ascvd-check">
+            <label>Tiền sử Nhồi máu cơ tim (MI) hoặc Hội chứng vành cấp</label>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="ascvd_revasc" class="ascvd-check">
+            <label>Đã tái lưu thông mạch máu (Can thiệp mạch vành PCI, CABG, mổ bắc cầu/stent mạch ngoại vi)</label>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="ascvd_stroke" class="ascvd-check">
+            <label>Tiền sử Đột quỵ nhồi máu não hoặc Cơn thiếu máu cục bộ thoáng qua (TIA)</label>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="ascvd_pad" class="ascvd-check">
+            <label>Bệnh động mạch ngoại vi (PAD) có triệu chứng lâm sàng</label>
+        </div>
+        <div class="checkbox-group" style="margin-bottom: 20px;">
+            <input type="checkbox" id="ascvd_imaging" class="ascvd-check">
+            <label>Bằng chứng hình ảnh rõ rệt (Hẹp >50% động mạch vành/cảnh trên siêu âm hoặc CTA)</label>
+        </div>
+        
+        <h4 style="font-size: 0.95rem; color: #2c3e50; margin-bottom: 10px; border-top: 1px dashed #ccc; padding-top: 10px;">Thang điểm nguy cơ chảy máu HAS-BLED</h4>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="hb_h">
+            <label><strong>H</strong>ypertension: Tăng huyết áp không kiểm soát (HATT > 160 mmHg)</label>
+        </div>
+        <div class="form-group" style="margin-bottom: 8px;">
+            <label style="font-weight: normal; font-size: 0.95rem;"><strong>A</strong>bnormal function: Bất thường chức năng Gan / Thận (1đ mỗi loại)</label>
+            <select id="hb_a" style="flex: 0 0 80px;">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="hb_s">
+            <label><strong>S</strong>troke: Tiền sử đột quỵ</label>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="hb_b">
+            <label><strong>B</strong>leeding: Tiền sử chảy máu, xuất huyết hoặc tạng xuất huyết</label>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="hb_l">
+            <label><strong>L</strong>abile INRs: Dao động INR (chỉ tích nếu bệnh nhân đang dùng kháng Vitamin K)</label>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="hb_e">
+            <label><strong>E</strong>lderly: Tuổi > 65</label>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-weight: normal; font-size: 0.95rem;"><strong>D</strong>rugs/Alcohol: Đang dùng NSAIDs hoặc lạm dụng Rượu (1đ mỗi loại)</label>
+            <select id="hb_d" style="flex: 0 0 80px;">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+        </div>
+    </div>
+
     <button class="submit-btn" onclick="evaluateSurveillance()">TRÍCH XUẤT KẾT QUẢ ĐÁNH GIÁ</button>
 
     <div class="reference-footer">
-        <strong>Tài liệu y văn tham chiếu:</strong><br>
-        Wanhainen, A., et al. (2024). <i>European Society for Vascular Surgery (ESVS) 2024 Clinical Practice Guidelines on the Management of Abdominal Aorto-Iliac Artery Aneurysms.</i> Eur J Vasc Endovasc Surg, 67(2), 192-331.<br>
-        DOI: <a href="https://doi.org/10.1016/j.ejvs.2023.11.002" target="_blank" style="color: #2980b9;">10.1016/j.ejvs.2023.11.002</a> | PMID: 38262706
+        <strong>Tài liệu y văn tham chiếu:</strong><br><br>
+        1. Wanhainen, A., et al. (2024). <i>European Society for Vascular Surgery (ESVS) 2024 Clinical Practice Guidelines on the Management of Abdominal Aorto-Iliac Artery Aneurysms.</i> Eur J Vasc Endovasc Surg, 67(2), 192-331.<br>
+        DOI: <a href="https://doi.org/10.1016/j.ejvs.2023.11.002" target="_blank" style="color: #2980b9;">10.1016/j.ejvs.2023.11.002</a> | PMID: 38262706<br><br>
+        2. Lindholt, J. S., et al. (2025). <i>Association of Statin Treatment and Dose With the Clinical Course of Small Abdominal Aortic Aneurysms in Men: A 5-Year Prospective Cohort Study.</i> Circulation.<br>
+        DOI: <a href="https://doi.org/10.1161/CIRCULATIONAHA.125.074544" target="_blank" style="color: #2980b9;">10.1161/CIRCULATIONAHA.125.074544</a><br><br>
+        3. Visseren, F. L. J., et al. (2021). <i>2021 ESC Guidelines on cardiovascular disease prevention in clinical practice.</i> European Heart Journal, 42(34), 3227–3337.<br>
+        DOI: <a href="https://doi.org/10.1093/eurheartj/ehab484" target="_blank" style="color: #2980b9;">10.1093/eurheartj/ehab484</a> | PMID: 34458905<br><br>
+        4. Pisters, R., et al. (2010). <i>A novel user-friendly score (HAS-BLED) to assess 1-year risk of major bleeding in patients with atrial fibrillation.</i> Chest, 138(5), 1093-1100.<br>
+        DOI: <a href="https://doi.org/10.1378/chest.10-0134" target="_blank" style="color: #2980b9;">10.1378/chest.10-0134</a> | PMID: 20299623
     </div>
 </div>
 
@@ -346,7 +436,7 @@
 
     function closeModal() {
         document.getElementById('resultModal').style.display = "none";
-        document.body.style.overflow = "auto"; // Mở khóa cuộn trang nền
+        document.body.style.overflow = "auto"; 
     }
 
     function evaluateSurveillance() {
@@ -360,6 +450,42 @@
             alert("Vui lòng nhập đường kính túi phình hiện tại hợp lệ!");
             document.getElementById('current_diameter').focus();
             return;
+        }
+
+        // Kiểm tra Dự phòng thứ phát dựa trên Checklist ASCVD
+        let isSecondaryPrevention = false;
+        let ascvdChecks = document.querySelectorAll('.ascvd-check');
+        ascvdChecks.forEach(function(check) {
+            if (check.checked) {
+                isSecondaryPrevention = true;
+            }
+        });
+
+        // Tính toán HAS-BLED
+        let hasBledScore = 0;
+        if(document.getElementById('hb_h').checked) hasBledScore++;
+        hasBledScore += parseInt(document.getElementById('hb_a').value);
+        if(document.getElementById('hb_s').checked) hasBledScore++;
+        if(document.getElementById('hb_b').checked) hasBledScore++;
+        if(document.getElementById('hb_l').checked) hasBledScore++;
+        if(document.getElementById('hb_e').checked) hasBledScore++;
+        hasBledScore += parseInt(document.getElementById('hb_d').value);
+
+        let bleedingRiskText = hasBledScore >= 3 ? "NGUY CƠ CAO (&ge; 3 điểm)" : "THẤP/TRUNG BÌNH (< 3 điểm)";
+        let bleedingRiskColor = hasBledScore >= 3 ? "color: #e74c3c;" : "color: #27ae60;";
+        
+        let antiplateletRecommendation = "";
+        
+        if (isSecondaryPrevention) {
+             antiplateletRecommendation = `<strong style="color: #2c3e50;">Chỉ định:</strong> <span style="color: #e74c3c; font-weight: bold;">CÓ CHỈ ĐỊNH (Dự phòng thứ phát).</span><br>
+             <strong style="color: #2c3e50;">Lý do:</strong> Bệnh nhân thuộc nhóm Nguy cơ Tim mạch Rất cao theo ESC 2021 do đã có bệnh lý xơ vữa xác lập.<br>
+             <strong style="color: #2c3e50;">Đánh giá chảy máu (HAS-BLED):</strong> <span style="${bleedingRiskColor}"><strong>${hasBledScore} điểm</strong> - ${bleedingRiskText}</span>.<br>
+             <strong style="color: #2c3e50;">Lời khuyên:</strong> ${hasBledScore >= 3 ? "Bệnh nhân có nguy cơ xuất huyết cao. Cân nhắc Aspirin 75-100mg kết hợp kiểm soát chặt huyết áp, tránh dùng NSAIDs và thêm PPI bảo vệ dạ dày." : "Sử dụng Aspirin liều thấp (75-100mg/ngày) hoặc Clopidogrel (75mg/ngày)."}`;
+        } else {
+             antiplateletRecommendation = `<strong style="color: #2c3e50;">Chỉ định:</strong> <span style="color: #f39c12; font-weight: bold;">KHÔNG KHUYẾN CÁO THƯỜNG QUY.</span><br>
+             <strong style="color: #2c3e50;">Lý do:</strong> Chưa có bệnh lý xơ vữa xác lập (Dự phòng tiên phát). Hướng dẫn không khuyến cáo dùng Aspirin thường quy chỉ vì AAA.<br>
+             <strong style="color: #2c3e50;">Đánh giá chảy máu (HAS-BLED):</strong> <span style="${bleedingRiskColor}"><strong>${hasBledScore} điểm</strong> - ${bleedingRiskText}</span>.<br>
+             <strong style="color: #2c3e50;">Lời khuyên:</strong> Chỉ cân nhắc Aspirin ở một số ít bệnh nhân nếu ước lượng rủi ro tim mạch 10 năm (như SCORE2) rất cao và nguy cơ chảy máu thấp.`;
         }
 
         let modalBody = document.getElementById('modalBody');
@@ -455,12 +581,21 @@
 
         htmlContent += `
             <div class="medical-checklist">
-                <h4>Tối Ưu Hóa Nội Khoa (Checklist)</h4>
+                <h4>Tối Ưu Hóa Nội Khoa (Khuyến cáo & Liều dùng)</h4>
                 <ul style="margin: 0; padding-left: 20px; font-size: 0.95rem;">
-                    <li><strong>Cai thuốc lá:</strong> Tư vấn và hỗ trợ cai nghiện bắt buộc.</li>
-                    <li><strong>Statin:</strong> Chỉ định bắt buộc.</li>
-                    <li><strong>Huyết áp:</strong> Kiểm soát chặt chẽ mục tiêu.</li>
-                    <li><strong>Kháng tiểu cầu:</strong> Khi có bệnh lý xơ vữa đi kèm.</li>
+                    <li style="margin-bottom: 8px;"><strong>Cai thuốc lá:</strong> Khuyến cáo mức độ I. Tư vấn và hỗ trợ cai nghiện bắt buộc.</li>
+                    <li style="margin-bottom: 8px;"><strong>Statin (Khuyến cáo mức I, Bằng chứng A):</strong> Chỉ định bắt buộc nhằm giảm biến cố tim mạch và giảm tốc độ giãn túi phình.
+                        <ul style="margin-top: 4px; padding-left: 15px; font-size: 0.9em; color: #444;">
+                            <li><em>Mục tiêu:</em> Đạt mức LDL-C < 1.4 mmol/L (< 55 mg/dL) và giảm &ge; 50% so với mức nền.</li>
+                            <li><em>Liều dùng:</em> Sử dụng Statin cường độ cao (Atorvastatin 40-80 mg/ngày hoặc Rosuvastatin 20-40 mg/ngày).</li>
+                        </ul>
+                    </li>
+                    <li style="margin-bottom: 8px;"><strong>Kiểm soát Huyết áp:</strong> Kiểm soát chặt chẽ với mục tiêu < 130/80 mmHg (Khuyến cáo mức I).</li>
+                    <li style="margin-bottom: 8px;"><strong>Kháng kết tập tiểu cầu:</strong>
+                        <div style="background-color: #fff; padding: 12px; border-radius: 6px; margin-top: 8px; border: 1px solid #bce8f1; font-size: 0.9em; line-height: 1.4;">
+                            ${antiplateletRecommendation}
+                        </div>
+                    </li>
                 </ul>
             </div>`;
 
@@ -470,7 +605,7 @@
     function showModal(content) {
         document.getElementById('modalBody').innerHTML = content;
         document.getElementById('resultModal').style.display = "block";
-        document.body.style.overflow = "hidden"; // Khóa cuộn trang nền để tránh lỗi giao diện mobile
+        document.body.style.overflow = "hidden"; 
     }
 </script>
 
