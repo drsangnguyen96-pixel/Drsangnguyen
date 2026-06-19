@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nicardipine - Bơm Tiêm Điện (Khởi đầu & Rà liều)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 650px;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #d35400;
+            border-bottom: 2px solid #e67e22;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+            background: #f4f6f6;
+            padding: 8px 10px;
+            border-radius: 4px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #34495e;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        .radio-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+        .radio-group input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .btn-start {
+            background-color: #27ae60;
+        }
+        .btn-start:hover {
+            background-color: #229954;
+        }
+        .btn-adjust {
+            background-color: #2980b9;
+        }
+        .btn-adjust:hover {
+            background-color: #2471a3;
+        }
+        .result-box {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e8f8f5;
+            border-left: 5px solid #1abc9c;
+            border-radius: 4px;
+            display: none;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .alert-box {
+            background-color: #fdedec;
+            border-left: 5px solid #e74c3c;
+            color: #c0392b;
+        }
+        .highlight {
+            color: #c0392b;
+            font-size: 1.2em;
+        }
+        .divider {
+            height: 1px;
+            background-color: #ecf0f1;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Nicardipine - Hệ Thống Bơm Tiêm Điện</h2>
+    
+    <!-- Phần 1: Pha thuốc -->
+    <h3>1. Nồng độ pha thuốc (Xi-lanh)</h3>
+    <div class="form-group" style="display: flex; gap: 15px;">
+        <div style="flex: 1;">
+            <label for="nicMg">Số mg thuốc:</label>
+            <input type="number" id="nicMg" value="25" step="1">
+        </div>
+        <div style="flex: 1;">
+            <label for="nicMl">Tổng thể tích (ml):</label>
+            <input type="number" id="nicMl" value="50" step="1">
+        </div>
+    </div>
+
+    <!-- Phần 2: Khởi đầu -->
+    <h3>2. Bắt đầu truyền (Khởi đầu)</h3>
+    <div class="form-group">
+        <label for="startDose">Liều khởi đầu y lệnh (mg/h):</label>
+        <input type="number" id="startDose" value="5" step="0.5" min="0">
+        <small style="color:#7f8c8d;">(AHA/ASA khuyến cáo bắt đầu ở 5 mg/h)</small>
+    </div>
+    <div class="form-group">
+        <button class="btn-start" onclick="calculateInitial()">Tính Tốc Độ Khởi Đầu (ml/h)</button>
+    </div>
+    <div id="initialResult" class="result-box"></div>
+
+    <!-- Phần 3: Chỉnh liều -->
+    <h3>3. Rà liều lâm sàng (Mỗi 5-15 phút)</h3>
+    <div class="form-group" style="display: flex; gap: 15px;">
+        <div style="flex: 1;">
+            <label for="currentDose">Liều đang truyền (mg/h):</label>
+            <input type="number" id="currentDose" value="5" step="0.5" min="0">
+        </div>
+        <div style="flex: 1;">
+            <label for="stepDose" style="color: #c0392b;">Biên độ chỉnh (mg/h):</label>
+            <input type="number" id="stepDose" value="2.5" step="0.5" min="0.5" max="5">
+        </div>
+    </div>
+
+    <div class="form-group radio-group">
+        <label style="font-weight: bold; margin-top: 10px;">Đánh giá Huyết áp hiện tại:</label>
+        <label><input type="radio" name="bpStatus" value="high" checked> HA chưa đạt đích &rarr; TĂNG liều</label>
+        <label><input type="radio" name="bpStatus" value="target"> HA đã đạt đích &rarr; GIẢM về duy trì (3 mg/h)</label>
+        <label><input type="radio" name="bpStatus" value="low"> HA Tụt &rarr; Xử trí tụt huyết áp</label>
+    </div>
+
+    <div class="form-group">
+        <button class="btn-adjust" onclick="calculateAdjustment()">Tính Liều Rà (ml/h)</button>
+    </div>
+    <div id="resultBox" class="result-box"></div>
+</div>
+
+<script>
+    function getConcentration() {
+        let mg = parseFloat(document.getElementById('nicMg').value);
+        let ml = parseFloat(document.getElementById('nicMl').value);
+        if(mg > 0 && ml > 0) return mg / ml;
+        return 0;
+    }
+
+    function calculateInitial() {
+        let startDose = parseFloat(document.getElementById('startDose').value);
+        let conc = getConcentration();
+        let box = document.getElementById('initialResult');
+
+        if (!startDose || startDose <= 0 || conc <= 0) {
+            alert("Vui lòng kiểm tra lại số liệu nồng độ và liều khởi đầu.");
+            return;
+        }
+
+        let rateMl = startDose / conc;
+        box.innerHTML = `<strong>BƯỚC 1: KHỞI ĐỘNG BƠM TIÊM ĐIỆN</strong><br>
+                         - Liều khởi đầu: <strong>${startDose} mg/h</strong><br>
+                         - Nồng độ thực tế: ${conc.toFixed(2)} mg/ml<br>
+                         &rarr; Cài đặt tốc độ máy: <strong style="font-size: 1.3em; color: #27ae60;">${rateMl.toFixed(1)} ml/h</strong>.`;
+        box.style.display = "block";
+        
+        // Tự động đồng bộ liều khởi đầu xuống ô liều hiện tại để tiện rà liều bước sau
+        document.getElementById('currentDose').value = startDose;
+    }
+
+    function calculateAdjustment() {
+        let currentDose = parseFloat(document.getElementById('currentDose').value);
+        let stepDose = parseFloat(document.getElementById('stepDose').value);
+        let status = document.querySelector('input[name="bpStatus"]:checked').value;
+        let conc = getConcentration();
+        let resultBox = document.getElementById('resultBox');
+
+        if (currentDose < 0 || stepDose <= 0 || conc <= 0) {
+            alert("Vui lòng kiểm tra lại các thông số nhập vào.");
+            return;
+        }
+
+        let resultHtml = "";
+
+        if (status === "high") {
+            if (currentDose >= 15) {
+                resultHtml = `<span style="color:#e74c3c;"><strong>CẢNH BÁO:</strong> Đã đạt liều tối đa <strong>15 mg/h</strong>.</span><br>Không tăng thêm Nicardipine để tránh ngộ độc. Cân nhắc hội chẩn phối hợp thêm thuốc hạ áp tĩnh mạch khác.`;
+                resultBox.className = "result-box alert-box";
+            } else {
+                let newDose = currentDose + stepDose;
+                if (newDose > 15) newDose = 15; // Khóa trần ở 15mg/h
+                let newRate = newDose / conc;
+                
+                resultHtml = `<strong>Y LỆNH RÀ LIỀU (TĂNG):</strong><br>
+                              - Biên độ tăng: ${stepDose} mg/h.<br>
+                              - Tổng liều mới: <strong>${newDose} mg/h</strong>.<br>
+                              &rarr; Chỉnh tốc độ máy lên: <strong class="highlight">${newRate.toFixed(1)} ml/h</strong>.<br>
+                              <small style="color: #7f8c8d;">(Chờ 5-15 phút để đánh giá lại đáp ứng)</small>`;
+                resultBox.className = "result-box";
+                document.getElementById('currentDose').value = newDose; // Cập nhật sẵn cho lần bấm sau
+            }
+        } 
+        else if (status === "target") {
+            let targetDose = 3; 
+            let targetRate = targetDose / conc;
+            
+            resultHtml = `<strong>HA ĐẠT ĐÍCH (HẠ BẬC):</strong><br>
+                          - Khuyến cáo hạ về liều duy trì an toàn (3 mg/h) để tránh tụt HA thứ phát.<br>
+                          &rarr; Chỉnh tốc độ máy xuống: <strong style="font-size: 1.3em; color: #2980b9;">${targetRate.toFixed(1)} ml/h</strong>.<br>
+                          <small style="color: #7f8c8d;">(Tiếp tục mắc monitor theo dõi sát)</small>`;
+            resultBox.className = "result-box";
+            document.getElementById('currentDose').value = targetDose;
+        } 
+        else if (status === "low") {
+            let halfDose = currentDose / 2;
+            let halfRate = halfDose / conc;
+            
+            resultHtml = `<strong>XỬ TRÍ TỤT HUYẾT ÁP:</strong><br>
+                          1. <strong>Tạm ngừng (Stop)</strong> bơm tiêm điện ngay lập tức. Bù dịch nếu không có chống chỉ định.<br>
+                          2. Khi HA ổn định, khởi động lại ở mức 50% liều trước đó: <strong>${halfDose.toFixed(1)} mg/h</strong>.<br>
+                          &rarr; Tốc độ chạy lại: <strong class="highlight">${halfRate.toFixed(1)} ml/h</strong>.`;
+            resultBox.className = "result-box alert-box";
+            document.getElementById('currentDose').value = halfDose;
+        }
+
+        resultBox.innerHTML = resultHtml;
+        resultBox.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
