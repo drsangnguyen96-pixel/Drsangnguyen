@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Báo Cáo Trực - Hành Chính</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --bg-color: #f4f7f6;
+            --border-color: #ccc;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2, h3, h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        
+        .title-container { text-align: center; margin-bottom: 20px; }
+        .header-title { margin-bottom: 5px; margin-top: 0; font-size: 1.5rem; text-align: center; }
+        .input-khoa {
+            font-size: 1.5rem; text-transform: uppercase; font-weight: bold;
+            color: var(--primary-color); border-bottom: 2px dashed var(--primary-color);
+            background: transparent; outline: none; display: inline-block;
+            min-width: 50px; padding: 0 5px; cursor: text;
+        }
+        .date-container { font-style: italic; font-size: 1rem; }
+        .date-container input[type="date"] {
+            width: auto; border: none; border-bottom: 1px dashed #999;
+            background: transparent; font-style: italic; padding: 2px 5px; outline: none;
+        }
+        
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;}
+        .form-group label { font-weight: bold; display: block; margin-bottom: 5px; }
+        
+        .compact-info { border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 4px; background-color: #fcfcfc; }
+        .info-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; line-height: 1.4; }
+        .info-row:last-child { margin-bottom: 0; }
+        
+        /* Chốt cứng chiều rộng để chữ thẳng hàng */
+        .info-label { font-weight: bold; flex: 0 0 260px; display: inline-block; }
+        
+        input[type="text"], input[type="number"], select {
+            padding: 6px; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; font-size: 16px; 
+        }
+        .short-input { width: 80px !important; text-align: center; padding: 4px !important; }
+        .status-select { width: 100px !important; padding: 4px !important; }
+        .prob-container { display: flex; align-items: center; gap: 5px; flex-grow: 1; }
+        .prob-container input { flex-grow: 1; padding: 4px; }
+        
+        .table-responsive { width: 100%; overflow-x: auto; margin-bottom: 10px; border: 1px solid var(--border-color); }
+        table { width: 100%; min-width: 700px; border-collapse: collapse; }
+        th, td { border: 1px solid var(--border-color); padding: 8px 5px; text-align: center; vertical-align: middle; }
+        th { background-color: #e9ecef; white-space: nowrap; }
+        td input { width: 100%; border: none; background: transparent; text-align: center; outline: none; font-size: 15px; }
+        
+        td[contenteditable="true"] { outline: none; cursor: text; word-wrap: break-word; transition: background 0.3s; font-size: 15px; min-height: 25px; }
+        td[contenteditable="true"]:focus { background-color: #e6f2ff; }
+        .text-left { text-align: left !important; }
+        
+        .hiendien-highlight { font-weight: bold; background: #e9ecef; color: #d9534f; font-size: 1.1rem; }
+
+        .btn { background-color: var(--primary-color); color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; font-weight: bold; margin-bottom: 10px; }
+        .btn:hover { background-color: #004494; }
+        .btn-danger { background-color: #dc3545; padding: 6px 10px; margin-bottom: 0; }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-print { background-color: #28a745; font-size: 18px; padding: 12px 20px; display: block; margin: 30px auto 0; width: 100%; max-width: 300px; }
+        
+        .conditional-section { display: none; background: #f8f9fa; padding: 10px; border-left: 4px solid var(--primary-color); margin-bottom: 15px; }
+        .toggle-section { margin: 15px 0; padding: 15px; background: #e9ecef; border-radius: 4px; font-weight: bold; line-height: 2; }
+        .toggle-section input[type="checkbox"] { transform: scale(1.3); margin-right: 8px; }
+        
+        .signatures { display: flex; justify-content: space-between; margin-top: 30px; text-align: center; }
+        .signatures div { width: 45%; }
+        .signature-space { height: 90px; }
+        .print-header-formal { display: none; }
+
+        @media screen and (max-width: 768px) {
+            .grid-3 { grid-template-columns: 1fr; }
+            .signatures { flex-direction: column; gap: 40px; }
+            .signatures div { width: 100%; }
+        }
+
+        @page { size: A4; margin: 20mm 15mm 20mm 30mm; }
+        @media print {
+            body { background-color: #fff; padding: 0; font-family: "Times New Roman", Times, serif !important; font-size: 13pt !important; color: #000; }
+            .container { box-shadow: none; max-width: 100%; padding: 0; }
+            .btn, .toggle-section, .btn-col { display: none !important; }
+            
+            .print-header-formal { display: flex; justify-content: space-between; margin-bottom: 15px; text-align: center; line-height: 1.2; }
+            .print-header-formal p { margin: 0; padding: 0; }
+            .header-left { width: 40%; }
+            .header-right { width: 60%; }
+            .line-under { display: inline-block; border-top: 1px solid #000; width: 40%; margin: 5px auto 0; }
+
+            .title-container { margin-bottom: 15px; }
+            .header-title { font-size: 15pt !important; color: #000 !important; font-weight: bold; margin-bottom: 2px;}
+            .input-khoa { border: none !important; color: #000 !important; font-size: 15pt !important; padding: 0; }
+            .hide-on-print { display: none !important; }
+            .show-on-print { display: block !important; }
+            
+            h3, h4 { color: #000 !important; margin-top: 10px; margin-bottom: 5px; }
+            
+            input[type="text"], input[type="number"], input[type="date"], select, table input {
+                border: none !important; background: transparent !important; padding: 0 !important; margin: 0 !important;
+                font-family: "Times New Roman", Times, serif !important; font-size: 13pt !important; color: #000;
+                -webkit-appearance: none; appearance: none;
+            }
+            .hiendien-highlight { color: #000 !important; background: transparent !important; }
+            
+            /* Ép thẳng hàng dọc khi in */
+            .short-input, .status-select { text-align: left !important; width: auto !important; padding-left: 0 !important; margin-left: 0 !important; }
+            .info-label { width: 260px !important; flex: 0 0 260px !important; }
+            
+            td[contenteditable="true"] {
+                font-family: "Times New Roman", Times, serif !important; 
+                font-size: 13pt !important; 
+                color: #000 !important;
+                padding: 4px !important;
+            }
+
+            ::-webkit-input-placeholder { color: transparent !important; }
+            :-moz-placeholder { color: transparent !important; }
+            ::-moz-placeholder { color: transparent !important; }
+            :-ms-input-placeholder { color: transparent !important; }
+
+            .compact-info { border: none; padding: 0; background: transparent; margin-bottom: 15px; }
+            .info-row { margin-bottom: 6px !important; line-height: 1.5 !important; align-items: baseline !important; display: flex !important; }
+            .hide-problem-print .prob-container { display: none !important; }
+
+            .table-responsive { border: none; overflow: visible; margin-bottom: 10px; }
+            table { min-width: 100%; margin-top: 5px; border-collapse: collapse !important; }
+            th, td { border: 1px solid #000 !important; padding: 4px; }
+            th { background-color: transparent !important; font-weight: bold; }
+            
+            .conditional-section { border-left: none; padding: 0; background: transparent; border-radius: 0; margin-bottom: 10px; }
+            .signatures { margin-top: 20px; display: flex; flex-direction: row; justify-content: space-between; }
+            .signatures div { width: 45%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="print-header-formal">
+        <div class="header-left">
+            <p>BỆNH VIỆN ĐK THỐNG NHẤT</p>
+            <p><strong>KHOA <span id="printKhoa">NGOẠI LỒNG NGỰC</span></strong></p>
+            <span class="line-under"></span>
+        </div>
+        <div class="header-right">
+            <p><strong>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong></p>
+            <p><strong>Độc lập - Tự do - Hạnh phúc</strong></p>
+            <span class="line-under" style="width: 30%;"></span>
+        </div>
+    </div>
+
+    <div class="title-container">
+        <h2 class="header-title">
+            BÁO CÁO TRỰC TẠI KHOA 
+            <span id="tenKhoaInput" class="input-khoa" contenteditable="true">NGOẠI LỒNG NGỰC</span>
+        </h2>
+        <div class="date-container">
+            <span class="hide-on-print">Ngày: <input type="date" id="ngayTruc"></span>
+            <span class="show-on-print" style="display: none;" id="ngayInMain">Ngày ... tháng ... năm ...</span>
+        </div>
+    </div>
+
+    <div class="compact-info">
+        <div class="info-row status-row">
+            <span class="info-label">Tổng số bệnh nhân:</span> 
+            <input type="number" class="short-input" min="0">
+        </div>
+        <div class="info-row status-row">
+            <span class="info-label">Tổng số bệnh án:</span> 
+            <input type="number" class="short-input" min="0">
+        </div>
+        <div class="info-row status-row">
+            <span class="info-label">BN chăm sóc cấp I:</span> 
+            <input type="number" class="short-input" min="0">
+        </div>
+        <div class="info-row status-row">
+            <span class="info-label">Bàn giao thuốc và y dụng cụ:</span>
+            <select class="status-select" onchange="updateStatusDisplay()">
+                <option value="Đủ">Đủ</option>
+                <option value="Không">Không</option>
+            </select>
+            <span class="prob-container">-> Vấn đề: <input type="text" placeholder="Ghi chú nếu có..."></span>
+        </div>
+        <div class="info-row status-row">
+            <span class="info-label">Sử dụng thuốc an toàn & hợp lý:</span>
+            <select class="status-select" onchange="updateStatusDisplay()">
+                <option value="Đủ">Đủ</option>
+                <option value="Không">Không</option>
+            </select>
+            <span class="prob-container">-> Vấn đề: <input type="text" placeholder="Ghi chú nếu có..."></span>
+        </div>
+        <div class="info-row status-row">
+            <span class="info-label">An ninh trật tự:</span>
+            <select class="status-select" onchange="updateStatusDisplay()">
+                <option value="Ổn">Ổn</option>
+                <option value="Không">Không</option>
+            </select>
+            <span class="prob-container">-> Vấn đề gì: <input type="text" placeholder="Ghi chú nếu có..."></span>
+        </div>
+    </div>
+
+    <h3>I. THÀNH PHẦN TRỰC</h3>
+    <div class="grid-3">
+        <div class="form-group">
+            <label>Bác sĩ trực:</label>
+            <input type="text">
+        </div>
+        <div class="form-group">
+            <label>Điều dưỡng trực:</label>
+            <input type="text">
+        </div>
+        <div class="form-group">
+            <label>Hộ lý trực:</label>
+            <input type="text">
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Bệnh cũ</th>
+                    <th>Nhập viện</th>
+                    <th>Trại chuyển</th>
+                    <th>Chuyển trại</th>
+                    <th>Xuất viện</th>
+                    <th>Chuyển viện</th>
+                    <th>Hiện diện</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="number" min="0" id="sum-bencu" oninput="calculateHienDien()"></td>
+                    <td><input type="number" min="0" id="sum-nhapvien" oninput="calculateHienDien()"></td>
+                    <td><input type="number" min="0" id="sum-traichuyen" oninput="calculateHienDien()"></td>
+                    <td><input type="number" min="0" id="sum-chuyentrai" oninput="calculateHienDien()"></td>
+                    <td><input type="number" min="0" id="sum-xuatvien" oninput="calculateHienDien()"></td>
+                    <td><input type="number" min="0" id="sum-chuyenvien" oninput="calculateHienDien()"></td>
+                    <td><input type="number" min="0" id="sum-hiendien" class="hiendien-highlight" readonly placeholder="0"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>II. BÁO CÁO CHI TIẾT</h3>
+
+    <div id="sec-nhapvien" class="conditional-section">
+        <h4>❖ Bệnh nhân nhập viện</h4>
+        <div class="table-responsive">
+            <table id="table-nhapvien">
+                <thead>
+                    <tr>
+                        <th width="8%">Giường</th>
+                        <th width="22%">Họ và tên</th>
+                        <th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th>
+                        <th width="25%">Hướng điều trị</th>
+                        <th class="btn-col" width="5%">Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+        <button class="btn" onclick="addRow('table-nhapvien')">+ Thêm dòng</button>
+    </div>
+
+    <div id="sec-traichuyen" class="conditional-section">
+        <h4>❖ Bệnh nhân trại chuyển</h4>
+        <div class="table-responsive">
+            <table id="table-traichuyen">
+                <thead>
+                    <tr>
+                        <th width="8%">Giường</th>
+                        <th width="22%">Họ và tên</th>
+                        <th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th>
+                        <th width="25%">Hướng điều trị</th>
+                        <th class="btn-col" width="5%">Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn" onclick="addRow('table-traichuyen')">+ Thêm dòng</button>
+    </div>
+
+    <div id="sec-chuyenvien" class="conditional-section">
+        <h4>❖ Bệnh nhân chuyển viện</h4>
+        <div class="table-responsive">
+            <table id="table-chuyenvien">
+                <thead>
+                    <tr>
+                        <th width="8%">Giường</th>
+                        <th width="22%">Họ và tên</th>
+                        <th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th>
+                        <th width="25%">Hướng điều trị</th>
+                        <th class="btn-col" width="5%">Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn" onclick="addRow('table-chuyenvien')">+ Thêm dòng</button>
+    </div>
+
+    <div class="toggle-section">
+        <p style="margin-top:0; color:var(--primary-color);">Đánh dấu các mục phát sinh để hiển thị bảng nhập liệu tương ứng:</p>
+        <label><input type="checkbox" onchange="toggleSection('sec-capcuu')"> Có bệnh nhân mổ cấp cứu</label> <br>
+        <label><input type="checkbox" onchange="toggleSection('sec-trongngay')"> Có bệnh nhân dự kiến mổ trong ngày</label> <br>
+        <label><input type="checkbox" onchange="toggleSection('sec-theodoi')"> Có bệnh nhân đã mổ cần theo dõi ngày đầu</label>
+    </div>
+
+    <div id="sec-capcuu" class="conditional-section">
+        <h4>❖ Bệnh nhân mổ cấp cứu</h4>
+        <div class="table-responsive">
+            <table id="table-capcuu">
+                <thead>
+                    <tr>
+                        <th width="8%">Giường</th>
+                        <th width="22%">Họ và tên</th>
+                        <th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th>
+                        <th width="25%">Hướng điều trị</th>
+                        <th class="btn-col" width="5%">Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn" onclick="addRow('table-capcuu')">+ Thêm dòng</button>
+    </div>
+
+    <div id="sec-trongngay" class="conditional-section">
+        <h4>❖ Bệnh nhân dự kiến mổ trong ngày</h4>
+        <div class="table-responsive">
+            <table id="table-trongngay">
+                <thead>
+                    <tr>
+                        <th width="8%">Giường</th>
+                        <th width="22%">Họ và tên</th>
+                        <th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th>
+                        <th width="25%">Hướng điều trị</th>
+                        <th class="btn-col" width="5%">Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn" onclick="addRow('table-trongngay')">+ Thêm dòng</button>
+    </div>
+
+    <div id="sec-theodoi" class="conditional-section">
+        <h4>❖ Bệnh nhân đã mổ cần theo dõi ngày đầu</h4>
+        <div class="table-responsive">
+            <table id="table-theodoi">
+                <thead>
+                    <tr>
+                        <th width="8%">Giường</th>
+                        <th width="22%">Họ và tên</th>
+                        <th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th>
+                        <th width="25%">Hướng điều trị</th>
+                        <th class="btn-col" width="5%">Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn" onclick="addRow('table-theodoi')">+ Thêm dòng</button>
+    </div>
+
+    <div class="signatures">
+        <div>
+            <p style="visibility: hidden; margin-bottom: 5px;">Khoảng trống</p>
+            <h4 style="margin: 0;">NGƯỜI GIAO</h4>
+            <p style="margin-top: 5px; font-style: italic;">(Ký và ghi rõ họ tên)</p>
+            <div class="signature-space"></div>
+            <input type="text" placeholder="Họ tên người giao..." style="text-align: center; font-weight: bold;">
+        </div>
+        <div>
+            <p id="ngayKy" style="font-style: italic; margin-bottom: 5px;">Đồng Nai, ngày ... tháng ... năm 20...</p>
+            <h4 style="margin: 0;">NGƯỜI NHẬN</h4>
+            <p style="margin-top: 5px; font-style: italic;">(Ký và ghi rõ họ tên)</p>
+            <div class="signature-space"></div>
+            <input type="text" placeholder="Họ tên người nhận..." style="text-align: center; font-weight: bold;">
+        </div>
+    </div>
+
+    <button class="btn btn-print" onclick="window.print()">🖨️ IN BÁO CÁO</button>
+
+</div>
+
+<script>
+    function calculateHienDien() {
+        var c = parseInt(document.getElementById('sum-bencu').value) || 0;
+        var n = parseInt(document.getElementById('sum-nhapvien').value) || 0;
+        var tc = parseInt(document.getElementById('sum-traichuyen').value) || 0;
+        var ct = parseInt(document.getElementById('sum-chuyentrai').value) || 0;
+        var xv = parseInt(document.getElementById('sum-xuatvien').value) || 0;
+        var cv = parseInt(document.getElementById('sum-chuyenvien').value) || 0;
+
+        var hd = c + n + tc - ct - xv - cv;
+        document.getElementById('sum-hiendien').value = hd < 0 ? 0 : hd;
+
+        syncAutoSection('sec-nhapvien', 'table-nhapvien', n);
+        syncAutoSection('sec-traichuyen', 'table-traichuyen', tc);
+        syncAutoSection('sec-chuyenvien', 'table-chuyenvien', cv);
+    }
+
+    function syncAutoSection(sectionId, tableId, count) {
+        var section = document.getElementById(sectionId);
+        var tbody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+        
+        if (count > 0) {
+            section.style.display = "block";
+            var currentCount = tbody.rows.length;
+            
+            if (count > currentCount) {
+                for (var i = currentCount; i < count; i++) {
+                    var newRow = tbody.insertRow();
+                    newRow.innerHTML = 
+                        '<td contenteditable="true"></td>' +
+                        '<td contenteditable="true"></td>' +
+                        '<td contenteditable="true"></td>' +
+                        '<td contenteditable="true" class="text-left"></td>' +
+                        '<td contenteditable="true" class="text-left"></td>' +
+                        '<td class="btn-col"><button class="btn btn-danger" onclick="deleteRow(this)">X</button></td>';
+                }
+            } else if (count < currentCount) {
+                for (var i = currentCount; i > count; i--) {
+                    tbody.deleteRow(-1); 
+                }
+            }
+        } else {
+            section.style.display = "none";
+            tbody.innerHTML = ''; 
+        }
+    }
+
+    function addRow(tableId) {
+        var tbody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+        var newRow = tbody.insertRow();
+        newRow.innerHTML = 
+            '<td contenteditable="true"></td>' +
+            '<td contenteditable="true"></td>' +
+            '<td contenteditable="true"></td>' +
+            '<td contenteditable="true" class="text-left"></td>' +
+            '<td contenteditable="true" class="text-left"></td>' +
+            '<td class="btn-col"><button class="btn btn-danger" onclick="deleteRow(this)">X</button></td>';
+            
+        updateSummaryFromTable(tableId);
+    }
+
+    function deleteRow(btn) {
+        var row = btn.parentNode.parentNode;
+        var tbody = row.parentNode;
+        var table = tbody.parentNode;
+        tbody.removeChild(row);
+        
+        updateSummaryFromTable(table.id);
+    }
+
+    function updateSummaryFromTable(tableId) {
+        var tbody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+        var count = tbody.rows.length;
+        var updateRequired = false;
+        
+        if (tableId === 'table-nhapvien') {
+            document.getElementById('sum-nhapvien').value = count > 0 ? count : ''; updateRequired = true;
+        } else if (tableId === 'table-traichuyen') {
+            document.getElementById('sum-traichuyen').value = count > 0 ? count : ''; updateRequired = true;
+        } else if (tableId === 'table-chuyenvien') {
+            document.getElementById('sum-chuyenvien').value = count > 0 ? count : ''; updateRequired = true;
+        }
+
+        if(updateRequired) {
+            var c = parseInt(document.getElementById('sum-bencu').value) || 0;
+            var n = parseInt(document.getElementById('sum-nhapvien').value) || 0;
+            var tc = parseInt(document.getElementById('sum-traichuyen').value) || 0;
+            var ct = parseInt(document.getElementById('sum-chuyentrai').value) || 0;
+            var xv = parseInt(document.getElementById('sum-xuatvien').value) || 0;
+            var cv = parseInt(document.getElementById('sum-chuyenvien').value) || 0;
+            var hd = c + n + tc - ct - xv - cv;
+            document.getElementById('sum-hiendien').value = hd < 0 ? 0 : hd;
+
+            if (count === 0) {
+                if (tableId === 'table-nhapvien') document.getElementById('sec-nhapvien').style.display = "none";
+                if (tableId === 'table-traichuyen') document.getElementById('sec-traichuyen').style.display = "none";
+                if (tableId === 'table-chuyenvien') document.getElementById('sec-chuyenvien').style.display = "none";
+            }
+        }
+    }
+
+    document.getElementById("tenKhoaInput").addEventListener("input", function() {
+        document.getElementById("printKhoa").innerText = this.innerText.toUpperCase();
+    });
+
+    function toggleSection(sectionId) {
+        var section = document.getElementById(sectionId);
+        var tbody = section.getElementsByTagName('tbody')[0];
+        if (section.style.display === "block") {
+            section.style.display = "none";
+            tbody.innerHTML = ''; 
+        } else {
+            section.style.display = "block";
+            if (tbody.rows.length === 0) {
+                addRow(section.getElementsByTagName('table')[0].id);
+            }
+        }
+    }
+
+    function updateStatusDisplay() {
+        var rows = document.querySelectorAll('.status-row');
+        for (var i = 0; i < rows.length; i++) {
+            var select = rows[i].querySelector('.status-select');
+            if (select && (select.value === 'Đủ' || select.value === 'Ổn')) {
+                rows[i].classList.add('hide-problem-print');
+            } else if (select) {
+                rows[i].classList.remove('hide-problem-print');
+            }
+        }
+    }
+
+    function updateDateText(dateString) {
+        var dateObj = new Date(dateString);
+        if(!isNaN(dateObj)) {
+            var day = String(dateObj.getDate()).padStart(2, '0');
+            var month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            var year = dateObj.getFullYear();
+            var strNgay = "Ngày " + day + " tháng " + month + " năm " + year;
+            
+            document.getElementById("ngayInMain").innerText = strNgay;
+            document.getElementById("ngayKy").innerText = "Đồng Nai, ngày " + day + " tháng " + month + " năm " + year;
+        }
+    }
+
+    document.addEventListener("paste", function(e) {
+        if (e.target && e.target.getAttribute("contenteditable") === "true") {
+            e.preventDefault();
+            var text = (e.originalEvent || e).clipboardData.getData('text/plain');
+            document.execCommand('insertText', false, text);
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var today = new Date().toISOString().split('T')[0];
+        var dateInput = document.getElementById("ngayTruc");
+        
+        dateInput.value = today;
+        updateDateText(today);
+        updateStatusDisplay();
+
+        dateInput.addEventListener("change", function() {
+            updateDateText(this.value);
+        });
+    });
+</script>
+
+</body>
+</html>
