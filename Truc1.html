@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Báo Cáo Trực - Hành Chính</title>
+    <title>Báo Cáo Trực - Khoa Ngoại Lồng Ngực</title>
     <style>
         :root {
             --primary-color: #0056b3;
@@ -26,11 +26,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        h2, h3, h4 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            margin-top: 20px;
-        }
+        h2, h3, h4 { color: var(--primary-color); margin-bottom: 10px; margin-top: 20px; }
         
         .title-container { text-align: center; margin-bottom: 20px; }
         .header-title { margin-bottom: 5px; margin-top: 0; font-size: 1.5rem; text-align: center; }
@@ -40,20 +36,31 @@
             background: transparent; outline: none; display: inline-block;
             min-width: 50px; padding: 0 5px; cursor: text;
         }
-        .date-container { font-style: italic; font-size: 1rem; }
+        .date-container { font-style: italic; font-size: 1rem; margin-top: 5px; }
         .date-container input[type="date"] {
             width: auto; border: none; border-bottom: 1px dashed #999;
             background: transparent; font-style: italic; padding: 2px 5px; outline: none;
         }
         
+        /* KHU VỰC NHẬP EXCEL */
+        .btn-excel { background-color: #ff9800; color: #fff; font-size: 16px; margin-left: 15px; }
+        .btn-excel:hover { background-color: #e68a00; }
+        .excel-import-box {
+            background-color: #fff3cd; border: 2px dashed #ff9800; padding: 15px;
+            border-radius: 8px; margin-bottom: 20px; display: none;
+        }
+        .excel-import-box h4 { color: #d39e00; margin-top: 0; }
+        .excel-import-box textarea {
+            width: 100%; height: 120px; padding: 10px; box-sizing: border-box;
+            border: 1px solid #ffeeba; border-radius: 4px; font-family: monospace; font-size: 14px;
+        }
+
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;}
         .form-group label { font-weight: bold; display: block; margin-bottom: 5px; }
         
         .compact-info { border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 4px; background-color: #fcfcfc; }
         .info-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; line-height: 1.4; }
         .info-row:last-child { margin-bottom: 0; }
-        
-        /* Chốt cứng chiều rộng để chữ thẳng hàng */
         .info-label { font-weight: bold; flex: 0 0 260px; display: inline-block; }
         
         input[type="text"], input[type="number"], select {
@@ -73,7 +80,6 @@
         td[contenteditable="true"] { outline: none; cursor: text; word-wrap: break-word; transition: background 0.3s; font-size: 15px; min-height: 25px; }
         td[contenteditable="true"]:focus { background-color: #e6f2ff; }
         .text-left { text-align: left !important; }
-        
         .hiendien-highlight { font-weight: bold; background: #e9ecef; color: #d9534f; font-size: 1.1rem; }
 
         .btn { background-color: var(--primary-color); color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; font-weight: bold; margin-bottom: 10px; }
@@ -101,7 +107,7 @@
         @media print {
             body { background-color: #fff; padding: 0; font-family: "Times New Roman", Times, serif !important; font-size: 13pt !important; color: #000; }
             .container { box-shadow: none; max-width: 100%; padding: 0; }
-            .btn, .toggle-section, .btn-col { display: none !important; }
+            .btn, .toggle-section, .btn-col, .excel-import-box { display: none !important; }
             
             .print-header-formal { display: flex; justify-content: space-between; margin-bottom: 15px; text-align: center; line-height: 1.2; }
             .print-header-formal p { margin: 0; padding: 0; }
@@ -123,17 +129,10 @@
                 -webkit-appearance: none; appearance: none;
             }
             .hiendien-highlight { color: #000 !important; background: transparent !important; }
-            
-            /* Ép thẳng hàng dọc khi in */
             .short-input, .status-select { text-align: left !important; width: auto !important; padding-left: 0 !important; margin-left: 0 !important; }
             .info-label { width: 260px !important; flex: 0 0 260px !important; }
             
-            td[contenteditable="true"] {
-                font-family: "Times New Roman", Times, serif !important; 
-                font-size: 13pt !important; 
-                color: #000 !important;
-                padding: 4px !important;
-            }
+            td[contenteditable="true"] { font-family: "Times New Roman", Times, serif !important; font-size: 13pt !important; color: #000 !important; padding: 4px !important; }
 
             ::-webkit-input-placeholder { color: transparent !important; }
             :-moz-placeholder { color: transparent !important; }
@@ -177,8 +176,23 @@
             <span id="tenKhoaInput" class="input-khoa" contenteditable="true">NGOẠI LỒNG NGỰC</span>
         </h2>
         <div class="date-container">
-            <span class="hide-on-print">Ngày: <input type="date" id="ngayTruc"></span>
+            <span class="hide-on-print">
+                Ngày: <input type="date" id="ngayTruc">
+                <button class="btn btn-excel" onclick="toggleExcelBox()">📥 DÁN TỪ EXCEL</button>
+            </span>
             <span class="show-on-print" style="display: none;" id="ngayInMain">Ngày ... tháng ... năm ...</span>
+        </div>
+    </div>
+
+    <div id="excelBox" class="excel-import-box">
+        <h4><span style="font-size: 20px;">⚡</span> Hướng dẫn nhập nhanh dữ liệu:</h4>
+        <p style="margin: 5px 0;"><strong>Bước 1:</strong> Trong file Excel, chuẩn bị 6 cột theo thứ tự: <strong>MÃ LOẠI | GIƯỜNG | HỌ VÀ TÊN | NĂM SINH | CHẨN ĐOÁN | HƯỚNG ĐIỀU TRỊ</strong></p>
+        <p style="margin: 5px 0;"><em>(Quy ước Mã loại: <strong>NV</strong>: Nhập viện, <strong>TC</strong>: Trại chuyển, <strong>CV</strong>: Chuyển viện, <strong>MCC</strong>: Mổ cấp cứu, <strong>MTN</strong>: Mổ trong ngày, <strong>TD</strong>: Theo dõi)</em></p>
+        <p style="margin: 5px 0;"><strong>Bước 2:</strong> Copy các dòng bệnh nhân (không copy dòng tiêu đề) và Dán (Ctrl+V) vào ô dưới đây rồi bấm Xử lý:</p>
+        <textarea id="excelPasteArea" placeholder="Dán (Paste) các dòng từ Excel vào đây..."></textarea>
+        <div style="margin-top: 10px; text-align: right;">
+            <button class="btn btn-danger" style="margin-bottom: 0;" onclick="toggleExcelBox()">Hủy bỏ</button>
+            <button class="btn" style="background-color: #28a745; margin-bottom: 0; margin-left: 10px;" onclick="processExcelData()">🚀 XỬ LÝ DỮ LIỆU TỰ ĐỘNG</button>
         </div>
     </div>
 
@@ -223,18 +237,9 @@
 
     <h3>I. THÀNH PHẦN TRỰC</h3>
     <div class="grid-3">
-        <div class="form-group">
-            <label>Bác sĩ trực:</label>
-            <input type="text">
-        </div>
-        <div class="form-group">
-            <label>Điều dưỡng trực:</label>
-            <input type="text">
-        </div>
-        <div class="form-group">
-            <label>Hộ lý trực:</label>
-            <input type="text">
-        </div>
+        <div class="form-group"><label>Bác sĩ trực:</label><input type="text"></div>
+        <div class="form-group"><label>Điều dưỡng trực:</label><input type="text"></div>
+        <div class="form-group"><label>Hộ lý trực:</label><input type="text"></div>
     </div>
 
     <div class="table-responsive">
@@ -272,16 +277,11 @@
             <table id="table-nhapvien">
                 <thead>
                     <tr>
-                        <th width="8%">Giường</th>
-                        <th width="22%">Họ và tên</th>
-                        <th width="10%">Năm Sinh</th>
-                        <th width="30%">Chẩn đoán</th>
-                        <th width="25%">Hướng điều trị</th>
-                        <th class="btn-col" width="5%">Xóa</th>
+                        <th width="8%">Giường</th><th width="22%">Họ và tên</th><th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th><th width="25%">Hướng điều trị</th><th class="btn-col" width="5%">Xóa</th>
                     </tr>
                 </thead>
-                <tbody>
-                    </tbody>
+                <tbody></tbody>
             </table>
         </div>
         <button class="btn" onclick="addRow('table-nhapvien')">+ Thêm dòng</button>
@@ -293,16 +293,11 @@
             <table id="table-traichuyen">
                 <thead>
                     <tr>
-                        <th width="8%">Giường</th>
-                        <th width="22%">Họ và tên</th>
-                        <th width="10%">Năm Sinh</th>
-                        <th width="30%">Chẩn đoán</th>
-                        <th width="25%">Hướng điều trị</th>
-                        <th class="btn-col" width="5%">Xóa</th>
+                        <th width="8%">Giường</th><th width="22%">Họ và tên</th><th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th><th width="25%">Hướng điều trị</th><th class="btn-col" width="5%">Xóa</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
         <button class="btn" onclick="addRow('table-traichuyen')">+ Thêm dòng</button>
@@ -314,26 +309,21 @@
             <table id="table-chuyenvien">
                 <thead>
                     <tr>
-                        <th width="8%">Giường</th>
-                        <th width="22%">Họ và tên</th>
-                        <th width="10%">Năm Sinh</th>
-                        <th width="30%">Chẩn đoán</th>
-                        <th width="25%">Hướng điều trị</th>
-                        <th class="btn-col" width="5%">Xóa</th>
+                        <th width="8%">Giường</th><th width="22%">Họ và tên</th><th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th><th width="25%">Hướng điều trị</th><th class="btn-col" width="5%">Xóa</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
         <button class="btn" onclick="addRow('table-chuyenvien')">+ Thêm dòng</button>
     </div>
 
-    <div class="toggle-section">
+    <div class="toggle-section hide-on-print">
         <p style="margin-top:0; color:var(--primary-color);">Đánh dấu các mục phát sinh để hiển thị bảng nhập liệu tương ứng:</p>
-        <label><input type="checkbox" onchange="toggleSection('sec-capcuu')"> Có bệnh nhân mổ cấp cứu</label> <br>
-        <label><input type="checkbox" onchange="toggleSection('sec-trongngay')"> Có bệnh nhân dự kiến mổ trong ngày</label> <br>
-        <label><input type="checkbox" onchange="toggleSection('sec-theodoi')"> Có bệnh nhân cần theo dõi sát </label>
+        <label><input type="checkbox" id="chk-capcuu" onchange="toggleSection('sec-capcuu', this)"> Có bệnh nhân mổ cấp cứu</label> <br>
+        <label><input type="checkbox" id="chk-trongngay" onchange="toggleSection('sec-trongngay', this)"> Có bệnh nhân dự kiến mổ trong ngày</label> <br>
+        <label><input type="checkbox" id="chk-theodoi" onchange="toggleSection('sec-theodoi', this)"> Có bệnh nhân đã mổ cần theo dõi ngày đầu</label>
     </div>
 
     <div id="sec-capcuu" class="conditional-section">
@@ -342,16 +332,11 @@
             <table id="table-capcuu">
                 <thead>
                     <tr>
-                        <th width="8%">Giường</th>
-                        <th width="22%">Họ và tên</th>
-                        <th width="10%">Năm Sinh</th>
-                        <th width="30%">Chẩn đoán</th>
-                        <th width="25%">Hướng điều trị</th>
-                        <th class="btn-col" width="5%">Xóa</th>
+                        <th width="8%">Giường</th><th width="22%">Họ và tên</th><th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th><th width="25%">Hướng điều trị</th><th class="btn-col" width="5%">Xóa</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
         <button class="btn" onclick="addRow('table-capcuu')">+ Thêm dòng</button>
@@ -363,37 +348,27 @@
             <table id="table-trongngay">
                 <thead>
                     <tr>
-                        <th width="8%">Giường</th>
-                        <th width="22%">Họ và tên</th>
-                        <th width="10%">Năm Sinh</th>
-                        <th width="30%">Chẩn đoán</th>
-                        <th width="25%">Hướng điều trị</th>
-                        <th class="btn-col" width="5%">Xóa</th>
+                        <th width="8%">Giường</th><th width="22%">Họ và tên</th><th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th><th width="25%">Hướng điều trị</th><th class="btn-col" width="5%">Xóa</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
         <button class="btn" onclick="addRow('table-trongngay')">+ Thêm dòng</button>
     </div>
 
     <div id="sec-theodoi" class="conditional-section">
-        <h4>❖ Bệnh nhân cần theo dõi sát </h4>
+        <h4>❖ Bệnh nhân đã mổ cần theo dõi ngày đầu</h4>
         <div class="table-responsive">
             <table id="table-theodoi">
                 <thead>
                     <tr>
-                        <th width="8%">Giường</th>
-                        <th width="22%">Họ và tên</th>
-                        <th width="10%">Năm Sinh</th>
-                        <th width="30%">Chẩn đoán</th>
-                        <th width="25%">Hướng điều trị</th>
-                        <th class="btn-col" width="5%">Xóa</th>
+                        <th width="8%">Giường</th><th width="22%">Họ và tên</th><th width="10%">Năm Sinh</th>
+                        <th width="30%">Chẩn đoán</th><th width="25%">Hướng điều trị</th><th class="btn-col" width="5%">Xóa</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
         <button class="btn" onclick="addRow('table-theodoi')">+ Thêm dòng</button>
@@ -421,6 +396,74 @@
 </div>
 
 <script>
+    // --- TÍNH NĂNG NHẬP EXCEL ---
+    function toggleExcelBox() {
+        var box = document.getElementById("excelBox");
+        box.style.display = (box.style.display === "block") ? "none" : "block";
+        document.getElementById("excelPasteArea").value = ''; // clear data
+    }
+
+    function processExcelData() {
+        var rawData = document.getElementById("excelPasteArea").value;
+        if (!rawData.trim()) {
+            alert("Vui lòng dán dữ liệu từ Excel vào ô trước khi xử lý!");
+            return;
+        }
+
+        var rows = rawData.split('\n');
+        var countImported = 0;
+
+        for (var i = 0; i < rows.length; i++) {
+            var rowText = rows[i].trim();
+            if (!rowText) continue;
+
+            // Excel khi copy thường ngăn cách bởi phím Tab (\t)
+            var cols = rowText.split('\t');
+            if (cols.length < 2) continue; // Bỏ qua nếu dòng không đúng định dạng
+
+            var maLoai = cols[0].trim().toUpperCase();
+            var giuong = cols[1] ? cols[1].trim() : '';
+            var hoTen = cols[2] ? cols[2].trim() : '';
+            var namSinh = cols[3] ? cols[3].trim() : '';
+            var chanDoan = cols[4] ? cols[4].trim() : '';
+            var huongDT = cols[5] ? cols[5].trim() : '';
+
+            var targetTableId = '';
+            var targetSectionId = '';
+
+            // Map mã loại vào đúng bảng
+            if (maLoai === 'NV' || maLoai === 'NHẬP VIỆN') { targetTableId = 'table-nhapvien'; targetSectionId = 'sec-nhapvien'; }
+            else if (maLoai === 'TC' || maLoai === 'TRẠI CHUYỂN') { targetTableId = 'table-traichuyen'; targetSectionId = 'sec-traichuyen'; }
+            else if (maLoai === 'CV' || maLoai === 'CHUYỂN VIỆN') { targetTableId = 'table-chuyenvien'; targetSectionId = 'sec-chuyenvien'; }
+            else if (maLoai === 'MCC' || maLoai === 'MỔ CẤP CỨU') { targetTableId = 'table-capcuu'; targetSectionId = 'sec-capcuu'; document.getElementById('chk-capcuu').checked = true; }
+            else if (maLoai === 'MTN' || maLoai === 'MỔ TRONG NGÀY') { targetTableId = 'table-trongngay'; targetSectionId = 'sec-trongngay'; document.getElementById('chk-trongngay').checked = true; }
+            else if (maLoai === 'TD' || maLoai === 'THEO DÕI') { targetTableId = 'table-theodoi'; targetSectionId = 'sec-theodoi'; document.getElementById('chk-theodoi').checked = true; }
+            else continue; // Không khớp mã nào thì bỏ qua dòng đó
+
+            // Mở section hiển thị lên
+            document.getElementById(targetSectionId).style.display = 'block';
+
+            // Tạo dòng mới dán vào bảng
+            var tbody = document.getElementById(targetTableId).getElementsByTagName('tbody')[0];
+            var newRow = tbody.insertRow();
+            newRow.innerHTML = 
+                '<td contenteditable="true">' + giuong + '</td>' +
+                '<td contenteditable="true">' + hoTen + '</td>' +
+                '<td contenteditable="true">' + namSinh + '</td>' +
+                '<td contenteditable="true" class="text-left">' + chanDoan + '</td>' +
+                '<td contenteditable="true" class="text-left">' + huongDT + '</td>' +
+                '<td class="btn-col"><button class="btn btn-danger" onclick="deleteRow(this)">X</button></td>';
+
+            // Cập nhật lại số đếm ở bảng tổng phía trên
+            updateSummaryFromTable(targetTableId);
+            countImported++;
+        }
+
+        toggleExcelBox();
+        alert("Đã phân loại và thêm thành công " + countImported + " bệnh nhân vào các bảng!");
+    }
+
+    // --- CÁC TÍNH NĂNG ĐỒNG BỘ HIỆN DIỆN VÀ DÒNG CHẠY TỰ ĐỘNG ---
     function calculateHienDien() {
         var c = parseInt(document.getElementById('sum-bencu').value) || 0;
         var n = parseInt(document.getElementById('sum-nhapvien').value) || 0;
@@ -457,9 +500,7 @@
                         '<td class="btn-col"><button class="btn btn-danger" onclick="deleteRow(this)">X</button></td>';
                 }
             } else if (count < currentCount) {
-                for (var i = currentCount; i > count; i--) {
-                    tbody.deleteRow(-1); 
-                }
+                for (var i = currentCount; i > count; i--) { tbody.deleteRow(-1); }
             }
         } else {
             section.style.display = "none";
@@ -486,7 +527,6 @@
         var tbody = row.parentNode;
         var table = tbody.parentNode;
         tbody.removeChild(row);
-        
         updateSummaryFromTable(table.id);
     }
 
@@ -495,13 +535,9 @@
         var count = tbody.rows.length;
         var updateRequired = false;
         
-        if (tableId === 'table-nhapvien') {
-            document.getElementById('sum-nhapvien').value = count > 0 ? count : ''; updateRequired = true;
-        } else if (tableId === 'table-traichuyen') {
-            document.getElementById('sum-traichuyen').value = count > 0 ? count : ''; updateRequired = true;
-        } else if (tableId === 'table-chuyenvien') {
-            document.getElementById('sum-chuyenvien').value = count > 0 ? count : ''; updateRequired = true;
-        }
+        if (tableId === 'table-nhapvien') { document.getElementById('sum-nhapvien').value = count > 0 ? count : ''; updateRequired = true; } 
+        else if (tableId === 'table-traichuyen') { document.getElementById('sum-traichuyen').value = count > 0 ? count : ''; updateRequired = true; } 
+        else if (tableId === 'table-chuyenvien') { document.getElementById('sum-chuyenvien').value = count > 0 ? count : ''; updateRequired = true; }
 
         if(updateRequired) {
             var c = parseInt(document.getElementById('sum-bencu').value) || 0;
@@ -525,17 +561,15 @@
         document.getElementById("printKhoa").innerText = this.innerText.toUpperCase();
     });
 
-    function toggleSection(sectionId) {
+    function toggleSection(sectionId, checkbox) {
         var section = document.getElementById(sectionId);
         var tbody = section.getElementsByTagName('tbody')[0];
-        if (section.style.display === "block") {
+        if (!checkbox.checked) {
             section.style.display = "none";
             tbody.innerHTML = ''; 
         } else {
             section.style.display = "block";
-            if (tbody.rows.length === 0) {
-                addRow(section.getElementsByTagName('table')[0].id);
-            }
+            if (tbody.rows.length === 0) { addRow(section.getElementsByTagName('table')[0].id); }
         }
     }
 
@@ -558,12 +592,12 @@
             var month = String(dateObj.getMonth() + 1).padStart(2, '0');
             var year = dateObj.getFullYear();
             var strNgay = "Ngày " + day + " tháng " + month + " năm " + year;
-            
             document.getElementById("ngayInMain").innerText = strNgay;
             document.getElementById("ngayKy").innerText = "Đồng Nai, ngày " + day + " tháng " + month + " năm " + year;
         }
     }
 
+    // Chống copy định dạng rác (Giữ text thuần)
     document.addEventListener("paste", function(e) {
         if (e.target && e.target.getAttribute("contenteditable") === "true") {
             e.preventDefault();
@@ -575,14 +609,10 @@
     document.addEventListener("DOMContentLoaded", function() {
         var today = new Date().toISOString().split('T')[0];
         var dateInput = document.getElementById("ngayTruc");
-        
         dateInput.value = today;
         updateDateText(today);
         updateStatusDisplay();
-
-        dateInput.addEventListener("change", function() {
-            updateDateText(this.value);
-        });
+        dateInput.addEventListener("change", function() { updateDateText(this.value); });
     });
 </script>
 
