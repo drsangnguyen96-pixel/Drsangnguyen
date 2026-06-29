@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Hỗ Trợ Chỉnh Liều Kháng Sinh</title>
+    <style>
+        :root {
+            --primary-color: #005b96;
+            --secondary-color: #03396c;
+            --accent-color: #6497b1;
+            --bg-color: #f0f4f8;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --warning-bg: #fff3cd;
+            --warning-text: #856404;
+            --success-bg: #d4edda;
+            --success-text: #155724;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .app-container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .header p { margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.9; }
+        
+        .form-section { padding: 25px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--secondary-color);
+        }
+        .input-control {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccd1d9;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        .input-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 91, 150, 0.1);
+        }
+        select.input-control { appearance: auto; }
+        
+        .dialysis-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            background: #e6ebf1;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .radio-label:hover { background: #d0d7e1; }
+        .radio-label input[type="radio"] { margin: 0; }
+        
+        .btn-calculate {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-calculate:hover { background-color: var(--secondary-color); }
+        
+        .result-section {
+            display: none;
+            border-top: 2px solid var(--bg-color);
+            padding: 25px;
+            background-color: #fafbfc;
+        }
+        .result-title {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            margin-top: 0;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+        }
+        .dose-box {
+            background-color: #e8f4fd;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .dose-item {
+            margin-bottom: 10px;
+            padding-left: 15px;
+            position: relative;
+        }
+        .dose-item::before {
+            content: '💊';
+            position: absolute;
+            left: -5px;
+            top: 0;
+        }
+        .status-badge {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .note-box {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Module chung cho Vancomycin và Aminoglycoside */
+        .module {
+            display: none;
+            background: #eef3f9;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 16px 10px 10px 10px;
+            border: 1px solid #cbdae7;
+        }
+        .module.active { display: block; }
+        .module h3 {
+            margin-top: 0;
+            color: #003057;
+            border-left: 5px solid #4b7db5;
+            padding-left: 12px;
+        }
+        .module-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        @media (max-width: 600px) {
+            .module-grid { grid-template-columns: 1fr; }
+        }
+        .module-grid .form-group { margin-bottom: 8px; }
+        .module-grid .form-group label { font-weight: 500; font-size: 0.9rem; }
+        .module-grid .input-control { padding: 8px 10px; font-size: 14px; }
+        .btn-module {
+            background: #003b6f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .btn-module:hover { background: #002a50; }
+        .result-module {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin: 12px 0 4px;
+            border-left: 6px solid #0057a3;
+        }
+        .result-module strong { color: #002d55; }
+        .result-module .dose-line {
+            padding: 4px 0;
+            border-bottom: 1px solid #e9edf2;
+        }
+        .result-module .dose-line:last-child { border-bottom: none; }
+        .flex-badge {
+            display: inline-block;
+            background: #d3e2f0;
+            border-radius: 30px;
+            padding: 0 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #003b6f;
+        }
+        .footnote {
+            font-size: 0.8rem;
+            color: #3a5d7a;
+            margin-top: 8px;
+            line-height: 1.5;
+            background: #f2f7fd;
+            padding: 8px 14px;
+            border-radius: 14px;
+        }
+        .badge {
+            background: #003057;
+            color: white;
+            border-radius: 40px;
+            padding: 2px 14px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            margin-left: 8px;
+        }
+        .success-box {
+            background: var(--success-bg);
+            color: var(--success-text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #28a745;
+        }
+        .dose-table {
+            width: 100%;
+            font-size: 0.8rem;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            margin: 8px 0;
+        }
+        .dose-table th {
+            background: #dce8f5;
+            color: #003057;
+            font-weight: 600;
+            padding: 6px 8px;
+            text-align: left;
+            font-size: 0.7rem;
+        }
+        .dose-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #e7eef6;
+        }
+        .dose-table tr:last-child td { border-bottom: none; }
+        .strategy-select {
+            margin: 10px 0;
+        }
+        .strategy-select label {
+            font-weight: 500;
+            margin-right: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h1>Tra Cứu Liều Kháng Sinh Lâm Sàng</h1>
+        <p>Hỗ trợ chỉnh liều theo chức năng thận (SHC Dosing Guide)</p>
+    </div>
+    
+    <div class="form-section">
+        <div class="form-group">
+            <label for="drugInput">1. Chọn kháng sinh cần tra cứu:</label>
+            <input type="text" id="drugInput" class="input-control" list="drugList" placeholder="Gõ tên thuốc (vd: Meropenem, Vancomycin...)" oninput="toggleModules()">
+            <datalist id="drugList"></datalist>
+        </div>
+        
+        <div class="form-group">
+            <label for="crclInput">2. Nhập mức lọc cầu thận (CrCl - mL/min):</label>
+            <input type="number" id="crclInput" class="input-control" placeholder="Ví dụ: 35">
+            
+            <div class="dialysis-options">
+                <label class="radio-label">
+                    <input type="radio" name="dialysisMode" value="none" checked onchange="toggleCrClState()"> Không lọc máu
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="dialysisMode" value="ihd" onchange="toggleCrClState()"> IHD (Ngắt quãng)
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="dialysisMode" value="crrt" onchange="toggleCrClState()"> CRRT (Liên tục)
+                </label>
+            </div>
+        </div>
+        
+        <button class="btn-calculate" onclick="calculateDose()">Tra Cứu Phác Đồ</button>
+    </div>
+    
+    <div class="result-section" id="resultSection">
+        <h2 class="result-title" id="resDrugName">Tên Thuốc</h2>
+        <div class="status-badge" id="resStatus">Trạng thái bệnh nhân</div>
+        <div class="dose-box" id="resDoseArea"></div>
+        <div class="note-box" id="resNote"></div>
+    </div>
+
+    <!-- MODULE VANCOMYCIN -->
+    <div class="module" id="vancoModule">
+        <h3>⚕️ Vancomycin · Tính liều theo từng bệnh nhân <span class="badge">SHC</span></h3>
+        <div class="module-grid">
+            <div class="form-group"><label>Tuổi (năm)</label><input type="number" id="vAge" class="input-control" value="55" min="18" max="110"></div>
+            <div class="form-group"><label>Cân nặng (kg) *</label><input type="number" id="vWeight" class="input-control" value="70" min="30" max="250"></div>
+            <div class="form-group"><label>Chiều cao (inch)</label><input type="number" id="vHeight" class="input-control" value="67" min="55" max="85"></div>
+            <div class="form-group"><label>Giới tính</label>
+                <select id="vGender" class="input-control"><option value="male">Nam</option><option value="female" selected>Nữ</option></select>
+            </div>
+            <div class="form-group"><label>SCr (mg/dL) *</label><input type="number" id="vScr" class="input-control" value="1.0" step="0.1" min="0.3" max="6"></div>
+            <div class="form-group"><label>Béo phì (BMI ≥30)?</label>
+                <select id="vObese" class="input-control"><option value="no">Không</option><option value="yes">Có (dùng ABW)</option></select>
+            </div>
+        </div>
+        <button class="btn-module" onclick="calcVancomycin()">▶ Tính liều Vancomycin</button>
+        <div id="vResult" class="result-module">
+            <div><strong>CrCl:</strong> <span id="vCrcl" style="font-weight:700;color:#003b6f;font-size:1.1rem;">--</span> mL/min</div>
+            <div class="dose-line" style="margin-top:10px;"><strong>📌 Liều tấn công:</strong> <span id="vLoadDose">--</span></div>
+            <div class="dose-line"><strong>⏱ Liều duy trì:</strong> <span id="vMaintDose">--</span></div>
+            <div class="dose-line"><strong>💉 Hướng dẫn pha & truyền:</strong> <span id="vInfusionGuide">--</span></div>
+            <div class="dose-line" style="border-bottom:none;margin-top:6px;font-size:0.9rem;color:#2c5778;">
+                <span class="flex-badge">AUC 400–600</span> <span class="flex-badge">Trough ~15 (10–20)</span>
+            </div>
+        </div>
+        <!-- Công cụ điều chỉnh AUC -->
+        <div style="margin-top:14px;background:white;border-radius:14px;padding:12px 14px;border:1px solid #dce6f0;">
+            <div style="font-weight:600;font-size:0.9rem;color:#003057;">⚖️ Điều chỉnh liều theo AUC</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:6px;">
+                <div style="flex:1;min-width:90px;"><label style="font-weight:500;font-size:0.8rem;">AUC hiện tại</label><input type="number" id="vCurAUC" class="input-control" value="800" step="10" style="padding:6px 10px;"></div>
+                <div style="flex:1;min-width:90px;"><label style="font-weight:500;font-size:0.8rem;">AUC mong muốn</label><input type="number" id="vTargAUC" class="input-control" value="600" step="10" style="padding:6px 10px;"></div>
+                <div style="flex:1;min-width:90px;"><label style="font-weight:500;font-size:0.8rem;">TDD hiện tại (mg/ngày)</label><input type="number" id="vCurTDD" class="input-control" value="2500" step="50" style="padding:6px 10px;"></div>
+                <button class="btn-module" onclick="adjustVancoAUC()" style="flex:0 0 auto;width:auto;padding:8px 20px;margin-top:0;">Tính TDD mới</button>
+            </div>
+            <div id="vAUCResult" style="margin-top:8px;background:#e8f0fa;border-radius:30px;padding:6px 16px;font-weight:500;">
+                <strong>TDD mới:</strong> <span id="vNewTDD">--</span> mg/ngày
+            </div>
+        </div>
+    </div>
+
+    <!-- MODULE AMINOGLYCOSIDE -->
+    <div class="module" id="aminoModule">
+        <h3>🧬 Aminoglycoside · Chỉnh liều theo phác đồ <span class="badge">SHC</span></h3>
+        <div class="module-grid">
+            <div class="form-group"><label>Tuổi (năm)</label><input type="number" id="aAge" class="input-control" value="55" min="18" max="110"></div>
+            <div class="form-group"><label>Cân nặng (kg) *</label><input type="number" id="aWeight" class="input-control" value="70" min="30" max="250"></div>
+            <div class="form-group"><label>Chiều cao (inch)</label><input type="number" id="aHeight" class="input-control" value="67" min="55" max="85"></div>
+            <div class="form-group"><label>Giới tính</label>
+                <select id="aGender" class="input-control"><option value="male">Nam</option><option value="female" selected>Nữ</option></select>
+            </div>
+            <div class="form-group"><label>SCr (mg/dL) *</label><input type="number" id="aScr" class="input-control" value="1.0" step="0.1" min="0.3" max="6"></div>
+            <div class="form-group"><label>Béo phì (BMI ≥30)?</label>
+                <select id="aObese" class="input-control"><option value="no">Không</option><option value="yes">Có (dùng ABW)</option></select>
+            </div>
+        </div>
+        <div class="strategy-select">
+            <label>📋 Chọn phác đồ:</label>
+            <select id="aminoStrategy" class="input-control" style="width:auto;display:inline-block;padding:8px 16px;">
+                <option value="highdose">High-Dose Extended Interval (Hartford 7mg/kg)</option>
+                <option value="highdose_urban">High-Dose Extended Interval (Urban 5mg/kg)</option>
+                <option value="conventional">Conventional / Traditional</option>
+                <option value="synergy">Gram-positive Synergy</option>
+                <option value="ntm">NTM (Mycobacterium)</option>
+                <option value="cf">Cystic Fibrosis (10mg/kg)</option>
+            </select>
+        </div>
+        <button class="btn-module" onclick="calcAminoglycoside()">▶ Tính liều Aminoglycoside</button>
+        <div id="aResult" class="result-module">
+            <div><strong>CrCl:</strong> <span id="aCrcl" style="font-weight:700;color:#003b6f;font-size:1.1rem;">--</span> mL/min</div>
+            <div class="dose-line" style="margin-top:10px;"><strong>📌 Liều khởi đầu:</strong> <span id="aInitDose">--</span></div>
+            <div class="dose-line"><strong>⏱ Khoảng cách liều:</strong> <span id="aInterval">--</span></div>
+            <div class="dose-line"><strong>🎯 Mục tiêu nồng độ:</strong> <span id="aTargets">--</span></div>
+            <div class="dose-line" style="border-bottom:none;"><strong>📋 Theo dõi:</strong> <span id="aMonitoring">--</span></div>
+            <div class="dose-line" style="border-bottom:none;margin-top:6px;font-size:0.9rem;color:#2c5778;">
+                <span class="flex-badge">Dùng ABW nếu béo phì</span> <span class="flex-badge">Theo dõi nồng độ</span>
+            </div>
+        </div>
+        <!-- Bảng tóm tắt nồng độ đích -->
+        <div style="margin-top:12px;background:white;border-radius:14px;padding:8px 12px;border:1px solid #dce6f0;">
+            <div style="font-weight:600;font-size:0.85rem;color:#003057;">🎯 Nồng độ đích tham khảo</div>
+            <table class="dose-table">
+                <thead><tr><th>Thuốc</th><th>Chỉ định</th><th>Peak (mcg/mL)</th><th>Trough (mcg/mL)</th></tr></thead>
+                <tbody>
+                    <tr><td>Gentamicin / Tobramycin</td><td>Nhiễm trùng nặng</td><td>8–10</td><td>&lt;1–2</td></tr>
+                    <tr><td>Gentamicin / Tobramycin</td><td>Nhiễm trùng thông thường</td><td>6–8</td><td>&lt;1–2</td></tr>
+                    <tr><td>Amikacin</td><td>Nhiễm trùng nặng</td><td>25–30</td><td>&lt;4–8</td></tr>
+                    <tr><td>Amikacin</td><td>Nhiễm trùng thông thường</td><td>20–25</td><td>&lt;4–8</td></tr>
+                    <tr><td>Synergy (Gentamicin)</td><td>Gram (+)</td><td>3–4</td><td>&lt;1</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ===== CƠ SỞ DỮ LIỆU KHÁNG SINH (57 thuốc) =====
+    const db = [
+        { TenThuoc: "Acyclovir (IV)", CrCl_tren_50: "Prophylaxis: 250 mg/m² IV q12h hoặc 2 mg/kg IV q12h. Hematology/Oncology Treatment: 5 mg/kg IV q12h. General (Mucocutaneous HSV): 5 mg/kg IV q8h. Severe (CNS/ocular/disseminated, Zoster): 10 mg/kg IV q8h.", CrCl_10_50: "CrCl 25-50: 5-10 mg/kg IV q12h. CrCl 10-25 (General/Severe): 2.5-5 mg/kg IV q24h.", CrCl_duoi_10: "General: 2.5 mg/kg IV q24h. Severe: 5 mg/kg IV q24h.", IHD: "General: 2.5 mg/kg IV q24h. Severe: 5 mg/kg IV q24h.", CRRT: "Mucocutaneous: 5-10 mg/kg IV q12h. Severe: 10 mg/kg IV q12h.", GhiChu: "Sử dụng adjusted BW (Cân nặng hiệu chỉnh) cho bệnh nhân béo phì." },
+        { TenThuoc: "Acyclovir (PO)", CrCl_tren_50: "Mucocutaneous HSV: 400 mg PO q8h (Alt: 200 mg 5x daily). VZV: 800 mg PO q4h (hoặc 5x daily).", CrCl_10_50: "Mucocutaneous HSV: 200 mg PO q12h. VZV: 800 mg PO q12h.", CrCl_duoi_10: "Mucocutaneous HSV: 200 mg PO q12h. VZV: 800 mg PO q12h.", IHD: "Mucocutaneous HSV: 200 mg PO q12h. VZV: 800 mg PO q12h.", CRRT: "No data.", GhiChu: "Cân nhắc dùng valacyclovir cho VZV để giảm số lần dùng thuốc." },
+        { TenThuoc: "Amikacin (IV)", CrCl_tren_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_10_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_duoi_10: "Xem Aminoglycoside Dosing Protocol.", IHD: "Xem Aminoglycoside Dosing Protocol.", CRRT: "Xem Aminoglycoside Dosing Protocol.", GhiChu: "Sử dụng adjusted BW (Cân nặng hiệu chỉnh) cho bệnh nhân béo phì." },
+        { TenThuoc: "Amoxicillin (PO)", CrCl_tren_50: "Usual dose: 500 mg PO q8h hoặc 1,000 mg PO q8-12h. CAP: 1,000 mg PO q8h. Procedural prophylaxis: 2,000 mg PO x 1.", CrCl_10_50: "CrCl 10-29: 500 mg PO q12h hoặc 1,000 mg PO q12h.", CrCl_duoi_10: "500 mg PO q12-24h.", IHD: "500 mg PO q12-24h.", CRRT: "No data.", GhiChu: "Không có dữ liệu riêng cho CRRT." },
+        { TenThuoc: "Amoxicillin/clavulanate (PO)", CrCl_tren_50: "Usual dose: 500 mg PO q8h. CAP: 875 mg PO q12h. IAI/Uncomplicated GNR (oral step-down): up to 875 mg PO q8h.", CrCl_10_50: "CrCl 10-30: 500 mg PO q12h hoặc 875 mg PO q12h.", CrCl_duoi_10: "500 mg PO q24h. IAI/Uncomplicated GNR: up to 875 mg PO q24h.", IHD: "500 mg PO q24h. Phác đồ q24h nên uống sau khi HD hoặc thêm 1 liều cuối HD.", CRRT: "No data.", GhiChu: "Xem thêm hướng dẫn về béo phì (obesity dosing guide)." },
+        { TenThuoc: "Amphotericin B Liposomal (IV)", CrCl_tren_50: "3-5 mg/kg/day.", CrCl_10_50: "Không thay đổi (No change).", CrCl_duoi_10: "Không thay đổi (No change).", IHD: "Không thay đổi (No change).", CRRT: "Không thay đổi (No change).", GhiChu: "Tham khảo obesity dosing guide." },
+        { TenThuoc: "Ampicillin (IV)", CrCl_tren_50: "Mild/uncomplicated: 1-2 g IV q6h. Meningitis/endovascular/PJI: 2 g IV q4h.", CrCl_10_50: "CrCl 30-50: Mild 1-2 g IV q8h, Meningitis 2 g IV q6h. CrCl 15-30: Mild 1-2 g IV q12h, Meningitis 2 g IV q8h.", CrCl_duoi_10: "Mild 1-2 g IV q24h. Meningitis 2 g IV q12h.", IHD: "Mild/uncomplicated: 1-2 g IV q24h. Meningitis/endovascular/PJI: 2 g IV q12h.", CRRT: "Mild/uncomplicated: 2 g IV q8-12h. Meningitis/endovascular/PJI: 2 g IV q6-8h.", GhiChu: "CrCL > 130 có thể cân nhắc 2g IV q4h (Mild). Viêm màng não/nhiễm khuẩn huyết có thể cân nhắc truyền liên tục." },
+        { TenThuoc: "Ampicillin/sulbactam (IV)", CrCl_tren_50: "Mild/uncomplicated: 1.5 g IV q6h. Systemic: 3 g IV q6h. Acinetobacter baumannii: 3 g IV q4h.", CrCl_10_50: "CrCl 15-30: Mild 1.5 g IV q12h, Systemic 3 g IV q12h, Acinetobacter 3 g IV q8h.", CrCl_duoi_10: "Mild 1.5 g IV q24h, Systemic 3 g IV q24h, Acinetobacter 3 g IV q12h.", IHD: "Mild: 1.5 g IV q24h, Systemic/Acinetobacter: 3 g IV q24h.", CRRT: "Mild/Systemic: 3 g IV q8-12h, Acinetobacter: 3 g IV q6h.", GhiChu: "Liều tính theo tổng dạng kết hợp (3g = 2g ampicillin + 1g sulbactam)." },
+        { TenThuoc: "Azithromycin (IV/PO)", CrCl_tren_50: "Không thay đổi (No change).", CrCl_10_50: "Không thay đổi (No change).", CrCl_duoi_10: "Không thay đổi (No change).", IHD: "500 mg IV/PO q24h.", CRRT: "Không thay đổi (No change).", GhiChu: "Không cần chỉnh liều theo chức năng thận ngoại trừ khi IHD." },
+        { TenThuoc: "Aztreonam (IV)", CrCl_tren_50: "1-2 g IV q8h. Severe/Meningitis: 2 g IV q6-8h.", CrCl_10_50: "CrCl < 30: 1 g IV q8h. Severe/Meningitis: 1 g IV q6-8h.", CrCl_duoi_10: "500 mg IV q8h. Severe/Meningitis: 1 g IV q12h.", IHD: "1 g IV q24h. Severe/Meningitis: 1 g IV q12h.", CRRT: "2 g IV load, sau đó 1 g IV q8h -hoặc- 2 g IV q12h.", GhiChu: "Tham khảo obesity dosing guide." },
+        { TenThuoc: "Caspofungin (IV)", CrCl_tren_50: "70 mg IV x 1, then 50 mg IV q24h. Endocarditis/Endovascular: 150 mg IV q24h.", CrCl_10_50: "Không thay đổi (No change).", CrCl_duoi_10: "Không thay đổi (No change).", IHD: "Không thay đổi (No change).", CRRT: "Không thay đổi (No change).", GhiChu: "Dùng 70 mg IV q24h nếu đang dùng phenytoin, rifampin... Không cần chỉnh cho xơ gan Child-Pugh B/C." },
+        { TenThuoc: "Cefazolin (IV)", CrCl_tren_50: "Mild 1 g IV Q8H. Moderate/Severe 2 g IV Q8H.", CrCl_10_50: "CrCl 10-30: Mild 1 g IV Q12H. Moderate/Severe 2 g IV Q12H.", CrCl_duoi_10: "1 g - 2 g IV Q24H (tùy mức độ).", IHD: "1 g - 2 g IV Q24H (sau HD). Hoặc: 2g/2g/3g IV post-HD only.", CRRT: "2 g IV Q12H.", GhiChu: "Tham khảo obesity dosing guide." },
+        { TenThuoc: "Cefepime (IV)", CrCl_tren_50: "General: 1 g IV Q12H hoặc 2 g IV Q24H. Pulmonary/Neutropenic Fever/CNS/Pseudomonal/Severe: 2 g IV Q8H.", CrCl_10_50: "CrCl 30-60: General 1-2 g q24h, Severe 2 g q12h. CrCl 11-29: General 500mg-1g q24h, Severe 1 g q12h.", CrCl_duoi_10: "General: 250 mg-500 mg q24h. Severe: 500mg-1g q24h.", IHD: "0.5-1 g IV Q24H (sau HD). Hoặc: 2 g IV post-HD only.", CRRT: "2 g IV load, sau đó 1 g IV Q8H (truyền 4h).", GhiChu: "Cần lưu ý nguy cơ độc tính thần kinh (neurotoxicity) nếu không chỉnh liều đúng." },
+        { TenThuoc: "Cefiderocol (IV)", CrCl_tren_50: "CrCL > 120: 2 g IV q6h. CrCL 60-120: 2 g IV q8h. (SHC Restriction).", CrCl_10_50: "CrCL 30-60: 1.5 g IV q8h. CrCL 15-30: 1 g IV q8h.", CrCl_duoi_10: "750 mg IV q12h.", IHD: "750 mg IV q12h.", CRRT: "Phụ thuộc Effluent Flow Rate (≤2 L/hr: 1.5g q12h; 2.1-3 L/hr: 2g q12h; 3.1-4: 1.5g q8h; ≥4.1: 2g q8h).", GhiChu: "Tra cứu Effluent Dose trong Epic." },
+        { TenThuoc: "Cefpodoxime (PO)", CrCl_tren_50: "Uncomplicated cystitis: 100 mg PO q12h. CAP/bronchitis: 200 mg PO q12h. Skin/soft tissue: 400 mg PO q12h.", CrCl_10_50: "CrCl < 30: Giữ nguyên liều trên nhưng dãn cách q24h.", CrCl_duoi_10: "Dãn cách q24h.", IHD: "Chỉ uống sau khi chạy thận xong (post-HD only).", CRRT: "No data.", GhiChu: "" },
+        { TenThuoc: "Ceftaroline (IV)", CrCl_tren_50: "General: 600 mg IV q12h. Endocarditis/S.aureus bacteremia: 600 mg IV q8h (truyền 2h).", CrCl_10_50: "CrCl 30-50: 400 mg IV q12h (hoặc q8h cho Endocarditis). CrCl 15-30: 300 mg IV q12h (hoặc q8h cho Endocarditis).", CrCl_duoi_10: "200 mg IV q12h.", IHD: "200 mg IV q12h.", CRRT: "No data.", GhiChu: "SHC Restriction." },
+        { TenThuoc: "Ceftazidime (IV)", CrCl_tren_50: "Usual dose: 1-2 g IV q8h. Severe: 2 g IV q8h.", CrCl_10_50: "CrCl 30-50: 1-2 g IV q12h. CrCl 16-30: 1-2 g IV q24h.", CrCl_duoi_10: "CrCl 6-15: 0.5-1 g IV q24h. CrCl < 5: 0.5 g IV q24h.", IHD: "0.5 g IV q24h. Hoặc 1-2 g IV q48-72h, hoặc 1 g IV post-HD only (3 lần/tuần).", CRRT: "2 g IV load, sau đó 1 g IV q8h -hoặc- 2 g IV q12h.", GhiChu: "" },
+        { TenThuoc: "Ceftazidime/avibactam (IV)", CrCl_tren_50: "2.5 g IV q8h. (SHC Restriction).", CrCl_10_50: "CrCl 31-50: 1.25 g IV q8h. CrCl 16-30: 0.94 g IV q12h.", CrCl_duoi_10: "CrCl 6-15: 0.94 g IV q24h. CrCl < 5: 0.94 g IV q48h.", IHD: "0.94 g IV q24-48h. Dùng sau HD.", CRRT: "1.25 g IV q8h. (Dùng 2.5g IV q8h nếu MIC > 4 hoặc nhiễm khuẩn sâu).", GhiChu: "" },
+        { TenThuoc: "Ceftolozane/tazobactam (IV)", CrCl_tren_50: "Cystitis: 1.5 g IV q8h. HAP/VAP/Pseudomonas nặng: 3 g IV q8h.", CrCl_10_50: "CrCl 30-50: Cystitis 375 mg q8h; HAP/VAP 1.5 g q8h. CrCl 15-29: HAP/VAP 750 mg q8h.", CrCl_duoi_10: "Cystitis 750 mg load, then 150 mg q8h. HAP/VAP 2.25 g load, then 450 mg q8h.", IHD: "Giống liều CrCl < 10.", CRRT: "Cystitis: 750mg IV q8h. HAP/VAP: 1.5 g IV q8h (hoặc 3g load, then 750mg q8h).", GhiChu: "SHC Restriction." },
+        { TenThuoc: "Ceftriaxone (IV)", CrCl_tren_50: "1-2 g IV q24h. Meningitis/E. faecalis endocarditis: 2 g IV q12h. Endovascular/PJI: 2 g IV q24h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Thải trừ qua gan mật, không cần chỉnh liều theo chức năng thận." },
+        { TenThuoc: "Cephalexin (PO)", CrCl_tren_50: "250-1000 mg PO Q6H. Uncomplicated cystitis: 500 mg PO Q12H.", CrCl_10_50: "CrCl 30-50: Không thay đổi. CrCl 15-29: 250 mg PO Q8-12H.", CrCl_duoi_10: "250 mg PO Q24H.", IHD: "250-500 mg PO Q24H. Dùng daily, uống sau HD.", CRRT: "No data.", GhiChu: "" },
+        { TenThuoc: "Ciprofloxacin (IV/PO)", CrCl_tren_50: "General: 400 mg IV q8-12h / 500-750 mg PO q12h. Pseudomonas/severe: 400 mg IV q8h.", CrCl_10_50: "CrCl 30-50: 400 mg IV q12h / 500 mg PO q12h. CrCl < 30: 400 mg IV q24h / 500 mg PO q24h.", CrCl_duoi_10: "400 mg IV q24h / 250-500 mg PO q24h.", IHD: "400 mg IV q24h / 250-500 mg PO q24h. (Sau HD).", CRRT: "400 mg IV q12h / 500 mg PO q12h. Severe: 400 mg IV q8-12h.", GhiChu: "Tham khảo obesity dosing guide." },
+        { TenThuoc: "Clindamycin (IV/PO)", CrCl_tren_50: "600-900 mg IV q8h. 150-450 mg PO q6h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Tham khảo Obesity dosing guide." },
+        { TenThuoc: "Dalbavancin (IV)", CrCl_tren_50: "SSTI: Preferred 1,500 mg IV x 1. Alternative: 1,000 mg IV x 1 followed by 500 mg x1 1-week later.", CrCl_10_50: "CrCl < 30: Preferred 1,125 mg IV x1. Alternative: 750 mg IV x 1 followed by 375 mg x1 1-week later.", CrCl_duoi_10: "Giống CrCl < 30.", IHD: "Preferred 1,500 mg IV x1. Alternative 1,000 mg IV x 1 followed by 500 mg x1 1-week later.", CRRT: "No data.", GhiChu: "SHC Restriction. Consult ID cho off-label." },
+        { TenThuoc: "Daptomycin (IV)", CrCl_tren_50: "SSTI: 4-6 mg/kg IV q24h. Bacteremia: 8 mg/kg IV q24h. E. faecium: 10-12 mg/kg IV q24h.", CrCl_10_50: "Dãn khoảng cách liều thành q48h (ví dụ 4-6 mg/kg IV q48h).", CrCl_duoi_10: "Dãn khoảng cách liều thành q48h.", IHD: "SSTI: 6 mg/kg post-HD. Bacteremia: 8 mg/kg post-HD. E. faecium: 8-10 mg/kg post-HD.", CRRT: "SSTI: 6 mg/kg IV q24h. Bacteremia: 6-8 mg/kg IV q24h. E. faecium: 8 mg/kg IV q24h.", GhiChu: "SHC Restriction. Dùng Adjusted BW cho béo phì. Cần theo dõi CPK." },
+        { TenThuoc: "Doxycycline (IV/PO)", CrCl_tren_50: "Load: 200 mg x 1 (severe infections). Maintenance: 100 mg IV/PO q12h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Ertapenem (IV/IM)", CrCl_tren_50: "1 g IV q24h.", CrCl_10_50: "CrCl < 30: 500 mg IV q24h.", CrCl_duoi_10: "500 mg IV q24h.", IHD: "500 mg IV q24h. (Sau HD).", CRRT: "1 g IV q24h.", GhiChu: "" },
+        { TenThuoc: "Ethambutol (PO)", CrCl_tren_50: "15-25 mg/kg/day (max 1,600 mg/day). Dùng Lean BW cho bệnh nhân béo phì.", CrCl_10_50: "15-25 mg/kg PO 3 lần/tuần.", CrCl_duoi_10: "15-25 mg/kg PO 3 lần/tuần.", IHD: "15-25 mg/kg PO 3 lần/tuần (chỉ uống sau HD).", CRRT: "15-25 mg/kg PO 3 lần/tuần.", GhiChu: "Liều Lean BW: 40-55 kg (800mg), 56-75 kg (1200mg), 76-90 kg (1600mg)." },
+        { TenThuoc: "Fidaxomicin (PO)", CrCl_tren_50: "200 mg q12h x 10 days.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Fluconazole (IV/PO)", CrCl_tren_50: "Severe Candidiasis: Load 800 mg (hoặc 12 mg/kg) x 1 dose, then 400-800 mg IV/PO Q24H. C. glabrata (SDD): Load 800 mg x 1, then 800 mg Q24H.", CrCl_10_50: "Load đầy đủ. Giảm 50% liều duy trì.", CrCl_duoi_10: "Load đầy đủ. Giảm 50% liều duy trì.", IHD: "Load đầy đủ. Dùng liều duy trì q24h (sau HD).", CRRT: "Tương tự liều cho CrCL > 50. Có thể cân nhắc gấp đôi liều duy trì.", GhiChu: "C. glabrata được coi là SDD. Consult ID cho ca nặng." },
+        { TenThuoc: "Foscarnet (IV)", CrCl_tren_50: "Phụ thuộc CrCl (mL/min/kg). >1.4: 60 mg/kg q8h (Maint), 90 mg/kg q12h (Ind).", CrCl_10_50: "Vd 0.6-0.8: 35 mg/kg q24h (Maint), 50 mg/kg q12h (Ind).", CrCl_duoi_10: "CrCl < 0.4: Không khuyến cáo.", IHD: "45-60 mg/kg/dose IV post-HD only.", CRRT: "No data.", GhiChu: "Cần tra cứu bảng chi tiết theo mức CrCl (mL/min/kg)." },
+        { TenThuoc: "Ganciclovir (IV)", CrCl_tren_50: "CrCl > 70: Induction 5 mg/kg IV q12h. Maintenance 5 mg/kg IV q24h.", CrCl_10_50: "Giảm liều dần theo bảng.", CrCl_duoi_10: "Induction: 1.25 mg/kg IV q24h. Maintenance: 0.625 mg/kg IV 3x/tuần.", IHD: "Induction: 1.25 mg/kg IV 3x/tuần. Maint: 0.625 mg/kg IV 3x/tuần. (Truyền sau HD).", CRRT: "Induction: 2.5 mg/kg IV q24h. Maint: 1.25 mg/kg IV q24h.", GhiChu: "Dùng Adjusted BW cho bệnh nhân béo phì." },
+        { TenThuoc: "Gentamicin (IV)", CrCl_tren_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_10_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_duoi_10: "Xem Aminoglycoside Dosing Protocol.", IHD: "Xem Aminoglycoside Dosing Protocol.", CRRT: "Xem Aminoglycoside Dosing Protocol.", GhiChu: "Dùng Adjusted BW cho bệnh nhân béo phì." },
+        { TenThuoc: "Imipenem/Cilastatin (IV)", CrCl_tren_50: "CrCL > 60: 500 mg IV q6H hoặc 1g IV q8h. CrCL 30-59: 500 mg IV q8h.", CrCl_10_50: "CrCL 15-29: 250-500 mg IV q12h.", CrCl_duoi_10: "Không khuyến cáo (trừ khi sẽ chạy thận trong vòng 48h).", IHD: "250-500 mg IV q12h (Dose sau HD).", CRRT: "1g load, sau đó 500 mg IV q6h.", GhiChu: "SHC Restriction." },
+        { TenThuoc: "Isavuconazole (IV/PO)", CrCl_tren_50: "Initial: 372 mg IV/PO q8h x 6 doses. Maintenance: 372 mg IV/PO q24h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Isoniazid (PO)", CrCl_tren_50: "300 mg PO q24h (5 mg/kg/day).", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Levofloxacin (IV/PO)", CrCl_tren_50: "Cystitis: 250 mg q24h. Mild/Mod DFI: 500 mg q24h. Severe/PNA/Pseudomonas: 750 mg q24h.", CrCl_10_50: "CrCl 20-49: Cystitis No change. Mild DFI: 500mg x1 then 250 q24h. Severe: 750 mg x1 then 750 mg q48h.", CrCl_duoi_10: "Cystitis 250 q48h. Mild DFI 500mg x1 then 250 q48h. Severe 750 mg x1 then 500 mg q48h.", IHD: "Liều tương tự CrCl < 20 (Uống sau HD).", CRRT: "Cystitis No change. Mild DFI 500mg x1 then 250 q24h (hoặc 500 q48h). Severe 750mg x1 then 500-750 mg q48h.", GhiChu: "" },
+        { TenThuoc: "Linezolid (IV/PO)", CrCl_tren_50: "600 mg IV/PO q12h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "SHC Restriction." },
+        { TenThuoc: "Meropenem (IV)", CrCl_tren_50: "Usual (FN, PNA, Pseudomonas): 1 g IV q8h. CF/CNS: 2 g IV q8h. (Truyền 3 tiếng).", CrCl_10_50: "CrCl 26-50: Usual 1 g q12h; CF/CNS 2 g q12h. CrCl 10-25: Usual 0.5 g q12h; CF/CNS 1 g q12h.", CrCl_duoi_10: "Usual 0.5 g q24h. CF/CNS 1 g q24h.", IHD: "Usual 500 mg IV q24h. CF/CNS: 1 g IV q24h (sau HD).", CRRT: "Usual 1 g IV q8h. CF/CNS: 2 g IV q12h.", GhiChu: "Liều 2g q8h truyền kéo dài cân nhắc cho nhiễm khuẩn đe dọa tính mạng (CrCl >= 130)." },
+        { TenThuoc: "Metronidazole (IV/PO)", CrCl_tren_50: "CNS/C.difficile/SSTI: 500 mg IV/PO q8h. Intra-abdominal: 500mg q8-12h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Suy gan nặng: 500 mg q12h. Thận trọng tích lũy nếu CrCl < 30 dùng > 1-2 tuần." },
+        { TenThuoc: "Moxifloxacin (IV/PO)", CrCl_tren_50: "400 mg IV/PO q24h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Nafcillin (IV)", CrCl_tren_50: "2 g IV q4h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Thải trừ chủ yếu qua gan, thận trọng khi kèm suy thận." },
+        { TenThuoc: "Oseltamivir (PO)", CrCl_tren_50: "Prophylaxis 75 mg PO q24h. Treatment 75 mg PO q12h.", CrCl_10_50: "CrCl 30-60: Prophylaxis 30 mg q24h; Treatment 30 mg q12h. CrCl 10-30: Prophylaxis 30 mg q48h; Treatment 30 mg q24h.", CrCl_duoi_10: "Prophylaxis: 30 mg once weekly. Treatment: 30 mg every other day.", IHD: "Prophylaxis: 30 mg PO sau mỗi chu kỳ HD cách ngày. Treatment: 30 mg post-HD only.", CRRT: "Prophylaxis: 75 mg PO q24h. Treatment: 75 mg PO q12h.", GhiChu: "" },
+        { TenThuoc: "Penicillin G (IV)", CrCl_tren_50: "2-4 triệu đơn vị (mu) IV q4h (hoặc truyền liên tục).", CrCl_10_50: "1-2 mu IV q6h.", CrCl_duoi_10: "Mild: 0.5-1 mu IV q4-6h. Severe: 2 mu IV q4-6h.", IHD: "2-3 mu IV q4h.", CRRT: "4 mu IV q4-6h.", GhiChu: "" },
+        { TenThuoc: "Piperacillin/tazobactam (IV)", CrCl_tren_50: "Truyền 4h: 3.375-4.5 g IV q8h. Truyền 30p: General 3.375 g IV q6h; Severe 4.5 g IV q6h.", CrCl_10_50: "CrCl 20-40: Truyền 4h: 3.375 g IV q12h. Truyền 30p: 2.25 g IV q6h (Gen) hoặc 3.375 g IV q6h (Sev).", CrCl_duoi_10: "2.25 g IV q8h (Gen) hoặc 2.25 g IV q6h (Sev).", IHD: "General: 2.25 g IV q12h. Severe: 3.375 g IV q12h truyền 4h (hoặc 2.25 g q8h).", CRRT: "Intermittent (30m): 3.375 g IV q6h. Extended (4h): 3.375-4.5 g IV q8h.", GhiChu: "Sepsis nặng, béo phì (BMI>40) cân nhắc tăng liều lên 4.5 g IV q8h (truyền 4 giờ) hoặc q6h." },
+        { TenThuoc: "Polymyxin B (IV)", CrCl_tren_50: "20,000-25,000 units/kg IV load x 1, then 12,500-15,000 units/kg IV q12h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "SHC Restriction. Dùng Adjusted BW cho bệnh nhân béo phì. (10,000 units = 1 mg)." },
+        { TenThuoc: "Posaconazole (IV/PO)", CrCl_tren_50: "300 mg PO/IV q12h x 2 doses, then 300 mg PO/IV q24h.", CrCl_10_50: "Dạng PO: Không thay đổi. Dạng IV: Không khuyến cáo trừ khi lợi ích > nguy cơ.", CrCl_duoi_10: "Dạng PO: Không thay đổi. Dạng IV: Cẩn trọng.", IHD: "Dạng PO: Không thay đổi.", CRRT: "Dạng PO: Không thay đổi.", GhiChu: "SHC Restriction [IV]." },
+        { TenThuoc: "Pyrazinamide (PO)", CrCl_tren_50: "25 mg/kg PO q24h (max 2,000 mg/day). Dùng Lean BW.", CrCl_10_50: "25 mg/kg PO 3 lần/tuần.", CrCl_duoi_10: "25 mg/kg PO 3 lần/tuần.", IHD: "25 mg/kg PO 3 lần/tuần (uống sau HD).", CRRT: "No data.", GhiChu: "Liều Lean BW: 40-55 kg (1000mg), 56-75 kg (1500mg), 76-90 kg (2000mg)." },
+        { TenThuoc: "Rifampin (IV/PO)", CrCl_tren_50: "TB: 600 mg IV/PO q24h. Endocarditis: 300 mg IV/PO q8h. PJI: 300-450 mg q12h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Tedizolid (IV/PO)", CrCl_tren_50: "200 mg IV/PO q24h. (SHC Restriction).", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Tobramycin (IV)", CrCl_tren_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_10_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_duoi_10: "Xem Aminoglycoside Dosing Protocol.", IHD: "Xem Aminoglycoside Dosing Protocol.", CRRT: "Xem Aminoglycoside Dosing Protocol.", GhiChu: "" },
+        { TenThuoc: "Trimethoprim/Sulfamethoxazole (IV/PO)", CrCl_tren_50: "Uncomplicated cystitis: 1 DS tab BID. SSTI: 1-2 DS tab BID. Severe (GNR, Steno, PJP): 8-15 mg/kg/day TMP chia cữ.", CrCl_10_50: "Dùng 50% liều khuyến cáo.", CrCl_duoi_10: "Không khuyến cáo. Nếu bắt buộc cho PJP: 5-7.5 mg/kg TMP q24h.", IHD: "25-50% liều. PJP/Steno: 5-7.5 mg/kg TMP q24h. (Sau HD).", CRRT: "5-10 mg/kg/day TMP chia q12h. Steno/PJP: 10-15 mg/kg/day chia q8-12h.", GhiChu: "Dùng Adjusted BW cho bệnh nhân béo phì. (DS = 160mg TMP)." },
+        { TenThuoc: "Valacyclovir (PO)", CrCl_tren_50: "Genital herpes: 1 g PO q12h (Init) / 500 mg q12h (Recur). Herpes labialis: 2 g PO q12h x 2. VZV: 1 g PO q8h.", CrCl_10_50: "CrCl 30-50: VZV 1 g q12h. CrCl 10-30: Genital 500 mg q24h, VZV 1 g q24h.", CrCl_duoi_10: "Genital: 500 mg q24h. VZV: 500 mg q24h.", IHD: "500 mg PO q24h (Dùng daily sau HD).", CRRT: "No data.", GhiChu: "" },
+        { TenThuoc: "Valganciclovir (PO)", CrCl_tren_50: "CrCl > 60: Induction 900 mg q12h. Maintenance 900 mg q24h.", CrCl_10_50: "CrCl 40-59: 450 q12h / 450 q24h. CrCl 25-39: 450 q24h / 450 q48h. CrCl 10-24: 450 q48h / 450 2x/tuần.", CrCl_duoi_10: "Induction: 200 mg 3x/tuần. Maintenance: 100 mg 3x/tuần.", IHD: "Uống sau HD only. Induction: 200 mg 3x/tuần. Maint: 100 mg 3x/tuần.", CRRT: "No data.", GhiChu: "Tham khảo transplant protocols." },
+        { TenThuoc: "Vancomycin (IV)", CrCl_tren_50: "Xem Vancomycin Dosing Protocol.", CrCl_10_50: "Xem Vancomycin Dosing Protocol.", CrCl_duoi_10: "Xem Vancomycin Dosing Protocol.", IHD: "Xem Vancomycin Dosing Protocol.", CRRT: "Xem Vancomycin Dosing Protocol.", GhiChu: "Việc chỉnh liều dựa vào nồng độ đáy hoặc AUC." },
+        { TenThuoc: "Vancomycin (PO)", CrCl_tren_50: "Mild/moderate/severe: 125 mg PO q6h. Severe complicated (CDI-related septic shock, toxic megacolon): 500 mg PO q6h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Chỉ dùng để điều trị viêm đại tràng do C. difficile." },
+        { TenThuoc: "Voriconazole (IV/PO)", CrCl_tren_50: "IV: 6 mg/kg IV q12h x 2, then 4 mg/kg IV q12h. PO: 400 mg q12h x 2, then 200 mg q12h.", CrCl_10_50: "Thận trọng với IV (do tích lũy tá dược cyclodextrin). Cân nhắc chuyển PO nếu CrCl < 50.", CrCl_duoi_10: "Thận trọng với IV.", IHD: "Thận trọng với IV.", CRRT: "Thận trọng với IV.", GhiChu: "IV PO conversion 1:1. Dùng Adjusted BW cho béo phì. Cần theo dõi TDM." }
+    ];
+
+    // ===== KHỞI TẠO =====
+    window.onload = function() {
+        const datalist = document.getElementById('drugList');
+        db.sort((a, b) => a.TenThuoc.localeCompare(b.TenThuoc));
+        db.forEach(drug => {
+            let option = document.createElement('option');
+            option.value = drug.TenThuoc;
+            datalist.appendChild(option);
+        });
+        document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+        calcVancomycin();
+        adjustVancoAUC();
+        calcAminoglycoside();
+    }
+
+    // ===== HIỂN THỊ/ẨN MODULE =====
+    function toggleModules() {
+        const inputVal = document.getElementById('drugInput').value.trim().toLowerCase();
+        const vModule = document.getElementById('vancoModule');
+        const aModule = document.getElementById('aminoModule');
+        const isVanco = inputVal.includes('vancomycin');
+        const isAmino = inputVal.includes('gentamicin') || inputVal.includes('tobramycin') || inputVal.includes('amikacin');
+        vModule.classList.toggle('active', isVanco);
+        aModule.classList.toggle('active', isAmino);
+    }
+
+    function toggleCrClState() {
+        const mode = document.querySelector('input[name="dialysisMode"]:checked').value;
+        const crclInput = document.getElementById('crclInput');
+        if(mode === 'ihd' || mode === 'crrt') {
+            crclInput.disabled = true;
+            crclInput.value = '';
+            crclInput.placeholder = "Đang chạy chế độ lọc máu";
+        } else {
+            crclInput.disabled = false;
+            crclInput.placeholder = "Ví dụ: 35";
+        }
+    }
+
+    function formatTextToBullets(text) {
+        if (!text || text.toLowerCase().includes("không thay đổi") || text.toLowerCase().includes("no data")) return text;
+        let parts = text.split('. ').filter(p => p.trim() !== '');
+        if(parts.length <= 1) return text;
+        let html = '';
+        parts.forEach(part => {
+            let cleanPart = part.endsWith('.') ? part : part + '.';
+            html += `<div class="dose-item"><strong>${cleanPart}</strong></div>`;
+        });
+        return html;
+    }
+
+    function calculateDose() {
+        const inputVal = document.getElementById('drugInput').value.trim();
+        const crclVal = document.getElementById('crclInput').value;
+        const mode = document.querySelector('input[name="dialysisMode"]:checked').value;
+        const drug = db.find(d => d.TenThuoc.toLowerCase() === inputVal.toLowerCase());
+        if (!drug) {
+            alert("Không tìm thấy kháng sinh này trong cơ sở dữ liệu. Vui lòng chọn từ danh sách!");
+            return;
+        }
+        let resultState = "", resultDose = "";
+        if (mode === 'ihd') {
+            resultState = "Lọc máu ngắt quãng (IHD)";
+            resultDose = drug.IHD;
+        } else if (mode === 'crrt') {
+            resultState = "Lọc máu liên tục (CRRT)";
+            resultDose = drug.CRRT;
+        } else {
+            if (!crclVal) { alert("Vui lòng nhập mức lọc cầu thận (CrCl)!"); return; }
+            let crcl = parseFloat(crclVal);
+            if (crcl > 50) {
+                resultState = `CrCl: ${crcl} mL/min (CrCl > 50)`;
+                resultDose = drug.CrCl_tren_50;
+            } else if (crcl >= 10 && crcl <= 50) {
+                resultState = `CrCl: ${crcl} mL/min (CrCl 10-50)`;
+                resultDose = drug.CrCl_10_50;
+            } else {
+                resultState = `CrCl: ${crcl} mL/min (CrCl < 10)`;
+                resultDose = drug.CrCl_duoi_10;
+            }
+        }
+        document.getElementById('resDrugName').innerText = drug.TenThuoc;
+        document.getElementById('resStatus').innerText = resultState;
+        let formattedDose = formatTextToBullets(resultDose);
+        if(!formattedDose.includes('<div class="dose-item">')) {
+            formattedDose = `<div class="dose-item"><strong>${formattedDose}</strong></div>`;
+        }
+        document.getElementById('resDoseArea').innerHTML = formattedDose;
+        document.getElementById('resNote').innerHTML = `<strong>Lưu ý chung:</strong> ${drug.GhiChu}`;
+        document.getElementById('resultSection').style.display = 'block';
+    }
+
+    // ===== VANCOMYCIN =====
+    function getIBW(gender, heightInches) {
+        if (heightInches < 60) heightInches = 60;
+        if (gender === 'male') return 50 + 2.3 * (heightInches - 60);
+        else return 45 + 2.3 * (heightInches - 60);
+    }
+    function getABW(ibw, tbw) {
+        if (tbw < ibw) return tbw;
+        return ibw + 0.4 * (tbw - ibw);
+    }
+    function calcCrCl(age, weight, heightInches, gender, scr, obese) {
+        const ibw = getIBW(gender, heightInches);
+        let weightForCrCl = ibw;
+        if (obese === 'yes') weightForCrCl = getABW(ibw, weight);
+        else if (weight < ibw) weightForCrCl = weight;
+        else weightForCrCl = ibw;
+        let crcl = ((140 - age) * weightForCrCl) / (scr * 72);
+        if (gender === 'female') crcl = crcl * 0.85;
+        return crcl;
+    }
+    function calcVancomycin() {
+        const age = parseFloat(document.getElementById('vAge').value) || 55;
+        const weight = parseFloat(document.getElementById('vWeight').value) || 70;
+        const height = parseFloat(document.getElementById('vHeight').value) || 67;
+        const gender = document.getElementById('vGender').value;
+        const scr = parseFloat(document.getElementById('vScr').value) || 1.0;
+        const obese = document.getElementById('vObese').value;
+        if (age < 18 || age > 110 || weight < 30 || weight > 250 || height < 55 || height > 85 || scr <= 0) {
+            document.getElementById('vCrcl').textContent = '--';
+            document.getElementById('vLoadDose').textContent = 'Vui lòng nhập giá trị hợp lý';
+            document.getElementById('vMaintDose').textContent = '--';
+            document.getElementById('vInfusionGuide').textContent = '--';
+            return;
+        }
+        const crcl = calcCrCl(age, weight, height, gender, scr, obese);
+        document.getElementById('vCrcl').textContent = crcl.toFixed(1);
+        let dosingWeight = weight;
+        if (obese === 'yes') {
+            const ibw = getIBW(gender, height);
+            dosingWeight = getABW(ibw, weight);
+        } else {
+            const ibw = getIBW(gender, height);
+            if (weight < ibw) dosingWeight = weight;
+            else dosingWeight = ibw;
+        }
+        dosingWeight = Math.round(dosingWeight * 2) / 2;
+        let loadMg = Math.min(dosingWeight * 25, 3000);
+        loadMg = Math.round(loadMg / 250) * 250;
+        if (loadMg < 500) loadMg = 500;
+        let maintMgPerDay = 0, interval = '';
+        if (crcl > 130) { maintMgPerDay = dosingWeight * 30; interval = 'truyền liên tục (CI) 24h'; }
+        else if (crcl >= 90) { maintMgPerDay = dosingWeight * 30; interval = 'Q8-12H'; }
+        else if (crcl >= 51) { maintMgPerDay = dosingWeight * 25; interval = 'Q12H'; }
+        else if (crcl >= 30) { maintMgPerDay = dosingWeight * 20; interval = 'Q12H → Q24H'; }
+        else if (crcl >= 10) { maintMgPerDay = dosingWeight * 12; interval = 'Q24H → Q48H'; }
+        else { maintMgPerDay = dosingWeight * 10; interval = 'dose-by-level'; }
+        let maintDosePerInterval = 0;
+        if (crcl > 130) {
+            maintDosePerInterval = Math.round(maintMgPerDay / 250) * 250;
+            if (maintDosePerInterval < 500) maintDosePerInterval = 500;
+        } else if (crcl >= 90) {
+            let q8h = Math.round((maintMgPerDay / 3) / 250) * 250;
+            let q12h = Math.round((maintMgPerDay / 2) / 250) * 250;
+            if (q8h >= 500 && q8h <= 2000) { maintDosePerInterval = q8h; interval = 'Q8H'; }
+            else { maintDosePerInterval = Math.min(q12h, 2000); interval = 'Q12H'; }
+        } else if (crcl >= 51) {
+            let q12h = Math.round((maintMgPerDay / 2) / 250) * 250;
+            maintDosePerInterval = Math.min(Math.max(q12h, 500), 2000);
+            interval = 'Q12H';
+        } else if (crcl >= 30) {
+            let q24h = Math.round(maintMgPerDay / 250) * 250;
+            maintDosePerInterval = Math.min(Math.max(q24h, 500), 2000);
+            interval = 'Q24H';
+        } else {
+            let q24h = Math.round(maintMgPerDay / 250) * 250;
+            maintDosePerInterval = Math.min(Math.max(q24h, 500), 2000);
+            interval = 'Q24-48H (theo nồng độ)';
+        }
+        maintDosePerInterval = Math.min(Math.max(maintDosePerInterval, 500), 2000);
+        document.getElementById('vLoadDose').textContent = `${loadMg} mg IV (≈ ${(loadMg/1000).toFixed(1)}g) - truyền 60-90 phút`;
+        let maintText = crcl > 130 ? `${maintDosePerInterval} mg/24h truyền liên tục (CI)` : `${maintDosePerInterval} mg IV ${interval}`;
+        document.getElementById('vMaintDose').textContent = maintText;
+        let guide = '';
+        if (crcl > 130) {
+            guide = `Pha ${maintDosePerInterval}mg Vancomycin vào 250-500mL NaCl 0.9% hoặc D5W, truyền liên tục 24h. Tốc độ ~${Math.round(maintDosePerInterval/24)} mg/giờ.`;
+        } else {
+            let vol = loadMg >= 1750 ? 500 : (loadMg >= 1000 ? 250 : 100);
+            guide = `Pha ${loadMg}mg (loading) vào ${vol}mL NaCl 0.9% hoặc D5W, truyền 60-90 phút.`;
+            let volMaint = maintDosePerInterval >= 1750 ? 500 : (maintDosePerInterval >= 1000 ? 250 : 100);
+            guide += ` Liều duy trì: pha ${maintDosePerInterval}mg vào ${volMaint}mL, truyền 60 phút.`;
+        }
+        guide += ` Theo dõi trough trước liều thứ 3-4, mục tiêu 10-20 mg/L (AUC 400-600).`;
+        document.getElementById('vInfusionGuide').textContent = guide;
+        let currentTDD = crcl > 130 ? maintDosePerInterval : maintDosePerInterval * (interval.includes('Q8H') ? 3 : (interval.includes('Q12H') ? 2 : 1));
+        document.getElementById('vCurTDD').value = currentTDD;
+    }
+    function adjustVancoAUC() {
+        const curAUC = parseFloat(document.getElementById('vCurAUC').value);
+        const tgtAUC = parseFloat(document.getElementById('vTargAUC').value);
+        const curTDD = parseFloat(document.getElementById('vCurTDD').value);
+        if (!curAUC || !tgtAUC || !curTDD || tgtAUC <= 0 || curAUC <= 0 || curTDD <= 0) {
+            document.getElementById('vNewTDD').textContent = '⚠️ Vui lòng nhập số dương hợp lệ';
+            return;
+        }
+        const newTDD = (tgtAUC * curTDD) / curAUC;
+        const rounded = Math.round(newTDD / 250) * 250;
+        document.getElementById('vNewTDD').textContent = rounded + ' mg/ngày (≈ ' + newTDD.toFixed(0) + ' mg)';
+    }
+
+    // ===== AMINOGLYCOSIDE =====
+    function calcAminoglycoside() {
+        const age = parseFloat(document.getElementById('aAge').value) || 55;
+        const weight = parseFloat(document.getElementById('aWeight').value) || 70;
+        const height = parseFloat(document.getElementById('aHeight').value) || 67;
+        const gender = document.getElementById('aGender').value;
+        const scr = parseFloat(document.getElementById('aScr').value) || 1.0;
+        const obese = document.getElementById('aObese').value;
+        const strategy = document.getElementById('aminoStrategy').value;
+        if (age < 18 || age > 110 || weight < 30 || weight > 250 || height < 55 || height > 85 || scr <= 0) {
+            document.getElementById('aCrcl').textContent = '--';
+            document.getElementById('aInitDose').textContent = 'Vui lòng nhập giá trị hợp lý';
+            document.getElementById('aInterval').textContent = '--';
+            document.getElementById('aTargets').textContent = '--';
+            document.getElementById('aMonitoring').textContent = '--';
+            return;
+        }
+        const crcl = calcCrCl(age, weight, height, gender, scr, obese);
+        document.getElementById('aCrcl').textContent = crcl.toFixed(1);
+        let dosingWeight = weight;
+        if (obese === 'yes') {
+            const ibw = getIBW(gender, height);
+            dosingWeight = getABW(ibw, weight);
+        } else {
+            const ibw = getIBW(gender, height);
+            if (weight < ibw) dosingWeight = weight;
+            else dosingWeight = ibw;
+        }
+        dosingWeight = Math.round(dosingWeight * 2) / 2;
+        let initDose = '', interval = '', targets = '', monitoring = '';
+        const drug = document.getElementById('drugInput').value.trim().toLowerCase();
+        const isAmikacin = drug.includes('amikacin');
+        const isTobra = drug.includes('tobramycin');
+        const isGent = drug.includes('gentamicin');
+        let baseDrug = isAmikacin ? 'Amikacin' : (isTobra ? 'Tobramycin' : 'Gentamicin');
+        let doseFactor = isAmikacin ? 15 : 7;
+        let peakTarget = isAmikacin ? '25–30' : '8–10';
+        let troughTarget = isAmikacin ? '<4–8' : '<1–2';
+
+        if (strategy === 'highdose') {
+            doseFactor = isAmikacin ? 15 : 7;
+            let crclCategory = '';
+            if (crcl >= 60) { interval = 'Q24H'; crclCategory = '≥60'; }
+            else if (crcl >= 40) { interval = 'Q36H'; crclCategory = '40-59'; }
+            else if (crcl >= 30) { interval = 'Q48H'; crclCategory = '30-39'; }
+            else { interval = 'Không khuyến cáo (CrCl <30)'; }
+            let dose = Math.round(dosingWeight * doseFactor);
+            if (isAmikacin) dose = Math.round(dose / 250) * 250;
+            else dose = Math.round(dose / 10) * 10;
+            initDose = `${dose} mg IV (${doseFactor} mg/kg)`;
+            targets = `Peak ~${isAmikacin ? '40-60' : '20'} mcg/mL, Trough <${isAmikacin ? '4' : '1'} mcg/mL`;
+            monitoring = `Lấy nồng độ 8-12h sau liều đầu, dùng nomogram. Theo dõi trough sớm nếu có thay đổi chức năng thận.`;
+            if (crcl < 30) initDose += ' ❌ Không khuyến cáo';
+        } else if (strategy === 'highdose_urban') {
+            doseFactor = isAmikacin ? 15 : 5;
+            let crclCategory = '';
+            if (crcl >= 60) { interval = 'Q24H'; crclCategory = '≥60'; }
+            else if (crcl >= 40) { interval = 'Q36H'; crclCategory = '40-59'; }
+            else if (crcl >= 20) { interval = 'Q48H'; crclCategory = '20-39'; }
+            else { interval = 'Không khuyến cáo (CrCl <20)'; }
+            let dose = Math.round(dosingWeight * doseFactor);
+            if (isAmikacin) dose = Math.round(dose / 250) * 250;
+            else dose = Math.round(dose / 10) * 10;
+            initDose = `${dose} mg IV (${doseFactor} mg/kg)`;
+            targets = `Peak ~${isAmikacin ? '40-60' : '15-20'} mcg/mL, Trough <${isAmikacin ? '4' : '1'} mcg/mL`;
+            monitoring = `Lấy nồng độ 8-12h sau liều đầu, dùng nomogram Urban. Theo dõi trough sớm.`;
+            if (crcl < 20) initDose += ' ❌ Không khuyến cáo';
+        } else if (strategy === 'conventional') {
+            let dose = 0;
+            if (isAmikacin) dose = Math.round(dosingWeight * 5 / 50) * 50;
+            else dose = Math.round(dosingWeight * 1.7 * 10) / 10;
+            if (crcl >= 60) { interval = 'Q8H'; }
+            else if (crcl >= 40) { interval = 'Q12H'; }
+            else if (crcl >= 30) { interval = 'Q24H'; }
+            else if (crcl >= 20) { interval = 'Q24H (dose-by-level)'; }
+            else { interval = 'Load + dose-by-level'; }
+            initDose = `${dose} mg IV (${isAmikacin ? '5' : '1.7'} mg/kg)`;
+            targets = `Peak ${isAmikacin ? '20-30' : '6-10'} mcg/mL, Trough ${isAmikacin ? '<4-8' : '<1-2'} mcg/mL`;
+            monitoring = `Lấy peak 30 phút sau truyền, trough trước liều kế tiếp. Theo dõi nồng độ định kỳ.`;
+        } else if (strategy === 'synergy') {
+            let dose = Math.round(dosingWeight * 1);
+            if (crcl >= 60) { interval = 'Q8H'; }
+            else if (crcl >= 40) { interval = 'Q12H'; }
+            else if (crcl >= 20) { interval = 'Q24H'; }
+            else { interval = 'Q48-72H (theo nồng độ)'; }
+            initDose = `${dose} mg/kg IV (tối đa 120mg)`;
+            targets = `Peak 3-4 mcg/mL, Trough <1 mcg/mL`;
+            monitoring = `Lấy peak 30 phút sau truyền, trough trước liều kế tiếp. Mục tiêu synergy Gram(+).`;
+        } else if (strategy === 'ntm') {
+            let dose = isAmikacin ? Math.round(dosingWeight * 12 / 50) * 50 : Math.round(dosingWeight * 10 / 50) * 50;
+            if (crcl >= 60) { interval = 'Q24H'; }
+            else if (crcl >= 40) { interval = 'Q24-48H'; }
+            else { interval = 'Dose-by-level'; }
+            initDose = `${dose} mg IV (${isAmikacin ? '10-15' : '10'} mg/kg)`;
+            targets = `Peak ${isAmikacin ? '25-40' : '20-30'} mcg/mL, Trough <${isAmikacin ? '4' : '1'} mcg/mL`;
+            monitoring = `Lấy peak 30 phút sau truyền, trough trước liều thứ 2. Theo dõi hàng tuần.`;
+        } else if (strategy === 'cf') {
+            let dose = isAmikacin ? Math.round(dosingWeight * 20 / 250) * 250 : Math.round(dosingWeight * 10);
+            if (crcl >= 60) { interval = 'Q24H'; }
+            else { interval = 'Q36-48H'; }
+            initDose = `${dose} mg IV (${isAmikacin ? '20' : '10'} mg/kg)`;
+            targets = `Peak ${isAmikacin ? '40-60' : '20-30'} mcg/mL, Trough <${isAmikacin ? '4' : '1'} mcg/mL`;
+            monitoring = `Theo dõi nồng độ 8-12h sau liều, đảm bảo trough <1 mcg/mL trước liều tiếp theo.`;
+        }
+        document.getElementById('aInitDose').textContent = initDose;
+        document.getElementById('aInterval').textContent = interval;
+        document.getElementById('aTargets').textContent = targets;
+        document.getElementById('aMonitoring').textContent = monitoring;
+    }
+</script>
+</body>
+</html>
