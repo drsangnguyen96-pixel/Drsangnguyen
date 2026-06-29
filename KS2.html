@@ -27,7 +27,7 @@
             padding: 20px;
         }
         .app-container {
-            max-width: 950px;
+            max-width: 980px;
             margin: 0 auto;
             background: var(--card-bg);
             border-radius: 12px;
@@ -152,7 +152,6 @@
             border: 1px solid #ffeeba;
         }
 
-        /* Module chung cho Vancomycin và Aminoglycoside */
         .module {
             display: none;
             background: #eef3f9;
@@ -233,14 +232,6 @@
             font-weight: 600;
             letter-spacing: 0.3px;
             margin-left: 8px;
-        }
-        .success-box {
-            background: var(--success-bg);
-            color: var(--success-text);
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-top: 10px;
-            border-left: 4px solid #28a745;
         }
         .dose-table {
             width: 100%;
@@ -338,10 +329,9 @@
             <div class="dose-line"><strong>⏱ Liều duy trì:</strong> <span id="vMaintDose">--</span></div>
             <div class="dose-line"><strong>💉 Hướng dẫn pha & truyền:</strong> <span id="vInfusionGuide">--</span></div>
             <div class="dose-line" style="border-bottom:none;margin-top:6px;font-size:0.9rem;color:#2c5778;">
-                <span class="flex-badge">AUC 400–600</span> <span class="flex-badge">Trough ~15 (10–20)</span>
+                <span class="flex-badge">AUC 400–600</span> <span class="flex-badge">Nồng độ đáy ~15 (10–20)</span>
             </div>
         </div>
-        <!-- Công cụ điều chỉnh AUC -->
         <div style="margin-top:14px;background:white;border-radius:14px;padding:12px 14px;border:1px solid #dce6f0;">
             <div style="font-weight:600;font-size:0.9rem;color:#003057;">⚖️ Điều chỉnh liều theo AUC</div>
             <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:6px;">
@@ -393,7 +383,6 @@
                 <span class="flex-badge">Dùng ABW nếu béo phì</span> <span class="flex-badge">Theo dõi nồng độ</span>
             </div>
         </div>
-        <!-- Bảng tóm tắt nồng độ đích -->
         <div style="margin-top:12px;background:white;border-radius:14px;padding:8px 12px;border:1px solid #dce6f0;">
             <div style="font-weight:600;font-size:0.85rem;color:#003057;">🎯 Nồng độ đích tham khảo</div>
             <table class="dose-table">
@@ -403,7 +392,7 @@
                     <tr><td>Gentamicin / Tobramycin</td><td>Nhiễm trùng thông thường</td><td>6–8</td><td>&lt;1–2</td></tr>
                     <tr><td>Amikacin</td><td>Nhiễm trùng nặng</td><td>25–30</td><td>&lt;4–8</td></tr>
                     <tr><td>Amikacin</td><td>Nhiễm trùng thông thường</td><td>20–25</td><td>&lt;4–8</td></tr>
-                    <tr><td>Synergy (Gentamicin)</td><td>Gram (+)</td><td>3–4</td><td>&lt;1</td></tr>
+                    <tr><td>Synergy (Gentamicin)</td><td>Gram dương</td><td>3–4</td><td>&lt;1</td></tr>
                 </tbody>
             </table>
         </div>
@@ -411,65 +400,65 @@
 </div>
 
 <script>
-    // ===== CƠ SỞ DỮ LIỆU KHÁNG SINH (57 thuốc) =====
+    // ===== CƠ SỞ DỮ LIỆU KHÁNG SINH (ĐÃ MỞ RỘNG VIẾT TẮT) =====
     const db = [
-        { TenThuoc: "Acyclovir (IV)", CrCl_tren_50: "Prophylaxis: 250 mg/m² IV q12h hoặc 2 mg/kg IV q12h. Hematology/Oncology Treatment: 5 mg/kg IV q12h. General (Mucocutaneous HSV): 5 mg/kg IV q8h. Severe (CNS/ocular/disseminated, Zoster): 10 mg/kg IV q8h.", CrCl_10_50: "CrCl 25-50: 5-10 mg/kg IV q12h. CrCl 10-25 (General/Severe): 2.5-5 mg/kg IV q24h.", CrCl_duoi_10: "General: 2.5 mg/kg IV q24h. Severe: 5 mg/kg IV q24h.", IHD: "General: 2.5 mg/kg IV q24h. Severe: 5 mg/kg IV q24h.", CRRT: "Mucocutaneous: 5-10 mg/kg IV q12h. Severe: 10 mg/kg IV q12h.", GhiChu: "Sử dụng adjusted BW (Cân nặng hiệu chỉnh) cho bệnh nhân béo phì." },
-        { TenThuoc: "Acyclovir (PO)", CrCl_tren_50: "Mucocutaneous HSV: 400 mg PO q8h (Alt: 200 mg 5x daily). VZV: 800 mg PO q4h (hoặc 5x daily).", CrCl_10_50: "Mucocutaneous HSV: 200 mg PO q12h. VZV: 800 mg PO q12h.", CrCl_duoi_10: "Mucocutaneous HSV: 200 mg PO q12h. VZV: 800 mg PO q12h.", IHD: "Mucocutaneous HSV: 200 mg PO q12h. VZV: 800 mg PO q12h.", CRRT: "No data.", GhiChu: "Cân nhắc dùng valacyclovir cho VZV để giảm số lần dùng thuốc." },
-        { TenThuoc: "Amikacin (IV)", CrCl_tren_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_10_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_duoi_10: "Xem Aminoglycoside Dosing Protocol.", IHD: "Xem Aminoglycoside Dosing Protocol.", CRRT: "Xem Aminoglycoside Dosing Protocol.", GhiChu: "Sử dụng adjusted BW (Cân nặng hiệu chỉnh) cho bệnh nhân béo phì." },
-        { TenThuoc: "Amoxicillin (PO)", CrCl_tren_50: "Usual dose: 500 mg PO q8h hoặc 1,000 mg PO q8-12h. CAP: 1,000 mg PO q8h. Procedural prophylaxis: 2,000 mg PO x 1.", CrCl_10_50: "CrCl 10-29: 500 mg PO q12h hoặc 1,000 mg PO q12h.", CrCl_duoi_10: "500 mg PO q12-24h.", IHD: "500 mg PO q12-24h.", CRRT: "No data.", GhiChu: "Không có dữ liệu riêng cho CRRT." },
-        { TenThuoc: "Amoxicillin/clavulanate (PO)", CrCl_tren_50: "Usual dose: 500 mg PO q8h. CAP: 875 mg PO q12h. IAI/Uncomplicated GNR (oral step-down): up to 875 mg PO q8h.", CrCl_10_50: "CrCl 10-30: 500 mg PO q12h hoặc 875 mg PO q12h.", CrCl_duoi_10: "500 mg PO q24h. IAI/Uncomplicated GNR: up to 875 mg PO q24h.", IHD: "500 mg PO q24h. Phác đồ q24h nên uống sau khi HD hoặc thêm 1 liều cuối HD.", CRRT: "No data.", GhiChu: "Xem thêm hướng dẫn về béo phì (obesity dosing guide)." },
-        { TenThuoc: "Amphotericin B Liposomal (IV)", CrCl_tren_50: "3-5 mg/kg/day.", CrCl_10_50: "Không thay đổi (No change).", CrCl_duoi_10: "Không thay đổi (No change).", IHD: "Không thay đổi (No change).", CRRT: "Không thay đổi (No change).", GhiChu: "Tham khảo obesity dosing guide." },
-        { TenThuoc: "Ampicillin (IV)", CrCl_tren_50: "Mild/uncomplicated: 1-2 g IV q6h. Meningitis/endovascular/PJI: 2 g IV q4h.", CrCl_10_50: "CrCl 30-50: Mild 1-2 g IV q8h, Meningitis 2 g IV q6h. CrCl 15-30: Mild 1-2 g IV q12h, Meningitis 2 g IV q8h.", CrCl_duoi_10: "Mild 1-2 g IV q24h. Meningitis 2 g IV q12h.", IHD: "Mild/uncomplicated: 1-2 g IV q24h. Meningitis/endovascular/PJI: 2 g IV q12h.", CRRT: "Mild/uncomplicated: 2 g IV q8-12h. Meningitis/endovascular/PJI: 2 g IV q6-8h.", GhiChu: "CrCL > 130 có thể cân nhắc 2g IV q4h (Mild). Viêm màng não/nhiễm khuẩn huyết có thể cân nhắc truyền liên tục." },
-        { TenThuoc: "Ampicillin/sulbactam (IV)", CrCl_tren_50: "Mild/uncomplicated: 1.5 g IV q6h. Systemic: 3 g IV q6h. Acinetobacter baumannii: 3 g IV q4h.", CrCl_10_50: "CrCl 15-30: Mild 1.5 g IV q12h, Systemic 3 g IV q12h, Acinetobacter 3 g IV q8h.", CrCl_duoi_10: "Mild 1.5 g IV q24h, Systemic 3 g IV q24h, Acinetobacter 3 g IV q12h.", IHD: "Mild: 1.5 g IV q24h, Systemic/Acinetobacter: 3 g IV q24h.", CRRT: "Mild/Systemic: 3 g IV q8-12h, Acinetobacter: 3 g IV q6h.", GhiChu: "Liều tính theo tổng dạng kết hợp (3g = 2g ampicillin + 1g sulbactam)." },
-        { TenThuoc: "Azithromycin (IV/PO)", CrCl_tren_50: "Không thay đổi (No change).", CrCl_10_50: "Không thay đổi (No change).", CrCl_duoi_10: "Không thay đổi (No change).", IHD: "500 mg IV/PO q24h.", CRRT: "Không thay đổi (No change).", GhiChu: "Không cần chỉnh liều theo chức năng thận ngoại trừ khi IHD." },
-        { TenThuoc: "Aztreonam (IV)", CrCl_tren_50: "1-2 g IV q8h. Severe/Meningitis: 2 g IV q6-8h.", CrCl_10_50: "CrCl < 30: 1 g IV q8h. Severe/Meningitis: 1 g IV q6-8h.", CrCl_duoi_10: "500 mg IV q8h. Severe/Meningitis: 1 g IV q12h.", IHD: "1 g IV q24h. Severe/Meningitis: 1 g IV q12h.", CRRT: "2 g IV load, sau đó 1 g IV q8h -hoặc- 2 g IV q12h.", GhiChu: "Tham khảo obesity dosing guide." },
-        { TenThuoc: "Caspofungin (IV)", CrCl_tren_50: "70 mg IV x 1, then 50 mg IV q24h. Endocarditis/Endovascular: 150 mg IV q24h.", CrCl_10_50: "Không thay đổi (No change).", CrCl_duoi_10: "Không thay đổi (No change).", IHD: "Không thay đổi (No change).", CRRT: "Không thay đổi (No change).", GhiChu: "Dùng 70 mg IV q24h nếu đang dùng phenytoin, rifampin... Không cần chỉnh cho xơ gan Child-Pugh B/C." },
-        { TenThuoc: "Cefazolin (IV)", CrCl_tren_50: "Mild 1 g IV Q8H. Moderate/Severe 2 g IV Q8H.", CrCl_10_50: "CrCl 10-30: Mild 1 g IV Q12H. Moderate/Severe 2 g IV Q12H.", CrCl_duoi_10: "1 g - 2 g IV Q24H (tùy mức độ).", IHD: "1 g - 2 g IV Q24H (sau HD). Hoặc: 2g/2g/3g IV post-HD only.", CRRT: "2 g IV Q12H.", GhiChu: "Tham khảo obesity dosing guide." },
-        { TenThuoc: "Cefepime (IV)", CrCl_tren_50: "General: 1 g IV Q12H hoặc 2 g IV Q24H. Pulmonary/Neutropenic Fever/CNS/Pseudomonal/Severe: 2 g IV Q8H.", CrCl_10_50: "CrCl 30-60: General 1-2 g q24h, Severe 2 g q12h. CrCl 11-29: General 500mg-1g q24h, Severe 1 g q12h.", CrCl_duoi_10: "General: 250 mg-500 mg q24h. Severe: 500mg-1g q24h.", IHD: "0.5-1 g IV Q24H (sau HD). Hoặc: 2 g IV post-HD only.", CRRT: "2 g IV load, sau đó 1 g IV Q8H (truyền 4h).", GhiChu: "Cần lưu ý nguy cơ độc tính thần kinh (neurotoxicity) nếu không chỉnh liều đúng." },
-        { TenThuoc: "Cefiderocol (IV)", CrCl_tren_50: "CrCL > 120: 2 g IV q6h. CrCL 60-120: 2 g IV q8h. (SHC Restriction).", CrCl_10_50: "CrCL 30-60: 1.5 g IV q8h. CrCL 15-30: 1 g IV q8h.", CrCl_duoi_10: "750 mg IV q12h.", IHD: "750 mg IV q12h.", CRRT: "Phụ thuộc Effluent Flow Rate (≤2 L/hr: 1.5g q12h; 2.1-3 L/hr: 2g q12h; 3.1-4: 1.5g q8h; ≥4.1: 2g q8h).", GhiChu: "Tra cứu Effluent Dose trong Epic." },
-        { TenThuoc: "Cefpodoxime (PO)", CrCl_tren_50: "Uncomplicated cystitis: 100 mg PO q12h. CAP/bronchitis: 200 mg PO q12h. Skin/soft tissue: 400 mg PO q12h.", CrCl_10_50: "CrCl < 30: Giữ nguyên liều trên nhưng dãn cách q24h.", CrCl_duoi_10: "Dãn cách q24h.", IHD: "Chỉ uống sau khi chạy thận xong (post-HD only).", CRRT: "No data.", GhiChu: "" },
-        { TenThuoc: "Ceftaroline (IV)", CrCl_tren_50: "General: 600 mg IV q12h. Endocarditis/S.aureus bacteremia: 600 mg IV q8h (truyền 2h).", CrCl_10_50: "CrCl 30-50: 400 mg IV q12h (hoặc q8h cho Endocarditis). CrCl 15-30: 300 mg IV q12h (hoặc q8h cho Endocarditis).", CrCl_duoi_10: "200 mg IV q12h.", IHD: "200 mg IV q12h.", CRRT: "No data.", GhiChu: "SHC Restriction." },
-        { TenThuoc: "Ceftazidime (IV)", CrCl_tren_50: "Usual dose: 1-2 g IV q8h. Severe: 2 g IV q8h.", CrCl_10_50: "CrCl 30-50: 1-2 g IV q12h. CrCl 16-30: 1-2 g IV q24h.", CrCl_duoi_10: "CrCl 6-15: 0.5-1 g IV q24h. CrCl < 5: 0.5 g IV q24h.", IHD: "0.5 g IV q24h. Hoặc 1-2 g IV q48-72h, hoặc 1 g IV post-HD only (3 lần/tuần).", CRRT: "2 g IV load, sau đó 1 g IV q8h -hoặc- 2 g IV q12h.", GhiChu: "" },
-        { TenThuoc: "Ceftazidime/avibactam (IV)", CrCl_tren_50: "2.5 g IV q8h. (SHC Restriction).", CrCl_10_50: "CrCl 31-50: 1.25 g IV q8h. CrCl 16-30: 0.94 g IV q12h.", CrCl_duoi_10: "CrCl 6-15: 0.94 g IV q24h. CrCl < 5: 0.94 g IV q48h.", IHD: "0.94 g IV q24-48h. Dùng sau HD.", CRRT: "1.25 g IV q8h. (Dùng 2.5g IV q8h nếu MIC > 4 hoặc nhiễm khuẩn sâu).", GhiChu: "" },
-        { TenThuoc: "Ceftolozane/tazobactam (IV)", CrCl_tren_50: "Cystitis: 1.5 g IV q8h. HAP/VAP/Pseudomonas nặng: 3 g IV q8h.", CrCl_10_50: "CrCl 30-50: Cystitis 375 mg q8h; HAP/VAP 1.5 g q8h. CrCl 15-29: HAP/VAP 750 mg q8h.", CrCl_duoi_10: "Cystitis 750 mg load, then 150 mg q8h. HAP/VAP 2.25 g load, then 450 mg q8h.", IHD: "Giống liều CrCl < 10.", CRRT: "Cystitis: 750mg IV q8h. HAP/VAP: 1.5 g IV q8h (hoặc 3g load, then 750mg q8h).", GhiChu: "SHC Restriction." },
-        { TenThuoc: "Ceftriaxone (IV)", CrCl_tren_50: "1-2 g IV q24h. Meningitis/E. faecalis endocarditis: 2 g IV q12h. Endovascular/PJI: 2 g IV q24h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Thải trừ qua gan mật, không cần chỉnh liều theo chức năng thận." },
-        { TenThuoc: "Cephalexin (PO)", CrCl_tren_50: "250-1000 mg PO Q6H. Uncomplicated cystitis: 500 mg PO Q12H.", CrCl_10_50: "CrCl 30-50: Không thay đổi. CrCl 15-29: 250 mg PO Q8-12H.", CrCl_duoi_10: "250 mg PO Q24H.", IHD: "250-500 mg PO Q24H. Dùng daily, uống sau HD.", CRRT: "No data.", GhiChu: "" },
-        { TenThuoc: "Ciprofloxacin (IV/PO)", CrCl_tren_50: "General: 400 mg IV q8-12h / 500-750 mg PO q12h. Pseudomonas/severe: 400 mg IV q8h.", CrCl_10_50: "CrCl 30-50: 400 mg IV q12h / 500 mg PO q12h. CrCl < 30: 400 mg IV q24h / 500 mg PO q24h.", CrCl_duoi_10: "400 mg IV q24h / 250-500 mg PO q24h.", IHD: "400 mg IV q24h / 250-500 mg PO q24h. (Sau HD).", CRRT: "400 mg IV q12h / 500 mg PO q12h. Severe: 400 mg IV q8-12h.", GhiChu: "Tham khảo obesity dosing guide." },
-        { TenThuoc: "Clindamycin (IV/PO)", CrCl_tren_50: "600-900 mg IV q8h. 150-450 mg PO q6h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Tham khảo Obesity dosing guide." },
-        { TenThuoc: "Dalbavancin (IV)", CrCl_tren_50: "SSTI: Preferred 1,500 mg IV x 1. Alternative: 1,000 mg IV x 1 followed by 500 mg x1 1-week later.", CrCl_10_50: "CrCl < 30: Preferred 1,125 mg IV x1. Alternative: 750 mg IV x 1 followed by 375 mg x1 1-week later.", CrCl_duoi_10: "Giống CrCl < 30.", IHD: "Preferred 1,500 mg IV x1. Alternative 1,000 mg IV x 1 followed by 500 mg x1 1-week later.", CRRT: "No data.", GhiChu: "SHC Restriction. Consult ID cho off-label." },
-        { TenThuoc: "Daptomycin (IV)", CrCl_tren_50: "SSTI: 4-6 mg/kg IV q24h. Bacteremia: 8 mg/kg IV q24h. E. faecium: 10-12 mg/kg IV q24h.", CrCl_10_50: "Dãn khoảng cách liều thành q48h (ví dụ 4-6 mg/kg IV q48h).", CrCl_duoi_10: "Dãn khoảng cách liều thành q48h.", IHD: "SSTI: 6 mg/kg post-HD. Bacteremia: 8 mg/kg post-HD. E. faecium: 8-10 mg/kg post-HD.", CRRT: "SSTI: 6 mg/kg IV q24h. Bacteremia: 6-8 mg/kg IV q24h. E. faecium: 8 mg/kg IV q24h.", GhiChu: "SHC Restriction. Dùng Adjusted BW cho béo phì. Cần theo dõi CPK." },
-        { TenThuoc: "Doxycycline (IV/PO)", CrCl_tren_50: "Load: 200 mg x 1 (severe infections). Maintenance: 100 mg IV/PO q12h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
-        { TenThuoc: "Ertapenem (IV/IM)", CrCl_tren_50: "1 g IV q24h.", CrCl_10_50: "CrCl < 30: 500 mg IV q24h.", CrCl_duoi_10: "500 mg IV q24h.", IHD: "500 mg IV q24h. (Sau HD).", CRRT: "1 g IV q24h.", GhiChu: "" },
-        { TenThuoc: "Ethambutol (PO)", CrCl_tren_50: "15-25 mg/kg/day (max 1,600 mg/day). Dùng Lean BW cho bệnh nhân béo phì.", CrCl_10_50: "15-25 mg/kg PO 3 lần/tuần.", CrCl_duoi_10: "15-25 mg/kg PO 3 lần/tuần.", IHD: "15-25 mg/kg PO 3 lần/tuần (chỉ uống sau HD).", CRRT: "15-25 mg/kg PO 3 lần/tuần.", GhiChu: "Liều Lean BW: 40-55 kg (800mg), 56-75 kg (1200mg), 76-90 kg (1600mg)." },
-        { TenThuoc: "Fidaxomicin (PO)", CrCl_tren_50: "200 mg q12h x 10 days.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
-        { TenThuoc: "Fluconazole (IV/PO)", CrCl_tren_50: "Severe Candidiasis: Load 800 mg (hoặc 12 mg/kg) x 1 dose, then 400-800 mg IV/PO Q24H. C. glabrata (SDD): Load 800 mg x 1, then 800 mg Q24H.", CrCl_10_50: "Load đầy đủ. Giảm 50% liều duy trì.", CrCl_duoi_10: "Load đầy đủ. Giảm 50% liều duy trì.", IHD: "Load đầy đủ. Dùng liều duy trì q24h (sau HD).", CRRT: "Tương tự liều cho CrCL > 50. Có thể cân nhắc gấp đôi liều duy trì.", GhiChu: "C. glabrata được coi là SDD. Consult ID cho ca nặng." },
-        { TenThuoc: "Foscarnet (IV)", CrCl_tren_50: "Phụ thuộc CrCl (mL/min/kg). >1.4: 60 mg/kg q8h (Maint), 90 mg/kg q12h (Ind).", CrCl_10_50: "Vd 0.6-0.8: 35 mg/kg q24h (Maint), 50 mg/kg q12h (Ind).", CrCl_duoi_10: "CrCl < 0.4: Không khuyến cáo.", IHD: "45-60 mg/kg/dose IV post-HD only.", CRRT: "No data.", GhiChu: "Cần tra cứu bảng chi tiết theo mức CrCl (mL/min/kg)." },
-        { TenThuoc: "Ganciclovir (IV)", CrCl_tren_50: "CrCl > 70: Induction 5 mg/kg IV q12h. Maintenance 5 mg/kg IV q24h.", CrCl_10_50: "Giảm liều dần theo bảng.", CrCl_duoi_10: "Induction: 1.25 mg/kg IV q24h. Maintenance: 0.625 mg/kg IV 3x/tuần.", IHD: "Induction: 1.25 mg/kg IV 3x/tuần. Maint: 0.625 mg/kg IV 3x/tuần. (Truyền sau HD).", CRRT: "Induction: 2.5 mg/kg IV q24h. Maint: 1.25 mg/kg IV q24h.", GhiChu: "Dùng Adjusted BW cho bệnh nhân béo phì." },
-        { TenThuoc: "Gentamicin (IV)", CrCl_tren_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_10_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_duoi_10: "Xem Aminoglycoside Dosing Protocol.", IHD: "Xem Aminoglycoside Dosing Protocol.", CRRT: "Xem Aminoglycoside Dosing Protocol.", GhiChu: "Dùng Adjusted BW cho bệnh nhân béo phì." },
-        { TenThuoc: "Imipenem/Cilastatin (IV)", CrCl_tren_50: "CrCL > 60: 500 mg IV q6H hoặc 1g IV q8h. CrCL 30-59: 500 mg IV q8h.", CrCl_10_50: "CrCL 15-29: 250-500 mg IV q12h.", CrCl_duoi_10: "Không khuyến cáo (trừ khi sẽ chạy thận trong vòng 48h).", IHD: "250-500 mg IV q12h (Dose sau HD).", CRRT: "1g load, sau đó 500 mg IV q6h.", GhiChu: "SHC Restriction." },
-        { TenThuoc: "Isavuconazole (IV/PO)", CrCl_tren_50: "Initial: 372 mg IV/PO q8h x 6 doses. Maintenance: 372 mg IV/PO q24h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
-        { TenThuoc: "Isoniazid (PO)", CrCl_tren_50: "300 mg PO q24h (5 mg/kg/day).", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
-        { TenThuoc: "Levofloxacin (IV/PO)", CrCl_tren_50: "Cystitis: 250 mg q24h. Mild/Mod DFI: 500 mg q24h. Severe/PNA/Pseudomonas: 750 mg q24h.", CrCl_10_50: "CrCl 20-49: Cystitis No change. Mild DFI: 500mg x1 then 250 q24h. Severe: 750 mg x1 then 750 mg q48h.", CrCl_duoi_10: "Cystitis 250 q48h. Mild DFI 500mg x1 then 250 q48h. Severe 750 mg x1 then 500 mg q48h.", IHD: "Liều tương tự CrCl < 20 (Uống sau HD).", CRRT: "Cystitis No change. Mild DFI 500mg x1 then 250 q24h (hoặc 500 q48h). Severe 750mg x1 then 500-750 mg q48h.", GhiChu: "" },
-        { TenThuoc: "Linezolid (IV/PO)", CrCl_tren_50: "600 mg IV/PO q12h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "SHC Restriction." },
-        { TenThuoc: "Meropenem (IV)", CrCl_tren_50: "Usual (FN, PNA, Pseudomonas): 1 g IV q8h. CF/CNS: 2 g IV q8h. (Truyền 3 tiếng).", CrCl_10_50: "CrCl 26-50: Usual 1 g q12h; CF/CNS 2 g q12h. CrCl 10-25: Usual 0.5 g q12h; CF/CNS 1 g q12h.", CrCl_duoi_10: "Usual 0.5 g q24h. CF/CNS 1 g q24h.", IHD: "Usual 500 mg IV q24h. CF/CNS: 1 g IV q24h (sau HD).", CRRT: "Usual 1 g IV q8h. CF/CNS: 2 g IV q12h.", GhiChu: "Liều 2g q8h truyền kéo dài cân nhắc cho nhiễm khuẩn đe dọa tính mạng (CrCl >= 130)." },
-        { TenThuoc: "Metronidazole (IV/PO)", CrCl_tren_50: "CNS/C.difficile/SSTI: 500 mg IV/PO q8h. Intra-abdominal: 500mg q8-12h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Suy gan nặng: 500 mg q12h. Thận trọng tích lũy nếu CrCl < 30 dùng > 1-2 tuần." },
-        { TenThuoc: "Moxifloxacin (IV/PO)", CrCl_tren_50: "400 mg IV/PO q24h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
-        { TenThuoc: "Nafcillin (IV)", CrCl_tren_50: "2 g IV q4h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Thải trừ chủ yếu qua gan, thận trọng khi kèm suy thận." },
-        { TenThuoc: "Oseltamivir (PO)", CrCl_tren_50: "Prophylaxis 75 mg PO q24h. Treatment 75 mg PO q12h.", CrCl_10_50: "CrCl 30-60: Prophylaxis 30 mg q24h; Treatment 30 mg q12h. CrCl 10-30: Prophylaxis 30 mg q48h; Treatment 30 mg q24h.", CrCl_duoi_10: "Prophylaxis: 30 mg once weekly. Treatment: 30 mg every other day.", IHD: "Prophylaxis: 30 mg PO sau mỗi chu kỳ HD cách ngày. Treatment: 30 mg post-HD only.", CRRT: "Prophylaxis: 75 mg PO q24h. Treatment: 75 mg PO q12h.", GhiChu: "" },
-        { TenThuoc: "Penicillin G (IV)", CrCl_tren_50: "2-4 triệu đơn vị (mu) IV q4h (hoặc truyền liên tục).", CrCl_10_50: "1-2 mu IV q6h.", CrCl_duoi_10: "Mild: 0.5-1 mu IV q4-6h. Severe: 2 mu IV q4-6h.", IHD: "2-3 mu IV q4h.", CRRT: "4 mu IV q4-6h.", GhiChu: "" },
-        { TenThuoc: "Piperacillin/tazobactam (IV)", CrCl_tren_50: "Truyền 4h: 3.375-4.5 g IV q8h. Truyền 30p: General 3.375 g IV q6h; Severe 4.5 g IV q6h.", CrCl_10_50: "CrCl 20-40: Truyền 4h: 3.375 g IV q12h. Truyền 30p: 2.25 g IV q6h (Gen) hoặc 3.375 g IV q6h (Sev).", CrCl_duoi_10: "2.25 g IV q8h (Gen) hoặc 2.25 g IV q6h (Sev).", IHD: "General: 2.25 g IV q12h. Severe: 3.375 g IV q12h truyền 4h (hoặc 2.25 g q8h).", CRRT: "Intermittent (30m): 3.375 g IV q6h. Extended (4h): 3.375-4.5 g IV q8h.", GhiChu: "Sepsis nặng, béo phì (BMI>40) cân nhắc tăng liều lên 4.5 g IV q8h (truyền 4 giờ) hoặc q6h." },
-        { TenThuoc: "Polymyxin B (IV)", CrCl_tren_50: "20,000-25,000 units/kg IV load x 1, then 12,500-15,000 units/kg IV q12h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "SHC Restriction. Dùng Adjusted BW cho bệnh nhân béo phì. (10,000 units = 1 mg)." },
-        { TenThuoc: "Posaconazole (IV/PO)", CrCl_tren_50: "300 mg PO/IV q12h x 2 doses, then 300 mg PO/IV q24h.", CrCl_10_50: "Dạng PO: Không thay đổi. Dạng IV: Không khuyến cáo trừ khi lợi ích > nguy cơ.", CrCl_duoi_10: "Dạng PO: Không thay đổi. Dạng IV: Cẩn trọng.", IHD: "Dạng PO: Không thay đổi.", CRRT: "Dạng PO: Không thay đổi.", GhiChu: "SHC Restriction [IV]." },
-        { TenThuoc: "Pyrazinamide (PO)", CrCl_tren_50: "25 mg/kg PO q24h (max 2,000 mg/day). Dùng Lean BW.", CrCl_10_50: "25 mg/kg PO 3 lần/tuần.", CrCl_duoi_10: "25 mg/kg PO 3 lần/tuần.", IHD: "25 mg/kg PO 3 lần/tuần (uống sau HD).", CRRT: "No data.", GhiChu: "Liều Lean BW: 40-55 kg (1000mg), 56-75 kg (1500mg), 76-90 kg (2000mg)." },
-        { TenThuoc: "Rifampin (IV/PO)", CrCl_tren_50: "TB: 600 mg IV/PO q24h. Endocarditis: 300 mg IV/PO q8h. PJI: 300-450 mg q12h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
-        { TenThuoc: "Tedizolid (IV/PO)", CrCl_tren_50: "200 mg IV/PO q24h. (SHC Restriction).", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
-        { TenThuoc: "Tobramycin (IV)", CrCl_tren_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_10_50: "Xem Aminoglycoside Dosing Protocol.", CrCl_duoi_10: "Xem Aminoglycoside Dosing Protocol.", IHD: "Xem Aminoglycoside Dosing Protocol.", CRRT: "Xem Aminoglycoside Dosing Protocol.", GhiChu: "" },
-        { TenThuoc: "Trimethoprim/Sulfamethoxazole (IV/PO)", CrCl_tren_50: "Uncomplicated cystitis: 1 DS tab BID. SSTI: 1-2 DS tab BID. Severe (GNR, Steno, PJP): 8-15 mg/kg/day TMP chia cữ.", CrCl_10_50: "Dùng 50% liều khuyến cáo.", CrCl_duoi_10: "Không khuyến cáo. Nếu bắt buộc cho PJP: 5-7.5 mg/kg TMP q24h.", IHD: "25-50% liều. PJP/Steno: 5-7.5 mg/kg TMP q24h. (Sau HD).", CRRT: "5-10 mg/kg/day TMP chia q12h. Steno/PJP: 10-15 mg/kg/day chia q8-12h.", GhiChu: "Dùng Adjusted BW cho bệnh nhân béo phì. (DS = 160mg TMP)." },
-        { TenThuoc: "Valacyclovir (PO)", CrCl_tren_50: "Genital herpes: 1 g PO q12h (Init) / 500 mg q12h (Recur). Herpes labialis: 2 g PO q12h x 2. VZV: 1 g PO q8h.", CrCl_10_50: "CrCl 30-50: VZV 1 g q12h. CrCl 10-30: Genital 500 mg q24h, VZV 1 g q24h.", CrCl_duoi_10: "Genital: 500 mg q24h. VZV: 500 mg q24h.", IHD: "500 mg PO q24h (Dùng daily sau HD).", CRRT: "No data.", GhiChu: "" },
-        { TenThuoc: "Valganciclovir (PO)", CrCl_tren_50: "CrCl > 60: Induction 900 mg q12h. Maintenance 900 mg q24h.", CrCl_10_50: "CrCl 40-59: 450 q12h / 450 q24h. CrCl 25-39: 450 q24h / 450 q48h. CrCl 10-24: 450 q48h / 450 2x/tuần.", CrCl_duoi_10: "Induction: 200 mg 3x/tuần. Maintenance: 100 mg 3x/tuần.", IHD: "Uống sau HD only. Induction: 200 mg 3x/tuần. Maint: 100 mg 3x/tuần.", CRRT: "No data.", GhiChu: "Tham khảo transplant protocols." },
-        { TenThuoc: "Vancomycin (IV)", CrCl_tren_50: "Xem Vancomycin Dosing Protocol.", CrCl_10_50: "Xem Vancomycin Dosing Protocol.", CrCl_duoi_10: "Xem Vancomycin Dosing Protocol.", IHD: "Xem Vancomycin Dosing Protocol.", CRRT: "Xem Vancomycin Dosing Protocol.", GhiChu: "Việc chỉnh liều dựa vào nồng độ đáy hoặc AUC." },
-        { TenThuoc: "Vancomycin (PO)", CrCl_tren_50: "Mild/moderate/severe: 125 mg PO q6h. Severe complicated (CDI-related septic shock, toxic megacolon): 500 mg PO q6h.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Chỉ dùng để điều trị viêm đại tràng do C. difficile." },
-        { TenThuoc: "Voriconazole (IV/PO)", CrCl_tren_50: "IV: 6 mg/kg IV q12h x 2, then 4 mg/kg IV q12h. PO: 400 mg q12h x 2, then 200 mg q12h.", CrCl_10_50: "Thận trọng với IV (do tích lũy tá dược cyclodextrin). Cân nhắc chuyển PO nếu CrCl < 50.", CrCl_duoi_10: "Thận trọng với IV.", IHD: "Thận trọng với IV.", CRRT: "Thận trọng với IV.", GhiChu: "IV PO conversion 1:1. Dùng Adjusted BW cho béo phì. Cần theo dõi TDM." }
+        { TenThuoc: "Acyclovir (IV)", CrCl_tren_50: "Dự phòng: 250 mg/m² IV mỗi 12 giờ hoặc 2 mg/kg IV mỗi 12 giờ. Điều trị Huyết học / Ung thư: 5 mg/kg IV mỗi 12 giờ. Nhiễm Herpes Simplex Virus da niêm mạc thông thường: 5 mg/kg IV mỗi 8 giờ. Nhiễm nặng (hệ thần kinh trung ương / mắt / lan tỏa, Zoster): 10 mg/kg IV mỗi 8 giờ.", CrCl_10_50: "CrCl 25-50: 5-10 mg/kg IV mỗi 12 giờ. CrCl 10-25 (Thông thường/Nặng): 2.5-5 mg/kg IV mỗi 24 giờ.", CrCl_duoi_10: "Thông thường: 2.5 mg/kg IV mỗi 24 giờ. Nặng: 5 mg/kg IV mỗi 24 giờ.", IHD: "Thông thường: 2.5 mg/kg IV mỗi 24 giờ. Nặng: 5 mg/kg IV mỗi 24 giờ.", CRRT: "Herpes Simplex Virus da niêm mạc: 5-10 mg/kg IV mỗi 12 giờ. Nặng: 10 mg/kg IV mỗi 12 giờ.", GhiChu: "Sử dụng cân nặng hiệu chỉnh (Adjusted BW) cho bệnh nhân béo phì." },
+        { TenThuoc: "Acyclovir (PO)", CrCl_tren_50: "Herpes Simplex Virus da niêm mạc: 400 mg đường uống mỗi 8 giờ (Thay thế: 200 mg 5 lần/ngày). Varicella Zoster Virus: 800 mg đường uống mỗi 4 giờ (hoặc 5 lần/ngày).", CrCl_10_50: "Herpes Simplex Virus da niêm mạc: 200 mg đường uống mỗi 12 giờ. Varicella Zoster Virus: 800 mg đường uống mỗi 12 giờ.", CrCl_duoi_10: "Herpes Simplex Virus da niêm mạc: 200 mg đường uống mỗi 12 giờ. Varicella Zoster Virus: 800 mg đường uống mỗi 12 giờ.", IHD: "Herpes Simplex Virus da niêm mạc: 200 mg đường uống mỗi 12 giờ. Varicella Zoster Virus: 800 mg đường uống mỗi 12 giờ.", CRRT: "Không có dữ liệu.", GhiChu: "Cân nhắc dùng valacyclovir cho Varicella Zoster Virus để giảm số lần dùng thuốc." },
+        { TenThuoc: "Amikacin (IV)", CrCl_tren_50: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", CrCl_10_50: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", CrCl_duoi_10: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", IHD: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", CRRT: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", GhiChu: "Sử dụng cân nặng hiệu chỉnh (Adjusted BW) cho bệnh nhân béo phì." },
+        { TenThuoc: "Amoxicillin (PO)", CrCl_tren_50: "Liều thông thường: 500 mg đường uống mỗi 8 giờ hoặc 1.000 mg đường uống mỗi 8-12 giờ. Viêm phổi mắc phải tại cộng đồng: 1.000 mg đường uống mỗi 8 giờ. Dự phòng thủ thuật: 2.000 mg đường uống x 1 liều.", CrCl_10_50: "CrCl 10-29: 500 mg đường uống mỗi 12 giờ hoặc 1.000 mg đường uống mỗi 12 giờ.", CrCl_duoi_10: "500 mg đường uống mỗi 12-24 giờ.", IHD: "500 mg đường uống mỗi 12-24 giờ.", CRRT: "Không có dữ liệu.", GhiChu: "Không có dữ liệu riêng cho CRRT." },
+        { TenThuoc: "Amoxicillin/clavulanate (PO)", CrCl_tren_50: "Liều thông thường: 500 mg đường uống mỗi 8 giờ. Viêm phổi mắc phải tại cộng đồng: 875 mg đường uống mỗi 12 giờ. Nhiễm trùng ổ bụng / Gram âm không biến chứng (chuyển đường uống): lên đến 875 mg đường uống mỗi 8 giờ.", CrCl_10_50: "CrCl 10-30: 500 mg đường uống mỗi 12 giờ hoặc 875 mg đường uống mỗi 12 giờ.", CrCl_duoi_10: "500 mg đường uống mỗi 24 giờ. Nhiễm trùng ổ bụng / Gram âm không biến chứng: lên đến 875 mg đường uống mỗi 24 giờ.", IHD: "500 mg đường uống mỗi 24 giờ. Phác đồ mỗi 24 giờ nên uống sau khi chạy thận nhân tạo hoặc thêm 1 liều cuối chạy thận.", CRRT: "Không có dữ liệu.", GhiChu: "Xem thêm hướng dẫn về béo phì." },
+        { TenThuoc: "Amphotericin B Liposomal (IV)", CrCl_tren_50: "3-5 mg/kg/ngày.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Tham khảo hướng dẫn về béo phì." },
+        { TenThuoc: "Ampicillin (IV)", CrCl_tren_50: "Nhẹ / không biến chứng: 1-2 g IV mỗi 6 giờ. Viêm màng não / nhiễm trùng nội mạch / nhiễm trùng khớp giả: 2 g IV mỗi 4 giờ.", CrCl_10_50: "CrCl 30-50: Nhẹ 1-2 g IV mỗi 8 giờ, Viêm màng não 2 g IV mỗi 6 giờ. CrCl 15-30: Nhẹ 1-2 g IV mỗi 12 giờ, Viêm màng não 2 g IV mỗi 8 giờ.", CrCl_duoi_10: "Nhẹ 1-2 g IV mỗi 24 giờ. Viêm màng não 2 g IV mỗi 12 giờ.", IHD: "Nhẹ / không biến chứng: 1-2 g IV mỗi 24 giờ. Viêm màng não / nhiễm trùng nội mạch / nhiễm trùng khớp giả: 2 g IV mỗi 12 giờ.", CRRT: "Nhẹ / không biến chứng: 2 g IV mỗi 8-12 giờ. Viêm màng não / nhiễm trùng nội mạch / nhiễm trùng khớp giả: 2 g IV mỗi 6-8 giờ.", GhiChu: "CrCl > 130 có thể cân nhắc 2g IV mỗi 4 giờ (Nhẹ). Viêm màng não / nhiễm khuẩn huyết có thể cân nhắc truyền liên tục." },
+        { TenThuoc: "Ampicillin/sulbactam (IV)", CrCl_tren_50: "Nhẹ / không biến chứng: 1.5 g IV mỗi 6 giờ. Toàn thân: 3 g IV mỗi 6 giờ. Acinetobacter baumannii: 3 g IV mỗi 4 giờ.", CrCl_10_50: "CrCl 15-30: Nhẹ 1.5 g IV mỗi 12 giờ, Toàn thân 3 g IV mỗi 12 giờ, Acinetobacter 3 g IV mỗi 8 giờ.", CrCl_duoi_10: "Nhẹ 1.5 g IV mỗi 24 giờ, Toàn thân 3 g IV mỗi 24 giờ, Acinetobacter 3 g IV mỗi 12 giờ.", IHD: "Nhẹ: 1.5 g IV mỗi 24 giờ, Toàn thân / Acinetobacter: 3 g IV mỗi 24 giờ.", CRRT: "Nhẹ / Toàn thân: 3 g IV mỗi 8-12 giờ, Acinetobacter: 3 g IV mỗi 6 giờ.", GhiChu: "Liều tính theo tổng dạng kết hợp (3g = 2g ampicillin + 1g sulbactam)." },
+        { TenThuoc: "Azithromycin (IV/PO)", CrCl_tren_50: "Không thay đổi.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "500 mg IV/đường uống mỗi 24 giờ.", CRRT: "Không thay đổi.", GhiChu: "Không cần chỉnh liều theo chức năng thận ngoại trừ khi chạy thận nhân tạo ngắt quãng." },
+        { TenThuoc: "Aztreonam (IV)", CrCl_tren_50: "1-2 g IV mỗi 8 giờ. Nặng / Viêm màng não: 2 g IV mỗi 6-8 giờ.", CrCl_10_50: "CrCl < 30: 1 g IV mỗi 8 giờ. Nặng / Viêm màng não: 1 g IV mỗi 6-8 giờ.", CrCl_duoi_10: "500 mg IV mỗi 8 giờ. Nặng / Viêm màng não: 1 g IV mỗi 12 giờ.", IHD: "1 g IV mỗi 24 giờ. Nặng / Viêm màng não: 1 g IV mỗi 12 giờ.", CRRT: "2 g IV liều tấn công, sau đó 1 g IV mỗi 8 giờ -hoặc- 2 g IV mỗi 12 giờ.", GhiChu: "Tham khảo hướng dẫn về béo phì." },
+        { TenThuoc: "Caspofungin (IV)", CrCl_tren_50: "70 mg IV x 1 liều, sau đó 50 mg IV mỗi 24 giờ. Viêm nội tâm mạc / nhiễm trùng nội mạch: 150 mg IV mỗi 24 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Dùng 70 mg IV mỗi 24 giờ nếu đang dùng phenytoin, rifampin... Không cần chỉnh cho xơ gan Child-Pugh B/C." },
+        { TenThuoc: "Cefazolin (IV)", CrCl_tren_50: "Nhẹ 1 g IV mỗi 8 giờ. Trung bình / Nặng 2 g IV mỗi 8 giờ.", CrCl_10_50: "CrCl 10-30: Nhẹ 1 g IV mỗi 12 giờ. Trung bình / Nặng 2 g IV mỗi 12 giờ.", CrCl_duoi_10: "1 g - 2 g IV mỗi 24 giờ (tùy mức độ).", IHD: "1 g - 2 g IV mỗi 24 giờ (sau chạy thận). Hoặc: 2g/2g/3g IV sau chạy thận.", CRRT: "2 g IV mỗi 12 giờ.", GhiChu: "Tham khảo hướng dẫn về béo phì." },
+        { TenThuoc: "Cefepime (IV)", CrCl_tren_50: "Thông thường: 1 g IV mỗi 12 giờ hoặc 2 g IV mỗi 24 giờ. Phổi / Sốt giảm bạch cầu trung tính / Hệ thần kinh trung ương / Pseudomonas / Nặng: 2 g IV mỗi 8 giờ.", CrCl_10_50: "CrCl 30-60: Thông thường 1-2 g mỗi 24 giờ, Nặng 2 g mỗi 12 giờ. CrCl 11-29: Thông thường 500mg-1g mỗi 24 giờ, Nặng 1 g mỗi 12 giờ.", CrCl_duoi_10: "Thông thường: 250 mg-500 mg mỗi 24 giờ. Nặng: 500mg-1g mỗi 24 giờ.", IHD: "0.5-1 g IV mỗi 24 giờ (sau chạy thận). Hoặc: 2 g IV sau chạy thận.", CRRT: "2 g IV liều tấn công, sau đó 1 g IV mỗi 8 giờ (truyền 4 giờ).", GhiChu: "Cần lưu ý nguy cơ độc tính thần kinh nếu không chỉnh liều đúng." },
+        { TenThuoc: "Cefiderocol (IV)", CrCl_tren_50: "CrCl > 120: 2 g IV mỗi 6 giờ. CrCl 60-120: 2 g IV mỗi 8 giờ. (Hạn chế sử dụng - SHC).", CrCl_10_50: "CrCl 30-60: 1.5 g IV mỗi 8 giờ. CrCl 15-30: 1 g IV mỗi 8 giờ.", CrCl_duoi_10: "750 mg IV mỗi 12 giờ.", IHD: "750 mg IV mỗi 12 giờ.", CRRT: "Phụ thuộc tốc độ dòng lọc (≤2 L/giờ: 1.5g mỗi 12 giờ; 2.1-3 L/giờ: 2g mỗi 12 giờ; 3.1-4: 1.5g mỗi 8 giờ; ≥4.1: 2g mỗi 8 giờ).", GhiChu: "Tra cứu liều theo dòng lọc trong Epic." },
+        { TenThuoc: "Cefpodoxime (PO)", CrCl_tren_50: "Viêm bàng quang không biến chứng: 100 mg đường uống mỗi 12 giờ. Viêm phổi mắc phải tại cộng đồng / viêm phế quản: 200 mg đường uống mỗi 12 giờ. Da / mô mềm: 400 mg đường uống mỗi 12 giờ.", CrCl_10_50: "CrCl < 30: Giữ nguyên liều trên nhưng dãn cách mỗi 24 giờ.", CrCl_duoi_10: "Dãn cách mỗi 24 giờ.", IHD: "Chỉ uống sau khi chạy thận xong.", CRRT: "Không có dữ liệu.", GhiChu: "" },
+        { TenThuoc: "Ceftaroline (IV)", CrCl_tren_50: "Thông thường: 600 mg IV mỗi 12 giờ. Viêm nội tâm mạc / nhiễm khuẩn huyết Staphylococcus aureus: 600 mg IV mỗi 8 giờ (truyền 2 giờ).", CrCl_10_50: "CrCl 30-50: 400 mg IV mỗi 12 giờ (hoặc mỗi 8 giờ cho Viêm nội tâm mạc). CrCl 15-30: 300 mg IV mỗi 12 giờ (hoặc mỗi 8 giờ cho Viêm nội tâm mạc).", CrCl_duoi_10: "200 mg IV mỗi 12 giờ.", IHD: "200 mg IV mỗi 12 giờ.", CRRT: "Không có dữ liệu.", GhiChu: "Hạn chế sử dụng - SHC." },
+        { TenThuoc: "Ceftazidime (IV)", CrCl_tren_50: "Liều thông thường: 1-2 g IV mỗi 8 giờ. Nặng: 2 g IV mỗi 8 giờ.", CrCl_10_50: "CrCl 30-50: 1-2 g IV mỗi 12 giờ. CrCl 16-30: 1-2 g IV mỗi 24 giờ.", CrCl_duoi_10: "CrCl 6-15: 0.5-1 g IV mỗi 24 giờ. CrCl < 5: 0.5 g IV mỗi 24 giờ.", IHD: "0.5 g IV mỗi 24 giờ. Hoặc 1-2 g IV mỗi 48-72 giờ, hoặc 1 g IV sau chạy thận (3 lần/tuần).", CRRT: "2 g IV liều tấn công, sau đó 1 g IV mỗi 8 giờ -hoặc- 2 g IV mỗi 12 giờ.", GhiChu: "" },
+        { TenThuoc: "Ceftazidime/avibactam (IV)", CrCl_tren_50: "2.5 g IV mỗi 8 giờ. (Hạn chế sử dụng - SHC).", CrCl_10_50: "CrCl 31-50: 1.25 g IV mỗi 8 giờ. CrCl 16-30: 0.94 g IV mỗi 12 giờ.", CrCl_duoi_10: "CrCl 6-15: 0.94 g IV mỗi 24 giờ. CrCl < 5: 0.94 g IV mỗi 48 giờ.", IHD: "0.94 g IV mỗi 24-48 giờ. Dùng sau chạy thận.", CRRT: "1.25 g IV mỗi 8 giờ. (Dùng 2.5g IV mỗi 8 giờ nếu MIC > 4 hoặc nhiễm khuẩn sâu).", GhiChu: "" },
+        { TenThuoc: "Ceftolozane/tazobactam (IV)", CrCl_tren_50: "Viêm bàng quang: 1.5 g IV mỗi 8 giờ. Viêm phổi bệnh viện / Viêm phổi thở máy / Pseudomonas nặng: 3 g IV mỗi 8 giờ.", CrCl_10_50: "CrCl 30-50: Viêm bàng quang 375 mg mỗi 8 giờ; Viêm phổi bệnh viện / Viêm phổi thở máy 1.5 g mỗi 8 giờ. CrCl 15-29: Viêm phổi bệnh viện / Viêm phổi thở máy 750 mg mỗi 8 giờ.", CrCl_duoi_10: "Viêm bàng quang 750 mg liều tấn công, sau đó 150 mg mỗi 8 giờ. Viêm phổi bệnh viện / Viêm phổi thở máy 2.25 g liều tấn công, sau đó 450 mg mỗi 8 giờ.", IHD: "Giống liều CrCl < 10.", CRRT: "Viêm bàng quang: 750mg IV mỗi 8 giờ. Viêm phổi bệnh viện / Viêm phổi thở máy: 1.5 g IV mỗi 8 giờ (hoặc 3g liều tấn công, sau đó 750mg mỗi 8 giờ).", GhiChu: "Hạn chế sử dụng - SHC." },
+        { TenThuoc: "Ceftriaxone (IV)", CrCl_tren_50: "1-2 g IV mỗi 24 giờ. Viêm màng não / Viêm nội tâm mạc Enterococcus faecalis: 2 g IV mỗi 12 giờ. Nhiễm trùng nội mạch / nhiễm trùng khớp giả: 2 g IV mỗi 24 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Thải trừ qua gan mật, không cần chỉnh liều theo chức năng thận." },
+        { TenThuoc: "Cephalexin (PO)", CrCl_tren_50: "250-1000 mg đường uống mỗi 6 giờ. Viêm bàng quang không biến chứng: 500 mg đường uống mỗi 12 giờ.", CrCl_10_50: "CrCl 30-50: Không thay đổi. CrCl 15-29: 250 mg đường uống mỗi 8-12 giờ.", CrCl_duoi_10: "250 mg đường uống mỗi 24 giờ.", IHD: "250-500 mg đường uống mỗi 24 giờ. Dùng hàng ngày, uống sau chạy thận.", CRRT: "Không có dữ liệu.", GhiChu: "" },
+        { TenThuoc: "Ciprofloxacin (IV/PO)", CrCl_tren_50: "Thông thường: 400 mg IV mỗi 8-12 giờ / 500-750 mg đường uống mỗi 12 giờ. Pseudomonas / nặng: 400 mg IV mỗi 8 giờ.", CrCl_10_50: "CrCl 30-50: 400 mg IV mỗi 12 giờ / 500 mg đường uống mỗi 12 giờ. CrCl < 30: 400 mg IV mỗi 24 giờ / 500 mg đường uống mỗi 24 giờ.", CrCl_duoi_10: "400 mg IV mỗi 24 giờ / 250-500 mg đường uống mỗi 24 giờ.", IHD: "400 mg IV mỗi 24 giờ / 250-500 mg đường uống mỗi 24 giờ. (Sau chạy thận).", CRRT: "400 mg IV mỗi 12 giờ / 500 mg đường uống mỗi 12 giờ. Nặng: 400 mg IV mỗi 8-12 giờ.", GhiChu: "Tham khảo hướng dẫn về béo phì." },
+        { TenThuoc: "Clindamycin (IV/PO)", CrCl_tren_50: "600-900 mg IV mỗi 8 giờ. 150-450 mg đường uống mỗi 6 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Tham khảo hướng dẫn về béo phì." },
+        { TenThuoc: "Dalbavancin (IV)", CrCl_tren_50: "Nhiễm trùng da và mô mềm: Ưu tiên 1.500 mg IV x 1 liều. Thay thế: 1.000 mg IV x 1 liều tiếp theo 500 mg x1 sau 1 tuần.", CrCl_10_50: "CrCl < 30: Ưu tiên 1.125 mg IV x1. Thay thế: 750 mg IV x 1 tiếp theo 375 mg x1 sau 1 tuần.", CrCl_duoi_10: "Giống CrCl < 30.", IHD: "Ưu tiên 1.500 mg IV x1. Thay thế 1.000 mg IV x 1 tiếp theo 500 mg x1 sau 1 tuần.", CRRT: "Không có dữ liệu.", GhiChu: "Hạn chế sử dụng - SHC. Tham khảo chuyên khoa cho chỉ định ngoài nhãn." },
+        { TenThuoc: "Daptomycin (IV)", CrCl_tren_50: "Nhiễm trùng da và mô mềm: 4-6 mg/kg IV mỗi 24 giờ. Nhiễm khuẩn huyết: 8 mg/kg IV mỗi 24 giờ. Enterococcus faecium: 10-12 mg/kg IV mỗi 24 giờ.", CrCl_10_50: "Dãn khoảng cách liều thành mỗi 48 giờ (ví dụ 4-6 mg/kg IV mỗi 48 giờ).", CrCl_duoi_10: "Dãn khoảng cách liều thành mỗi 48 giờ.", IHD: "Nhiễm trùng da và mô mềm: 6 mg/kg sau chạy thận. Nhiễm khuẩn huyết: 8 mg/kg sau chạy thận. E. faecium: 8-10 mg/kg sau chạy thận.", CRRT: "Nhiễm trùng da và mô mềm: 6 mg/kg IV mỗi 24 giờ. Nhiễm khuẩn huyết: 6-8 mg/kg IV mỗi 24 giờ. E. faecium: 8 mg/kg IV mỗi 24 giờ.", GhiChu: "Hạn chế sử dụng - SHC. Dùng cân nặng hiệu chỉnh cho béo phì. Cần theo dõi CPK." },
+        { TenThuoc: "Doxycycline (IV/PO)", CrCl_tren_50: "Liều tấn công: 200 mg x 1 (nhiễm trùng nặng). Duy trì: 100 mg IV/đường uống mỗi 12 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Ertapenem (IV/IM)", CrCl_tren_50: "1 g IV mỗi 24 giờ.", CrCl_10_50: "CrCl < 30: 500 mg IV mỗi 24 giờ.", CrCl_duoi_10: "500 mg IV mỗi 24 giờ.", IHD: "500 mg IV mỗi 24 giờ. (Sau chạy thận).", CRRT: "1 g IV mỗi 24 giờ.", GhiChu: "" },
+        { TenThuoc: "Ethambutol (PO)", CrCl_tren_50: "15-25 mg/kg/ngày (tối đa 1.600 mg/ngày). Dùng cân nặng gầy cho bệnh nhân béo phì.", CrCl_10_50: "15-25 mg/kg đường uống 3 lần/tuần.", CrCl_duoi_10: "15-25 mg/kg đường uống 3 lần/tuần.", IHD: "15-25 mg/kg đường uống 3 lần/tuần (chỉ uống sau chạy thận).", CRRT: "15-25 mg/kg đường uống 3 lần/tuần.", GhiChu: "Liều cân nặng gầy: 40-55 kg (800mg), 56-75 kg (1200mg), 76-90 kg (1600mg)." },
+        { TenThuoc: "Fidaxomicin (PO)", CrCl_tren_50: "200 mg mỗi 12 giờ x 10 ngày.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Fluconazole (IV/PO)", CrCl_tren_50: "Nhiễm nấm Candida nặng: Liều tấn công 800 mg (hoặc 12 mg/kg) x 1 liều, sau đó 400-800 mg IV/đường uống mỗi 24 giờ. Candida glabrata (độ nhạy giảm): Liều tấn công 800 mg x 1, sau đó 800 mg mỗi 24 giờ.", CrCl_10_50: "Liều tấn công đầy đủ. Giảm 50% liều duy trì.", CrCl_duoi_10: "Liều tấn công đầy đủ. Giảm 50% liều duy trì.", IHD: "Liều tấn công đầy đủ. Dùng liều duy trì mỗi 24 giờ (sau chạy thận).", CRRT: "Tương tự liều cho CrCl > 50. Có thể cân nhắc gấp đôi liều duy trì.", GhiChu: "Candida glabrata được coi là độ nhạy giảm. Tham khảo chuyên khoa cho ca nặng." },
+        { TenThuoc: "Foscarnet (IV)", CrCl_tren_50: "Phụ thuộc CrCl (mL/min/kg). >1.4: 60 mg/kg mỗi 8 giờ (Duy trì), 90 mg/kg mỗi 12 giờ (Tấn công).", CrCl_10_50: "Vd 0.6-0.8: 35 mg/kg mỗi 24 giờ (Duy trì), 50 mg/kg mỗi 12 giờ (Tấn công).", CrCl_duoi_10: "CrCl < 0.4: Không khuyến cáo.", IHD: "45-60 mg/kg/liều IV sau chạy thận.", CRRT: "Không có dữ liệu.", GhiChu: "Cần tra cứu bảng chi tiết theo mức CrCl (mL/min/kg)." },
+        { TenThuoc: "Ganciclovir (IV)", CrCl_tren_50: "CrCl > 70: Tấn công 5 mg/kg IV mỗi 12 giờ. Duy trì 5 mg/kg IV mỗi 24 giờ.", CrCl_10_50: "Giảm liều dần theo bảng.", CrCl_duoi_10: "Tấn công: 1.25 mg/kg IV mỗi 24 giờ. Duy trì: 0.625 mg/kg IV 3 lần/tuần.", IHD: "Tấn công: 1.25 mg/kg IV 3 lần/tuần. Duy trì: 0.625 mg/kg IV 3 lần/tuần. (Truyền sau chạy thận).", CRRT: "Tấn công: 2.5 mg/kg IV mỗi 24 giờ. Duy trì: 1.25 mg/kg IV mỗi 24 giờ.", GhiChu: "Dùng cân nặng hiệu chỉnh cho bệnh nhân béo phì." },
+        { TenThuoc: "Gentamicin (IV)", CrCl_tren_50: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", CrCl_10_50: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", CrCl_duoi_10: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", IHD: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", CRRT: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", GhiChu: "Dùng cân nặng hiệu chỉnh cho bệnh nhân béo phì." },
+        { TenThuoc: "Imipenem/Cilastatin (IV)", CrCl_tren_50: "CrCl > 60: 500 mg IV mỗi 6 giờ hoặc 1g IV mỗi 8 giờ. CrCl 30-59: 500 mg IV mỗi 8 giờ.", CrCl_10_50: "CrCl 15-29: 250-500 mg IV mỗi 12 giờ.", CrCl_duoi_10: "Không khuyến cáo (trừ khi sẽ chạy thận trong vòng 48 giờ).", IHD: "250-500 mg IV mỗi 12 giờ (Liều sau chạy thận).", CRRT: "1g liều tấn công, sau đó 500 mg IV mỗi 6 giờ.", GhiChu: "Hạn chế sử dụng - SHC." },
+        { TenThuoc: "Isavuconazole (IV/PO)", CrCl_tren_50: "Khởi đầu: 372 mg IV/đường uống mỗi 8 giờ x 6 liều. Duy trì: 372 mg IV/đường uống mỗi 24 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Isoniazid (PO)", CrCl_tren_50: "300 mg đường uống mỗi 24 giờ (5 mg/kg/ngày).", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Levofloxacin (IV/PO)", CrCl_tren_50: "Viêm bàng quang: 250 mg mỗi 24 giờ. Nhiễm trùng bàn chân đái tháo đường nhẹ/trung bình: 500 mg mỗi 24 giờ. Nặng / Viêm phổi / Pseudomonas: 750 mg mỗi 24 giờ.", CrCl_10_50: "CrCl 20-49: Viêm bàng quang Không thay đổi. Nhiễm trùng bàn chân đái tháo đường nhẹ: 500mg x1 sau đó 250 mỗi 24 giờ. Nặng: 750 mg x1 sau đó 750 mg mỗi 48 giờ.", CrCl_duoi_10: "Viêm bàng quang 250 mỗi 48 giờ. Nhiễm trùng bàn chân đái tháo đường nhẹ 500mg x1 sau đó 250 mỗi 48 giờ. Nặng 750 mg x1 sau đó 500 mg mỗi 48 giờ.", IHD: "Liều tương tự CrCl < 20 (Uống sau chạy thận).", CRRT: "Viêm bàng quang Không thay đổi. Nhiễm trùng bàn chân đái tháo đường nhẹ 500mg x1 sau đó 250 mỗi 24 giờ (hoặc 500 mỗi 48 giờ). Nặng 750mg x1 sau đó 500-750 mg mỗi 48 giờ.", GhiChu: "" },
+        { TenThuoc: "Linezolid (IV/PO)", CrCl_tren_50: "600 mg IV/đường uống mỗi 12 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Hạn chế sử dụng - SHC." },
+        { TenThuoc: "Meropenem (IV)", CrCl_tren_50: "Thông thường (Sốt giảm bạch cầu trung tính, Viêm phổi, Pseudomonas): 1 g IV mỗi 8 giờ. Xơ nang / Hệ thần kinh trung ương: 2 g IV mỗi 8 giờ. (Truyền 3 giờ).", CrCl_10_50: "CrCl 26-50: Thông thường 1 g mỗi 12 giờ; Xơ nang / Hệ thần kinh trung ương 2 g mỗi 12 giờ. CrCl 10-25: Thông thường 0.5 g mỗi 12 giờ; Xơ nang / Hệ thần kinh trung ương 1 g mỗi 12 giờ.", CrCl_duoi_10: "Thông thường 0.5 g mỗi 24 giờ. Xơ nang / Hệ thần kinh trung ương 1 g mỗi 24 giờ.", IHD: "Thông thường 500 mg IV mỗi 24 giờ. Xơ nang / Hệ thần kinh trung ương: 1 g IV mỗi 24 giờ (sau chạy thận).", CRRT: "Thông thường 1 g IV mỗi 8 giờ. Xơ nang / Hệ thần kinh trung ương: 2 g IV mỗi 12 giờ.", GhiChu: "Liều 2g mỗi 8 giờ truyền kéo dài cân nhắc cho nhiễm khuẩn đe dọa tính mạng (CrCl >= 130)." },
+        { TenThuoc: "Metronidazole (IV/PO)", CrCl_tren_50: "Hệ thần kinh trung ương / Clostridium difficile / Da và mô mềm: 500 mg IV/đường uống mỗi 8 giờ. Trong ổ bụng: 500mg mỗi 8-12 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Suy gan nặng: 500 mg mỗi 12 giờ. Thận trọng tích lũy nếu CrCl < 30 dùng > 1-2 tuần." },
+        { TenThuoc: "Moxifloxacin (IV/PO)", CrCl_tren_50: "400 mg IV/đường uống mỗi 24 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Nafcillin (IV)", CrCl_tren_50: "2 g IV mỗi 4 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Thải trừ chủ yếu qua gan, thận trọng khi kèm suy thận." },
+        { TenThuoc: "Oseltamivir (PO)", CrCl_tren_50: "Dự phòng 75 mg đường uống mỗi 24 giờ. Điều trị 75 mg đường uống mỗi 12 giờ.", CrCl_10_50: "CrCl 30-60: Dự phòng 30 mg mỗi 24 giờ; Điều trị 30 mg mỗi 12 giờ. CrCl 10-30: Dự phòng 30 mg mỗi 48 giờ; Điều trị 30 mg mỗi 24 giờ.", CrCl_duoi_10: "Dự phòng: 30 mg mỗi tuần 1 lần. Điều trị: 30 mg cách ngày.", IHD: "Dự phòng: 30 mg đường uống sau mỗi chu kỳ chạy thận cách ngày. Điều trị: 30 mg sau chạy thận.", CRRT: "Dự phòng: 75 mg đường uống mỗi 24 giờ. Điều trị: 75 mg đường uống mỗi 12 giờ.", GhiChu: "" },
+        { TenThuoc: "Penicillin G (IV)", CrCl_tren_50: "2-4 triệu đơn vị (mu) IV mỗi 4 giờ (hoặc truyền liên tục).", CrCl_10_50: "1-2 triệu đơn vị IV mỗi 6 giờ.", CrCl_duoi_10: "Nhẹ: 0.5-1 triệu đơn vị IV mỗi 4-6 giờ. Nặng: 2 triệu đơn vị IV mỗi 4-6 giờ.", IHD: "2-3 triệu đơn vị IV mỗi 4 giờ.", CRRT: "4 triệu đơn vị IV mỗi 4-6 giờ.", GhiChu: "" },
+        { TenThuoc: "Piperacillin/tazobactam (IV)", CrCl_tren_50: "Truyền 4 giờ: 3.375-4.5 g IV mỗi 8 giờ. Truyền 30 phút: Thông thường 3.375 g IV mỗi 6 giờ; Nặng 4.5 g IV mỗi 6 giờ.", CrCl_10_50: "CrCl 20-40: Truyền 4 giờ: 3.375 g IV mỗi 12 giờ. Truyền 30 phút: 2.25 g IV mỗi 6 giờ (Thông thường) hoặc 3.375 g IV mỗi 6 giờ (Nặng).", CrCl_duoi_10: "2.25 g IV mỗi 8 giờ (Thông thường) hoặc 2.25 g IV mỗi 6 giờ (Nặng).", IHD: "Thông thường: 2.25 g IV mỗi 12 giờ. Nặng: 3.375 g IV mỗi 12 giờ truyền 4 giờ (hoặc 2.25 g mỗi 8 giờ).", CRRT: "Ngắt quãng (30 phút): 3.375 g IV mỗi 6 giờ. Kéo dài (4 giờ): 3.375-4.5 g IV mỗi 8 giờ.", GhiChu: "Nhiễm trùng huyết nặng, béo phì (BMI>40) cân nhắc tăng liều lên 4.5 g IV mỗi 8 giờ (truyền 4 giờ) hoặc mỗi 6 giờ." },
+        { TenThuoc: "Polymyxin B (IV)", CrCl_tren_50: "20.000-25.000 đơn vị/kg IV liều tấn công x 1, sau đó 12.500-15.000 đơn vị/kg IV mỗi 12 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Hạn chế sử dụng - SHC. Dùng cân nặng hiệu chỉnh cho bệnh nhân béo phì. (10.000 đơn vị = 1 mg)." },
+        { TenThuoc: "Posaconazole (IV/PO)", CrCl_tren_50: "300 mg đường uống/IV mỗi 12 giờ x 2 liều, sau đó 300 mg đường uống/IV mỗi 24 giờ.", CrCl_10_50: "Dạng đường uống: Không thay đổi. Dạng IV: Không khuyến cáo trừ khi lợi ích > nguy cơ.", CrCl_duoi_10: "Dạng đường uống: Không thay đổi. Dạng IV: Cẩn trọng.", IHD: "Dạng đường uống: Không thay đổi.", CRRT: "Dạng đường uống: Không thay đổi.", GhiChu: "Hạn chế sử dụng dạng IV - SHC." },
+        { TenThuoc: "Pyrazinamide (PO)", CrCl_tren_50: "25 mg/kg đường uống mỗi 24 giờ (tối đa 2.000 mg/ngày). Dùng cân nặng gầy.", CrCl_10_50: "25 mg/kg đường uống 3 lần/tuần.", CrCl_duoi_10: "25 mg/kg đường uống 3 lần/tuần.", IHD: "25 mg/kg đường uống 3 lần/tuần (uống sau chạy thận).", CRRT: "Không có dữ liệu.", GhiChu: "Liều cân nặng gầy: 40-55 kg (1000mg), 56-75 kg (1500mg), 76-90 kg (2000mg)." },
+        { TenThuoc: "Rifampin (IV/PO)", CrCl_tren_50: "Lao: 600 mg IV/đường uống mỗi 24 giờ. Viêm nội tâm mạc: 300 mg IV/đường uống mỗi 8 giờ. Nhiễm trùng khớp giả: 300-450 mg mỗi 12 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Tedizolid (IV/PO)", CrCl_tren_50: "200 mg IV/đường uống mỗi 24 giờ. (Hạn chế sử dụng - SHC).", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "" },
+        { TenThuoc: "Tobramycin (IV)", CrCl_tren_50: "Xem Gentamicin / Hướng dẫn chỉnh liều Aminoglycoside.", CrCl_10_50: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", CrCl_duoi_10: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", IHD: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", CRRT: "Xem Hướng dẫn chỉnh liều Aminoglycoside.", GhiChu: "" },
+        { TenThuoc: "Trimethoprim/Sulfamethoxazole (IV/PO)", CrCl_tren_50: "Viêm bàng quang không biến chứng: 1 viên DS (160mg TMP) uống 2 lần/ngày. Da và mô mềm: 1-2 viên DS uống 2 lần/ngày. Nặng (Gram âm, Stenotrophomonas, Viêm phổi do Pneumocystis jirovecii): 8-15 mg/kg/ngày TMP chia cữ.", CrCl_10_50: "Dùng 50% liều khuyến cáo.", CrCl_duoi_10: "Không khuyến cáo. Nếu bắt buộc cho Viêm phổi do Pneumocystis jirovecii: 5-7.5 mg/kg TMP mỗi 24 giờ.", IHD: "25-50% liều. Viêm phổi do Pneumocystis jirovecii / Stenotrophomonas: 5-7.5 mg/kg TMP mỗi 24 giờ. (Sau chạy thận).", CRRT: "5-10 mg/kg/ngày TMP chia mỗi 12 giờ. Stenotrophomonas / Viêm phổi do Pneumocystis jirovecii: 10-15 mg/kg/ngày chia mỗi 8-12 giờ.", GhiChu: "Dùng cân nặng hiệu chỉnh cho bệnh nhân béo phì. (DS = 160mg TMP)." },
+        { TenThuoc: "Valacyclovir (PO)", CrCl_tren_50: "Herpes sinh dục: 1 g đường uống mỗi 12 giờ (Khởi đầu) / 500 mg mỗi 12 giờ (Tái phát). Herpes môi: 2 g đường uống mỗi 12 giờ x 2 liều. Varicella Zoster Virus: 1 g đường uống mỗi 8 giờ.", CrCl_10_50: "CrCl 30-50: Varicella Zoster Virus 1 g mỗi 12 giờ. CrCl 10-30: Herpes sinh dục 500 mg mỗi 24 giờ, Varicella Zoster Virus 1 g mỗi 24 giờ.", CrCl_duoi_10: "Herpes sinh dục: 500 mg mỗi 24 giờ. Varicella Zoster Virus: 500 mg mỗi 24 giờ.", IHD: "500 mg đường uống mỗi 24 giờ (Dùng hàng ngày sau chạy thận).", CRRT: "Không có dữ liệu.", GhiChu: "" },
+        { TenThuoc: "Valganciclovir (PO)", CrCl_tren_50: "CrCl > 60: Tấn công 900 mg mỗi 12 giờ. Duy trì 900 mg mỗi 24 giờ.", CrCl_10_50: "CrCl 40-59: 450 mỗi 12 giờ / 450 mỗi 24 giờ. CrCl 25-39: 450 mỗi 24 giờ / 450 mỗi 48 giờ. CrCl 10-24: 450 mỗi 48 giờ / 450 2 lần/tuần.", CrCl_duoi_10: "Tấn công: 200 mg 3 lần/tuần. Duy trì: 100 mg 3 lần/tuần.", IHD: "Uống sau chạy thận. Tấn công: 200 mg 3 lần/tuần. Duy trì: 100 mg 3 lần/tuần.", CRRT: "Không có dữ liệu.", GhiChu: "Tham khảo các phác đồ cấy ghép." },
+        { TenThuoc: "Vancomycin (IV)", CrCl_tren_50: "Xem Hướng dẫn chỉnh liều Vancomycin.", CrCl_10_50: "Xem Hướng dẫn chỉnh liều Vancomycin.", CrCl_duoi_10: "Xem Hướng dẫn chỉnh liều Vancomycin.", IHD: "Xem Hướng dẫn chỉnh liều Vancomycin.", CRRT: "Xem Hướng dẫn chỉnh liều Vancomycin.", GhiChu: "Việc chỉnh liều dựa vào nồng độ đáy hoặc AUC." },
+        { TenThuoc: "Vancomycin (PO)", CrCl_tren_50: "Nhẹ / trung bình / nặng: 125 mg đường uống mỗi 6 giờ. Nặng có biến chứng (sốc nhiễm trùng do Clostridium difficile, đại tràng nhiễm độc): 500 mg đường uống mỗi 6 giờ.", CrCl_10_50: "Không thay đổi.", CrCl_duoi_10: "Không thay đổi.", IHD: "Không thay đổi.", CRRT: "Không thay đổi.", GhiChu: "Chỉ dùng để điều trị viêm đại tràng do Clostridium difficile." },
+        { TenThuoc: "Voriconazole (IV/PO)", CrCl_tren_50: "IV: 6 mg/kg IV mỗi 12 giờ x 2 liều, sau đó 4 mg/kg IV mỗi 12 giờ. Đường uống: 400 mg mỗi 12 giờ x 2 liều, sau đó 200 mg mỗi 12 giờ.", CrCl_10_50: "Thận trọng với IV (do tích lũy tá dược cyclodextrin). Cân nhắc chuyển đường uống nếu CrCl < 50.", CrCl_duoi_10: "Thận trọng với IV.", IHD: "Thận trọng với IV.", CRRT: "Thận trọng với IV.", GhiChu: "Chuyển đổi IV sang đường uống tỷ lệ 1:1. Dùng cân nặng hiệu chỉnh cho béo phì. Cần theo dõi nồng độ thuốc." }
     ];
 
     // ===== KHỞI TẠO =====
@@ -487,7 +476,6 @@
         calcAminoglycoside();
     }
 
-    // ===== HIỂN THỊ/ẨN MODULE =====
     function toggleModules() {
         const inputVal = document.getElementById('drugInput').value.trim().toLowerCase();
         const vModule = document.getElementById('vancoModule');
@@ -614,12 +602,12 @@
         loadMg = Math.round(loadMg / 250) * 250;
         if (loadMg < 500) loadMg = 500;
         let maintMgPerDay = 0, interval = '';
-        if (crcl > 130) { maintMgPerDay = dosingWeight * 30; interval = 'truyền liên tục (CI) 24h'; }
-        else if (crcl >= 90) { maintMgPerDay = dosingWeight * 30; interval = 'Q8-12H'; }
-        else if (crcl >= 51) { maintMgPerDay = dosingWeight * 25; interval = 'Q12H'; }
-        else if (crcl >= 30) { maintMgPerDay = dosingWeight * 20; interval = 'Q12H → Q24H'; }
-        else if (crcl >= 10) { maintMgPerDay = dosingWeight * 12; interval = 'Q24H → Q48H'; }
-        else { maintMgPerDay = dosingWeight * 10; interval = 'dose-by-level'; }
+        if (crcl > 130) { maintMgPerDay = dosingWeight * 30; interval = 'truyền liên tục (CI) 24 giờ'; }
+        else if (crcl >= 90) { maintMgPerDay = dosingWeight * 30; interval = 'mỗi 8-12 giờ'; }
+        else if (crcl >= 51) { maintMgPerDay = dosingWeight * 25; interval = 'mỗi 12 giờ'; }
+        else if (crcl >= 30) { maintMgPerDay = dosingWeight * 20; interval = 'mỗi 12 giờ → 24 giờ'; }
+        else if (crcl >= 10) { maintMgPerDay = dosingWeight * 12; interval = 'mỗi 24 giờ → 48 giờ'; }
+        else { maintMgPerDay = dosingWeight * 10; interval = 'theo nồng độ (dose-by-level)'; }
         let maintDosePerInterval = 0;
         if (crcl > 130) {
             maintDosePerInterval = Math.round(maintMgPerDay / 250) * 250;
@@ -627,37 +615,37 @@
         } else if (crcl >= 90) {
             let q8h = Math.round((maintMgPerDay / 3) / 250) * 250;
             let q12h = Math.round((maintMgPerDay / 2) / 250) * 250;
-            if (q8h >= 500 && q8h <= 2000) { maintDosePerInterval = q8h; interval = 'Q8H'; }
-            else { maintDosePerInterval = Math.min(q12h, 2000); interval = 'Q12H'; }
+            if (q8h >= 500 && q8h <= 2000) { maintDosePerInterval = q8h; interval = 'mỗi 8 giờ'; }
+            else { maintDosePerInterval = Math.min(q12h, 2000); interval = 'mỗi 12 giờ'; }
         } else if (crcl >= 51) {
             let q12h = Math.round((maintMgPerDay / 2) / 250) * 250;
             maintDosePerInterval = Math.min(Math.max(q12h, 500), 2000);
-            interval = 'Q12H';
+            interval = 'mỗi 12 giờ';
         } else if (crcl >= 30) {
             let q24h = Math.round(maintMgPerDay / 250) * 250;
             maintDosePerInterval = Math.min(Math.max(q24h, 500), 2000);
-            interval = 'Q24H';
+            interval = 'mỗi 24 giờ';
         } else {
             let q24h = Math.round(maintMgPerDay / 250) * 250;
             maintDosePerInterval = Math.min(Math.max(q24h, 500), 2000);
-            interval = 'Q24-48H (theo nồng độ)';
+            interval = 'mỗi 24-48 giờ (theo nồng độ)';
         }
         maintDosePerInterval = Math.min(Math.max(maintDosePerInterval, 500), 2000);
         document.getElementById('vLoadDose').textContent = `${loadMg} mg IV (≈ ${(loadMg/1000).toFixed(1)}g) - truyền 60-90 phút`;
-        let maintText = crcl > 130 ? `${maintDosePerInterval} mg/24h truyền liên tục (CI)` : `${maintDosePerInterval} mg IV ${interval}`;
+        let maintText = crcl > 130 ? `${maintDosePerInterval} mg/24 giờ truyền liên tục (CI)` : `${maintDosePerInterval} mg IV ${interval}`;
         document.getElementById('vMaintDose').textContent = maintText;
         let guide = '';
         if (crcl > 130) {
-            guide = `Pha ${maintDosePerInterval}mg Vancomycin vào 250-500mL NaCl 0.9% hoặc D5W, truyền liên tục 24h. Tốc độ ~${Math.round(maintDosePerInterval/24)} mg/giờ.`;
+            guide = `Pha ${maintDosePerInterval}mg Vancomycin vào 250-500mL NaCl 0.9% hoặc D5W, truyền liên tục 24 giờ. Tốc độ ~${Math.round(maintDosePerInterval/24)} mg/giờ.`;
         } else {
             let vol = loadMg >= 1750 ? 500 : (loadMg >= 1000 ? 250 : 100);
-            guide = `Pha ${loadMg}mg (loading) vào ${vol}mL NaCl 0.9% hoặc D5W, truyền 60-90 phút.`;
+            guide = `Pha ${loadMg}mg (liều tấn công) vào ${vol}mL NaCl 0.9% hoặc D5W, truyền 60-90 phút.`;
             let volMaint = maintDosePerInterval >= 1750 ? 500 : (maintDosePerInterval >= 1000 ? 250 : 100);
             guide += ` Liều duy trì: pha ${maintDosePerInterval}mg vào ${volMaint}mL, truyền 60 phút.`;
         }
-        guide += ` Theo dõi trough trước liều thứ 3-4, mục tiêu 10-20 mg/L (AUC 400-600).`;
+        guide += ` Theo dõi nồng độ đáy trước liều thứ 3-4, mục tiêu 10-20 mg/L (AUC 400-600).`;
         document.getElementById('vInfusionGuide').textContent = guide;
-        let currentTDD = crcl > 130 ? maintDosePerInterval : maintDosePerInterval * (interval.includes('Q8H') ? 3 : (interval.includes('Q12H') ? 2 : 1));
+        let currentTDD = crcl > 130 ? maintDosePerInterval : maintDosePerInterval * (interval.includes('8 giờ') ? 3 : (interval.includes('12 giờ') ? 2 : 1));
         document.getElementById('vCurTDD').value = currentTDD;
     }
     function adjustVancoAUC() {
@@ -714,68 +702,66 @@
 
         if (strategy === 'highdose') {
             doseFactor = isAmikacin ? 15 : 7;
-            let crclCategory = '';
-            if (crcl >= 60) { interval = 'Q24H'; crclCategory = '≥60'; }
-            else if (crcl >= 40) { interval = 'Q36H'; crclCategory = '40-59'; }
-            else if (crcl >= 30) { interval = 'Q48H'; crclCategory = '30-39'; }
+            if (crcl >= 60) { interval = 'mỗi 24 giờ'; }
+            else if (crcl >= 40) { interval = 'mỗi 36 giờ'; }
+            else if (crcl >= 30) { interval = 'mỗi 48 giờ'; }
             else { interval = 'Không khuyến cáo (CrCl <30)'; }
             let dose = Math.round(dosingWeight * doseFactor);
             if (isAmikacin) dose = Math.round(dose / 250) * 250;
             else dose = Math.round(dose / 10) * 10;
             initDose = `${dose} mg IV (${doseFactor} mg/kg)`;
-            targets = `Peak ~${isAmikacin ? '40-60' : '20'} mcg/mL, Trough <${isAmikacin ? '4' : '1'} mcg/mL`;
-            monitoring = `Lấy nồng độ 8-12h sau liều đầu, dùng nomogram. Theo dõi trough sớm nếu có thay đổi chức năng thận.`;
+            targets = `Nồng độ đỉnh ~${isAmikacin ? '40-60' : '20'} mcg/mL, Nồng độ đáy <${isAmikacin ? '4' : '1'} mcg/mL`;
+            monitoring = `Lấy nồng độ 8-12 giờ sau liều đầu, dùng biểu đồ nomogram. Theo dõi nồng độ đáy sớm nếu có thay đổi chức năng thận.`;
             if (crcl < 30) initDose += ' ❌ Không khuyến cáo';
         } else if (strategy === 'highdose_urban') {
             doseFactor = isAmikacin ? 15 : 5;
-            let crclCategory = '';
-            if (crcl >= 60) { interval = 'Q24H'; crclCategory = '≥60'; }
-            else if (crcl >= 40) { interval = 'Q36H'; crclCategory = '40-59'; }
-            else if (crcl >= 20) { interval = 'Q48H'; crclCategory = '20-39'; }
+            if (crcl >= 60) { interval = 'mỗi 24 giờ'; }
+            else if (crcl >= 40) { interval = 'mỗi 36 giờ'; }
+            else if (crcl >= 20) { interval = 'mỗi 48 giờ'; }
             else { interval = 'Không khuyến cáo (CrCl <20)'; }
             let dose = Math.round(dosingWeight * doseFactor);
             if (isAmikacin) dose = Math.round(dose / 250) * 250;
             else dose = Math.round(dose / 10) * 10;
             initDose = `${dose} mg IV (${doseFactor} mg/kg)`;
-            targets = `Peak ~${isAmikacin ? '40-60' : '15-20'} mcg/mL, Trough <${isAmikacin ? '4' : '1'} mcg/mL`;
-            monitoring = `Lấy nồng độ 8-12h sau liều đầu, dùng nomogram Urban. Theo dõi trough sớm.`;
+            targets = `Nồng độ đỉnh ~${isAmikacin ? '40-60' : '15-20'} mcg/mL, Nồng độ đáy <${isAmikacin ? '4' : '1'} mcg/mL`;
+            monitoring = `Lấy nồng độ 8-12 giờ sau liều đầu, dùng biểu đồ nomogram Urban. Theo dõi nồng độ đáy sớm.`;
             if (crcl < 20) initDose += ' ❌ Không khuyến cáo';
         } else if (strategy === 'conventional') {
             let dose = 0;
             if (isAmikacin) dose = Math.round(dosingWeight * 5 / 50) * 50;
             else dose = Math.round(dosingWeight * 1.7 * 10) / 10;
-            if (crcl >= 60) { interval = 'Q8H'; }
-            else if (crcl >= 40) { interval = 'Q12H'; }
-            else if (crcl >= 30) { interval = 'Q24H'; }
-            else if (crcl >= 20) { interval = 'Q24H (dose-by-level)'; }
-            else { interval = 'Load + dose-by-level'; }
+            if (crcl >= 60) { interval = 'mỗi 8 giờ'; }
+            else if (crcl >= 40) { interval = 'mỗi 12 giờ'; }
+            else if (crcl >= 30) { interval = 'mỗi 24 giờ'; }
+            else if (crcl >= 20) { interval = 'mỗi 24 giờ (theo nồng độ)'; }
+            else { interval = 'Liều tấn công + theo nồng độ'; }
             initDose = `${dose} mg IV (${isAmikacin ? '5' : '1.7'} mg/kg)`;
-            targets = `Peak ${isAmikacin ? '20-30' : '6-10'} mcg/mL, Trough ${isAmikacin ? '<4-8' : '<1-2'} mcg/mL`;
-            monitoring = `Lấy peak 30 phút sau truyền, trough trước liều kế tiếp. Theo dõi nồng độ định kỳ.`;
+            targets = `Nồng độ đỉnh ${isAmikacin ? '20-30' : '6-10'} mcg/mL, Nồng độ đáy ${isAmikacin ? '<4-8' : '<1-2'} mcg/mL`;
+            monitoring = `Lấy nồng độ đỉnh 30 phút sau truyền, nồng độ đáy trước liều kế tiếp. Theo dõi nồng độ định kỳ.`;
         } else if (strategy === 'synergy') {
             let dose = Math.round(dosingWeight * 1);
-            if (crcl >= 60) { interval = 'Q8H'; }
-            else if (crcl >= 40) { interval = 'Q12H'; }
-            else if (crcl >= 20) { interval = 'Q24H'; }
-            else { interval = 'Q48-72H (theo nồng độ)'; }
+            if (crcl >= 60) { interval = 'mỗi 8 giờ'; }
+            else if (crcl >= 40) { interval = 'mỗi 12 giờ'; }
+            else if (crcl >= 20) { interval = 'mỗi 24 giờ'; }
+            else { interval = 'mỗi 48-72 giờ (theo nồng độ)'; }
             initDose = `${dose} mg/kg IV (tối đa 120mg)`;
-            targets = `Peak 3-4 mcg/mL, Trough <1 mcg/mL`;
-            monitoring = `Lấy peak 30 phút sau truyền, trough trước liều kế tiếp. Mục tiêu synergy Gram(+).`;
+            targets = `Nồng độ đỉnh 3-4 mcg/mL, Nồng độ đáy <1 mcg/mL`;
+            monitoring = `Lấy nồng độ đỉnh 30 phút sau truyền, nồng độ đáy trước liều kế tiếp. Mục tiêu hiệp đồng diệt khuẩn với vi khuẩn Gram dương.`;
         } else if (strategy === 'ntm') {
             let dose = isAmikacin ? Math.round(dosingWeight * 12 / 50) * 50 : Math.round(dosingWeight * 10 / 50) * 50;
-            if (crcl >= 60) { interval = 'Q24H'; }
-            else if (crcl >= 40) { interval = 'Q24-48H'; }
-            else { interval = 'Dose-by-level'; }
+            if (crcl >= 60) { interval = 'mỗi 24 giờ'; }
+            else if (crcl >= 40) { interval = 'mỗi 24-48 giờ'; }
+            else { interval = 'Theo nồng độ (dose-by-level)'; }
             initDose = `${dose} mg IV (${isAmikacin ? '10-15' : '10'} mg/kg)`;
-            targets = `Peak ${isAmikacin ? '25-40' : '20-30'} mcg/mL, Trough <${isAmikacin ? '4' : '1'} mcg/mL`;
-            monitoring = `Lấy peak 30 phút sau truyền, trough trước liều thứ 2. Theo dõi hàng tuần.`;
+            targets = `Nồng độ đỉnh ${isAmikacin ? '25-40' : '20-30'} mcg/mL, Nồng độ đáy <${isAmikacin ? '4' : '1'} mcg/mL`;
+            monitoring = `Lấy nồng độ đỉnh 30 phút sau truyền, nồng độ đáy trước liều thứ 2. Theo dõi hàng tuần.`;
         } else if (strategy === 'cf') {
             let dose = isAmikacin ? Math.round(dosingWeight * 20 / 250) * 250 : Math.round(dosingWeight * 10);
-            if (crcl >= 60) { interval = 'Q24H'; }
-            else { interval = 'Q36-48H'; }
+            if (crcl >= 60) { interval = 'mỗi 24 giờ'; }
+            else { interval = 'mỗi 36-48 giờ'; }
             initDose = `${dose} mg IV (${isAmikacin ? '20' : '10'} mg/kg)`;
-            targets = `Peak ${isAmikacin ? '40-60' : '20-30'} mcg/mL, Trough <${isAmikacin ? '4' : '1'} mcg/mL`;
-            monitoring = `Theo dõi nồng độ 8-12h sau liều, đảm bảo trough <1 mcg/mL trước liều tiếp theo.`;
+            targets = `Nồng độ đỉnh ${isAmikacin ? '40-60' : '20-30'} mcg/mL, Nồng độ đáy <${isAmikacin ? '4' : '1'} mcg/mL`;
+            monitoring = `Theo dõi nồng độ 8-12 giờ sau liều, đảm bảo nồng độ đáy <1 mcg/mL trước liều tiếp theo.`;
         }
         document.getElementById('aInitDose').textContent = initDose;
         document.getElementById('aInterval').textContent = interval;
