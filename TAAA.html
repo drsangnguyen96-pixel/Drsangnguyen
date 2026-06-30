@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Hướng dẫn chẩn đoán & xử trí bệnh lý động mạch chủ · EACTS/STS 2024</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #edf3f8;
+            padding: 16px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #083449, #1b5f7a);
+            color: white;
+            padding: 24px 32px;
+            border-radius: 36px 36px 20px 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 12px 30px -10px rgba(0,20,40,0.4);
+        }
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .header .sub {
+            opacity: 0.85;
+            margin-top: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            font-size: 0.9rem;
+        }
+        .header .sub span {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 18px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 16px 20px 0 20px;
+            border-bottom: 2px solid #e3ebf3;
+        }
+        .tab-btn {
+            padding: 10px 24px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #5a7a92;
+            cursor: pointer;
+            border-radius: 12px 12px 0 0;
+            transition: 0.2s;
+            position: relative;
+        }
+        .tab-btn:hover {
+            background: #eef4f9;
+            color: #0f3f58;
+        }
+        .tab-btn.active {
+            background: #e8f1f9;
+            color: #083449;
+            box-shadow: inset 0 -3px 0 #1b7a9e;
+        }
+        .tab-btn .badge-step {
+            background: #b8cfdf;
+            color: #1a4057;
+            border-radius: 30px;
+            padding: 0 10px;
+            font-size: 0.65rem;
+            margin-left: 6px;
+        }
+        .tab-btn.active .badge-step {
+            background: #1b7a9e;
+            color: white;
+        }
+        .tab-content {
+            background: white;
+            border-radius: 0 0 28px 28px;
+            padding: 24px 28px 32px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+            border: 1px solid #e3ebf3;
+            border-top: none;
+            min-height: 380px;
+        }
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0.5; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-inner {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #e9eef4;
+        }
+        .card-inner .title {
+            font-weight: 600;
+            color: #12415c;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+        .item-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f5fb;
+        }
+        .item-check:last-child { border-bottom: none; }
+        .item-check label {
+            flex: 1;
+            font-size: 0.92rem;
+            line-height: 1.4;
+            color: #1a3346;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .item-check input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #1a7a9e;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .pill {
+            display: inline-block;
+            background: #e1ebf5;
+            border-radius: 40px;
+            padding: 2px 14px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #1a4b66;
+        }
+        .tag {
+            background: #eaf1f9;
+            border-radius: 30px;
+            padding: 0 14px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #1d4b66;
+            white-space: nowrap;
+        }
+        .decision-box {
+            background: #f4faff;
+            border-radius: 16px;
+            padding: 14px 18px;
+            border-left: 5px solid #2f86ac;
+            margin-top: 10px;
+        }
+        .highlight-box {
+            background: #e7f2fa;
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-top: 14px;
+            border: 1px dashed #3d86ab;
+        }
+        .sub-section {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-top: 10px;
+            border: 1px solid #e7eef6;
+        }
+        .sub-section .title {
+            font-weight: 600;
+            color: #12415c;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+        .sub-section ul {
+            padding-left: 20px;
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+        .sub-section ul li {
+            margin-bottom: 4px;
+        }
+        .priority-list {
+            list-style: none;
+            padding: 0;
+        }
+        .priority-list li {
+            padding: 8px 0 8px 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%231a729b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>') left center no-repeat;
+            background-size: 18px;
+            border-bottom: 1px solid #f0f6fc;
+            font-size: 0.92rem;
+        }
+        .prognosis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        @media (max-width: 480px) { .prognosis-grid { grid-template-columns: 1fr; } }
+        .prognosis-item {
+            background: #f7fcff;
+            border-radius: 14px;
+            padding: 12px 16px;
+            border: 1px solid #e3eefa;
+        }
+        .prognosis-item .label {
+            font-weight: 500;
+            color: #1d4a66;
+            font-size: 0.78rem;
+            display: block;
+        }
+        .prognosis-item .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f344b;
+            margin-top: 4px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn-nav {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-prev {
+            background: #e8eff6;
+            color: #1a4d6b;
+        }
+        .btn-prev:hover {
+            background: #d6e2ed;
+        }
+        .btn-next {
+            background: #1b7a9e;
+            color: white;
+        }
+        .btn-next:hover {
+            background: #13658a;
+        }
+        .btn-next:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-reset {
+            background: white;
+            border: 1.5px solid #c6d8e8;
+            padding: 10px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            color: #1a4d6b;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        .btn-reset:hover {
+            background: #e8f0f9;
+            border-color: #88aec9;
+        }
+        .text-muted { color: #4f6f89; }
+        .text-sm { font-size: 0.85rem; }
+        .mt-2 { margin-top: 12px; }
+        .mb-1 { margin-bottom: 6px; }
+        .footer {
+            text-align: center;
+            color: #56738b;
+            font-size: 0.75rem;
+            border-top: 1px solid #d8e4ef;
+            padding-top: 18px;
+            margin-top: 20px;
+        }
+
+        .assessment-summary {
+            background: #eef6fc;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            border: 1px solid #cde0ed;
+        }
+        .assessment-summary .label {
+            font-weight: 600;
+            color: #0f405a;
+            font-size: 0.85rem;
+        }
+        .assessment-summary .items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .assessment-summary .items .tag-item {
+            background: #d4e4f0;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            color: #1a4d6b;
+        }
+        .assessment-summary .items .tag-item.active {
+            background: #1b7a9e;
+            color: white;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-pending {
+            background: #f1f3f5;
+            color: #6c7a89;
+        }
+        .status-done {
+            background: #d4edda;
+            color: #0e4b2b;
+        }
+        .status-warning {
+            background: #fff3cd;
+            color: #7a5d0b;
+        }
+        .status-urgent {
+            background: #f8d7da;
+            color: #8b1e2b;
+        }
+
+        .action-card {
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            border-left: 5px solid;
+        }
+        .action-card.urgent {
+            background: #fef2f2;
+            border-color: #dc2626;
+        }
+        .action-card.important {
+            background: #fffbeb;
+            border-color: #f59e0b;
+        }
+        .action-card.standard {
+            background: #f0fdf4;
+            border-color: #22c55e;
+        }
+        .action-card .action-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .action-card .action-detail {
+            font-size: 0.88rem;
+            color: #1f3a4e;
+            margin-top: 4px;
+            padding-left: 4px;
+        }
+        .action-card .action-evidence {
+            font-size: 0.75rem;
+            color: #4f6f89;
+            margin-top: 4px;
+            background: rgba(255,255,255,0.6);
+            padding: 2px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .treatment-section {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            border: 2px solid #e3ebf3;
+        }
+        .treatment-section .section-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #0f405a;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .treatment-section .section-title .badge-count {
+            background: #1b7a9e;
+            color: white;
+            padding: 0 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 600px) {
+            .tabs { padding: 12px 14px 0 14px; gap: 4px; }
+            .tab-btn { padding: 8px 14px; font-size: 0.8rem; }
+            .tab-content { padding: 16px; }
+            .header h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <h1>📋 Hướng dẫn chẩn đoán & xử trí bệnh lý động mạch chủ</h1>
+        <div class="sub">
+            <span>🔹 Dựa trên EACTS/STS Guidelines 2024</span>
+            <span>🔹 Phân loại → Đánh giá → Xử trí → Tiên lượng</span>
+            <span>🔹 Các bước liên kết với nhau</span>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs" id="tabHeaders">
+        <button class="tab-btn active" data-tab="tab1">1️⃣ Phân loại <span class="badge-step">bắt buộc</span></button>
+        <button class="tab-btn" data-tab="tab2">2️⃣ Đánh giá <span class="badge-step" id="step2Badge">chưa có</span></button>
+        <button class="tab-btn" data-tab="tab3">3️⃣ Xử trí <span class="badge-step" id="step3Badge">chưa có</span></button>
+        <button class="tab-btn" data-tab="tab4">4️⃣ Tiên lượng <span class="badge-step" id="step4Badge">chưa có</span></button>
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div class="tab-content">
+        <!-- TAB 1: Phân loại -->
+        <div class="tab-pane active" id="tab1">
+            <div class="card-inner">
+                <div class="title">📌 Chọn loại tổn thương động mạch chủ (chọn ít nhất 1)</div>
+                <div class="item-check"><label><input type="checkbox" class="assess" data-type="A"> Bóc tách type A (Stanford A) – liên quan động mạch chủ lên</label></div>
+                <div class="item-check"><label><input type="checkbox" class="assess" data-type="B"> Bóc tách type B (Stanford B) – không liên quan động mạch chủ lên</label></div>
+                <div class="item-check"><label><input type="checkbox" class="assess" data-type="nonAB"> Non‑A non‑B – lỗ vào ở quai động mạch chủ, không lan lên</label></div>
+                <div class="item-check"><label><input type="checkbox" class="assess" data-type="IMH_A"> Máu tụ thành (IMH) type A – ở động mạch chủ lên</label></div>
+                <div class="item-check"><label><input type="checkbox" class="assess" data-type="IMH_B"> Máu tụ thành (IMH) type B – ở động mạch chủ xuống</label></div>
+                <div class="item-check"><label><input type="checkbox" class="assess" data-type="PAU"> Loét xơ vữa xuyên thành (PAU) – có yếu tố nguy cơ cao</label></div>
+                <div class="item-check"><label><input type="checkbox" class="assess" data-type="BTAI"> Chấn thương động mạch chủ ngực (BTAI) – độ II, III hoặc IV</label></div>
+                <div class="item-check"><label><input type="checkbox" class="assess" data-type="AAA"> Phình động mạch chủ bụng (AAA) – ≥55mm (nam) / ≥50mm (nữ)</label></div>
+                <div class="item-check"><label><input type="checkbox" class="assess" data-type="TAAA"> Phình động mạch chủ ngực‑bụng (TAAA) – ≥55mm</label></div>
+            </div>
+            <div class="decision-box">
+                <strong>✅ Phân loại hiện tại:</strong> <span id="currentClass">–</span> &nbsp;|&nbsp; <span id="classDetail">Vui lòng chọn ít nhất một loại tổn thương</span>
+            </div>
+            <div class="nav-buttons">
+                <div></div>
+                <button class="btn-nav btn-next" id="nextToTab2">Tiếp theo → Đánh giá chi tiết</button>
+            </div>
+        </div>
+
+        <!-- TAB 2: Đánh giá chi tiết (checklist) -->
+        <div class="tab-pane" id="tab2">
+            <div id="assessmentDisplay">
+                <div id="assessmentIntro" class="text-muted text-sm">Vui lòng chọn phân loại ở Bước 1 trước.</div>
+                <div id="assessmentContent"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn-nav btn-prev" id="prevToTab1">← Quay lại Phân loại</button>
+                <button class="btn-nav btn-next" id="nextToTab3">Tiếp theo → Xử trí chi tiết</button>
+            </div>
+        </div>
+
+        <!-- TAB 3: Xử trí chi tiết -->
+        <div class="tab-pane" id="tab3">
+            <div id="actionDisplay">
+                <p class="text-muted text-sm">Vui lòng hoàn thành đánh giá ở Bước 2 trước.</p>
+                <div id="actionContent"></div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn-nav btn-prev" id="prevToTab2">← Quay lại Đánh giá</button>
+                <button class="btn-nav btn-next" id="nextToTab4">Tiếp theo → Tiên lượng</button>
+            </div>
+        </div>
+
+        <!-- TAB 4: Tiên lượng -->
+        <div class="tab-pane" id="tab4">
+            <div id="prognosisDisplay">
+                <p class="text-muted text-sm">Vui lòng hoàn thành đánh giá ở Bước 2 trước.</p>
+                <div id="prognosisContent" class="prognosis-grid"></div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn-nav btn-prev" id="prevToTab3">← Quay lại Xử trí</button>
+                <button class="btn-nav btn-reset" id="resetBtn">⟲ Đặt lại tất cả</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        ⚕️ Tham khảo EACTS/STS Guidelines for Diagnosing and Treating Acute and Chronic Syndromes of the Aortic Organ (2024)
+    </div>
+</div>
+
+<script>
+    (function() {
+        // DOM refs
+        const assessChecks = document.querySelectorAll('.assess');
+        const currentClassSpan = document.getElementById('currentClass');
+        const classDetailSpan = document.getElementById('classDetail');
+        const assessmentContent = document.getElementById('assessmentContent');
+        const assessmentIntro = document.getElementById('assessmentIntro');
+        const actionContent = document.getElementById('actionContent');
+        const prognosisContent = document.getElementById('prognosisContent');
+
+        // Badges
+        const step2Badge = document.getElementById('step2Badge');
+        const step3Badge = document.getElementById('step3Badge');
+        const step4Badge = document.getElementById('step4Badge');
+
+        // Tab buttons và panes
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        // Navigation buttons
+        const nextToTab2 = document.getElementById('nextToTab2');
+        const prevToTab1 = document.getElementById('prevToTab1');
+        const nextToTab3 = document.getElementById('nextToTab3');
+        const prevToTab2 = document.getElementById('prevToTab2');
+        const nextToTab4 = document.getElementById('nextToTab4');
+        const prevToTab3 = document.getElementById('prevToTab3');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // State
+        let currentPrimaryType = null;
+        let assessmentState = {};
+        let assessmentCheckboxes = [];
+
+        // --- Hàm chuyển tab ---
+        function switchTab(tabId) {
+            tabBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabId);
+            });
+            tabPanes.forEach(pane => {
+                pane.classList.toggle('active', pane.id === tabId);
+            });
+        }
+
+        // --- Lấy các loại đã chọn ---
+        function getSelectedTypes() {
+            const selected = [];
+            assessChecks.forEach(cb => {
+                if (cb.checked) selected.push(cb.dataset.type);
+            });
+            return selected;
+        }
+
+        // --- Xác định loại chính ---
+        function getPrimaryType(selected) {
+            const order = ['A', 'nonAB', 'IMH_A', 'B', 'IMH_B', 'PAU', 'BTAI', 'TAAA', 'AAA'];
+            for (let type of order) {
+                if (selected.includes(type)) return type;
+            }
+            return null;
+        }
+
+        const typeNames = {
+            'A': 'Bóc tách type A (ĐMC lên)',
+            'B': 'Bóc tách type B (ĐMC xuống)',
+            'nonAB': 'Non‑A non‑B (quai ĐMC)',
+            'IMH_A': 'Máu tụ thành (IMH) type A',
+            'IMH_B': 'Máu tụ thành (IMH) type B',
+            'PAU': 'Loét xơ vữa (PAU) nguy cơ cao',
+            'BTAI': 'Chấn thương ĐMC ngực (BTAI)',
+            'AAA': 'Phình ĐMC bụng (AAA)',
+            'TAAA': 'Phình ĐMC ngực‑bụng (TAAA)'
+        };
+
+        // --- Danh sách các yếu tố đánh giá theo từng loại ---
+        const assessmentItems = {
+            'A': [
+                { id: 'A_malperfusion', label: 'Có malperfusion tạng', weight: 'nặng' },
+                { id: 'A_shock', label: 'Sốc / tụt huyết áp', weight: 'nặng' },
+                { id: 'A_tamponade', label: 'Chèn ép tim', weight: 'nặng' },
+                { id: 'A_ar', label: 'Hở van ĐMC ≥ độ 2', weight: 'trung bình' },
+                { id: 'A_cpr', label: 'Đã CPR trước mổ', weight: 'nặng' },
+                { id: 'A_prior_surgery', label: 'Phẫu thuật tim trước đó', weight: 'trung bình' },
+                { id: 'A_age_70', label: 'Tuổi ≥ 70', weight: 'trung bình' }
+            ],
+            'B': [
+                { id: 'B_rupture', label: 'Vỡ ĐMC', weight: 'nặng' },
+                { id: 'B_malperfusion', label: 'Malperfusion tạng/chi', weight: 'nặng' },
+                { id: 'B_persistent_pain', label: 'Đau dai dẳng không kiểm soát', weight: 'nặng' },
+                { id: 'B_entry_large', label: 'Lỗ vào > 10mm', weight: 'trung bình' },
+                { id: 'B_entry_curve', label: 'Lỗ vào ở đường cong trong', weight: 'trung bình' },
+                { id: 'B_diameter_40', label: 'Đường kính ĐMC xuống > 40mm', weight: 'trung bình' },
+                { id: 'B_false_lumen', label: 'Đường kính lòng giả > 22mm', weight: 'trung bình' }
+            ],
+            'nonAB': [
+                { id: 'nonAB_entry_arch', label: 'Lỗ vào ở quai ĐMC', weight: 'trung bình' },
+                { id: 'nonAB_stroke_risk', label: 'Nguy cơ đột quỵ cao', weight: 'trung bình' },
+                { id: 'nonAB_young', label: 'Bệnh nhân trẻ (< 60 tuổi)', weight: 'nhẹ' }
+            ],
+            'IMH_A': [
+                { id: 'IMHA_age', label: 'Tuổi ≥ 70', weight: 'nặng' },
+                { id: 'IMHA_diameter', label: 'Đường kính ĐMC > 45mm', weight: 'nặng' },
+                { id: 'IMHA_thickness', label: 'Bề dày thành ≥ 10mm', weight: 'nặng' },
+                { id: 'IMHA_pleural', label: 'Tràn dịch màng phổi', weight: 'trung bình' },
+                { id: 'IMHA_ulp', label: 'Có ulcer-like projection', weight: 'nặng' }
+            ],
+            'IMH_B': [
+                { id: 'IMHB_diameter', label: 'Đường kính ĐMC > 45mm', weight: 'nặng' },
+                { id: 'IMHB_thickness', label: 'Bề dày thành ≥ 10mm', weight: 'nặng' },
+                { id: 'IMHB_ulp', label: 'Có ulcer-like projection', weight: 'nặng' },
+                { id: 'IMHB_pleural', label: 'Tràn dịch màng phổi', weight: 'trung bình' }
+            ],
+            'PAU': [
+                { id: 'PAU_size', label: 'Đường kính PAU > 20mm', weight: 'nặng' },
+                { id: 'PAU_depth', label: 'Độ sâu PAU > 10mm', weight: 'nặng' },
+                { id: 'PAU_imh', label: 'Có IMH kèm theo', weight: 'nặng' },
+                { id: 'PAU_pleural', label: 'Tràn dịch màng phổi', weight: 'trung bình' },
+                { id: 'PAU_pain', label: 'Đau dai dẳng dù đã điều trị', weight: 'nặng' }
+            ],
+            'BTAI': [
+                { id: 'BTAI_grade3', label: 'Độ III (phình giả)', weight: 'nặng' },
+                { id: 'BTAI_grade4', label: 'Độ IV (vỡ tự do)', weight: 'nặng' },
+                { id: 'BTAI_hematoma', label: 'Hematoma trung thất > 10mm', weight: 'trung bình' },
+                { id: 'BTAI_ratio', label: 'Tỷ lệ tổn thương/ĐMC > 1.4', weight: 'trung bình' }
+            ],
+            'AAA': [
+                { id: 'AAA_rupture', label: 'Vỡ AAA', weight: 'nặng' },
+                { id: 'AAA_symptomatic', label: 'AAA có triệu chứng', weight: 'nặng' },
+                { id: 'AAA_growth', label: 'Tốc độ tăng > 10mm/năm', weight: 'trung bình' },
+                { id: 'AAA_female', label: 'Bệnh nhân nữ', weight: 'nhẹ' }
+            ],
+            'TAAA': [
+                { id: 'TAAA_extent2', label: 'TAAA extent II (Crawford)', weight: 'nặng' },
+                { id: 'TAAA_prior_tevar', label: 'Đã TEVAR trước đó', weight: 'trung bình' },
+                { id: 'TAAA_renal', label: 'Suy thận mạn', weight: 'trung bình' }
+            ]
+        };
+
+        // --- Dữ liệu xử trí: Phần chung + Phần bổ sung dựa trên đánh giá ---
+        function getTreatmentActions(primaryType, assessment) {
+            const treatmentData = {
+                'A': {
+                    general: {
+                        title: '🔴 PHẪU THUẬT CẤP CỨU THAY THẾ ĐỘNG MẠCH CHỦ LÊN',
+                        detail: `
+                            <ul>
+                                <li><strong>Mổ gì:</strong> Thay thế động mạch chủ lên + quai (hemiarch hoặc total arch tùy mức độ tổn thương)</li>
+                                <li><strong>Kỹ thuật:</strong> Cannulation động mạch nách (ưu tiên), HCA (hạ thân nhiệt tuần hoàn ngừng) 24-28°C, tưới máu não chọn lọc</li>
+                                <li><strong>Xử trí lỗ vào:</strong> Resection hoặc exclusion lỗ vào nguyên phát. Cân nhắc FET nếu lỗ vào ở quai xa hoặc ĐMC xuống gần</li>
+                                <li><strong>Thời gian:</strong> Không trì hoãn (nguy cơ tử vong 0.5%/giờ)</li>
+                            </ul>
+                        `,
+                        evidence: 'Khuyến cáo I B'
+                    },
+                    conditional: [
+                        { check: 'A_malperfusion', title: '🔴 CAN THIỆP MẠCH TRƯỚC MỔ', detail: 'Fenestration hoặc stenting tạng bị malperfusion nếu huyết động ổn. Sau đó tiến hành phẫu thuật ĐMC.', evidence: 'Khuyến cáo IIb C' },
+                        { check: 'A_shock', title: '🔴 HỒI SỨC TÍCH CỰC', detail: 'Hồi sức trước và trong mổ. Theo dõi sát huyết động. Cân nhắc hỗ trợ tuần hoàn.', evidence: 'Khuyến cáo I C' },
+                        { check: 'A_tamponade', title: '🔴 MỞ MÀNG NGOÀI TIM', detail: 'Mở màng ngoài tim ngay khi vào phòng mổ. Giải phóng áp lực trước khi cannulation.', evidence: 'Khuyến cáo I C' },
+                        { check: 'A_ar', title: '🟠 TÁI TẠO VAN ĐMC', detail: 'Valve-sparing nếu van không tổn thương nặng. Thay van nếu tổn thương không thể tái tạo.', evidence: 'Khuyến cáo IIa C' },
+                        { check: 'A_cpr', title: '🔴 ĐÁNH GIÁ THẦN KINH TRƯỚC MỔ', detail: 'Hội chẩn kỹ trước mổ. Đánh giá tình trạng thần kinh. Nguy cơ tử vong rất cao.', evidence: 'Khuyến cáo IIb C' },
+                        { check: 'A_age_70', title: '🟠 TỐI ƯU HÓA BỆNH NỀN', detail: 'Đánh giá nguy cơ-lợi ích. Tối ưu hóa điều trị nội khoa trước mổ.', evidence: 'Khuyến cáo IIa C' }
+                    ]
+                },
+                'B': {
+                    general: {
+                        title: '🟢 ĐÁNH GIÁ VÀ LỰA CHỌN CHIẾN LƯỢC ĐIỀU TRỊ',
+                        detail: `
+                            <ul>
+                                <li><strong>Phân loại nguy cơ:</strong> Xác định có biến chứng (vỡ, malperfusion) hay yếu tố nguy cơ cao</li>
+                                <li><strong>TEVAR cho type B phức tạp:</strong> Cover lỗ vào nguyên phát, khôi phục lưu thông lòng thật</li>
+                                <li><strong>Điều trị nội khoa tối ưu:</strong> Beta-blocker, kiểm soát HA (100-120mmHg) cho type B không phức tạp</li>
+                                <li><strong>FET:</strong> Nếu giải phẫu không phù hợp TEVAR hoặc có bệnh lý ĐMC lên kèm theo</li>
+                            </ul>
+                        `,
+                        evidence: 'TEVAR: I B; Điều trị nội khoa: I B'
+                    },
+                    conditional: [
+                        { check: 'B_rupture', title: '🔴 TEVAR CẤP CỨU', detail: 'TEVAR ngay lập tức. Có thể cần thêm stent nếu tổn thương phức tạp.', evidence: 'Khuyến cáo I C' },
+                        { check: 'B_malperfusion', title: '🔴 TEVAR KHẨN + STENT NHÁNH', detail: 'TEVAR khẩn cấp. Có thể cần thêm stent các nhánh bị ảnh hưởng (renal, visceral, chi).', evidence: 'Khuyến cáo I B' },
+                        { check: 'B_persistent_pain', title: '🟠 TEVAR SỚM', detail: 'Cân nhắc TEVAR sớm nếu đau không đáp ứng với điều trị giảm đau.', evidence: 'Khuyến cáo IIa C' },
+                        { check: 'B_entry_large', title: '🟠 TEVAR DỰ PHÒNG', detail: 'Yếu tố nguy cơ tiến triển. Cân nhắc TEVAR để phòng ngừa biến chứng.', evidence: 'Khuyến cáo IIa C' },
+                        { check: 'B_diameter_40', title: '🟠 THEO DÕI CTA SÁT', detail: 'Nguy cơ tiến triển thành phình. Theo dõi bằng CTA 6-12 tháng.', evidence: 'Khuyến cáo IIa C' },
+                        { check: 'B_false_lumen', title: '🟠 CÂN NHẮC CAN THIỆP', detail: 'Nguy cơ phình. Cân nhắc can thiệp nếu có thêm yếu tố nguy cơ khác.', evidence: 'Khuyến cáo IIb C' }
+                    ]
+                },
+                'nonAB': {
+                    general: {
+                        title: '🟠 CAN THIỆP VÙNG QUAI ĐỘNG MẠCH CHỦ',
+                        detail: `
+                            <ul>
+                                <li><strong>Mổ gì:</strong> Xác định chính xác vị trí lỗ vào trên CTA (E2: quai ĐMC)</li>
+                                <li><strong>FET:</strong> Ưu tiên cho bệnh nhân trẻ, ít bệnh nền. Thay thế toàn bộ quai + đặt stent graft</li>
+                                <li><strong>TEVAR phức hợp:</strong> Nếu lỗ vào ở quai xa, giải phẫu thuận lợi</li>
+                            </ul>
+                        `,
+                        evidence: 'FET: IIa C; TEVAR phức hợp: IIb C'
+                    },
+                    conditional: [
+                        { check: 'nonAB_entry_arch', title: '🟠 LỰA CHỌN FET', detail: 'Ưu tiên FET nếu giải phẫu thuận lợi. TEVAR nếu FET không khả thi.', evidence: 'Khuyến cáo IIa C' },
+                        { check: 'nonAB_stroke_risk', title: '🟠 TỐI ƯU TƯỚI MÁU NÃO', detail: 'Cân nhắc tưới máu não hai bên. Theo dõi NIRS. Giảm nguy cơ đột quỵ.', evidence: 'Khuyến cáo IIa C' },
+                        { check: 'nonAB_young', title: '🟢 FET CHO BỆNH NHÂN TRẺ', detail: 'Độ bền cao, ít bệnh nền, phục hồi tốt.', evidence: 'Khuyến cáo IIa C' }
+                    ]
+                },
+                'IMH_A': {
+                    general: {
+                        title: '🔴 ĐÁNH GIÁ NGUY CƠ VÀ CHỈ ĐỊNH PHẪU THUẬT',
+                        detail: `
+                            <ul>
+                                <li><strong>Đánh giá yếu tố nguy cơ:</strong> Tuổi ≥70, ĐMC >45mm, thành ≥10mm, ULP, tràn dịch màng phổi</li>
+                                <li><strong>Phẫu thuật cấp cứu:</strong> Nếu có bất kỳ yếu tố nguy cơ nào → mổ như type A</li>
+                                <li><strong>Điều trị nội khoa + theo dõi:</strong> Nếu không có yếu tố nguy cơ, CTA kiểm tra sau 7 ngày</li>
+                            </ul>
+                        `,
+                        evidence: 'Mổ: I B; Điều trị nội khoa: IIb C'
+                    },
+                    conditional: [
+                        { check: 'IMHA_age', title: '🔴 MỔ SỚM DO TUỔI CAO', detail: 'Tuổi ≥70 là yếu tố nguy cơ cao, cần mổ sớm.', evidence: 'Khuyến cáo I B' },
+                        { check: 'IMHA_diameter', title: '🔴 MỔ CẤP CỨU DO ĐMC >45MM', detail: 'Đường kính ĐMC >45mm là chỉ định mổ cấp cứu.', evidence: 'Khuyến cáo I B' },
+                        { check: 'IMHA_thickness', title: '🔴 MỔ DO THÀNH ĐMC ≥10MM', detail: 'Bề dày thành ≥10mm là yếu tố nguy cơ cao.', evidence: 'Khuyến cáo I B' },
+                        { check: 'IMHA_ulp', title: '🔴 MỔ DO CÓ ULP', detail: 'Ulcer-like projection làm tăng nguy cơ tiến triển thành bóc tách.', evidence: 'Khuyến cáo I B' }
+                    ]
+                },
+                'IMH_B': {
+                    general: {
+                        title: '🟢 ĐÁNH GIÁ VÀ LỰA CHỌN CHIẾN LƯỢC CHO IMH TYPE B',
+                        detail: `
+                            <ul>
+                                <li><strong>Đánh giá nguy cơ:</strong> ĐMC >45mm, thành ≥10mm, ULP, tràn dịch màng phổi</li>
+                                <li><strong>TEVAR:</strong> Nếu có yếu tố nguy cơ hoặc biến chứng (vỡ, malperfusion)</li>
+                                <li><strong>Điều trị nội khoa + theo dõi:</strong> Nếu không có yếu tố nguy cơ, CTA sau 7 ngày và 1 tháng</li>
+                            </ul>
+                        `,
+                        evidence: 'TEVAR: IIa C; Điều trị nội khoa: I C'
+                    },
+                    conditional: [
+                        { check: 'IMHB_diameter', title: '🟠 TEVAR DO ĐMC >45MM', detail: 'Đường kính ĐMC >45mm là chỉ định TEVAR.', evidence: 'Khuyến cáo IIa C' },
+                        { check: 'IMHB_thickness', title: '🟠 TEVAR DO THÀNH ≥10MM', detail: 'Bề dày thành ≥10mm là yếu tố nguy cơ cần TEVAR.', evidence: 'Khuyến cáo IIa C' },
+                        { check: 'IMHB_ulp', title: '🟠 TEVAR DO CÓ ULP', detail: 'Ulcer-like projection là chỉ định TEVAR.', evidence: 'Khuyến cáo IIa C' }
+                    ]
+                },
+                'PAU': {
+                    general: {
+                        title: '🔶 ĐÁNH GIÁ VÀ XỬ TRÍ LOÉT XƠ VỮA XUYÊN THÀNH (PAU)',
+                        detail: `
+                            <ul>
+                                <li><strong>PAU ở ĐMC lên:</strong> Phẫu thuật cấp cứu nếu có IMH hoặc vỡ</li>
+                                <li><strong>PAU ở ĐMC xuống/quai:</strong> TEVAR nếu có yếu tố nguy cơ (kích thước >20mm, sâu >10mm, IMH kèm theo, đau dai dẳng)</li>
+                                <li><strong>PAU không nguy cơ:</strong> Theo dõi, điều trị nội khoa, CTA định kỳ</li>
+                            </ul>
+                        `,
+                        evidence: 'PAU ĐMC lên: I B; TEVAR: IIa B'
+                    },
+                    conditional: [
+                        { check: 'PAU_size', title: '🟠 TEVAR DO PAU >20MM', detail: 'PAU >20mm có nguy cơ vỡ cao, cần TEVAR.', evidence: 'Khuyến cáo IIa B' },
+                        { check: 'PAU_depth', title: '🟠 TEVAR DO PAU SÂU >10MM', detail: 'PAU sâu >10mm có nguy cơ biến chứng cao.', evidence: 'Khuyến cáo IIa B' },
+                        { check: 'PAU_imh', title: '🟠 TEVAR DO CÓ IMH', detail: 'IMH kèm theo làm tăng nguy cơ vỡ, chỉ định TEVAR.', evidence: 'Khuyến cáo IIa B' },
+                        { check: 'PAU_pain', title: '🟠 TEVAR DO ĐAU DAI DẲNG', detail: 'Đau dai dẳng là dấu hiệu tiến triển, cần can thiệp sớm.', evidence: 'Khuyến cáo IIa B' }
+                    ]
+                },
+                'BTAI': {
+                    general: {
+                        title: '🔵 ĐÁNH GIÁ PHÂN ĐỘ VÀ CHỈ ĐỊNH TEVAR',
+                        detail: `
+                            <ul>
+                                <li><strong>Độ I (rách nội mạc):</strong> Theo dõi, điều trị nội khoa (I C)</li>
+                                <li><strong>Độ II (máu tụ thành):</strong> Theo dõi hoặc TEVAR nếu có yếu tố nguy cơ (IIa/IIb C)</li>
+                                <li><strong>Độ III (phình giả):</strong> TEVAR (I C)</li>
+                                <li><strong>Độ IV (vỡ tự do):</strong> TEVAR cấp cứu (I C)</li>
+                            </ul>
+                        `,
+                        evidence: 'TEVAR độ III-IV: I C'
+                    },
+                    conditional: [
+                        { check: 'BTAI_grade3', title: '🔴 TEVAR ĐỘ III', detail: 'Phình giả có nguy cơ vỡ cao, TEVAR ngay.', evidence: 'Khuyến cáo I C' },
+                        { check: 'BTAI_grade4', title: '🔴 TEVAR CẤP CỨU ĐỘ IV', detail: 'Vỡ tự do, TEVAR cấp cứu ngay lập tức.', evidence: 'Khuyến cáo I C' },
+                        { check: 'BTAI_hematoma', title: '🟠 TEVAR DO HEMATOMA >10MM', detail: 'Hematoma trung thất >10mm là yếu tố nguy cơ, cân nhắc TEVAR.', evidence: 'Khuyến cáo IIa C' }
+                    ]
+                },
+                'AAA': {
+                    general: {
+                        title: '🟣 ĐÁNH GIÁ VÀ LỰA CHỌN PHƯƠNG PHÁP ĐIỀU TRỊ AAA',
+                        detail: `
+                            <ul>
+                                <li><strong>Ngưỡng can thiệp:</strong> Nam ≥55mm, Nữ ≥50mm</li>
+                                <li><strong>EVAR:</strong> Ưu tiên cho giải phẫu thuận lợi, người cao tuổi (IIa B)</li>
+                                <li><strong>Phẫu thuật mở:</strong> Ưu tiên cho bệnh nhân trẻ, tuổi thọ >10 năm (IIa B)</li>
+                                <li><strong>Vỡ/AAA có triệu chứng:</strong> Can thiệp cấp cứu (I C)</li>
+                            </ul>
+                        `,
+                        evidence: 'EVAR/mổ mở: IIa B; Vỡ: I C'
+                    },
+                    conditional: [
+                        { check: 'AAA_rupture', title: '🔴 CAN THIỆP CẤP CỨU VỠ AAA', detail: 'EVAR hoặc mổ mở cấp cứu. Tiên lượng xấu nếu trì hoãn.', evidence: 'Khuyến cáo I C' },
+                        { check: 'AAA_symptomatic', title: '🔴 MỔ CẤP CỨU AAA CÓ TRIỆU CHỨNG', detail: 'Triệu chứng đau là dấu hiệu báo trước vỡ. Mổ cấp cứu ngay.', evidence: 'Khuyến cáo I B' },
+                        { check: 'AAA_growth', title: '🟠 CAN THIỆP SỚM DO TĂNG NHANH', detail: 'Tốc độ tăng >10mm/năm là chỉ định can thiệp sớm.', evidence: 'Khuyến cáo IIa C' }
+                    ]
+                },
+                'TAAA': {
+                    general: {
+                        title: '🔴 ĐÁNH GIÁ VÀ LỰA CHỌN PHƯƠNG PHÁP CHO TAAA',
+                        detail: `
+                            <ul>
+                                <li><strong>Ngưỡng can thiệp:</strong> ≥55mm (I C)</li>
+                                <li><strong>Open repair:</strong> Ưu tiên cho bệnh nhân nguy cơ thấp-trung bình (IIa C)</li>
+                                <li><strong>B/FEVAR:</strong> Ưu tiên cho bệnh nhân không phù hợp mổ mở (IIa B)</li>
+                                <li><strong>Dẫn lưu CSF:</strong> Khuyến cáo trong mổ mở TAAA (I B)</li>
+                            </ul>
+                        `,
+                        evidence: 'Mổ mở: IIa C; B/FEVAR: IIa B; CSF: I B'
+                    },
+                    conditional: [
+                        { check: 'TAAA_extent2', title: '🟠 CSF DRAIN CHO TAAA EXTENT II', detail: 'Nguy cơ SCI cao, cần dẫn lưu CSF và theo dõi thần kinh.', evidence: 'Khuyến cáo IIa C' },
+                        { check: 'TAAA_prior_tevar', title: '🟠 CSF DRAIN DO ĐÃ TEVAR', detail: 'TEVAR trước đó làm tăng nguy cơ SCI. Đặt CSF drain trước mổ.', evidence: 'Khuyến cáo IIa C' },
+                        { check: 'TAAA_renal', title: '🟠 BẢO VỆ THẬN TRONG MỔ', detail: 'Suy thận mạn cần bảo vệ thận: dùng Custodiol hoặc tưới máu thận chọn lọc.', evidence: 'Khuyến cáo IIa C' }
+                    ]
+                }
+            };
+
+            const data = treatmentData[primaryType];
+            if (!data) {
+                return { general: '<p class="text-muted">Chưa có hướng dẫn xử trí cụ thể cho loại tổn thương này.</p>', conditional: [] };
+            }
+
+            // Xây dựng phần chung
+            let generalHtml = `
+                <div class="treatment-section">
+                    <div class="section-title">
+                        📋 PHẦN XỬ TRÍ CHUNG
+                        <span class="badge-count">áp dụng cho mọi bệnh nhân</span>
+                    </div>
+                    <div class="action-card standard" style="border-color: #1b7a9e; background: #e8f4fb;">
+                        <div class="action-title" style="font-size:1rem; color:#083449;">${data.general.title}</div>
+                        <div class="action-detail">${data.general.detail}</div>
+                        <div class="action-evidence">${data.general.evidence}</div>
+                    </div>
+                </div>
+            `;
+
+            // Xây dựng phần bổ sung dựa trên đánh giá
+            let conditionalHtml = '';
+            const matchedConditions = [];
+            if (data.conditional) {
+                data.conditional.forEach(cond => {
+                    if (assessment[cond.check]) {
+                        matchedConditions.push(cond);
+                    }
+                });
+            }
+
+            if (matchedConditions.length > 0) {
+                conditionalHtml = `
+                    <div class="treatment-section" style="border-color: #f59e0b; background: #fffbeb;">
+                        <div class="section-title">
+                            🔄 XỬ TRÍ BỔ SUNG DỰA TRÊN ĐÁNH GIÁ
+                            <span class="badge-count">${matchedConditions.length} yếu tố</span>
+                        </div>
+                `;
+                matchedConditions.forEach(cond => {
+                    const cls = cond.title.includes('🔴') ? 'urgent' : cond.title.includes('🟠') ? 'important' : 'standard';
+                    conditionalHtml += `
+                        <div class="action-card ${cls}">
+                            <div class="action-title">${cond.title}</div>
+                            <div class="action-detail">${cond.detail}</div>
+                            <div class="action-evidence">${cond.evidence || ''}</div>
+                        </div>
+                    `;
+                });
+                conditionalHtml += `</div>`;
+            } else {
+                conditionalHtml = `
+                    <div class="treatment-section" style="border-color: #d4edda; background: #f0fdf4;">
+                        <div class="section-title">
+                            ✅ KHÔNG CÓ XỬ TRÍ BỔ SUNG
+                            <span class="badge-count" style="background: #22c55e;">0 yếu tố</span>
+                        </div>
+                        <div style="padding: 8px 12px; color: #0e4b2b; font-size:0.9rem;">
+                            Không có yếu tố đánh giá đặc biệt nào được tích chọn. Tiếp tục xử trí theo hướng dẫn chung.
+                        </div>
+                    </div>
+                `;
+            }
+
+            return { general: generalHtml, conditional: conditionalHtml };
+        }
+
+        // --- Dữ liệu tiên lượng dựa trên đánh giá ---
+        function getPrognosis(primaryType, assessment) {
+            const basePrognosis = {
+                'A': {
+                    items: [
+                        { label: '📊 Tử vong 30 ngày', value: '15‑20%' },
+                        { label: '🧠 Đột quỵ sau mổ', value: '5‑10%' },
+                        { label: '⏳ Sống sót 1 năm', value: '~80%' },
+                        { label: '⚠️ Yếu tố xấu', value: 'Malperfusion, sốc, tuổi ≥70, CPR' }
+                    ],
+                    modifiers: [
+                        { check: 'A_malperfusion', label: 'Malperfusion', impact: '↑ Tử vong gấp 5 lần' },
+                        { check: 'A_shock', label: 'Sốc', impact: '↑ Tử vong >30%' },
+                        { check: 'A_cpr', label: 'CPR trước mổ', impact: '↑ Tử vong rất cao' },
+                        { check: 'A_age_70', label: 'Tuổi ≥70', impact: '↑ Tử vong và biến chứng' }
+                    ]
+                },
+                'B': {
+                    items: [
+                        { label: '📊 Tử vong 30 ngày', value: '~14% (có biến chứng)' },
+                        { label: '📈 Tiến triển phình', value: '~30% trong 5 năm' },
+                        { label: '🔄 Tái can thiệp', value: '15‑20%' },
+                        { label: '✅ TEVAR sớm', value: 'Giảm tử vong và tái can thiệp' }
+                    ],
+                    modifiers: [
+                        { check: 'B_rupture', label: 'Vỡ ĐMC', impact: '↑ Tử vong >30%' },
+                        { check: 'B_malperfusion', label: 'Malperfusion', impact: '↑ Tử vong và biến chứng' },
+                        { check: 'B_entry_large', label: 'Lỗ vào >10mm', impact: '↑ Nguy cơ tiến triển' }
+                    ]
+                },
+                'nonAB': {
+                    items: [
+                        { label: '📊 Tử vong 30 ngày', value: '~14% (TEVAR) / 31% (mổ)' },
+                        { label: '🧠 Đột quỵ', value: '6‑10%' },
+                        { label: '🔄 Tái can thiệp', value: '~20% trong 5 năm' },
+                        { label: '✅ Yếu tố tốt', value: 'TEVAR sớm, lỗ vào nhỏ' }
+                    ],
+                    modifiers: [
+                        { check: 'nonAB_stroke_risk', label: 'Nguy cơ đột quỵ cao', impact: '↑ Biến chứng thần kinh' }
+                    ]
+                },
+                'IMH_A': {
+                    items: [
+                        { label: '📊 Tiến triển thành bóc tách', value: '33‑40%' },
+                        { label: '💥 Nguy cơ vỡ', value: '~18% khi nhập viện' },
+                        { label: '⏳ Tử vong nếu không mổ', value: '>50%' }
+                    ],
+                    modifiers: [
+                        { check: 'IMHA_diameter', label: 'ĐMC >45mm', impact: '↑ Nguy cơ tiến triển' },
+                        { check: 'IMHA_ulp', label: 'Có ULP', impact: '↑ Nguy cơ bóc tách' }
+                    ]
+                },
+                'IMH_B': {
+                    items: [
+                        { label: '📊 Tiến triển', value: 'cao trong 1 tháng đầu' },
+                        { label: '💥 Biến chứng', value: 'vỡ, bóc tách mới' },
+                        { label: '✅ TEVAR muộn', value: 'ít biến chứng hơn' }
+                    ],
+                    modifiers: [
+                        { check: 'IMHB_diameter', label: 'ĐMC >45mm', impact: '↑ Nguy cơ biến chứng' },
+                        { check: 'IMHB_ulp', label: 'Có ULP', impact: '↑ Nguy cơ tiến triển' }
+                    ]
+                },
+                'PAU': {
+                    items: [
+                        { label: '📊 Nguy cơ vỡ', value: 'cao nếu không can thiệp' },
+                        { label: '✅ TEVAR thành công', value: 'tử vong thấp ~5%' },
+                        { label: '📈 Tiến triển', value: 'thường chậm, có thể đột ngột' }
+                    ],
+                    modifiers: [
+                        { check: 'PAU_size', label: 'PAU >20mm', impact: '↑ Nguy cơ vỡ' },
+                        { check: 'PAU_imh', label: 'Có IMH', impact: '↑ Nguy cơ biến chứng' }
+                    ]
+                },
+                'BTAI': {
+                    items: [
+                        { label: '📊 Tử vong độ III‑IV', value: '~10‑15%' },
+                        { label: '✅ TEVAR thành công', value: '>95%' },
+                        { label: '⏳ Theo dõi', value: 'CTA 6, 12 tháng, hàng năm' }
+                    ],
+                    modifiers: [
+                        { check: 'BTAI_grade4', label: 'Độ IV (vỡ tự do)', impact: '↑ Tử vong >30%' }
+                    ]
+                },
+                'AAA': {
+                    items: [
+                        { label: '📊 Tử vong mổ (EVAR)', value: '~3%' },
+                        { label: '📊 Tử vong mổ (mở)', value: '~5%' },
+                        { label: '🔄 Tái can thiệp', value: 'EVAR: ~10‑15%' },
+                        { label: '📈 Nguy cơ vỡ nếu không mổ', value: '~1%/năm (55mm)' }
+                    ],
+                    modifiers: [
+                        { check: 'AAA_rupture', label: 'Vỡ AAA', impact: '↑ Tử vong >50%' },
+                        { check: 'AAA_female', label: 'Bệnh nhân nữ', impact: '↑ Nguy cơ vỡ ở đường kính nhỏ hơn' }
+                    ]
+                },
+                'TAAA': {
+                    items: [
+                        { label: '📊 Tử vong mổ mở', value: '5‑10%' },
+                        { label: '📊 Tử vong B/FEVAR', value: '3‑5%' },
+                        { label: '🧠 Nguy cơ SCI', value: '5‑10% (mổ mở)' },
+                        { label: '🔄 Tái can thiệp', value: '~15‑20%' }
+                    ],
+                    modifiers: [
+                        { check: 'TAAA_extent2', label: 'TAAA extent II', impact: '↑ Nguy cơ SCI 10‑15%' },
+                        { check: 'TAAA_renal', label: 'Suy thận mạn', impact: '↑ Nguy cơ AKI và tử vong' }
+                    ]
+                }
+            };
+
+            const base = basePrognosis[primaryType];
+            if (!base) return '<p class="text-muted">Chưa có dữ liệu tiên lượng cụ thể.</p>';
+
+            let html = '';
+            base.items.forEach(item => {
+                html += `<div class="prognosis-item"><span class="label">${item.label}</span><div class="value">${item.value}</div></div>`;
+            });
+
+            const modifiers = base.modifiers || [];
+            let modHtml = '';
+            modifiers.forEach(mod => {
+                if (assessment[mod.check]) {
+                    modHtml += `<span class="tag-item active">${mod.label}: ${mod.impact}</span>`;
+                }
+            });
+
+            if (modHtml) {
+                html += `
+                    <div class="prognosis-item" style="grid-column: 1 / -1;">
+                        <span class="label">📌 Yếu tố ảnh hưởng tiên lượng</span>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;">${modHtml}</div>
+                    </div>
+                `;
+            }
+
+            return html;
+        }
+
+        // --- Hàm tạo checklist đánh giá ---
+        function buildAssessmentChecklist(primaryType) {
+            const items = assessmentItems[primaryType] || [];
+            if (items.length === 0) {
+                assessmentContent.innerHTML = `<p class="text-muted">Không có yếu tố đánh giá cụ thể cho loại tổn thương này.</p>`;
+                assessmentIntro.textContent = 'Vui lòng đánh giá các yếu tố dưới đây (tích vào nếu có):';
+                return;
+            }
+
+            let html = `<div class="card-inner"><div class="title">📋 Đánh giá các yếu tố lâm sàng (tích vào ô nếu có)</div>`;
+            items.forEach(item => {
+                const checked = assessmentState[item.id] ? 'checked' : '';
+                html += `
+                    <div class="item-check">
+                        <label>
+                            <input type="checkbox" class="assessment-check" data-id="${item.id}" ${checked}>
+                            ${item.label}
+                            <span class="pill" style="background:${item.weight === 'nặng' ? '#f8d7da' : item.weight === 'trung bình' ? '#fff3cd' : '#d4edda'}">${item.weight}</span>
+                        </label>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            html += `
+                <div class="assessment-summary">
+                    <div class="label">📌 Các yếu tố đã đánh giá:</div>
+                    <div class="items" id="assessmentTags"></div>
+                </div>
+            `;
+
+            assessmentContent.innerHTML = html;
+            assessmentIntro.textContent = 'Vui lòng đánh giá các yếu tố dưới đây (tích vào nếu có):';
+
+            assessmentCheckboxes = document.querySelectorAll('.assessment-check');
+            assessmentCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    assessmentState[this.dataset.id] = this.checked;
+                    updateAssessmentTags();
+                    updateStepBadges();
+                    if (document.getElementById('tab3').classList.contains('active')) {
+                        updateActionContent();
+                    }
+                    if (document.getElementById('tab4').classList.contains('active')) {
+                        updatePrognosisContent();
+                    }
+                });
+            });
+
+            updateAssessmentTags();
+            updateStepBadges();
+        }
+
+        // --- Cập nhật tags ---
+        function updateAssessmentTags() {
+            const checked = document.querySelectorAll('.assessment-check:checked');
+            const tagsContainer = document.getElementById('assessmentTags');
+            if (!tagsContainer) return;
+
+            let html = '';
+            if (checked.length === 0) {
+                html = '<span class="text-muted text-sm">Chưa có yếu tố nào được đánh giá</span>';
+            } else {
+                checked.forEach(cb => {
+                    const label = cb.closest('label')?.textContent?.trim() || cb.dataset.id;
+                    html += `<span class="tag-item active">✓ ${label}</span>`;
+                });
+            }
+            tagsContainer.innerHTML = html;
+        }
+
+        // --- Cập nhật badges ---
+        function updateStepBadges() {
+            const selected = getSelectedTypes();
+            const hasAssessment = Object.values(assessmentState).some(v => v === true);
+
+            if (selected.length === 0) {
+                step2Badge.textContent = 'chưa có';
+                step2Badge.style.background = '#f1f3f5';
+                step2Badge.style.color = '#6c7a89';
+                step3Badge.textContent = 'chưa có';
+                step3Badge.style.background = '#f1f3f5';
+                step3Badge.style.color = '#6c7a89';
+                step4Badge.textContent = 'chưa có';
+                step4Badge.style.background = '#f1f3f5';
+                step4Badge.style.color = '#6c7a89';
+                return;
+            }
+
+            if (hasAssessment) {
+                step2Badge.textContent = '✓ đã đánh giá';
+                step2Badge.style.background = '#d4edda';
+                step2Badge.style.color = '#0e4b2b';
+                step3Badge.textContent = '✓ sẵn sàng';
+                step3Badge.style.background = '#d4edda';
+                step3Badge.style.color = '#0e4b2b';
+                step4Badge.textContent = '✓ sẵn sàng';
+                step4Badge.style.background = '#d4edda';
+                step4Badge.style.color = '#0e4b2b';
+            } else {
+                step2Badge.textContent = '⚠️ chưa đánh giá';
+                step2Badge.style.background = '#fff3cd';
+                step2Badge.style.color = '#7a5d0b';
+                step3Badge.textContent = '⛔ chưa sẵn sàng';
+                step3Badge.style.background = '#f8d7da';
+                step3Badge.style.color = '#8b1e2b';
+                step4Badge.textContent = '⛔ chưa sẵn sàng';
+                step4Badge.style.background = '#f8d7da';
+                step4Badge.style.color = '#8b1e2b';
+            }
+        }
+
+        // --- Cập nhật nội dung xử trí ---
+        function updateActionContent() {
+            const selected = getSelectedTypes();
+            const primary = getPrimaryType(selected);
+            if (!primary) {
+                actionContent.innerHTML = `<p class="text-muted text-sm">Vui lòng chọn phân loại ở Bước 1 trước.</p>`;
+                return;
+            }
+
+            const hasAssessment = Object.values(assessmentState).some(v => v === true);
+            if (!hasAssessment) {
+                actionContent.innerHTML = `
+                    <div class="highlight-box" style="border-color: #e6a700;">
+                        ⚠️ <strong>Chưa có đánh giá:</strong> Vui lòng quay lại Bước 2 để đánh giá các yếu tố lâm sàng trước khi xem hướng xử trí chi tiết.
+                    </div>
+                `;
+                return;
+            }
+
+            const result = getTreatmentActions(primary, assessmentState);
+            const selectedLabels = Object.keys(assessmentState).filter(k => assessmentState[k]);
+            const selectedCount = selectedLabels.length;
+
+            actionContent.innerHTML = result.general + result.conditional;
+        }
+
+        // --- Cập nhật nội dung tiên lượng ---
+        function updatePrognosisContent() {
+            const selected = getSelectedTypes();
+            const primary = getPrimaryType(selected);
+            if (!primary) {
+                prognosisContent.innerHTML = `<p class="text-muted text-sm">Vui lòng chọn phân loại ở Bước 1 trước.</p>`;
+                return;
+            }
+
+            const hasAssessment = Object.values(assessmentState).some(v => v === true);
+            if (!hasAssessment) {
+                prognosisContent.innerHTML = `
+                    <div class="highlight-box" style="border-color: #e6a700; grid-column: 1 / -1;">
+                        ⚠️ <strong>Chưa có đánh giá:</strong> Vui lòng quay lại Bước 2 để đánh giá các yếu tố lâm sàng trước khi xem tiên lượng.
+                    </div>
+                `;
+                return;
+            }
+
+            prognosisContent.innerHTML = getPrognosis(primary, assessmentState);
+        }
+
+        // --- Cập nhật toàn bộ ---
+        function updateAll() {
+            const selected = getSelectedTypes();
+            const primary = getPrimaryType(selected);
+            currentPrimaryType = primary;
+
+            if (selected.length === 0) {
+                currentClassSpan.textContent = '–';
+                classDetailSpan.textContent = 'Vui lòng chọn ít nhất một loại tổn thương';
+                assessmentContent.innerHTML = '';
+                assessmentIntro.textContent = 'Vui lòng chọn phân loại ở Bước 1 trước.';
+                actionContent.innerHTML = `<p class="text-muted text-sm">Vui lòng chọn phân loại ở Bước 1 trước.</p>`;
+                prognosisContent.innerHTML = `<p class="text-muted text-sm">Vui lòng chọn phân loại ở Bước 1 trước.</p>`;
+                updateStepBadges();
+                return;
+            }
+
+            const primaryName = typeNames[primary] || 'Khác';
+            currentClassSpan.textContent = primaryName;
+            const detail = selected.map(t => typeNames[t] || t).join(' + ');
+            classDetailSpan.textContent = `🔹 ${detail}`;
+
+            buildAssessmentChecklist(primary);
+
+            if (document.getElementById('tab3').classList.contains('active')) {
+                updateActionContent();
+            }
+            if (document.getElementById('tab4').classList.contains('active')) {
+                updatePrognosisContent();
+            }
+        }
+
+        // --- Sự kiện ---
+        assessChecks.forEach(cb => {
+            cb.addEventListener('change', function() {
+                assessmentState = {};
+                updateAll();
+            });
+        });
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+                switchTab(tabId);
+                if (tabId === 'tab3') updateActionContent();
+                if (tabId === 'tab4') updatePrognosisContent();
+            });
+        });
+
+        nextToTab2.addEventListener('click', function() {
+            const selected = getSelectedTypes();
+            if (selected.length === 0) {
+                alert('Vui lòng chọn ít nhất một loại tổn thương ở Bước 1 trước khi tiếp tục.');
+                return;
+            }
+            switchTab('tab2');
+        });
+
+        prevToTab1.addEventListener('click', function() {
+            switchTab('tab1');
+        });
+
+        nextToTab3.addEventListener('click', function() {
+            const selected = getSelectedTypes();
+            if (selected.length === 0) {
+                alert('Vui lòng chọn phân loại ở Bước 1 trước.');
+                return;
+            }
+            const hasAssessment = Object.values(assessmentState).some(v => v === true);
+            if (!hasAssessment) {
+                alert('Vui lòng hoàn thành đánh giá các yếu tố lâm sàng ở Bước 2 trước khi tiếp tục.');
+                return;
+            }
+            switchTab('tab3');
+            updateActionContent();
+        });
+
+        prevToTab2.addEventListener('click', function() {
+            switchTab('tab2');
+        });
+
+        nextToTab4.addEventListener('click', function() {
+            const selected = getSelectedTypes();
+            if (selected.length === 0) {
+                alert('Vui lòng chọn phân loại ở Bước 1 trước.');
+                return;
+            }
+            const hasAssessment = Object.values(assessmentState).some(v => v === true);
+            if (!hasAssessment) {
+                alert('Vui lòng hoàn thành đánh giá các yếu tố lâm sàng ở Bước 2 trước khi tiếp tục.');
+                return;
+            }
+            switchTab('tab4');
+            updatePrognosisContent();
+        });
+
+        prevToTab3.addEventListener('click', function() {
+            switchTab('tab3');
+        });
+
+        resetBtn.addEventListener('click', function() {
+            if (confirm('Đặt lại tất cả lựa chọn?')) {
+                assessChecks.forEach(cb => { cb.checked = false; });
+                assessmentState = {};
+                updateAll();
+                switchTab('tab1');
+            }
+        });
+
+        updateAll();
+    })();
+</script>
+</body>
+</html>
