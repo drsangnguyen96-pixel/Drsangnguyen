@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân loại TEM & Hướng xử trí Bóc tách Động mạch chủ</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 20px auto;
+            max-width: 900px;
+            color: #333;
+            background-color: #f4f7f6;
+        }
+        h2 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .instructions { background: #e8f4f8; padding: 15px; border-left: 5px solid #3498db; margin-bottom: 20px; border-radius: 4px; }
+        .card { background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card h3 { margin-top: 0; color: #2980b9; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
+        
+        .radio-group, .checkbox-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        label { display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 4px; transition: background 0.2s; }
+        label:hover { background: #f0f7fa; }
+        input[type="radio"], input[type="checkbox"] { margin-right: 12px; transform: scale(1.2); }
+        
+        .btn-submit {
+            display: block; width: 100%; background: #e67e22; color: #fff; border: none;
+            padding: 15px; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer;
+            transition: background 0.3s; margin-top: 30px;
+        }
+        .btn-submit:hover { background: #d35400; }
+
+        /* Modal (Popup) Styles */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #7f8c8d; }
+        .close-btn:hover { color: #e74c3c; }
+        
+        .tem-result { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 15px; color: #2c3e50; }
+        .tem-code { color: #e74c3c; background: #fceceb; padding: 5px 15px; border-radius: 5px; }
+        
+        .tx-title { font-size: 20px; font-weight: bold; padding: 15px; border-radius: 5px; margin-top: 15px; }
+        .tx-desc { font-size: 16px; margin-top: 15px; line-height: 1.5; padding: 15px; background: #f9f9f9; border-radius: 5px; border-left: 4px solid #ccc; }
+        
+        /* Màu sắc phân tầng nguy cơ trong Popup */
+        .risk-high { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .risk-med { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .risk-low { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    </style>
+</head>
+<body>
+
+    <h2>Đánh giá Phân loại TEM (EACTS/STS 2024)</h2>
+    <div class="instructions">
+        <strong>Hướng dẫn:</strong> Bác sĩ chọn các yếu tố tương ứng với hình ảnh học và lâm sàng của bệnh nhân. Dựa trên phân loại <strong>T</strong>ype (Loại), <strong>E</strong>ntry (Lỗ vào), và <strong>M</strong>alperfusion (Thiếu máu cục bộ), hệ thống sẽ gợi ý hướng can thiệp.
+    </div>
+
+    <div class="card">
+        <h3>1. Type (T) - Vị trí đoạn ĐMC bị ảnh hưởng</h3>
+        <div class="radio-group">
+            <label><input type="radio" name="typeT" value="TA"> <strong>Type A (TA):</strong> Bóc tách có liên quan đến động mạch chủ lên.</label>
+            <label><input type="radio" name="typeT" value="TB"> <strong>Type B (TB):</strong> Bóc tách ĐMC xuống, hoàn toàn không ảnh hưởng ĐMC lên & quai ĐMC.</label>
+            <label><input type="radio" name="typeT" value="TNAB"> <strong>Non-A Non-B (TNAB):</strong> Có liên quan đến quai ĐMC, nhưng không lan vào ĐMC lên.</label>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>2. Entry (E) - Vị trí lỗ vào (Intimal Tear)</h3>
+        <div class="radio-group">
+            <label><input type="radio" name="typeE" value="E1"> <strong>E1:</strong> Động mạch chủ lên</label>
+            <label><input type="radio" name="typeE" value="E2"> <strong>E2:</strong> Quai động mạch chủ</label>
+            <label><input type="radio" name="typeE" value="E3"> <strong>E3:</strong> Động mạch chủ xuống</label>
+            <label><input type="radio" name="typeE" value="E0"> <strong>E0:</strong> Không tìm thấy lỗ vào rõ ràng (VD: Tụ máu trong thành - IMH)</label>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>3. Malperfusion (M) - Tình trạng thiếu máu cục bộ cơ quan</h3>
+        <p><i>(Có thể chọn nhiều vùng tổn thương nếu có)</i></p>
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="m0" value="0" onchange="toggleM0(this)"> <strong>M0:</strong> Không có bằng chứng thiếu máu cục bộ cơ quan.</label>
+            <label><input type="checkbox" class="m-option" value="1" onchange="uncheckM0()"> <strong>M1 (Mạch vành):</strong> Thiếu máu cục bộ cơ tim.</label>
+            <label><input type="checkbox" class="m-option" value="2" onchange="uncheckM0()"> <strong>M2 (Trực thượng - Supra-aortic):</strong> Thiếu máu não / Cảnh / Động mạch dưới đòn.</label>
+            <label><input type="checkbox" class="m-option" value="3" onchange="uncheckM0()"> <strong>M3 (Tạng / Chi):</strong> Thiếu máu tạng (ruột), thận, tủy sống hoặc chi dưới.</label>
+        </div>
+    </div>
+
+    <button class="btn-submit" onclick="evaluateTEM()">Phân loại & Xem hướng xử trí</button>
+
+    <div id="resultModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="tem-result">Mã Phân loại TEM: <br><br><span id="temCodeDisplay" class="tem-code"></span></div>
+            
+            <div id="txTitle" class="tx-title"></div>
+            <div id="txDesc" class="tx-desc"></div>
+        </div>
+    </div>
+
+    <script>
+        // Xử lý Checkbox M0: Nếu chọn M0 thì bỏ chọn các M khác
+        function toggleM0(m0Checkbox) {
+            if (m0Checkbox.checked) {
+                let options = document.querySelectorAll('.m-option');
+                options.forEach(opt => opt.checked = false);
+            }
+        }
+
+        // Nếu chọn M1, M2, M3 thì bỏ chọn M0
+        function uncheckM0() {
+            document.getElementById('m0').checked = false;
+        }
+
+        function evaluateTEM() {
+            // Lấy dữ liệu Type
+            let selectedT = document.querySelector('input[name="typeT"]:checked');
+            // Lấy dữ liệu Entry
+            let selectedE = document.querySelector('input[name="typeE"]:checked');
+            
+            if (!selectedT || !selectedE) {
+                alert("Vui lòng chọn đầy đủ phân loại Type (T) và Entry (E) trước khi đánh giá.");
+                return;
+            }
+
+            let T = selectedT.value;
+            let E = selectedE.value;
+
+            // Xử lý chuỗi Malperfusion
+            let mOptions = document.querySelectorAll('.m-option:checked');
+            let m0 = document.getElementById('m0').checked;
+            let M_str = "";
+            let hasMalperfusion = false;
+
+            if (m0 || mOptions.length === 0) {
+                M_str = "M0";
+                hasMalperfusion = false;
+            } else {
+                let mValues = Array.from(mOptions).map(opt => opt.value);
+                M_str = "M" + mValues.join(""); // Ví dụ: M1, M12, M23
+                hasMalperfusion = true;
+            }
+
+            // Mã TEM cuối cùng
+            let temCode = `${T}-${E}-${M_str}`;
+            document.getElementById('temCodeDisplay').innerText = temCode;
+
+            // Giao diện hiển thị hướng xử trí
+            let txTitle = document.getElementById('txTitle');
+            let txDesc = document.getElementById('txDesc');
+            
+            // Xóa class màu cũ
+            txTitle.className = "tx-title"; 
+
+            // Logic Cây quyết định hướng xử trí theo TEM
+            if (T === "TA") {
+                txTitle.innerText = "Phẫu thuật Mở Cấp cứu (Emergency Open Repair)";
+                txTitle.classList.add("risk-high");
+                txDesc.innerHTML = "Bệnh nhân bóc tách type A là cấp cứu ngoại khoa tối khẩn.<br><strong>Chiến lược:</strong> Phẫu thuật thay đoạn động mạch chủ lên (kèm hoặc không kèm thay van/gốc ĐMC).";
+                
+                if (hasMalperfusion) {
+                    txDesc.innerHTML += "<br><br><strong>⚠️ Lưu ý Malperfusion ("+ M_str +"):</strong> Tình trạng thiếu máu cục bộ làm tăng nguy cơ tử vong. Cần hội chẩn đa chuyên khoa ngay để quyết định chiến lược: có nên ưu tiên tái tưới máu tạng/nhánh (bằng can thiệp nội mạch) trước, hay thực hiện song song với phẫu thuật mở (Hybrid), cùng với các biện pháp bảo vệ não/cơ tim tích cực.";
+                }
+            } 
+            else if (T === "TB") {
+                if (hasMalperfusion) {
+                    txTitle.innerText = "Can thiệp Nội mạch Cấp cứu (Emergency TEVAR)";
+                    txTitle.classList.add("risk-high");
+                    txDesc.innerHTML = "Bóc tách type B có biến chứng (Complicated TBAD).<br><strong>Chiến lược:</strong> Ưu tiên can thiệp nội mạch đặt Stent Graft (TEVAR) cấp cứu để che lấp lỗ vào (Entry tear), mở rộng lòng thật và khôi phục dòng chảy tưới máu cơ quan. Nếu giải phẫu không phù hợp TEVAR, xem xét phẫu thuật mở hoặc thủ thuật extra-anatomic bypass.";
+                } else {
+                    txTitle.innerText = "Điều trị Nội khoa Tối ưu (BMT) & Theo dõi (Uncomplicated)";
+                    txTitle.classList.add("risk-low");
+                    txDesc.innerHTML = "Bóc tách type B không biến chứng (Uncomplicated TBAD).<br><strong>Chiến lược:</strong> Nhập ICU/CCU, kiểm soát huyết áp (HA tâm thu 100-120 mmHg) và nhịp tim chặt chẽ (thuốc chẹn beta tĩnh mạch). Giảm đau tích cực. Chụp CT scan theo dõi định kỳ để đánh giá nguy cơ phình giãn hoặc tiến triển mạn tính.";
+                }
+            }
+            else if (T === "TNAB") {
+                if (hasMalperfusion) {
+                    txTitle.innerText = "Can thiệp Cấp cứu (TEVAR phức tạp / Phẫu thuật Hybrid)";
+                    txTitle.classList.add("risk-high");
+                    txDesc.innerHTML = "Bóc tách liên quan quai ĐMC có biến chứng thiếu máu cục bộ.<br><strong>Chiến lược:</strong> Cấp cứu can thiệp. Thường ưu tiên TEVAR (có thể cần phẫu thuật debranching các nhánh mạch cổ trước đó - Hybrid, hoặc dùng stent graft có nhánh/mở cửa sổ) hoặc phẫu thuật mở quai ĐMC toàn bộ (Total Arch Replacement) tùy năng lực của trung tâm.";
+                } else {
+                    txTitle.innerText = "Điều trị Nội khoa Tối ưu (BMT) và Cân nhắc can thiệp sớm";
+                    txTitle.classList.add("risk-med");
+                    txDesc.innerHTML = "Bóc tách liên quan quai ĐMC không biến chứng (Uncomplicated Non-A Non-B).<br><strong>Chiến lược:</strong> Điều trị nội khoa kiểm soát HA sát sao. Tùy thuộc vào đặc điểm giải phẫu học (kích thước lỗ vào, đường kính ĐMC, dấu hiệu hình ảnh nguy cơ cao), xem xét can thiệp TEVAR hoặc phẫu thuật có kế hoạch trong giai đoạn bán cấp (subacute) để ngăn chặn biến chứng muộn.";
+                }
+            }
+
+            // Hiển thị Modal
+            document.getElementById('resultModal').style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').style.display = "none";
+        }
+
+        // Đóng modal khi click ra ngoài vùng nội dung
+        window.onclick = function(event) {
+            let modal = document.getElementById('resultModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

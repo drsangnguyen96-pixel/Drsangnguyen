@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân loại Penn - Đánh giá Gánh nặng Thiếu máu cục bộ</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            line-height: 1.6; 
+            margin: 20px auto; 
+            max-width: 850px; 
+            color: #2c3e50;
+            background-color: #f9fbfd;
+        }
+        h2 { 
+            color: #1a5276; 
+            text-align: center; 
+            border-bottom: 2px solid #2980b9; 
+            padding-bottom: 10px;
+        }
+        .instructions { 
+            background: #eaf2f8; 
+            padding: 15px; 
+            border-left: 5px solid #2980b9; 
+            margin-bottom: 25px; 
+            border-radius: 4px;
+        }
+        .section { 
+            margin-bottom: 20px; 
+            padding: 20px; 
+            border: 1px solid #d6eaf8; 
+            border-radius: 8px; 
+            background: #ffffff; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .section h3 { 
+            margin-top: 0; 
+            color: #d35400; 
+            border-bottom: 1px dashed #fad7a1; 
+            padding-bottom: 8px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 12px; 
+            cursor: pointer; 
+            padding: 8px; 
+            border-radius: 4px; 
+            transition: background-color 0.2s;
+        }
+        label:hover { background-color: #fdf2e9; }
+        input[type="checkbox"] { 
+            margin-right: 12px; 
+            transform: scale(1.3); 
+            cursor: pointer;
+        }
+        .btn-calc { 
+            display: block; 
+            width: 100%; 
+            background-color: #2980b9; 
+            color: white; 
+            border: none; 
+            padding: 16px 20px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 6px; 
+            margin-top: 25px;
+            transition: background-color 0.3s;
+        }
+        .btn-calc:hover { background-color: #1a5276; }
+        .result-box { 
+            margin-top: 25px; 
+            padding: 25px; 
+            font-size: 18px; 
+            border-radius: 8px; 
+            display: none; 
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .score-val { font-size: 28px; font-weight: bold; margin: 10px 0; display: block; }
+        .prognosis { font-size: 16px; margin-top: 15px; font-style: italic; }
+        
+        /* Classes màu sắc cho kết quả */
+        .class-a { background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
+        .class-b { background-color: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
+        .class-c { background-color: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
+        .class-bc { background-color: #d6d8d9; color: #383d41; border: 2px solid #c6c8ca; }
+    </style>
+</head>
+<body>
+
+    <h2>Phân loại Penn - Đánh giá Gánh nặng Thiếu máu cục bộ</h2>
+    <div class="instructions">
+        <strong>Hướng dẫn sử dụng:</strong> Bác sĩ vui lòng đánh dấu vào các biểu hiện lâm sàng tương ứng bên dưới để đánh giá tổng gánh nặng thiếu máu cục bộ ở bệnh nhân bóc tách động mạch chủ. Hệ thống sẽ tự động phân loại theo tiêu chuẩn Penn.
+    </div>
+
+    <!-- Nhóm 1: Thiếu máu cục bộ khu trú -->
+    <div class="section" id="groupB">
+        <h3>1. Dấu hiệu Thiếu máu cục bộ khu trú / theo vùng (Local or Regional Ischemia)</h3>
+        <p><i>Đánh dấu nếu bệnh nhân có bất kỳ biểu hiện nào làm giảm tưới máu đến một cơ quan/vùng cụ thể:</i></p>
+        <label><input type="checkbox" class="local-ischemia"> <strong>Mạch / Chi:</strong> Mất mạch ngoại vi, thiếu máu cục bộ chi (đau, nhợt nhạt, lạnh, mất cảm giác)</label>
+        <label><input type="checkbox" class="local-ischemia"> <strong>Thần kinh trung ương:</strong> Dấu hiệu thần kinh khu trú, đột quỵ, thiếu máu não</label>
+        <label><input type="checkbox" class="local-ischemia"> <strong>Tủy sống:</strong> Yếu liệt chi dưới, hội chứng tủy sống</label>
+        <label><input type="checkbox" class="local-ischemia"> <strong>Nội tạng / Mạc treo:</strong> Đau bụng cấp, nhồi máu mạc treo, thiếu máu tạng</label>
+        <label><input type="checkbox" class="local-ischemia"> <strong>Thận:</strong> Thiếu máu động mạch thận (thiểu niệu/vô niệu cấp tính)</label>
+    </div>
+
+    <!-- Nhóm 2: Thiếu máu toàn thân / Sốc -->
+    <div class="section" id="groupC">
+        <h3>2. Dấu hiệu Thiếu máu toàn thân / Sốc (Global Ischemia or Shock)</h3>
+        <p><i>Đánh dấu nếu bệnh nhân có biểu hiện suy sụp huyết động hoặc giảm tưới máu toàn thân:</i></p>
+        <label><input type="checkbox" class="global-ischemia"> <strong>Sốc:</strong> Biểu hiện sốc trên lâm sàng (da nổi bông, tri giác giảm...)</label>
+        <label><input type="checkbox" class="global-ischemia"> <strong>Huyết động:</strong> Tụt huyết áp nặng / Cần sử dụng thuốc vận mạch</label>
+        <label><input type="checkbox" class="global-ischemia"> <strong>Tim mạch:</strong> Tràn dịch màng ngoài tim gây chèn ép tim cấp (Cardiac tamponade)</label>
+        <label><input type="checkbox" class="global-ischemia"> <strong>Tim mạch:</strong> Thiếu máu cục bộ cơ tim cấp (thay đổi ECG do liên quan lỗ vào mạch vành gây suy bơm)</label>
+    </div>
+
+    <!-- Nút tính điểm -->
+    <button class="btn-calc" onclick="calculatePenn()">Phân loại Penn</button>
+
+    <!-- Khu vực hiển thị kết quả -->
+    <div id="resultBox" class="result-box">
+        <div>Kết quả phân loại:</div>
+        <span id="pennClass" class="score-val"></span>
+        <div id="pennDescription" style="font-weight: bold; font-size: 20px;"></div>
+        <div id="pennPrognosis" class="prognosis"></div>
+    </div>
+
+    <!-- Script xử lý tính toán -->
+    <script>
+        function calculatePenn() {
+            // Kiểm tra xem có dấu hiệu khu trú hoặc toàn thân nào không
+            let hasLocal = document.querySelectorAll('.local-ischemia:checked').length > 0;
+            let hasGlobal = document.querySelectorAll('.global-ischemia:checked').length > 0;
+            
+            let resultBox = document.getElementById('resultBox');
+            let pennClass = document.getElementById('pennClass');
+            let pennDescription = document.getElementById('pennDescription');
+            let pennPrognosis = document.getElementById('pennPrognosis');
+            
+            // Xóa tất cả các class màu sắc cũ
+            resultBox.className = 'result-box'; 
+            
+            // Logic phân loại Penn
+            if (!hasLocal && !hasGlobal) {
+                pennClass.innerText = "Penn Class A";
+                pennDescription.innerText = "Không có bằng chứng thiếu máu cục bộ";
+                pennPrognosis.innerHTML = "<em>Tiên lượng:</em> Tỉ lệ tử vong cơ bản khoảng 5%.";
+                resultBox.classList.add('class-a');
+            } else if (hasLocal && !hasGlobal) {
+                pennClass.innerText = "Penn Class B";
+                pennDescription.innerText = "Thiếu máu cục bộ khu trú / theo vùng";
+                pennPrognosis.innerHTML = "<em>Tiên lượng:</em> Tăng nguy cơ tử vong (Odds Ratio: 2.4 so với Class A).";
+                resultBox.classList.add('class-b');
+            } else if (!hasLocal && hasGlobal) {
+                pennClass.innerText = "Penn Class C";
+                pennDescription.innerText = "Thiếu máu toàn thân / Sốc";
+                pennPrognosis.innerHTML = "<em>Tiên lượng:</em> Tăng nguy cơ tử vong đáng kể (Odds Ratio: 3.4 so với Class A).";
+                resultBox.classList.add('class-c');
+            } else if (hasLocal && hasGlobal) {
+                pennClass.innerText = "Penn Class BC";
+                pennDescription.innerText = "Kết hợp thiếu máu cục bộ khu trú và toàn thân";
+                pennPrognosis.innerHTML = "<em>Tiên lượng:</em> Nguy cơ tử vong rất cao (Odds Ratio: 13.1 so với Class A).";
+                resultBox.classList.add('class-bc');
+            }
+            
+            // Hiển thị khung kết quả
+            resultBox.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
