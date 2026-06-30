@@ -422,6 +422,59 @@
             font-size: 0.7rem;
         }
 
+        .follow-up-section {
+            background: #f0f7fe;
+            border-radius: 14px;
+            padding: 16px 20px;
+            border: 2px solid #b8d4e8;
+            margin-top: 8px;
+        }
+        .follow-up-section .title {
+            font-weight: 700;
+            color: #083449;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .follow-up-section .title .icon {
+            font-size: 1.2rem;
+        }
+        .follow-up-section ul {
+            padding-left: 20px;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+        .follow-up-section ul li {
+            margin-bottom: 4px;
+        }
+        .follow-up-section .sub-item {
+            padding-left: 20px;
+            font-size: 0.85rem;
+            color: #1f4a66;
+            border-left: 3px solid #b8d4e8;
+            margin: 4px 0 8px 10px;
+            padding-left: 14px;
+        }
+        .follow-up-section .time-badge {
+            display: inline-block;
+            background: #d4edda;
+            color: #0e4b2b;
+            padding: 0 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .follow-up-section .time-badge.orange {
+            background: #fff3cd;
+            color: #7a5d0b;
+        }
+        .follow-up-section .time-badge.red {
+            background: #f8d7da;
+            color: #8b1e2b;
+        }
+
         @media (max-width: 600px) {
             .tabs { padding: 12px 14px 0 14px; gap: 4px; }
             .tab-btn { padding: 8px 14px; font-size: 0.8rem; }
@@ -656,7 +709,7 @@
             ]
         };
 
-        // --- Dữ liệu xử trí: Phần chung + Phần bổ sung dựa trên đánh giá ---
+        // --- Dữ liệu xử trí: Phần chung + Phần bổ sung dựa trên đánh giá + Theo dõi ---
         function getTreatmentActions(primaryType, assessment) {
             const treatmentData = {
                 'A': {
@@ -701,7 +754,38 @@
                         { check: 'B_entry_large', title: '🟠 TEVAR DỰ PHÒNG', detail: 'Yếu tố nguy cơ tiến triển. Cân nhắc TEVAR để phòng ngừa biến chứng.', evidence: 'Khuyến cáo IIa C' },
                         { check: 'B_diameter_40', title: '🟠 THEO DÕI CTA SÁT', detail: 'Nguy cơ tiến triển thành phình. Theo dõi bằng CTA 6-12 tháng.', evidence: 'Khuyến cáo IIa C' },
                         { check: 'B_false_lumen', title: '🟠 CÂN NHẮC CAN THIỆP', detail: 'Nguy cơ phình. Cân nhắc can thiệp nếu có thêm yếu tố nguy cơ khác.', evidence: 'Khuyến cáo IIb C' }
-                    ]
+                    ],
+                    followUp: {
+                        title: '📋 THEO DÕI ĐỊNH KỲ TYPE B KHÔNG CÓ YẾU TỐ NGUY CƠ',
+                        detail: `
+                            <ul>
+                                <li><strong>Điều trị nội khoa:</strong>
+                                    <div class="sub-item">Beta-blocker (metoprolol, bisoprolol) mục tiêu HR 60-80 bpm, HA 100-120mmHg</div>
+                                    <div class="sub-item">ACE inhibitor hoặc ARB nếu dung nạp</div>
+                                </li>
+                                <li><strong>Chụp CTA:</strong>
+                                    <div class="sub-item"><span class="time-badge">Mốc 1</span> 6 tháng sau khi xuất viện</div>
+                                    <div class="sub-item"><span class="time-badge orange">Mốc 2</span> 12 tháng sau đó</div>
+                                    <div class="sub-item"><span class="time-badge">Mốc 3</span> Hàng năm nếu ổn định (không tăng kích thước)</div>
+                                </li>
+                                <li><strong>Theo dõi lâm sàng:</strong>
+                                    <div class="sub-item">Đánh giá đau ngực, đau lưng, đau bụng, khó thở</div>
+                                    <div class="sub-item">Kiểm tra mạch chi, huyết áp 2 tay</div>
+                                </li>
+                                <li><strong>Tái khám định kỳ:</strong>
+                                    <div class="sub-item"><span class="time-badge">Tái khám</span> 3 tháng/lần trong năm đầu</div>
+                                    <div class="sub-item"><span class="time-badge orange">Tái khám</span> 6 tháng/lần từ năm thứ 2</div>
+                                </li>
+                                <li><strong>Dấu hiệu cần can thiệp lại:</strong>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Tăng đường kính ĐMC >5mm/năm</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Xuất hiện ULP hoặc IMH mới</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Đau trở lại không rõ nguyên nhân</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Xuất hiện biến chứng mới (vỡ, malperfusion)</div>
+                                </li>
+                            </ul>
+                        `,
+                        evidence: 'Khuyến cáo I C – dựa trên EACTS/STS 2024'
+                    }
                 },
                 'nonAB': {
                     general: {
@@ -756,7 +840,33 @@
                         { check: 'IMHB_diameter', title: '🟠 TEVAR DO ĐMC >45MM', detail: 'Đường kính ĐMC >45mm là chỉ định TEVAR.', evidence: 'Khuyến cáo IIa C' },
                         { check: 'IMHB_thickness', title: '🟠 TEVAR DO THÀNH ≥10MM', detail: 'Bề dày thành ≥10mm là yếu tố nguy cơ cần TEVAR.', evidence: 'Khuyến cáo IIa C' },
                         { check: 'IMHB_ulp', title: '🟠 TEVAR DO CÓ ULP', detail: 'Ulcer-like projection là chỉ định TEVAR.', evidence: 'Khuyến cáo IIa C' }
-                    ]
+                    ],
+                    followUp: {
+                        title: '📋 THEO DÕI ĐỊNH KỲ IMH TYPE B KHÔNG CÓ YẾU TỐ NGUY CƠ',
+                        detail: `
+                            <ul>
+                                <li><strong>Điều trị nội khoa:</strong>
+                                    <div class="sub-item">Beta-blocker, kiểm soát huyết áp mục tiêu 100-120mmHg</div>
+                                    <div class="sub-item">Theo dõi sát tại ICU trong 48-72 giờ đầu</div>
+                                </li>
+                                <li><strong>Chụp CTA:</strong>
+                                    <div class="sub-item"><span class="time-badge red">Mốc 1</span> 7 ngày sau khi xuất viện (đánh giá tiến triển sớm)</div>
+                                    <div class="sub-item"><span class="time-badge orange">Mốc 2</span> 1 tháng sau đó</div>
+                                    <div class="sub-item"><span class="time-badge">Mốc 3</span> 3 tháng, 6 tháng, sau đó 12 tháng/lần</div>
+                                </li>
+                                <li><strong>Theo dõi lâm sàng:</strong>
+                                    <div class="sub-item">Đau ngực, khó thở, tràn dịch màng phổi</div>
+                                    <div class="sub-item">Kiểm tra mạch chi và huyết áp</div>
+                                </li>
+                                <li><strong>Dấu hiệu cần can thiệp:</strong>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Xuất hiện ULP mới hoặc IMH tiến triển</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Tăng đường kính ĐMC >5mm</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Xuất hiện triệu chứng mới</div>
+                                </li>
+                            </ul>
+                        `,
+                        evidence: 'Khuyến cáo I C – dựa trên EACTS/STS 2024'
+                    }
                 },
                 'PAU': {
                     general: {
@@ -775,7 +885,38 @@
                         { check: 'PAU_depth', title: '🟠 TEVAR DO PAU SÂU >10MM', detail: 'PAU sâu >10mm có nguy cơ biến chứng cao.', evidence: 'Khuyến cáo IIa B' },
                         { check: 'PAU_imh', title: '🟠 TEVAR DO CÓ IMH', detail: 'IMH kèm theo làm tăng nguy cơ vỡ, chỉ định TEVAR.', evidence: 'Khuyến cáo IIa B' },
                         { check: 'PAU_pain', title: '🟠 TEVAR DO ĐAU DAI DẲNG', detail: 'Đau dai dẳng là dấu hiệu tiến triển, cần can thiệp sớm.', evidence: 'Khuyến cáo IIa B' }
-                    ]
+                    ],
+                    followUp: {
+                        title: '📋 THEO DÕI ĐỊNH KỲ PAU KHÔNG CÓ YẾU TỐ NGUY CƠ',
+                        detail: `
+                            <ul>
+                                <li><strong>Điều trị nội khoa:</strong>
+                                    <div class="sub-item">Kiểm soát huyết áp (mục tiêu <130/80mmHg)</div>
+                                    <div class="sub-item">Statins, kiểm soát lipid máu (LDL <70mg/dL)</div>
+                                    <div class="sub-item">Ngừng hút thuốc lá tuyệt đối</div>
+                                </li>
+                                <li><strong>Chụp CTA:</strong>
+                                    <div class="sub-item"><span class="time-badge orange">Mốc 1</span> 6 tháng sau khi phát hiện</div>
+                                    <div class="sub-item"><span class="time-badge">Mốc 2</span> 12 tháng sau đó</div>
+                                    <div class="sub-item"><span class="time-badge">Mốc 3</span> Hàng năm nếu ổn định</div>
+                                </li>
+                                <li><strong>Theo dõi lâm sàng:</strong>
+                                    <div class="sub-item">Đau ngực, khó thở, ho ra máu (dấu hiệu vỡ)</div>
+                                    <div class="sub-item">Đau lưng, đau bụng (PAU vùng xuống)</div>
+                                </li>
+                                <li><strong>Tái khám:</strong>
+                                    <div class="sub-item">3-6 tháng/lần trong năm đầu</div>
+                                    <div class="sub-item">6-12 tháng/lần sau đó</div>
+                                </li>
+                                <li><strong>Dấu hiệu cần TEVAR:</strong>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">PAU tăng kích thước >2mm/năm</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Xuất hiện IMH hoặc ULP mới</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Đau dai dẳng hoặc vỡ</div>
+                                </li>
+                            </ul>
+                        `,
+                        evidence: 'Khuyến cáo I C – dựa trên EACTS/STS 2024'
+                    }
                 },
                 'BTAI': {
                     general: {
@@ -794,7 +935,34 @@
                         { check: 'BTAI_grade3', title: '🔴 TEVAR ĐỘ III', detail: 'Phình giả có nguy cơ vỡ cao, TEVAR ngay.', evidence: 'Khuyến cáo I C' },
                         { check: 'BTAI_grade4', title: '🔴 TEVAR CẤP CỨU ĐỘ IV', detail: 'Vỡ tự do, TEVAR cấp cứu ngay lập tức.', evidence: 'Khuyến cáo I C' },
                         { check: 'BTAI_hematoma', title: '🟠 TEVAR DO HEMATOMA >10MM', detail: 'Hematoma trung thất >10mm là yếu tố nguy cơ, cân nhắc TEVAR.', evidence: 'Khuyến cáo IIa C' }
-                    ]
+                    ],
+                    followUp: {
+                        title: '📋 THEO DÕI ĐỊNH KỲ BTAI ĐỘ I VÀ ĐỘ II KHÔNG NGUY CƠ',
+                        detail: `
+                            <ul>
+                                <li><strong>Điều trị nội khoa:</strong>
+                                    <div class="sub-item">Kiểm soát huyết áp (mục tiêu <120/80mmHg)</div>
+                                    <div class="sub-item">Giảm đau, theo dõi tại ICU 24-48 giờ</div>
+                                </li>
+                                <li><strong>Chụp CTA:</strong>
+                                    <div class="sub-item"><span class="time-badge red">Mốc 1</span> 7 ngày sau chấn thương</div>
+                                    <div class="sub-item"><span class="time-badge orange">Mốc 2</span> 1 tháng sau đó</div>
+                                    <div class="sub-item"><span class="time-badge orange">Mốc 3</span> 3 tháng sau đó</div>
+                                    <div class="sub-item"><span class="time-badge">Mốc 4</span> 6 tháng, sau đó hàng năm</div>
+                                </li>
+                                <li><strong>Theo dõi lâm sàng:</strong>
+                                    <div class="sub-item">Mạch chi, huyết áp 2 tay, 2 chân</div>
+                                    <div class="sub-item">Dấu hiệu xuất huyết, đau ngực, khó thở</div>
+                                </li>
+                                <li><strong>Dấu hiệu cần TEVAR:</strong>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Tiến triển thành phình giả</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Hematoma trung thất tăng</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Xuất hiện triệu chứng mới</div>
+                                </li>
+                            </ul>
+                        `,
+                        evidence: 'Khuyến cáo I C – dựa trên EACTS/STS 2024'
+                    }
                 },
                 'AAA': {
                     general: {
@@ -813,7 +981,36 @@
                         { check: 'AAA_rupture', title: '🔴 CAN THIỆP CẤP CỨU VỠ AAA', detail: 'EVAR hoặc mổ mở cấp cứu. Tiên lượng xấu nếu trì hoãn.', evidence: 'Khuyến cáo I C' },
                         { check: 'AAA_symptomatic', title: '🔴 MỔ CẤP CỨU AAA CÓ TRIỆU CHỨNG', detail: 'Triệu chứng đau là dấu hiệu báo trước vỡ. Mổ cấp cứu ngay.', evidence: 'Khuyến cáo I B' },
                         { check: 'AAA_growth', title: '🟠 CAN THIỆP SỚM DO TĂNG NHANH', detail: 'Tốc độ tăng >10mm/năm là chỉ định can thiệp sớm.', evidence: 'Khuyến cáo IIa C' }
-                    ]
+                    ],
+                    followUp: {
+                        title: '📋 THEO DÕI ĐỊNH KỲ AAA DƯỚI NGƯỠNG CAN THIỆP',
+                        detail: `
+                            <ul>
+                                <li><strong>Ngưỡng theo dõi:</strong> AAA <55mm (nam) hoặc <50mm (nữ)</li>
+                                <li><strong>Siêu âm bụng:</strong>
+                                    <div class="sub-item"><span class="time-badge">Mốc 1</span> 12 tháng/lần</div>
+                                    <div class="sub-item">Đo đường kính trước-sau (AP) và ngang</div>
+                                </li>
+                                <li><strong>Kiểm soát yếu tố nguy cơ:</strong>
+                                    <div class="sub-item">Ngừng hút thuốc lá tuyệt đối (quan trọng nhất)</div>
+                                    <div class="sub-item">Kiểm soát huyết áp (<130/80mmHg)</div>
+                                    <div class="sub-item">Statins, kiểm soát lipid máu</div>
+                                    <div class="sub-item">Kiểm soát đường huyết nếu có ĐTĐ</div>
+                                </li>
+                                <li><strong>Theo dõi triệu chứng:</strong>
+                                    <div class="sub-item">Đau bụng, đau lưng, mạch bẹn</div>
+                                    <div class="sub-item">Đau bụng đột ngột, dữ dội (nghĩ vỡ AAA)</div>
+                                </li>
+                                <li><strong>Chỉ định can thiệp khi:</strong>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">AAA ≥55mm (nam) hoặc ≥50mm (nữ)</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Tăng >10mm/năm</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Xuất hiện triệu chứng đau</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Vỡ AAA (cấp cứu)</div>
+                                </li>
+                            </ul>
+                        `,
+                        evidence: 'Khuyến cáo I C – dựa trên EACTS/STS 2024'
+                    }
                 },
                 'TAAA': {
                     general: {
@@ -832,13 +1029,40 @@
                         { check: 'TAAA_extent2', title: '🟠 CSF DRAIN CHO TAAA EXTENT II', detail: 'Nguy cơ SCI cao, cần dẫn lưu CSF và theo dõi thần kinh.', evidence: 'Khuyến cáo IIa C' },
                         { check: 'TAAA_prior_tevar', title: '🟠 CSF DRAIN DO ĐÃ TEVAR', detail: 'TEVAR trước đó làm tăng nguy cơ SCI. Đặt CSF drain trước mổ.', evidence: 'Khuyến cáo IIa C' },
                         { check: 'TAAA_renal', title: '🟠 BẢO VỆ THẬN TRONG MỔ', detail: 'Suy thận mạn cần bảo vệ thận: dùng Custodiol hoặc tưới máu thận chọn lọc.', evidence: 'Khuyến cáo IIa C' }
-                    ]
+                    ],
+                    followUp: {
+                        title: '📋 THEO DÕI ĐỊNH KỲ TAAA DƯỚI NGƯỠNG CAN THIỆP',
+                        detail: `
+                            <ul>
+                                <li><strong>Ngưỡng theo dõi:</strong> TAAA <55mm</li>
+                                <li><strong>Chụp CTA:</strong>
+                                    <div class="sub-item"><span class="time-badge orange">Mốc 1</span> 6 tháng sau khi phát hiện</div>
+                                    <div class="sub-item"><span class="time-badge">Mốc 2</span> 12 tháng sau đó</div>
+                                    <div class="sub-item"><span class="time-badge">Mốc 3</span> Hàng năm nếu ổn định</div>
+                                </li>
+                                <li><strong>Kiểm soát yếu tố nguy cơ:</strong>
+                                    <div class="sub-item">Huyết áp (<130/80mmHg)</div>
+                                    <div class="sub-item">Lipid máu, ngừng hút thuốc</div>
+                                </li>
+                                <li><strong>Theo dõi triệu chứng:</strong>
+                                    <div class="sub-item">Đau ngực, đau lưng, đau bụng, khó thở</div>
+                                    <div class="sub-item">Đau đột ngột, dữ dội (nghĩ vỡ TAAA)</div>
+                                </li>
+                                <li><strong>Chỉ định can thiệp khi:</strong>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">TAAA ≥55mm</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Tăng >5mm/năm</div>
+                                    <div class="sub-item" style="border-left-color:#dc2626;">Xuất hiện triệu chứng đau</div>
+                                </li>
+                            </ul>
+                        `,
+                        evidence: 'Khuyến cáo I C – dựa trên EACTS/STS 2024'
+                    }
                 }
             };
 
             const data = treatmentData[primaryType];
             if (!data) {
-                return { general: '<p class="text-muted">Chưa có hướng dẫn xử trí cụ thể cho loại tổn thương này.</p>', conditional: [] };
+                return { general: '<p class="text-muted">Chưa có hướng dẫn xử trí cụ thể cho loại tổn thương này.</p>', conditional: [], followUp: null };
             }
 
             // Xây dựng phần chung
@@ -887,20 +1111,35 @@
                 });
                 conditionalHtml += `</div>`;
             } else {
+                // Không có yếu tố nguy cơ nào → hiển thị chiến lược theo dõi (nếu có)
                 conditionalHtml = `
-                    <div class="treatment-section" style="border-color: #d4edda; background: #f0fdf4;">
+                    <div class="treatment-section" style="border-color: #22c55e; background: #f0fdf4;">
                         <div class="section-title">
-                            ✅ KHÔNG CÓ XỬ TRÍ BỔ SUNG
+                            ✅ KHÔNG CÓ YẾU TỐ NGUY CƠ ĐẶC BIỆT
                             <span class="badge-count" style="background: #22c55e;">0 yếu tố</span>
                         </div>
                         <div style="padding: 8px 12px; color: #0e4b2b; font-size:0.9rem;">
-                            Không có yếu tố đánh giá đặc biệt nào được tích chọn. Tiếp tục xử trí theo hướng dẫn chung.
+                            Bệnh nhân không có yếu tố nguy cơ đặc biệt. Áp dụng chiến lược theo dõi định kỳ chi tiết dưới đây.
                         </div>
                     </div>
                 `;
+
+                // Thêm phần theo dõi nếu có
+                if (data.followUp) {
+                    conditionalHtml += `
+                        <div class="follow-up-section">
+                            <div class="title"><span class="icon">📋</span> ${data.followUp.title}</div>
+                            ${data.followUp.detail}
+                            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #d4e4f0;">
+                                <span class="pill" style="background: #1b7a9e; color: white; font-weight: 600;">${data.followUp.evidence}</span>
+                                <span style="margin-left: 12px; font-size:0.8rem; color:#4f6f89;">Theo dõi suốt đời</span>
+                            </div>
+                        </div>
+                    `;
+                }
             }
 
-            return { general: generalHtml, conditional: conditionalHtml };
+            return { general: generalHtml, conditional: conditionalHtml, followUp: data.followUp };
         }
 
         // --- Dữ liệu tiên lượng dựa trên đánh giá ---
@@ -1051,6 +1290,7 @@
             }
 
             let html = `<div class="card-inner"><div class="title">📋 Đánh giá các yếu tố lâm sàng (tích vào ô nếu có)</div>`;
+            html += `<div style="font-size:0.85rem; color:#4f6f89; margin-bottom:8px;">💡 <strong>Lưu ý:</strong> Nếu không có yếu tố nào được tích, hệ thống sẽ đề xuất chiến lược theo dõi định kỳ chi tiết.</div>`;
             items.forEach(item => {
                 const checked = assessmentState[item.id] ? 'checked' : '';
                 html += `
@@ -1101,7 +1341,7 @@
 
             let html = '';
             if (checked.length === 0) {
-                html = '<span class="text-muted text-sm">Chưa có yếu tố nào được đánh giá</span>';
+                html = '<span class="text-muted text-sm">Chưa có yếu tố nào được đánh giá (sẽ áp dụng chiến lược theo dõi định kỳ)</span>';
             } else {
                 checked.forEach(cb => {
                     const label = cb.closest('label')?.textContent?.trim() || cb.dataset.id;
@@ -1129,27 +1369,17 @@
                 return;
             }
 
-            if (hasAssessment) {
-                step2Badge.textContent = '✓ đã đánh giá';
-                step2Badge.style.background = '#d4edda';
-                step2Badge.style.color = '#0e4b2b';
-                step3Badge.textContent = '✓ sẵn sàng';
-                step3Badge.style.background = '#d4edda';
-                step3Badge.style.color = '#0e4b2b';
-                step4Badge.textContent = '✓ sẵn sàng';
-                step4Badge.style.background = '#d4edda';
-                step4Badge.style.color = '#0e4b2b';
-            } else {
-                step2Badge.textContent = '⚠️ chưa đánh giá';
-                step2Badge.style.background = '#fff3cd';
-                step2Badge.style.color = '#7a5d0b';
-                step3Badge.textContent = '⛔ chưa sẵn sàng';
-                step3Badge.style.background = '#f8d7da';
-                step3Badge.style.color = '#8b1e2b';
-                step4Badge.textContent = '⛔ chưa sẵn sàng';
-                step4Badge.style.background = '#f8d7da';
-                step4Badge.style.color = '#8b1e2b';
-            }
+            step2Badge.textContent = hasAssessment ? '✓ đã đánh giá' : '○ chưa có';
+            step2Badge.style.background = hasAssessment ? '#d4edda' : '#f1f3f5';
+            step2Badge.style.color = hasAssessment ? '#0e4b2b' : '#6c7a89';
+            
+            step3Badge.textContent = '✓ sẵn sàng';
+            step3Badge.style.background = '#d4edda';
+            step3Badge.style.color = '#0e4b2b';
+            
+            step4Badge.textContent = '✓ sẵn sàng';
+            step4Badge.style.background = '#d4edda';
+            step4Badge.style.color = '#0e4b2b';
         }
 
         // --- Cập nhật nội dung xử trí ---
@@ -1161,20 +1391,7 @@
                 return;
             }
 
-            const hasAssessment = Object.values(assessmentState).some(v => v === true);
-            if (!hasAssessment) {
-                actionContent.innerHTML = `
-                    <div class="highlight-box" style="border-color: #e6a700;">
-                        ⚠️ <strong>Chưa có đánh giá:</strong> Vui lòng quay lại Bước 2 để đánh giá các yếu tố lâm sàng trước khi xem hướng xử trí chi tiết.
-                    </div>
-                `;
-                return;
-            }
-
             const result = getTreatmentActions(primary, assessmentState);
-            const selectedLabels = Object.keys(assessmentState).filter(k => assessmentState[k]);
-            const selectedCount = selectedLabels.length;
-
             actionContent.innerHTML = result.general + result.conditional;
         }
 
@@ -1184,16 +1401,6 @@
             const primary = getPrimaryType(selected);
             if (!primary) {
                 prognosisContent.innerHTML = `<p class="text-muted text-sm">Vui lòng chọn phân loại ở Bước 1 trước.</p>`;
-                return;
-            }
-
-            const hasAssessment = Object.values(assessmentState).some(v => v === true);
-            if (!hasAssessment) {
-                prognosisContent.innerHTML = `
-                    <div class="highlight-box" style="border-color: #e6a700; grid-column: 1 / -1;">
-                        ⚠️ <strong>Chưa có đánh giá:</strong> Vui lòng quay lại Bước 2 để đánh giá các yếu tố lâm sàng trước khi xem tiên lượng.
-                    </div>
-                `;
                 return;
             }
 
@@ -1268,11 +1475,6 @@
                 alert('Vui lòng chọn phân loại ở Bước 1 trước.');
                 return;
             }
-            const hasAssessment = Object.values(assessmentState).some(v => v === true);
-            if (!hasAssessment) {
-                alert('Vui lòng hoàn thành đánh giá các yếu tố lâm sàng ở Bước 2 trước khi tiếp tục.');
-                return;
-            }
             switchTab('tab3');
             updateActionContent();
         });
@@ -1285,11 +1487,6 @@
             const selected = getSelectedTypes();
             if (selected.length === 0) {
                 alert('Vui lòng chọn phân loại ở Bước 1 trước.');
-                return;
-            }
-            const hasAssessment = Object.values(assessmentState).some(v => v === true);
-            if (!hasAssessment) {
-                alert('Vui lòng hoàn thành đánh giá các yếu tố lâm sàng ở Bước 2 trước khi tiếp tục.');
                 return;
             }
             switchTab('tab4');
