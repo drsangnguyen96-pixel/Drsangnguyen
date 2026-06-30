@@ -313,7 +313,7 @@
         <div class="module-grid">
             <div class="form-group"><label>Tuổi (năm)</label><input type="number" id="vAge" class="input-control" value="55" min="18" max="110"></div>
             <div class="form-group"><label>Cân nặng (kg) *</label><input type="number" id="vWeight" class="input-control" value="70" min="30" max="250"></div>
-            <div class="form-group"><label>Chiều cao (inch)</label><input type="number" id="vHeight" class="input-control" value="67" min="55" max="85"></div>
+            <div class="form-group"><label>Chiều cao (cm) *</label><input type="number" id="vHeight" class="input-control" value="170" min="140" max="220"></div>
             <div class="form-group"><label>Giới tính</label>
                 <select id="vGender" class="input-control"><option value="male">Nam</option><option value="female" selected>Nữ</option></select>
             </div>
@@ -352,7 +352,7 @@
         <div class="module-grid">
             <div class="form-group"><label>Tuổi (năm)</label><input type="number" id="aAge" class="input-control" value="55" min="18" max="110"></div>
             <div class="form-group"><label>Cân nặng (kg) *</label><input type="number" id="aWeight" class="input-control" value="70" min="30" max="250"></div>
-            <div class="form-group"><label>Chiều cao (inch)</label><input type="number" id="aHeight" class="input-control" value="67" min="55" max="85"></div>
+            <div class="form-group"><label>Chiều cao (cm) *</label><input type="number" id="aHeight" class="input-control" value="170" min="140" max="220"></div>
             <div class="form-group"><label>Giới tính</label>
                 <select id="aGender" class="input-control"><option value="male">Nam</option><option value="female" selected>Nữ</option></select>
             </div>
@@ -575,25 +575,26 @@
     function calcVancomycin() {
         const age = parseFloat(document.getElementById('vAge').value) || 55;
         const weight = parseFloat(document.getElementById('vWeight').value) || 70;
-        const height = parseFloat(document.getElementById('vHeight').value) || 67;
+        const heightCm = parseFloat(document.getElementById('vHeight').value) || 170;
+        const heightInches = heightCm / 2.54;
         const gender = document.getElementById('vGender').value;
         const scr = parseFloat(document.getElementById('vScr').value) || 1.0;
         const obese = document.getElementById('vObese').value;
-        if (age < 18 || age > 110 || weight < 30 || weight > 250 || height < 55 || height > 85 || scr <= 0) {
+        if (age < 18 || age > 110 || weight < 30 || weight > 250 || heightCm < 140 || heightCm > 220 || scr <= 0) {
             document.getElementById('vCrcl').textContent = '--';
             document.getElementById('vLoadDose').textContent = 'Vui lòng nhập giá trị hợp lý';
             document.getElementById('vMaintDose').textContent = '--';
             document.getElementById('vInfusionGuide').textContent = '--';
             return;
         }
-        const crcl = calcCrCl(age, weight, height, gender, scr, obese);
+        const crcl = calcCrCl(age, weight, heightInches, gender, scr, obese);
         document.getElementById('vCrcl').textContent = crcl.toFixed(1);
         let dosingWeight = weight;
         if (obese === 'yes') {
-            const ibw = getIBW(gender, height);
+            const ibw = getIBW(gender, heightInches);
             dosingWeight = getABW(ibw, weight);
         } else {
-            const ibw = getIBW(gender, height);
+            const ibw = getIBW(gender, heightInches);
             if (weight < ibw) dosingWeight = weight;
             else dosingWeight = ibw;
         }
@@ -665,12 +666,13 @@
     function calcAminoglycoside() {
         const age = parseFloat(document.getElementById('aAge').value) || 55;
         const weight = parseFloat(document.getElementById('aWeight').value) || 70;
-        const height = parseFloat(document.getElementById('aHeight').value) || 67;
+        const heightCm = parseFloat(document.getElementById('aHeight').value) || 170;
+        const heightInches = heightCm / 2.54;
         const gender = document.getElementById('aGender').value;
         const scr = parseFloat(document.getElementById('aScr').value) || 1.0;
         const obese = document.getElementById('aObese').value;
         const strategy = document.getElementById('aminoStrategy').value;
-        if (age < 18 || age > 110 || weight < 30 || weight > 250 || height < 55 || height > 85 || scr <= 0) {
+        if (age < 18 || age > 110 || weight < 30 || weight > 250 || heightCm < 140 || heightCm > 220 || scr <= 0) {
             document.getElementById('aCrcl').textContent = '--';
             document.getElementById('aInitDose').textContent = 'Vui lòng nhập giá trị hợp lý';
             document.getElementById('aInterval').textContent = '--';
@@ -678,14 +680,14 @@
             document.getElementById('aMonitoring').textContent = '--';
             return;
         }
-        const crcl = calcCrCl(age, weight, height, gender, scr, obese);
+        const crcl = calcCrCl(age, weight, heightInches, gender, scr, obese);
         document.getElementById('aCrcl').textContent = crcl.toFixed(1);
         let dosingWeight = weight;
         if (obese === 'yes') {
-            const ibw = getIBW(gender, height);
+            const ibw = getIBW(gender, heightInches);
             dosingWeight = getABW(ibw, weight);
         } else {
-            const ibw = getIBW(gender, height);
+            const ibw = getIBW(gender, heightInches);
             if (weight < ibw) dosingWeight = weight;
             else dosingWeight = ibw;
         }
