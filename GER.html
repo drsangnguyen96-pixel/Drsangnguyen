@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Thang điểm GERAADA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            max-width: 720px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.25);
+            padding: 28px 24px 32px;
+            transition: all 0.2s ease;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #0b3b5c, #1d6f8f);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .badge {
+            background: #eef3f8;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1d4e6e;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        .sub {
+            color: #3d5a73;
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            border-left: 4px solid #2a7f9c;
+            padding-left: 14px;
+            background: #f0f6fb;
+            border-radius: 0 8px 8px 0;
+            line-height: 1.4;
+        }
+
+        .section {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 16px 18px;
+            margin-bottom: 20px;
+            border: 1px solid #e9edf2;
+        }
+
+        .section-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1d3b4f;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title span {
+            background: #d9e4ed;
+            border-radius: 30px;
+            padding: 0 12px;
+            font-size: 0.75rem;
+            color: #1f4b66;
+        }
+
+        .item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .item label {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #1a2e3f;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #1d7a9c;
+            flex-shrink: 0;
+            margin-top: 1px;
+            cursor: pointer;
+        }
+
+        .highlight {
+            background: #e6f0f9;
+            border-radius: 30px;
+            padding: 2px 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #005a7a;
+            white-space: nowrap;
+        }
+
+        .risk-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+            background: #eef3f8;
+            border-radius: 40px;
+            padding: 16px 18px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .result-box {
+            background: #ffffff;
+            border-radius: 60px;
+            padding: 12px 24px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .result-box .label {
+            font-weight: 500;
+            color: #1b4057;
+            font-size: 0.95rem;
+        }
+
+        .result-box .score {
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: #0b2d40;
+            letter-spacing: -0.5px;
+        }
+
+        .risk-tag {
+            font-weight: 600;
+            padding: 6px 22px;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            background: #dce6ef;
+            color: #1d4057;
+        }
+
+        .risk-low { background: #d4edda; color: #0e4b2b; }
+        .risk-intermediate { background: #fff3cd; color: #7a5d0b; }
+        .risk-high { background: #f8d7da; color: #8b1e2b; }
+
+        .btn-reset {
+            background: transparent;
+            border: 1.5px solid #b9cfdf;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e4b66;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            background: white;
+        }
+
+        .btn-reset:hover {
+            background: #e2edf7;
+            border-color: #779bb3;
+        }
+
+        .footer-note {
+            margin-top: 18px;
+            font-size: 0.8rem;
+            color: #5a7387;
+            text-align: center;
+            border-top: 1px solid #e2e9f0;
+            padding-top: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 20px 16px; }
+            .header h1 { font-size: 1.5rem; }
+            .item label { font-size: 0.9rem; }
+            .risk-group { flex-direction: column; align-items: stretch; }
+            .result-box { justify-content: center; }
+            .btn-reset { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <h1>GERAADA</h1>
+        <div class="badge">✅ 30‑day mortality</div>
+    </div>
+    <div class="sub">
+        ⚕️ German Registry for Acute Aortic Dissection Type A · đánh dấu các yếu tố nguy cơ
+    </div>
+
+    <!-- Các mục điểm -->
+    <div id="formContainer">
+        <!-- nhóm 1 -->
+        <div class="section">
+            <div class="section-title"><span>👤</span> Bệnh nhân & tiền sử</div>
+            <div class="item"><label><input type="checkbox" data-points="4" class="risk-check"> Giới tính nữ</label></div>
+            <div class="item"><label><input type="checkbox" data-points="5" class="risk-check"> Tuổi ≥ 70</label></div>
+            <div class="item"><label><input type="checkbox" data-points="6" class="risk-check"> Tuổi ≥ 80</label></div>
+            <div class="item"><label><input type="checkbox" data-points="12" class="risk-check"> Phẫu thuật tim trước đó</label></div>
+        </div>
+
+        <!-- nhóm 2 -->
+        <div class="section">
+            <div class="section-title"><span>🫀</span> Huyết động & hồi sức</div>
+            <div class="item"><label><input type="checkbox" data-points="14" class="risk-check"> Cấp cứu tim phổi trước mổ</label></div>
+            <div class="item"><label><input type="checkbox" data-points="8" class="risk-check"> Đặt nội khí quản / thở máy</label></div>
+            <div class="item"><label><input type="checkbox" data-points="12" class="risk-check"> Cần catecholamin (tại chuyển viện)</label></div>
+        </div>
+
+        <!-- nhóm 3 -->
+        <div class="section">
+            <div class="section-title"><span>🧠</span> Thần kinh & tưới máu</div>
+            <div class="item"><label><input type="checkbox" data-points="6" class="risk-check"> Liệt nửa người / hemiparesis</label></div>
+            <div class="item"><label><input type="checkbox" data-points="6" class="risk-check"> Rối loạn tưới máu tạng (malperfusion)</label></div>
+            <div class="item"><label><input type="checkbox" data-points="8" class="risk-check"> Hở van động mạch chủ độ ≥ 2</label></div>
+        </div>
+
+        <!-- nhóm 4 -->
+        <div class="section">
+            <div class="section-title"><span>📐</span> Giải phẫu bóc tách</div>
+            <div class="item"><label><input type="checkbox" data-points="6" class="risk-check"> Lan xuống động mạch chủ ngực – bụng</label></div>
+            <div class="item"><label><input type="checkbox" data-points="11" class="risk-check"> Vị trí lỗ vào ở cung động mạch chủ</label></div>
+        </div>
+    </div>
+
+    <!-- Kết quả + nút reset -->
+    <div class="risk-group">
+        <div class="result-box">
+            <span class="label">Điểm GERAADA</span>
+            <span class="score" id="totalScore">0</span>
+            <span class="risk-tag" id="riskLevel">Chưa xác định</span>
+        </div>
+        <button class="btn-reset" id="resetBtn">⟲ Bỏ chọn</button>
+    </div>
+
+    <div class="footer-note">
+        ⚡ Nguy cơ tử vong 30 ngày: <strong id="mortalityDisplay">–</strong> 
+        <span style="display:inline-block; margin-left: 8px; background:#eaeff4; padding:0 10px; border-radius:20px;">dựa theo GERAADA score</span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const checkboxes = document.querySelectorAll('.risk-check');
+        const totalScoreSpan = document.getElementById('totalScore');
+        const riskLevelSpan = document.getElementById('riskLevel');
+        const mortalityDisplay = document.getElementById('mortalityDisplay');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Hàm cập nhật điểm và hiển thị
+        function updateScore() {
+            let total = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    total += parseInt(cb.dataset.points, 10);
+                }
+            });
+
+            totalScoreSpan.textContent = total;
+
+            // Xác định mức nguy cơ & hiển thị tử vong
+            let riskText = '';
+            let mortalityText = '';
+            let riskClass = '';
+
+            if (total < 15) {
+                riskText = 'Nguy cơ thấp';
+                mortalityText = '&lt; 15%';
+                riskClass = 'risk-low';
+            } else if (total >= 15 && total <= 30) {
+                riskText = 'Nguy cơ trung bình';
+                mortalityText = '15 – 30%';
+                riskClass = 'risk-intermediate';
+            } else {
+                riskText = 'Nguy cơ cao';
+                mortalityText = '&gt; 30%';
+                riskClass = 'risk-high';
+            }
+
+            riskLevelSpan.textContent = riskText;
+            // Xóa class cũ, thêm class mới
+            riskLevelSpan.className = 'risk-tag ' + riskClass;
+            mortalityDisplay.innerHTML = mortalityText;
+        }
+
+        // Gắn sự kiện cho từng checkbox
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateScore);
+        });
+
+        // Nút reset
+        resetBtn.addEventListener('click', function() {
+            checkboxes.forEach(cb => {
+                cb.checked = false;
+            });
+            updateScore();
+        });
+
+        // Khởi tạo lần đầu
+        updateScore();
+    })();
+</script>
+</body>
+</html>
