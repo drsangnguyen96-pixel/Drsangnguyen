@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThyroidCare - Hỗ trợ quyết định lâm sàng Ung thư giáp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 50%, #f8fafc 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: #1e293b;
+        }
+
+        .app-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 24px;
+            padding: 35px 45px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .header-title .subtitle {
+            font-size: 16px;
+            color: #94a3b8;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        .header-badge {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(8px);
+        }
+
+        .header-badge span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #22d3ee;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* Main Card */
+        .main-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px 45px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 24px;
+        }
+
+        .section-title .icon {
+            font-size: 26px;
+        }
+
+        .section-title .line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, #e2e8f0, transparent);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px 40px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group label .hint {
+            font-weight: 400;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .form-group label .required {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .form-control {
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            transition: all 0.2s ease;
+            color: #0f172a;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-control:hover {
+            border-color: #94a3b8;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px 20px;
+            padding: 12px 0 4px 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .checkbox-item:hover {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #3b82f6;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checkbox-item label {
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+            cursor: pointer;
+            margin: 0;
+            padding: 0;
+        }
+
+        .btn-analyze {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 18px 56px;
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-analyze:active {
+            transform: translateY(0px);
+        }
+
+        .btn-analyze .sparkle {
+            font-size: 24px;
+        }
+
+        .btn-wrapper {
+            text-align: center;
+            margin-top: 28px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInOverlay 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 860px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 40px 45px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px) scale(0.96); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-close {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            background: #e2e8f0;
+            transform: rotate(90deg);
+        }
+
+        /* Result styles inside modal */
+        .result-stage-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .result-stage-card .stage-label {
+            font-weight: 700;
+            font-size: 18px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stage-badge {
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+
+        .stage-I { background: #10b981; color: white; }
+        .stage-II { background: #34d399; color: #064e3b; }
+        .stage-III { background: #fbbf24; color: #78350f; }
+        .stage-IVA { background: #f59e0b; color: white; }
+        .stage-IVB { background: #ef4444; color: white; }
+        .stage-IVC { background: #dc2626; color: white; }
+
+        .result-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 28px;
+            font-size: 15px;
+            color: #64748b;
+            padding: 14px 24px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 16px;
+        }
+
+        .result-details span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .result-details .dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: #94a3b8;
+            border-radius: 50%;
+            margin: 0 6px;
+        }
+
+        .rec-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 28px;
+            border: 1px solid #e2e8f0;
+            margin-top: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .rec-card .rec-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: #0f172a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rec-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .rec-item:last-child {
+            border-bottom: none;
+        }
+
+        .rec-item .rec-label {
+            font-weight: 600;
+            color: #475569;
+            font-size: 16px;
+        }
+
+        .rec-item .rec-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .badge-high {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge-low {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .badge-muted {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .notes-container {
+            margin-top: 16px;
+            padding: 18px 22px;
+            background: #f0f9ff;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .notes-container .notes-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: #0f172a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notes-container .note-item {
+            font-size: 15px;
+            color: #1e293b;
+            padding: 5px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .notes-container .note-item .note-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .disclaimer {
+            margin-top: 16px;
+            padding: 16px 22px;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .disclaimer .icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .footer {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 14px;
+            color: #94a3b8;
+            padding: 20px 0 8px 0;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* Scrollbar for modal */
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        @media (max-width: 992px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .checkbox-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+            .modal-content {
+                padding: 28px 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 12px;
+            }
+            .header {
+                padding: 24px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-badge {
+                align-self: flex-start;
+            }
+            .main-card {
+                padding: 24px 18px;
+            }
+            .btn-analyze {
+                width: 100%;
+                justify-content: center;
+                padding: 16px 24px;
+                font-size: 18px;
+            }
+            .result-stage-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .rec-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            .result-details {
+                padding: 12px 16px;
+                gap: 8px 16px;
+                font-size: 14px;
+            }
+            .modal-content {
+                padding: 20px 16px;
+                max-height: 95vh;
+            }
+            .header-title h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-icon">🏥</div>
+            <div class="header-title">
+                <h1>ThyroidCare</h1>
+                <div class="subtitle">Hỗ trợ quyết định lâm sàng · Ung thư giáp</div>
+            </div>
+        </div>
+        <div class="header-badge">
+            <span></span> NCCN Guidelines v1.2025
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-card">
+        <!-- Input Section -->
+        <div class="section-title">
+            <span class="icon">📋</span>
+            Thông tin bệnh nhân & khối u
+            <span class="line"></span>
+        </div>
+
+        <div class="form-grid">
+            <!-- Patient Info -->
+            <div class="form-group">
+                <label>Tuổi <span class="hint">(năm)</span> <span class="required">*</span></label>
+                <input type="number" class="form-control" id="age" value="55" min="1" max="120">
+            </div>
+
+            <div class="form-group">
+                <label>Giới tính <span class="required">*</span></label>
+                <select class="form-control" id="gender">
+                    <option value="Female">👩 Nữ</option>
+                    <option value="Male" selected>👨 Nam</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Phơi nhiễm bức xạ vùng đầu/cổ</label>
+                <select class="form-control" id="radiation">
+                    <option value="false">❌ Không</option>
+                    <option value="true">✅ Có</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Tiền sử gia đình ung thư giáp</label>
+                <select class="form-control" id="family_history">
+                    <option value="false">❌ Không</option>
+                    <option value="true">✅ Có (≥2 người thân F1)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Hội chứng di truyền nguy cơ cao</label>
+                <select class="form-control" id="syndrome">
+                    <option value="false">❌ Không</option>
+                    <option value="true">✅ Có (MEN2, Cowden, FAP...)</option>
+                </select>
+            </div>
+
+            <!-- Tumor Info -->
+            <div class="form-group">
+                <label>Loại mô học <span class="required">*</span></label>
+                <select class="form-control" id="histology">
+                    <option value="PAPILLARY">Papillary (nhú)</option>
+                    <option value="FOLLICULAR">Follicular (nang)</option>
+                    <option value="ONCOCYTIC">Oncocytic (Hürthle)</option>
+                    <option value="MEDULLARY">Medullary (tủy)</option>
+                    <option value="ANAPLASTIC">Anaplastic (không biệt hóa)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Kích thước khối u lớn nhất <span class="hint">(cm)</span> <span class="required">*</span></label>
+                <input type="number" class="form-control" id="size" value="2.5" step="0.1" min="0.1" max="20">
+            </div>
+
+            <div class="form-group">
+                <label>Phân loại N (hạch vùng)</label>
+                <select class="form-control" id="n_category">
+                    <option value="N0">N0 — Không di căn hạch</option>
+                    <option value="NX">NX — Không đánh giá</option>
+                    <option value="N1a">N1a — Hạch trung thất trên (Level VI/VII)</option>
+                    <option value="N1b">N1b — Hạch cổ bên (Level I-V)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Phân loại M (di căn xa)</label>
+                <select class="form-control" id="m_category">
+                    <option value="M0">M0 — Không di căn xa</option>
+                    <option value="M1">M1 — Có di căn xa</option>
+                </select>
+            </div>
+
+            <!-- Risk Factors -->
+            <div class="form-group full-width">
+                <label>⚡ Yếu tố nguy cơ & đặc điểm bệnh lý</label>
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="gross_ete">
+                        <label for="gross_ete">Xâm lấn thô ngoài TG</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="minimal_ete">
+                        <label for="minimal_ete">Xâm lấn vi thể ngoài TG</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="aggressive_subtype">
+                        <label for="aggressive_subtype">Thể mô học nguy cơ cao</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="lymphatic_invasion">
+                        <label for="lymphatic_invasion">Xâm lấn mạch bạch huyết</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vascular_invasion">
+                        <label for="vascular_invasion">Xâm lấn mạch máu</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="multifocal">
+                        <label for="multifocal">Đa ổ</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="positive_margin">
+                        <label for="positive_margin">Diện cắt dương tính (R1/R2)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="rai_refractory">
+                        <label for="rai_refractory">Kháng I-131 (RAI-refractory)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-wrapper">
+            <button class="btn-analyze" id="analyzeBtn">
+                <span class="sparkle">✨</span>
+                Phân tích & đề xuất xử trí
+            </button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>
+            ⚠️ <strong>Lưu ý:</strong> Công cụ hỗ trợ tham khảo dựa trên NCCN Guidelines, không thay thế quyết định lâm sàng của bác sĩ.
+            <br>Dữ liệu được mô phỏng cho mục đích minh họa. Vui lòng tham khảo tài liệu gốc để có hướng dẫn chi tiết.
+        </p>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="resultModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📊 Kết quả phân tích</h2>
+            <button class="modal-close" id="closeModalBtn">✕</button>
+        </div>
+        <div id="modalResultContent">
+            <!-- Kết quả sẽ được hiển thị ở đây -->
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        console.log('🚀 ThyroidCare app đã được tải!');
+
+        const HistologyType = {
+            PAPILLARY: "PAPILLARY",
+            FOLLICULAR: "FOLLICULAR",
+            ONCOCYTIC: "ONCOCYTIC",
+            MEDULLARY: "MEDULLARY",
+            ANAPLASTIC: "ANAPLASTIC"
+        };
+
+        function getAjccStage(age, size, histology, nCategory, mCategory, grossETE) {
+            console.log('🔬 Đang tính giai đoạn với:', { age, size, histology, nCategory, mCategory, grossETE });
+
+            let tCategory = "TX";
+            if (grossETE) {
+                tCategory = "T4a";
+            } else {
+                if (size <= 1) tCategory = "T1a";
+                else if (size <= 2) tCategory = "T1b";
+                else if (size <= 4) tCategory = "T2";
+                else tCategory = "T3a";
+            }
+
+            if (histology === HistologyType.ANAPLASTIC) {
+                tCategory = "T4" + (grossETE ? "b" : "a");
+            }
+
+            const n = nCategory || "N0";
+            const m = mCategory || "M0";
+
+            let stage = "Không xác định";
+
+            try {
+                if (histology === HistologyType.ANAPLASTIC) {
+                    if (m === "M1") stage = "IVC";
+                    else if (n !== "N0" && n !== "NX") stage = "IVB";
+                    else if (tCategory.startsWith("T1") || tCategory.startsWith("T2") || tCategory === "T3a") stage = "IVA";
+                    else if (tCategory === "T3b" || tCategory.startsWith("T4")) stage = "IVB";
+                    else stage = "IVA";
+                } else if (age >= 55) {
+                    if (m === "M1") stage = "IVB";
+                    else if (tCategory === "T4a" && n !== "N0") stage = "IVA";
+                    else if (tCategory === "T4b") stage = "IVA";
+                    else if ((tCategory === "T1a" || tCategory === "T1b" || tCategory === "T2") && (n === "N0" || n === "NX")) stage = "I";
+                    else if ((tCategory === "T1a" || tCategory === "T1b" || tCategory === "T2") && (n === "N1a" || n === "N1b")) stage = "II";
+                    else if ((tCategory === "T3a" || tCategory === "T3b") && (n === "N0" || n === "NX" || n === "N1a" || n === "N1b")) stage = "II";
+                    else if (tCategory === "T4a" && (n === "N0" || n === "NX")) stage = "III";
+                    else stage = "IVA";
+                } else {
+                    if (m === "M1") stage = "II";
+                    else stage = "I";
+                }
+            } catch (e) {
+                console.error('❌ Lỗi tính giai đoạn:', e);
+                stage = "Không xác định";
+            }
+
+            console.log('✅ Giai đoạn AJCC:', stage);
+            return stage;
+        }
+
+        function suggestManagement(patient, tumor) {
+            console.log('📝 Đang đề xuất xử trí với:', { patient, tumor });
+
+            const rec = {
+                primary_surgery: "Chưa xác định",
+                use_radioactive_iodine_rai: "Chưa xác định",
+                consider_thyroid_hormone_suppression: false,
+                consider_targeted_therapy: false,
+                consider_external_beam_radiotherapy_ebrt: false,
+                active_surveillance_possible: false,
+                notes: []
+            };
+
+            try {
+                const hist = tumor.histology;
+                const size = tumor.size_cm || 0;
+                const n = tumor.n_category || "N0";
+                const m = tumor.m_category || "M0";
+                const grossETE = tumor.has_gross_extra_thyroidal_extension || false;
+                const minimalETE = tumor.has_minimal_extra_thyroidal_extension || false;
+                const aggressive = tumor.has_aggressive_histologic_subtype || false;
+                const vascularInvasion = tumor.has_vascular_invasion || false;
+                const lymphaticInvasion = tumor.has_lymphatic_invasion || false;
+                const multifocal = tumor.is_multifocal || false;
+                const positiveMargin = tumor.positive_margin || false;
+                const raiRefractory = tumor.rai_refractory || false;
+
+                const stage = getAjccStage(patient.age, size, hist, n, m, grossETE);
+                const lowRisk = !grossETE && m !== "M1" && size <= 2 && !multifocal && (n === "N0" || n === "NX") && !vascularInvasion && !lymphaticInvasion;
+
+                // 1. Primary surgery
+                if (hist === HistologyType.ANAPLASTIC) {
+                    if (stage === "IVA" || stage === "IVB") {
+                        rec.primary_surgery = "Cân nhắc cắt toàn bộ tuyến giáp + vét hạch (nếu có thể R0/R1) tại trung tâm chuyên khoa";
+                        rec.notes.push("Phẫu thuật chỉ nên thực hiện nếu có thể cắt bỏ toàn bộ u để tránh biến chứng nặng.");
+                    } else {
+                        rec.primary_surgery = "Phẫu thuật ít có hiệu quả chữa bệnh. Cân nhắc cho mục đích kiểm soát đường thở hoặc giảm nhẹ.";
+                    }
+                } else if (hist === HistologyType.MEDULLARY) {
+                    if (patient.age < 18 && patient.has_family_history) {
+                        rec.primary_surgery = "Cắt toàn bộ tuyến giáp dự phòng ở trẻ em (thời điểm tùy mức độ nguy cơ đột biến RET)";
+                    } else {
+                        rec.primary_surgery = "Cắt toàn bộ tuyến giáp + vét hạch trung tâm (Level VI). Cân nhắc vét hạch bên nếu hạch dương tính lâm sàng.";
+                    }
+                } else {
+                    if (hist === HistologyType.PAPILLARY && size <= 1 && !multifocal && !grossETE && !aggressive && m !== "M1") {
+                        rec.primary_surgery = "Cắt thùy giáp có thể đủ. Cân nhắc theo dõi tích cực (active surveillance) cho vi nhú tuyến giáp nguy cơ thấp.";
+                        rec.active_surveillance_possible = true;
+                    } else if (grossETE || m === "M1" || aggressive || size > 4 || n === "N1b" || n === "N1a") {
+                        rec.primary_surgery = "Cắt toàn bộ tuyến giáp được khuyến cáo.";
+                        if (n === "N1b" || n === "N1a") {
+                            rec.notes.push("Vét hạch điều trị (trung tâm và/hoặc bên) được chỉ định cho di căn hạch rõ trên lâm sàng/hình ảnh.");
+                        }
+                    } else {
+                        rec.primary_surgery = "Cắt thùy hoặc cắt toàn bộ tuyến giáp có thể được cân nhắc, tùy thuộc vào yếu tố nguy cơ và mong muốn của bệnh nhân.";
+                    }
+                }
+
+                // 2. RAI
+                if (hist === HistologyType.ANAPLASTIC || hist === HistologyType.MEDULLARY) {
+                    rec.use_radioactive_iodine_rai = "Không hiệu quả (u không bắt I-131)";
+                } else {
+                    const highRisk = grossETE || m === "M1" || n === "N1b" || size > 4 || vascularInvasion || aggressive;
+                    if (lowRisk) {
+                        rec.use_radioactive_iodine_rai = "Không khuyến cáo thường quy (nguy cơ tái phát thấp)";
+                    } else if (highRisk) {
+                        rec.use_radioactive_iodine_rai = "Khuyến cáo sử dụng (nguy cơ cao)";
+                    } else {
+                        rec.use_radioactive_iodine_rai = "Cân nhắc sử dụng (nguy cơ trung bình - xem xét các yếu tố khác)";
+                    }
+                }
+
+                // 3. TSH suppression
+                if (hist !== HistologyType.MEDULLARY && hist !== HistologyType.ANAPLASTIC) {
+                    if (grossETE || m === "M1" || aggressive || size > 4) {
+                        rec.consider_thyroid_hormone_suppression = true;
+                        rec.notes.push("Ức chế TSH (<0.1 mU/L) cho bệnh nhân nguy cơ cao hoặc bệnh còn tồn dư.");
+                    } else if (size > 1 && !lowRisk) {
+                        rec.consider_thyroid_hormone_suppression = true;
+                        rec.notes.push("Cân nhắc ức chế TSH ở mức thấp-bình thường (0.1-0.5 mU/L) cho bệnh nhân nguy cơ trung bình.");
+                    }
+                }
+
+                // 4. Targeted therapy
+                if (hist === HistologyType.ANAPLASTIC) {
+                    rec.consider_targeted_therapy = true;
+                    rec.notes.push("Xét nghiệm phân tử (BRAF, NTRK, RET, ALK, TMB) rất quan trọng. Có thể dùng điều trị đích trong tân hỗ trợ, bổ trợ hoặc di căn.");
+                } else if (hist === HistologyType.MEDULLARY && patient.has_family_history) {
+                    rec.consider_targeted_therapy = true;
+                    rec.notes.push("Selpercatinib hoặc pralsetinib là lựa chọn ưu tiên cho ung thư tủy có đột biến RET.");
+                } else if (hist !== HistologyType.MEDULLARY && m === "M1" && raiRefractory) {
+                    rec.consider_targeted_therapy = true;
+                    rec.notes.push("Lenvatinib hoặc sorafenib (category 1) cho ung thư biệt hóa kháng I-131, tiến triển.");
+                }
+
+                // 5. EBRT
+                if (hist === HistologyType.ANAPLASTIC) {
+                    rec.consider_external_beam_radiotherapy_ebrt = true;
+                    rec.notes.push("Xạ trị ngoài (EBRT) với/không hóa xạ nhạy cảm là thành phần quan trọng trong quản lý ung thư không biệt hóa.");
+                } else if (grossETE || positiveMargin || (m === "M1")) {
+                    rec.consider_external_beam_radiotherapy_ebrt = true;
+                    rec.notes.push("EBRT có thể được cân nhắc cho bệnh xâm lấn thô, bệnh còn sót sau phẫu thuật, hoặc giảm nhẹ di căn có triệu chứng.");
+                }
+
+            } catch (e) {
+                console.error('❌ Lỗi khi đề xuất xử trí:', e);
+                rec.notes.push('⚠️ Có lỗi xảy ra khi phân tích. Vui lòng kiểm tra lại thông tin đầu vào.');
+            }
+
+            console.log('✅ Đã đề xuất xử trí:', rec);
+            return rec;
+        }
+
+        function generateResultHTML(patient, tumor) {
+            const stage = getAjccStage(patient.age, tumor.size_cm, tumor.histology, tumor.n_category, tumor.m_category, tumor.has_gross_extra_thyroidal_extension);
+            const recommendations = suggestManagement(patient, tumor);
+
+            const histLabel = {
+                'PAPILLARY': 'Papillary (nhú)',
+                'FOLLICULAR': 'Follicular (nang)',
+                'ONCOCYTIC': 'Oncocytic (Hürthle)',
+                'MEDULLARY': 'Medullary (tủy)',
+                'ANAPLASTIC': 'Anaplastic (không biệt hóa)'
+            }[tumor.histology] || tumor.histology;
+
+            let html = '';
+
+            // Stage card
+            const stageClass = stage === 'I' ? 'stage-I' : 
+                             stage === 'II' ? 'stage-II' : 
+                             stage === 'III' ? 'stage-III' : 
+                             stage === 'IVA' ? 'stage-IVA' : 
+                             stage === 'IVB' ? 'stage-IVB' : 
+                             stage === 'IVC' ? 'stage-IVC' : '';
+            html += `<div class="result-stage-card">`;
+            html += `<div class="stage-label">🔬 Giai đoạn AJCC</div>`;
+            html += `<div><span class="stage-badge ${stageClass}">${stage || 'Không xác định'}</span></div>`;
+            html += `</div>`;
+
+            // Details
+            html += `<div class="result-details">`;
+            html += `<span>🧑‍⚕️ Tuổi: ${patient.age}</span>`;
+            html += `<span class="dot"></span>`;
+            html += `<span>🦠 Loại: ${histLabel}</span>`;
+            html += `<span class="dot"></span>`;
+            html += `<span>📏 Kích thước: ${tumor.size_cm} cm</span>`;
+            html += `<span class="dot"></span>`;
+            html += `<span>🔗 N: ${tumor.n_category}</span>`;
+            html += `<span class="dot"></span>`;
+            html += `<span>🌍 M: ${tumor.m_category}</span>`;
+            html += `</div>`;
+
+            // Recommendations
+            html += `<div class="rec-card">`;
+            html += `<div class="rec-title">📌 Đề xuất xử trí</div>`;
+
+            const items = [
+                { label: 'Phẫu thuật chính', value: recommendations.primary_surgery },
+                { label: 'Sử dụng I-131 (RAI)', value: recommendations.use_radioactive_iodine_rai },
+                { label: 'Ức chế TSH', value: recommendations.consider_thyroid_hormone_suppression ? '✅ Có' : '❌ Không' },
+                { label: 'Điều trị đích', value: recommendations.consider_targeted_therapy ? '✅ Có' : '❌ Không' },
+                { label: 'Xạ trị ngoài (EBRT)', value: recommendations.consider_external_beam_radiotherapy_ebrt ? '✅ Có' : '❌ Không' },
+                { label: 'Theo dõi tích cực', value: recommendations.active_surveillance_possible ? '✅ Có thể cân nhắc' : '❌ Không' }
+            ];
+
+            items.forEach(item => {
+                let displayValue = item.value;
+                let badgeClass = 'badge-muted';
+
+                if (typeof displayValue === 'string') {
+                    if (displayValue.includes('Khuyến cáo') || displayValue.includes('được khuyến cáo')) {
+                        badgeClass = 'badge-high';
+                    } else if (displayValue.includes('Cân nhắc')) {
+                        badgeClass = 'badge-medium';
+                    } else if (displayValue.includes('Không khuyến cáo')) {
+                        badgeClass = 'badge-low';
+                    } else if (displayValue.includes('Không hiệu quả')) {
+                        badgeClass = 'badge-warning';
+                    } else if (displayValue.includes('✅ Có')) {
+                        badgeClass = 'badge-success';
+                    } else if (displayValue.includes('❌ Không')) {
+                        badgeClass = 'badge-muted';
+                    }
+                }
+
+                html += `<div class="rec-item">`;
+                html += `<span class="rec-label">${item.label}</span>`;
+                html += `<span class="rec-value"><span class="badge ${badgeClass}">${displayValue}</span></span>`;
+                html += `</div>`;
+            });
+
+            html += `</div>`;
+
+            // Notes
+            if (recommendations.notes && recommendations.notes.length > 0) {
+                html += `<div class="notes-container">`;
+                html += `<div class="notes-title">📝 Ghi chú chi tiết</div>`;
+                recommendations.notes.forEach(note => {
+                    html += `<div class="note-item">`;
+                    html += `<span class="note-icon">💡</span>`;
+                    html += `<span>${note}</span>`;
+                    html += `</div>`;
+                });
+                html += `</div>`;
+            }
+
+            // Disclaimer
+            html += `<div class="disclaimer">`;
+            html += `<span class="icon">⚠️</span>`;
+            html += `<span><strong>Lưu ý quan trọng:</strong> Các khuyến nghị dựa trên NCCN Guidelines v1.2025. Quyết định lâm sàng cần cá nhân hóa dựa trên toàn bộ bối cảnh lâm sàng, giá trị và mong muốn của bệnh nhân.</span>`;
+            html += `</div>`;
+
+            return html;
+        }
+
+        function analyze() {
+            console.log('🔍 Bắt đầu phân tích...');
+
+            try {
+                // Lấy dữ liệu
+                const age = parseInt(document.getElementById('age').value) || 0;
+                const gender = document.getElementById('gender').value;
+                const hasRadiation = document.getElementById('radiation').value === 'true';
+                const hasFamilyHistory = document.getElementById('family_history').value === 'true';
+                const hasSyndrome = document.getElementById('syndrome').value === 'true';
+
+                const histValue = document.getElementById('histology').value;
+                const hist = Object.values(HistologyType).find(v => v === histValue) || HistologyType.PAPILLARY;
+                const size = parseFloat(document.getElementById('size').value) || 0;
+                const nCategory = document.getElementById('n_category').value;
+                const mCategory = document.getElementById('m_category').value;
+
+                const grossETE = document.getElementById('gross_ete').checked;
+                const minimalETE = document.getElementById('minimal_ete').checked;
+                const aggressiveSubtype = document.getElementById('aggressive_subtype').checked;
+                const lymphaticInvasion = document.getElementById('lymphatic_invasion').checked;
+                const vascularInvasion = document.getElementById('vascular_invasion').checked;
+                const multifocal = document.getElementById('multifocal').checked;
+                const positiveMargin = document.getElementById('positive_margin').checked;
+                const raiRefractory = document.getElementById('rai_refractory').checked;
+
+                const patient = {
+                    age: age,
+                    gender: gender,
+                    has_radiation_exposure_history: hasRadiation,
+                    has_family_history_of_thyroid_cancer: hasFamilyHistory,
+                    has_other_high_risk_syndrome: hasSyndrome
+                };
+
+                const tumor = {
+                    size_cm: size,
+                    histology: hist,
+                    n_category: nCategory,
+                    m_category: mCategory,
+                    has_gross_extra_thyroidal_extension: grossETE,
+                    has_minimal_extra_thyroidal_extension: minimalETE,
+                    has_aggressive_histologic_subtype: aggressiveSubtype,
+                    has_lymphatic_invasion: lymphaticInvasion,
+                    has_vascular_invasion: vascularInvasion,
+                    is_multifocal: multifocal,
+                    positive_margin: positiveMargin,
+                    rai_refractory: raiRefractory
+                };
+
+                console.log('📊 Dữ liệu đầu vào:', { patient, tumor });
+
+                // Tạo HTML kết quả
+                const html = generateResultHTML(patient, tumor);
+                document.getElementById('modalResultContent').innerHTML = html;
+
+                // Hiển thị modal
+                const modal = document.getElementById('resultModal');
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                console.log('✅ Đã hiển thị kết quả thành công!');
+
+            } catch (e) {
+                console.error('❌ Lỗi nghiêm trọng:', e);
+                document.getElementById('modalResultContent').innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: #ef4444;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+                        <p style="font-size: 18px; font-weight: 600;">Đã xảy ra lỗi</p>
+                        <p style="font-size: 15px; margin-top: 8px; color: #64748b;">${e.message}</p>
+                        <p style="font-size: 14px; margin-top: 12px; color: #94a3b8;">Vui lòng kiểm tra lại thông tin đầu vào và thử lại.</p>
+                    </div>
+                `;
+                const modal = document.getElementById('resultModal');
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Modal controls
+        function closeModal() {
+            const modal = document.getElementById('resultModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal when clicking overlay
+        document.getElementById('resultModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal with close button
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Analyze button
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        if (analyzeBtn) {
+            analyzeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                analyze();
+            });
+            console.log('✅ Đã gán sự kiện cho nút phân tích');
+        } else {
+            console.error('❌ Không tìm thấy nút phân tích!');
+        }
+
+        // Auto analyze on load (optional - comment out if not needed)
+        window.addEventListener('load', function() {
+            console.log('📄 Trang đã load');
+            // Không tự động phân tích nữa, chờ người dùng nhấn nút
+        });
+
+    })();
+</script>
+</body>
+</html>
