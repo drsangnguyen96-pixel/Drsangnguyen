@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn Kháng Tiểu Cầu theo ACC 2026</title>
+    <style>
+        :root {
+            --primary: #0b5394;
+            --secondary: #3d85c6;
+            --accent: #e69138;
+            --success: #27ae60;
+            --danger: #c0392b;
+            --bg-color: #f4f7f6;
+            --box-bg: #ffffff;
+            --border: #d0e0e3;
+            --text: #333;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: var(--box-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #555;
+            font-style: italic;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+        
+        /* CSS cho Tab Header */
+        .tab-header {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 25px;
+        }
+        .tab-btn {
+            flex: 1;
+            text-align: center;
+            padding: 15px 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #888;
+            background: transparent;
+            border: none;
+            border-bottom: 4px solid transparent;
+            transition: all 0.3s;
+            font-size: 1em;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom: 4px solid var(--primary);
+            background-color: #f0f7fb;
+        }
+        .tab-btn.completed {
+            color: var(--success);
+        }
+
+        /* CSS cho Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form elements */
+        .form-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        select, input[type="text"] {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1em;
+            background-color: #fafbfc;
+        }
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            font-weight: normal;
+            color: #444;
+            cursor: pointer;
+            background: #fdfdfd;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: background 0.2s;
+        }
+        .checkbox-label:hover {
+            background: #f0f7fb;
+        }
+        .checkbox-label input {
+            margin-top: 3px;
+            margin-right: 10px;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        /* Status & Results */
+        .status-bar {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1.1em;
+            border: 1px solid var(--secondary);
+            margin: 20px 0;
+        }
+        .result-box {
+            padding: 25px;
+            border-radius: 8px;
+            background-color: #f9fbfb;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .result-item {
+            margin-bottom: 15px;
+            font-size: 1.05em;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-title {
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        .warning-box {
+            background-color: #fdf2e9;
+            border-left: 4px solid var(--accent);
+            padding: 10px 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .info-box {
+            background-color: #eaf4fa;
+            border-left: 4px solid var(--primary);
+            padding: 10px 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .btn {
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-prev {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        .btn-prev:hover {
+            background-color: #ccc;
+        }
+        .btn-next {
+            background-color: var(--primary);
+            color: #fff;
+        }
+        .btn-next:hover {
+            background-color: #083c6b;
+        }
+        .btn-reset {
+            background-color: #7f8c8d;
+            color: #fff;
+        }
+        .btn-reset:hover {
+            background-color: #5a6b6d;
+        }
+        .btn-print {
+            background-color: #27ae60;
+            color: #fff;
+        }
+        .btn-print:hover {
+            background-color: #1e8449;
+        }
+
+        /* ============================================= */
+        /* PHẦN IN ẤN - Định dạng A4 dọc, 1 trang */
+        /* ============================================= */
+        @media print {
+            /* Ẩn tất cả giao diện tương tác */
+            body {
+                background-color: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                font-size: 12pt !important;
+            }
+            .container {
+                max-width: 100% !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+                background: white !important;
+            }
+            .tab-header, .nav-buttons, .btn, .subtitle, .status-bar {
+                display: none !important;
+            }
+            .tab-content {
+                display: block !important;
+                animation: none !important;
+            }
+            #tab1, #tab2 {
+                display: none !important;
+            }
+            #tab3 {
+                display: block !important;
+                padding: 0 !important;
+            }
+            .result-box {
+                border-left: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                background: white !important;
+                border-radius: 0 !important;
+            }
+            .result-item {
+                border-bottom: 1px dashed #aaa !important;
+                padding-bottom: 8px !important;
+                margin-bottom: 8px !important;
+                font-size: 11pt !important;
+            }
+            .warning-box, .info-box {
+                border-left: 3px solid #666 !important;
+                background-color: #f9f9f9 !important;
+                padding: 6px 10px !important;
+                margin-top: 8px !important;
+                font-size: 10pt !important;
+            }
+            .checkbox-label, .criteria-grid, .form-section {
+                display: none !important;
+            }
+
+            /* Header in */
+            .print-header {
+                display: block !important;
+                text-align: center;
+                border-bottom: 2px solid #333;
+                padding-bottom: 8px;
+                margin-bottom: 15px;
+            }
+            .print-header .hospital-name {
+                font-size: 16pt;
+                font-weight: bold;
+                color: #1a3c6e;
+                letter-spacing: 2px;
+            }
+            .print-header .dept-name {
+                font-size: 13pt;
+                font-weight: 600;
+                color: #333;
+                margin-top: 2px;
+            }
+            .print-header .title-main {
+                font-size: 15pt;
+                font-weight: bold;
+                color: #c0392b;
+                margin-top: 5px;
+                text-transform: uppercase;
+            }
+            .print-header .sub-title {
+                font-size: 11pt;
+                color: #555;
+                margin-top: 3px;
+            }
+            .print-header .ref-doc {
+                font-size: 9pt;
+                color: #666;
+                font-style: italic;
+                margin-top: 3px;
+            }
+
+            /* Footer in */
+            .print-footer {
+                display: block !important;
+                margin-top: 15px;
+                padding-top: 10px;
+                border-top: 1px solid #333;
+            }
+            .signature-area {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 15px;
+                padding: 0 20px;
+            }
+            .signature-box {
+                text-align: center;
+                width: 45%;
+            }
+            .signature-box .line {
+                border-top: 1px solid #333;
+                width: 80%;
+                margin: 30px auto 5px auto;
+            }
+            .signature-box .label {
+                font-size: 10pt;
+                font-weight: 600;
+            }
+            .signature-box .sub-label {
+                font-size: 9pt;
+                color: #555;
+            }
+            .print-footer .footer-note {
+                text-align: center;
+                font-size: 8pt;
+                color: #888;
+                margin-top: 10px;
+                padding-top: 5px;
+                border-top: 1px solid #ddd;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+            
+            /* Đảm bảo nội dung vừa 1 trang A4 */
+            #tab3 .result-box {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            .print-wrapper {
+                padding: 20px 25px !important;
+                max-width: 100% !important;
+            }
+        }
+
+        .print-header {
+            display: none;
+        }
+        .print-footer {
+            display: none;
+        }
+        .print-wrapper {
+            display: contents;
+        }
+
+        @media (max-width: 768px) {
+            .form-section {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+            .tab-header {
+                flex-wrap: wrap;
+            }
+            .tab-btn {
+                flex: 1 0 30%;
+                font-size: 0.9em;
+                padding: 10px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Công Cụ Hỗ Trợ Định Hướng Kháng Tiểu Cầu</h2>
+        <div class="subtitle">Dựa trên tài liệu "Antiplatelet Therapy in the Management of ASCVD: 2026 ACC Scientific Statement"</div>
+        
+        <div class="tab-header">
+            <button class="tab-btn active" id="btnTab1" onclick="goToTab(1)">Bước 1: Bối cảnh lâm sàng</button>
+            <button class="tab-btn" id="btnTab2" onclick="goToTab(2)">Bước 2: Đánh giá nguy cơ chảy máu (HBR)</button>
+            <button class="tab-btn" id="btnTab3" onclick="goToTab(3)">Bước 3: Phác đồ đề xuất</button>
+        </div>
+
+        <!-- Tab 1: Thông tin lâm sàng -->
+        <div id="tab1" class="tab-content active">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="patientName">Họ và tên bệnh nhân</label>
+                    <input type="text" id="patientName" placeholder="Nguyễn Văn A">
+                </div>
+                <div class="form-group">
+                    <label for="patientAge">Tuổi</label>
+                    <input type="text" id="patientAge" placeholder="65 tuổi">
+                </div>
+                <div class="form-group">
+                    <label for="patientId">Mã số bệnh nhân / Số hồ sơ</label>
+                    <input type="text" id="patientId" placeholder="BN-2026-XXXX">
+                </div>
+                <div class="form-group">
+                    <label for="examDate">Ngày khám / Ngày đánh giá</label>
+                    <input type="text" id="examDate" placeholder="Ngày ... tháng ... năm ...">
+                </div>
+                <div class="form-group">
+                    <label for="clinicalScenario">Bối cảnh lâm sàng chính <span style="color:red">*</span></label>
+                    <select id="clinicalScenario">
+                        <option value="">-- Vui lòng chọn (Bắt buộc) --</option>
+                        <option value="primary">Dự phòng tiên phát (Chưa có biến cố tim mạch)</option>
+                        <option value="acs_pci">Hội chứng vành cấp (ACS) + Đã can thiệp PCI</option>
+                        <option value="ccd_pci">Bệnh mạch vành mạn (CCD) + Đã can thiệp PCI</option>
+                        <option value="pad_acute">Bệnh động mạch ngoại biên (PAD) - Giai đoạn cấp / Sau can thiệp</option>
+                        <option value="pad_chronic">Bệnh động mạch ngoại biên (PAD) - Quản lý mạn tính</option>
+                        <option value="stroke_tia">Đột quỵ thiếu máu / TIA nguy cơ cao</option>
+                    </select>
+                    <div style="font-size:0.85em; color:#666; margin-top:5px;">* Chọn PAD để xem khuyến cáo chi tiết cho bệnh lý động mạch ngoại biên.</div>
+                </div>
+                <div class="form-group">
+                    <label for="ageGroup">Phân loại tuổi</label>
+                    <select id="ageGroup">
+                        <option value="under70">Dưới 70 tuổi</option>
+                        <option value="70to75">70 - 75 tuổi</option>
+                        <option value="over75">Trên 75 tuổi (Tự động tính 1 tiêu chí phụ HBR)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="surgeryPlan">Kế hoạch phẫu thuật ngoài tim</label>
+                    <select id="surgeryPlan">
+                        <option value="none">Không có kế hoạch</option>
+                        <option value="elective">Phẫu thuật chương trình (Elective)</option>
+                        <option value="urgent">Phẫu thuật khẩn cấp (Urgent)</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label>Yếu tố cần lưu ý khác</label>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <label class="checkbox-label" style="flex:1; min-width:200px;">
+                            <input type="checkbox" id="needsOAC">
+                            Cần dùng thuốc chống đông đường uống (OAC) dài hạn
+                        </label>
+                        <label class="checkbox-label" style="flex:1; min-width:200px;">
+                            <input type="checkbox" id="giRisk">
+                            Nguy cơ xuất huyết tiêu hóa cao (khuyến cáo dùng PPI)
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="clinicalNote">Ghi chú lâm sàng bổ sung</label>
+                    <input type="text" id="clinicalNote" placeholder="Tiền sử bệnh, thuốc đang dùng, các yếu tố khác...">
+                </div>
+            </div>
+            <div class="nav-buttons" style="justify-content: flex-end;">
+                <button class="btn btn-next" onclick="validateAndNext(2)">Tiếp tục: Đánh giá ARC-HBR ➔</button>
+            </div>
+        </div>
+
+        <!-- Tab 2: Đánh giá HBR -->
+        <div id="tab2" class="tab-content">
+            <div class="status-bar" id="hbrStatusBar">
+                Kết quả đánh giá nguy cơ chảy máu: <span id="hbrStatusText" style="font-weight: bold; color: var(--success);">NGUY CƠ TIÊU CHUẨN (Non-HBR)</span>
+                <input type="hidden" id="hbrValue" value="low">
+            </div>
+
+            <h4 style="color: var(--primary); margin-bottom: 10px;">Tiêu chí chính (Major) - Có ≥ 1 tiêu chí ➔ Nguy cơ HBR Cao</h4>
+            <div class="criteria-grid">
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Bệnh thận mạn tính nặng (eGFR &lt; 30 mL/min)</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Hemoglobin &lt; 11 g/dL</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Chảy máu tự phát cần nhập viện/truyền máu (trong 6 tháng)</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Giảm tiểu cầu TB/nặng (&lt; 100 x 10⁹/L)</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Cơ địa chảy máu mạn tính</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Xơ gan kèm tăng áp lực tĩnh mạch cửa</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Bệnh ác tính đang hoạt động (trong 12 tháng)</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Tiền sử xuất huyết não tự phát</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Xuất huyết não do chấn thương (trong 12 tháng)</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Đột quỵ thiếu máu cục bộ mức độ TB/nặng (trong 6 tháng)</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Phẫu thuật lớn/chấn thương nặng (trong 30 ngày)</label>
+                <label class="checkbox-label"><input type="checkbox" class="major" onchange="calculateHBR()"> Phẫu thuật lớn không thể trì hoãn khi đang dùng DAPT</label>
+            </div>
+
+            <h4 style="color: var(--primary); margin-top: 20px; margin-bottom: 10px;">Tiêu chí phụ (Minor) - Có ≥ 2 tiêu chí ➔ Nguy cơ HBR Cao</h4>
+            <div class="criteria-grid">
+                <label class="checkbox-label"><input type="checkbox" class="minor" onchange="calculateHBR()"> Bệnh thận mạn tính mức độ TB (eGFR 30-59 mL/min)</label>
+                <label class="checkbox-label"><input type="checkbox" class="minor" onchange="calculateHBR()"> Hemoglobin 11-12.9 g/dL (nam) hoặc 11-11.9 g/dL (nữ)</label>
+                <label class="checkbox-label"><input type="checkbox" class="minor" onchange="calculateHBR()"> Chảy máu tự phát cần nhập viện/truyền máu (trong 12 tháng)</label>
+                <label class="checkbox-label"><input type="checkbox" class="minor" onchange="calculateHBR()"> Sử dụng NSAIDs hoặc steroid đường uống dài hạn</label>
+                <label class="checkbox-label"><input type="checkbox" class="minor" onchange="calculateHBR()"> Đột quỵ thiếu máu cục bộ trước đây (không đạt tiêu chuẩn Major)</label>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-prev" onclick="goToTab(1)">⬅ Quay lại Thông tin</button>
+                <button class="btn btn-next" onclick="validateAndNext(3)">Xem Phác đồ đề xuất ➔</button>
+            </div>
+        </div>
+
+        <!-- Tab 3: Kết quả -->
+        <div id="tab3" class="tab-content">
+            <div class="print-wrapper">
+                <!-- PHẦN HEADER KHI IN -->
+                <div class="print-header">
+                    <div class="hospital-name">BỆNH VIỆN ........................................</div>
+                    <div class="dept-name">KHOA TIM MẠCH / KHOA NỘI TIM MẠCH</div>
+                    <div class="title-main">PHIẾU ĐÁNH GIÁ CHỈ ĐỊNH KHÁNG TIỂU CẦU</div>
+                    <div class="sub-title">(Dựa trên hướng dẫn của ACC 2026)</div>
+                    <div class="ref-doc">Tài liệu tham khảo: ACC Scientific Statement 2026 - Antiplatelet Therapy in the Management of ASCVD</div>
+                </div>
+
+                <!-- PHẦN NỘI DUNG KẾT QUẢ -->
+                <div class="result-box" id="resultBox">
+                    <div class="result-item" id="patientInfo"></div>
+                    <div class="result-item" id="regimenRec"></div>
+                    <div class="result-item" id="durationRec"></div>
+                    <div class="result-item" id="surgeryRec"></div>
+                    <div id="warningContainer"></div>
+                    <div id="infoContainer"></div>
+                </div>
+
+                <!-- PHẦN CHỮ KÝ KHI IN -->
+                <div class="print-footer">
+                    <div class="signature-area">
+                        <div class="signature-box">
+                            <div class="label">BÁC SĨ CHỈ ĐỊNH</div>
+                            <div class="line"></div>
+                            <div class="sub-label">(Ký, ghi rõ họ tên)</div>
+                        </div>
+                        <div class="signature-box">
+                            <div class="label">BÁC SĨ TIẾP NHẬN / ĐIỀU TRỊ</div>
+                            <div class="line"></div>
+                            <div class="sub-label">(Ký, ghi rõ họ tên)</div>
+                        </div>
+                    </div>
+                    <div class="signature-area" style="margin-top: 5px; padding: 0 20px;">
+                        <div class="signature-box">
+                            <div class="sub-label" style="font-size:8pt;">Ngày .... tháng .... năm ....</div>
+                        </div>
+                        <div class="signature-box">
+                            <div class="sub-label" style="font-size:8pt;">Ngày .... tháng .... năm ....</div>
+                        </div>
+                    </div>
+                    <div class="footer-note">
+                        Phiếu này được in từ hệ thống hỗ trợ ra quyết định lâm sàng dựa trên bằng chứng khoa học.
+                        Bác sĩ cần đối chiếu với tình trạng thực tế của bệnh nhân trước khi ra quyết định điều trị cuối cùng.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons no-print">
+                <button class="btn btn-prev" onclick="goToTab(2)">⬅ Điều chỉnh đánh giá HBR</button>
+                <div>
+                    <button class="btn btn-print" onclick="printResult()">🖨️ In kết quả (A4)</button>
+                    <button class="btn btn-reset" onclick="resetForm()">Bắt đầu ca mới ↻</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Luồng chuyển Tab
+        function goToTab(tabIndex) {
+            if (tabIndex > 1) {
+                const scenario = document.getElementById('clinicalScenario').value;
+                if (!scenario) {
+                    alert("Vui lòng chọn 'Bối cảnh lâm sàng chính' ở Bước 1 trước!");
+                    return;
+                }
+            }
+
+            document.querySelectorAll('.tab-content').forEach((el, index) => {
+                el.classList.remove('active');
+                if (index + 1 === tabIndex) el.classList.add('active');
+            });
+
+            document.querySelectorAll('.tab-btn').forEach((btn, index) => {
+                btn.classList.remove('active');
+                if (index + 1 === tabIndex) btn.classList.add('active');
+                if (index + 1 < tabIndex) btn.classList.add('completed');
+            });
+
+            if (tabIndex === 2) {
+                calculateHBR();
+            } else if (tabIndex === 3) {
+                calculateHBR();
+                generateStrategy();
+            }
+        }
+
+        function validateAndNext(targetTab) {
+            if (targetTab === 2) {
+                const scenario = document.getElementById('clinicalScenario').value;
+                if (!scenario) {
+                    alert("Vui lòng chọn 'Bối cảnh lâm sàng chính' để tiếp tục!");
+                    document.getElementById('clinicalScenario').focus();
+                    return;
+                }
+            }
+            goToTab(targetTab);
+        }
+
+        function calculateHBR() {
+            let majors = document.querySelectorAll('.major:checked').length;
+            let minors = document.querySelectorAll('.minor:checked').length;
+            
+            const age = document.getElementById('ageGroup').value;
+            if (age === 'over75') minors += 1;
+            
+            const oac = document.getElementById('needsOAC').checked;
+            if (oac) majors += 1;
+
+            const hbrStatusText = document.getElementById('hbrStatusText');
+            const hbrValue = document.getElementById('hbrValue');
+
+            if (majors >= 1 || minors >= 2) {
+                hbrStatusText.innerHTML = "<span style='color: var(--danger);'>NGUY CƠ CHẢY MÁU CAO (HBR - High)</span>";
+                hbrValue.value = 'high';
+            } else {
+                hbrStatusText.innerHTML = "<span style='color: var(--success);'>NGUY CƠ TIÊU CHUẨN (Non-HBR)</span>";
+                hbrValue.value = 'low';
+            }
+        }
+
+        function getScenarioLabel(value) {
+            const map = {
+                'primary': 'Dự phòng tiên phát',
+                'acs_pci': 'Hội chứng vành cấp (ACS) + PCI',
+                'ccd_pci': 'Bệnh mạch vành mạn (CCD) + PCI',
+                'pad_acute': 'Bệnh động mạch ngoại biên (PAD) - Cấp/sau can thiệp',
+                'pad_chronic': 'Bệnh động mạch ngoại biên (PAD) - Mạn tính',
+                'stroke_tia': 'Đột quỵ thiếu máu / TIA nguy cơ cao'
+            };
+            return map[value] || value;
+        }
+
+        function generateStrategy() {
+            const scenario = document.getElementById('clinicalScenario').value;
+            const age = document.getElementById('ageGroup').value;
+            const hbr = document.getElementById('hbrValue').value;
+            const surgery = document.getElementById('surgeryPlan').value;
+            const oac = document.getElementById('needsOAC').checked;
+            const gi = document.getElementById('giRisk').checked;
+            const patientName = document.getElementById('patientName').value || '.........................';
+            const patientAge = document.getElementById('patientAge').value || '.....';
+            const patientId = document.getElementById('patientId').value || '......................';
+            const examDate = document.getElementById('examDate').value || '...../...../.....';
+            const clinicalNote = document.getElementById('clinicalNote').value || '';
+
+            const patientInfo = document.getElementById('patientInfo');
+            const regimenRec = document.getElementById('regimenRec');
+            const durationRec = document.getElementById('durationRec');
+            const surgeryRec = document.getElementById('surgeryRec');
+            const warningContainer = document.getElementById('warningContainer');
+            const infoContainer = document.getElementById('infoContainer');
+
+            let hbrLabel = hbr === 'high' ? 'CAO (HBR)' : 'TIÊU CHUẨN (Non-HBR)';
+            let ageLabel = age === 'under70' ? 'Dưới 70 tuổi' : (age === '70to75' ? '70-75 tuổi' : 'Trên 75 tuổi');
+            let surgeryLabel = surgery === 'none' ? 'Không' : (surgery === 'elective' ? 'Phẫu thuật chương trình' : 'Phẫu thuật khẩn cấp');
+            
+            patientInfo.innerHTML = `
+                <span class='result-title'>I. THÔNG TIN BỆNH NHÂN</span><br>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px 20px; margin-top:5px;">
+                    <span><strong>Họ và tên:</strong> ${patientName}</span>
+                    <span><strong>Tuổi:</strong> ${patientAge} (${ageLabel})</span>
+                    <span><strong>Mã số BN:</strong> ${patientId}</span>
+                    <span><strong>Ngày đánh giá:</strong> ${examDate}</span>
+                    <span style="grid-column: span 2;"><strong>Bối cảnh lâm sàng:</strong> ${getScenarioLabel(scenario)}</span>
+                    <span style="grid-column: span 2;"><strong>Nguy cơ chảy máu (ARC-HBR):</strong> ${hbrLabel}</span>
+                    <span><strong>Phẫu thuật:</strong> ${surgeryLabel}</span>
+                    <span><strong>OAC:</strong> ${oac ? 'Có' : 'Không'} | <strong>XHTH:</strong> ${gi ? 'Có (chỉ định PPI)' : 'Không'}</span>
+                    ${clinicalNote ? `<span style="grid-column: span 2;"><strong>Ghi chú:</strong> ${clinicalNote}</span>` : ''}
+                </div>
+            `;
+
+            let regimen = "";
+            let duration = "";
+            let warnings = [];
+            let infoTexts = [];
+            let surgeryText = "";
+
+            if (scenario === 'primary') {
+                if (age === 'under70' && hbr === 'low') {
+                    regimen = "<span class='result-title'>II. PHÁC ĐỒ ĐỀ XUẤT</span><br>Cân nhắc Aspirin liều thấp (75-100 mg/ngày) để dự phòng tiên phát ở bệnh nhân có nguy cơ tim mạch cao.";
+                } else {
+                    regimen = "<span class='result-title'>II. PHÁC ĐỒ ĐỀ XUẤT</span><br><strong>KHÔNG KHUYẾN CÁO</strong> sử dụng Aspirin thường quy.";
+                    if (age !== 'under70') warnings.push("Tránh dùng Aspirin thường quy để dự phòng tiên phát ở bệnh nhân trên 70 tuổi.");
+                    if (hbr === 'high') warnings.push("Aspirin ở bệnh nhân có nguy cơ chảy máu cao (HBR) gây hại nhiều hơn lợi ích.");
+                }
+                duration = "<span class='result-title'>III. THỜI GIAN ĐIỀU TRỊ</span><br>Theo dõi và đánh giá lại nguy cơ theo định kỳ.";
+            } 
+            else if (scenario === 'acs_pci') {
+                regimen = "<span class='result-title'>II. PHÁC ĐỒ ĐỀ XUẤT</span><br>DAPT (Aspirin + P2Y12 inhibitor). Ưu tiên dùng <strong>Prasugrel</strong> hoặc <strong>Ticagrelor</strong> (một số dữ liệu ủng hộ Prasugrel).";
+                if (age === 'over75') {
+                    regimen += "<br>Do bệnh nhân > 75 tuổi, ưu tiên sử dụng <strong>Clopidogrel</strong> thay vì Ticagrelor/Prasugrel để giảm rủi ro chảy máu lớn.";
+                }
+                if (hbr === 'high') {
+                    duration = "<span class='result-title'>III. THỜI GIAN DAPT</span><br>Rút ngắn 1-3 tháng, sau đó chuyển sang đơn trị liệu bằng thuốc ức chế P2Y12 (chủ yếu với Ticagrelor). Thận trọng ở bệnh nhân STEMI.";
+                } else {
+                    duration = "<span class='result-title'>III. THỜI GIAN DAPT</span><br>Mặc định là 12 tháng. Có thể cân nhắc hạ bậc từ Ticagrelor/Prasugrel xuống Clopidogrel sau 1 tháng ở bệnh nhân được chọn lọc.";
+                }
+            }
+            else if (scenario === 'ccd_pci') {
+                regimen = "<span class='result-title'>II. PHÁC ĐỒ ĐỀ XUẤT</span><br>DAPT (Aspirin + Clopidogrel) là phác đồ mặc định. Có thể cân nhắc Ticagrelor/Prasugrel ở bệnh nhân nguy cơ thiếu máu cao và chảy máu thấp.";
+                if (hbr === 'high') {
+                    duration = "<span class='result-title'>III. THỜI GIAN DAPT</span><br>Rút ngắn 1-3 tháng, sau đó duy trì đơn trị liệu (P2Y12 inhibitor hoặc Aspirin).";
+                } else {
+                    duration = "<span class='result-title'>III. THỜI GIAN DAPT</span><br>6 tháng tiêu chuẩn, sau đó chuyển sang đơn trị liệu.";
+                }
+            }
+            else if (scenario === 'pad_acute' || scenario === 'pad_chronic') {
+                if (scenario === 'pad_acute') {
+                    regimen = "<span class='result-title'>II. PHÁC ĐỒ ĐỀ XUẤT (PAD - Cấp/sau can thiệp)</span><br>" +
+                              "Sau can thiệp nội mạch (đặt stent): DAPT với Aspirin + Clopidogrel trong <strong>1-6 tháng</strong> (Khuyến cáo ACC/AHA Class 2a).<br>" +
+                              "Nếu bệnh nhân <strong>không có nguy cơ chảy máu cao</strong>, có thể cân nhắc thêm Rivaroxaban 2.5 mg x 2 lần/ngày + Aspirin (VOYAGER-PAD) để giảm MACE và MALE.";
+                    if (hbr === 'high') {
+                        warnings.push("PAD có HBR cao: Thận trọng khi dùng Rivaroxaban + Aspirin. Ưu tiên đơn trị liệu hoặc DAPT ngắn hạn.");
+                    }
+                    duration = "<span class='result-title'>III. THỜI GIAN DÙNG THUỐC</span><br>DAPT ngắn hạn (1-6 tháng), sau đó chuyển sang đơn trị liệu dài hạn (Aspirin hoặc Clopidogrel).";
+                } else {
+                    regimen = "<span class='result-title'>II. PHÁC ĐỒ ĐỀ XUẤT (PAD - Mạn tính)</span><br>" +
+                              "Bệnh nhân PAD có triệu chứng: điều trị <strong>đơn trị liệu kháng tiểu cầu</strong> kéo dài.<br>" +
+                              "• Aspirin 75-325 mg/ngày <strong>HOẶC</strong><br>" +
+                              "• Clopidogrel 75 mg/ngày (CAPRIE: Clopidogrel có thể là lựa chọn tốt hơn).<br><br>" +
+                              "Ở bệnh nhân nguy cơ cao (đoạn chi trước, đa mạch, ĐTĐ, suy thận) và <strong>nguy cơ chảy máu chấp nhận được</strong>: có thể thêm Rivaroxaban 2.5 mg x 2 lần/ngày + Aspirin (COMPASS).";
+                    if (hbr === 'high') {
+                        warnings.push("PAD mạn tính có HBR cao: <strong>Không dùng DAPT</strong> hoặc Rivaroxaban + Aspirin trong quản lý dài hạn. Chỉ đơn trị liệu.");
+                    }
+                    infoTexts.push("PAD <strong>không triệu chứng</strong>: bằng chứng lợi ích của kháng tiểu cầu ít chắc chắn. Cân nhắc kỹ.");
+                    infoTexts.push("Chống chỉ định dùng kháng đông đơn thuần (Rivaroxaban 5mg x 2) ở PAD vì không hiệu quả và có thể gây hại.");
+                    duration = "<span class='result-title'>III. THỜI GIAN DÙNG THUỐC</span><br>Điều trị kéo dài. Đánh giá lại cân bằng nguy cơ - lợi ích định kỳ.";
+                }
+            }
+            else if (scenario === 'stroke_tia') {
+                regimen = "<span class='result-title'>II. PHÁC ĐỒ ĐỀ XUẤT</span><br>DAPT (Aspirin + Clopidogrel) khởi trị sớm trong vòng 12-24 giờ ở bệnh nhân đột quỵ thiếu máu nhẹ (NIHSS ≤3) hoặc TIA nguy cơ cao (ABCD2 ≥4).";
+                duration = "<span class='result-title'>III. THỜI GIAN DAPT</span><br>Kéo dài 21 ngày, sau đó hạ bậc thành đơn trị liệu để giới hạn nguy cơ chảy máu.";
+                if (hbr === 'high') {
+                    warnings.push("Đột quỵ/TIA có HBR: Cân nhắc rủi ro tái phát và nguy cơ chảy máu. Có thể cân nhắc đơn trị liệu sớm.");
+                }
+            }
+
+            if (oac && (scenario === 'acs_pci' || scenario === 'ccd_pci')) {
+                warnings.push("Có chỉ định OAC: Tránh liệu pháp ba kéo dài. Ngưng Aspirin sớm (1-4 tuần). Dùng OAC (ưu tiên DOAC) + Clopidogrel. Tránh Ticagrelor/Prasugrel.");
+            }
+            if (oac && (scenario === 'pad_acute' || scenario === 'pad_chronic')) {
+                warnings.push("PAD cần OAC: Sau can thiệp, có thể dùng thêm 1 thuốc kháng tiểu cầu đơn (Aspirin hoặc Clopidogrel) + OAC. Không dùng liệu pháp ba.");
+            }
+            if (gi) {
+                warnings.push("Khuyến cáo dùng PPI thường quy để giảm nguy cơ xuất huyết tiêu hóa khi đang dùng DAPT hoặc thuốc chống đông.");
+            }
+
+            if (surgery === 'elective' && (scenario === 'acs_pci' || scenario === 'ccd_pci')) {
+                surgeryText = "<span class='result-title'>IV. QUẢN LÝ CHU PHẪU</span><br>Phẫu thuật chương trình: Trì hoãn ≥ 6 tháng (CCD) hoặc ≥ 12 tháng (ACS) sau PCI. Tiếp tục Aspirin, ngưng Clopidogrel/Ticagrelor 5 ngày hoặc Prasugrel 7 ngày trước mổ.";
+            } else if (surgery === 'urgent' && (scenario === 'acs_pci' || scenario === 'ccd_pci')) {
+                surgeryText = "<span class='result-title'>IV. QUẢN LÝ CHU PHẪU</span><br>Phẫu thuật khẩn cấp: Cân nhắc ngưng P2Y12 đường uống và bắc cầu bằng thuốc kháng tiểu cầu IV tác dụng ngắn (Cangrelor/GPI) nếu PCI < 3 tháng. Với chảy máu não: truyền tiểu cầu.";
+            } else if (surgery === 'elective' && scenario === 'pad_chronic') {
+                surgeryText = "<span class='result-title'>IV. QUẢN LÝ CHU PHẪU</span><br>Cần đánh giá nguy cơ huyết khối và chảy máu. Có thể tiếp tục Aspirin, cân nhắc ngừng thuốc ức chế P2Y12 theo khuyến cáo.";
+            }
+
+            regimenRec.innerHTML = regimen;
+            durationRec.innerHTML = duration;
+            surgeryRec.innerHTML = surgeryText || "";
+
+            let warningHtml = "";
+            warnings.forEach(w => {
+                warningHtml += `<div class="warning-box">⚠️ ${w}</div>`;
+            });
+            warningContainer.innerHTML = warningHtml;
+
+            let infoHtml = "";
+            infoTexts.forEach(t => {
+                infoHtml += `<div class="info-box">ℹ️ ${t}</div>`;
+            });
+            infoContainer.innerHTML = infoHtml;
+        }
+
+        function printResult() {
+            generateStrategy();
+            // Đợi một chút để DOM cập nhật rồi in
+            setTimeout(function() {
+                window.print();
+            }, 200);
+        }
+
+        function resetForm() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('clinicalScenario').value = "";
+            document.getElementById('ageGroup').value = "under70";
+            document.getElementById('surgeryPlan').value = "none";
+            document.getElementById('patientName').value = "";
+            document.getElementById('patientAge').value = "";
+            document.getElementById('patientId').value = "";
+            document.getElementById('examDate').value = "";
+            document.getElementById('clinicalNote').value = "";
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('completed'));
+            goToTab(1);
+        }
+    </script>
+</body>
+</html>
