@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Ung Thư Giáp - 3 Luồng Xử Lý</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); padding: 20px; line-height: 1.5; }
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        /* Header */
+        .header { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 25px 30px; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 22px; margin-bottom: 5px; }
+        .header p { color: #94a3b8; font-size: 14px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; background: white; padding: 8px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto;}
+        .tab-btn { flex: 1; padding: 14px 20px; border: none; background: transparent; font-size: 15px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; transition: all 0.3s; white-space: nowrap; }
+        .tab-btn:hover { background: #f1f5f9; color: var(--text-main); }
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+
+        /* Tab Content */
+        .tab-content { display: none; background: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); animation: fadeIn 0.4s ease; border: 1px solid var(--border); }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Forms & Inputs */
+        .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f1f5f9; display: flex; align-items: center; gap: 8px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-weight: 600; font-size: 14px; color: #334155; }
+        select, input[type="text"] { padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; transition: border 0.3s; background: #fff; }
+        select:focus, input[type="text"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        
+        .checkbox-group { display: flex; flex-direction: column; gap: 10px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
+        .checkbox-group label { display: flex; align-items: flex-start; gap: 10px; font-weight: 500; font-size: 14px; cursor: pointer; color: #475569; }
+        .checkbox-group input[type="checkbox"] { margin-top: 3px; width: 16px; height: 16px; }
+
+        /* Buttons */
+        .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 15px; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-warning:hover { background: #d97706; }
+
+        /* Result Boxes */
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 12px; border: 1px solid var(--border); display: none; }
+        .result-box.show { display: block; animation: fadeIn 0.4s; }
+        .result-box.info { background: #eff6ff; border-color: #bfdbfe; }
+        .result-box.success { background: #f0fdf4; border-color: #bbf7d0; }
+        .result-box.warning { background: #fffbeb; border-color: #fde68a; }
+
+        .surgery-plan { background: white; border: 1px solid #fca5a5; padding: 15px; border-radius: 8px; margin-top: 10px; }
+        .surgery-plan p { margin-bottom: 8px; font-size: 15px; color: #0f172a; }
+        .surgery-plan p:last-child { margin-bottom: 0; }
+
+        /* Timeline / Timeline Plan */
+        .timeline { margin-top: 20px; position: relative; padding-left: 20px; }
+        .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #cbd5e1; }
+        .timeline-item { position: relative; margin-bottom: 20px; padding-left: 20px; }
+        .timeline-item::before { content: ''; position: absolute; left: -25px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: white; border: 3px solid var(--primary); }
+        .timeline-time { font-weight: 700; color: var(--primary); font-size: 14px; margin-bottom: 4px; }
+        .timeline-content { background: white; border: 1px solid var(--border); padding: 12px 16px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .timeline-content ul { padding-left: 20px; margin-top: 5px; font-size: 14px; color: #475569;}
+
+        /* Sync Notice */
+        .sync-notice { background: #f1f5f9; border-left: 4px solid var(--primary); padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; font-size: 14px; color: #334155; display: flex; align-items: center; gap: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🏥 Hệ Thống Quản Lý Tuyến Giáp - Lâm Sàng</h1>
+        <p>Phân tầng 3 bước: Đánh giá -> Theo dõi -> Hỗ trợ sau mổ (Dữ liệu liên thông)</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab1')">1. Đánh Giá Bệnh Nhân Chưa Mổ</button>
+        <button class="tab-btn" onclick="switchTab('tab2')">2. Kế Hoạch Theo Dõi (Không Mổ)</button>
+        <button class="tab-btn" onclick="switchTab('tab3')">3. Bệnh Nhân Chỉ Định Mổ / Đã Mổ</button>
+    </div>
+
+    <div id="tab1" class="tab-content active">
+        <div class="section-title">📋 Đánh giá Lâm sàng & Siêu âm ban đầu</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Độ tuổi bệnh nhân:</label>
+                <select id="t1_age">
+                    <option value="lt55">Dưới 55 tuổi (< 55)</option>
+                    <option value="ge55">Từ 55 tuổi trở lên (≥ 55)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Kích thước u / Siêu âm (cT):</label>
+                <select id="t1_cT">
+                    <option value="T1">U ≤ 2 cm, giới hạn trong tuyến giáp (cT1)</option>
+                    <option value="T2">U 2 - 4 cm, giới hạn trong tuyến giáp (cT2)</option>
+                    <option value="T3">U > 4 cm HOẶC Xâm lấn cơ đai (cT3)</option>
+                    <option value="T4">Xâm lấn khí quản, thực quản, phần mềm cổ (cT4)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tình trạng hạch cổ (cN):</label>
+                <select id="t1_cN">
+                    <option value="N0">Không thấy hạch nghi ngờ (cN0)</option>
+                    <option value="N1a">Hạch khoang trung tâm (cN1a)</option>
+                    <option value="N1b">Hạch khoang bên (cN1b)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Kết quả FNA (Tế bào học):</label>
+                <select id="t1_fna">
+                    <option value="B2">Bethesda II (Lành tính)</option>
+                    <option value="B3">Bethesda III (AUS/FLUS - Không điển hình)</option>
+                    <option value="B4">Bethesda IV (Tân sinh nang)</option>
+                    <option value="B5">Bethesda V (Nghi ngờ ác tính)</option>
+                    <option value="B6">Bethesda VI (Ác tính)</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="evaluateTab1()">⚖️ Phân Loại & Đưa Ra Chỉ Định</button>
+
+        <div id="t1_result" class="result-box">
+            </div>
+    </div>
+
+    <div id="tab2" class="tab-content">
+        <div class="sync-notice" id="t2_sync_notice">
+            <span>ℹ️ Bạn có thể nhập thông tin mới hoặc hệ thống tự lấy dữ liệu từ Tab 1 sang.</span>
+        </div>
+        
+        <div class="section-title">👀 Thông tin theo dõi bệnh nhân</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Mức độ nguy cơ (Theo FNA):</label>
+                <select id="t2_risk">
+                    <option value="low">Nguy cơ thấp (Bethesda II)</option>
+                    <option value="medium">Nguy cơ trung bình (Bethesda III, IV)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Kích thước nhân giáp:</label>
+                <select id="t2_size">
+                    <option value="small">Nhỏ (≤ 2cm)</option>
+                    <option value="large">Lớn (> 2cm) hoặc tăng kích thước nhanh</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-warning" onclick="generateFollowUpPlan()" style="width:100%; color: #333; font-weight:bold;">📅 Lập Kế Hoạch & Mốc Thời Gian Theo Dõi</button>
+
+        <div id="t2_result" class="result-box warning">
+            </div>
+    </div>
+
+    <div id="tab3" class="tab-content">
+        <div class="sync-notice" id="t3_sync_notice">
+            <span>ℹ️ Dữ liệu trước mổ được đồng bộ từ Tab 1. Hãy điền thêm thông tin Giai đoạn sau mổ (Giải phẫu bệnh).</span>
+        </div>
+
+        <div class="section-title">🔬 Cập Nhật Dữ Liệu Sau Mổ (Giải phẫu bệnh)</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Khối u sau mổ (pT):</label>
+                <select id="t3_pT">
+                    <option value="pT1">pT1: U ≤ 2 cm</option>
+                    <option value="pT2">pT2: U > 2 cm đến ≤ 4 cm</option>
+                    <option value="pT3">pT3: U > 4 cm HOẶC xâm lấn cơ đai</option>
+                    <option value="pT4">pT4: Xâm lấn cấu trúc ngoài tuyến giáp</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Hạch sau mổ (pN):</label>
+                <select id="t3_pN">
+                    <option value="pN0">pN0: Không di căn hạch</option>
+                    <option value="pN1a">pN1a: Di căn hạch trung tâm</option>
+                    <option value="pN1b">pN1b: Di căn hạch cổ bên</option>
+                </select>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label>Yếu tố nguy cơ cao (Giải phẫu bệnh):</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="t3_r_margin"> Bờ cắt phẫu thuật dương tính (Tế bào ung thư ở rìa cắt)</label>
+                    <label><input type="checkbox" id="t3_r_vasc"> Xâm lấn mạch máu (≥ 4 ổ)</label>
+                    <label><input type="checkbox" id="t3_r_grade"> Thể mô học nguy cơ cao (Tall cell, Columnar, Kém biệt hóa...)</label>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-success" onclick="generateAdjuvantPlan()" style="width:100%;">💊 Lên Kế Hoạch Điều Trị Bổ Trợ & Theo Dõi Sau Mổ</button>
+
+        <div id="t3_result" class="result-box success">
+            </div>
+    </div>
+
+</div>
+
+<script>
+    // GLOBAL DATA OBJECT - Liên thông giữa các Tab
+    const patientData = {
+        preOp: { age: 'lt55', cT: 'T1', cN: 'N0', fna: 'B2' },
+        decision: ''
+    };
+
+    // --- Tab Switching Logic ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        event.target.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+
+        if (tabId === 'tab2' && patientData.preOp.fna) {
+            syncToTab2();
+        }
+        if (tabId === 'tab3' && patientData.preOp.cT) {
+            syncToTab3();
+        }
+    }
+
+    // --- Lấy dữ liệu Tab 1 ---
+    function evaluateTab1() {
+        patientData.preOp.age = document.getElementById('t1_age').value;
+        patientData.preOp.cT = document.getElementById('t1_cT').value;
+        patientData.preOp.cN = document.getElementById('t1_cN').value;
+        patientData.preOp.fna = document.getElementById('t1_fna').value;
+
+        const { cT, cN, fna } = patientData.preOp;
+        const resultBox = document.getElementById('t1_result');
+        let html = '';
+
+        // Thuật toán ra quyết định
+        let requireSurgery = false;
+        let reasons = [];
+
+        if (['B5', 'B6'].includes(fna)) { requireSurgery = true; reasons.push("Kết quả FNA ác tính hoặc nghi ngờ cao."); }
+        if (['T3', 'T4'].includes(cT)) { requireSurgery = true; reasons.push("Kích thước khối u lớn hoặc có dấu hiệu xâm lấn."); }
+        if (['N1a', 'N1b'].includes(cN)) { requireSurgery = true; reasons.push("Siêu âm phát hiện hạch cổ nghi ngờ di căn."); }
+
+        if (['B3', 'B4'].includes(fna) && !requireSurgery) {
+            patientData.decision = 'consider';
+            html = `
+                <h3 style="color: #d97706; margin-bottom:10px;">🟡 CHỈ ĐỊNH: CÂN NHẮC / XÉT NGHIỆM THÊM</h3>
+                <p>Khối u chưa rõ ràng ác tính (Bethesda III/IV). Khuyến cáo làm thêm Xét nghiệm Sinh học phân tử (BRAF, RET...) hoặc cắt thùy giáp chẩn đoán.</p>
+                <div style="margin-top:15px; display:flex; gap:10px;">
+                    <button class="btn btn-warning" onclick="switchTab('tab2')">👉 Quyết định Theo dõi (Chuyển Tab 2)</button>
+                    <button class="btn btn-success" onclick="switchTab('tab3')">👉 Quyết định Mổ (Chuyển Tab 3)</button>
+                </div>
+            `;
+            resultBox.className = 'result-box show warning';
+        } 
+        else if (requireSurgery) {
+            patientData.decision = 'surgery';
+            
+            // Xử lý loại phẫu thuật tuyến giáp
+            let surgeryType = "Cắt thùy tuyến giáp HOẶC Cắt toàn bộ tuyến giáp (cân nhắc theo các yếu tố nguy cơ khác).";
+            if (cT === 'T4' || cT === 'T3' || cN === 'N1b' || cN === 'N1a') {
+                surgeryType = "Cắt toàn bộ tuyến giáp (Total Thyroidectomy).";
+            }
+
+            // Xử lý nạo vét hạch
+            let neckDissection = "";
+            if (cN === 'N1b') {
+                neckDissection = "Nạo vét hạch cổ khoang bên (Lateral neck dissection) <strong>kết hợp</strong> Nạo vét hạch cổ trung tâm.";
+            } else if (cN === 'N1a') {
+                neckDissection = "Nạo vét hạch cổ khoang trung tâm (Central neck dissection).";
+            } else {
+                // cN0
+                neckDissection = "<strong>Không nạo vét hạch dự phòng thường quy.</strong> <br><em>(Chỉ tiến hành cắt tuyến giáp đơn thuần. Tuy nhiên, trong lúc mổ, bác sĩ phẫu thuật vẫn thăm dò, nếu phát hiện hạch bất thường mới tiến hành sinh thiết tức thì hoặc nạo vét).</em>";
+            }
+
+            html = `
+                <h3 style="color: #dc2626; margin-bottom:10px;">🔴 CHỈ ĐỊNH: PHẪU THUẬT (MỔ)</h3>
+                <ul style="margin-bottom: 15px; padding-left: 20px; color:#475569;">
+                    ${reasons.map(r => `<li>${r}</li>`).join('')}
+                </ul>
+                
+                <div class="surgery-plan">
+                    <p>🔪 <strong>Can thiệp Tuyến giáp:</strong> ${surgeryType}</p>
+                    <hr style="margin: 10px 0; border-top: 1px dashed #fca5a5;">
+                    <p>🩺 <strong>Can thiệp Nạo vét hạch:</strong><br> ${neckDissection}</p>
+                </div>
+
+                <button class="btn btn-success" style="margin-top:15px;" onclick="switchTab('tab3')">👉 Chuyển sang Lên kế hoạch Sau Mổ (Tab 3)</button>
+            `;
+            resultBox.className = 'result-box show info';
+            resultBox.style.borderColor = '#fca5a5';
+            resultBox.style.backgroundColor = '#fef2f2';
+        } 
+        else {
+            patientData.decision = 'surveillance';
+            html = `
+                <h3 style="color: #059669; margin-bottom:10px;">🟢 CHỈ ĐỊNH: THEO DÕI (SURVEILLANCE)</h3>
+                <p>Khối u nhỏ, không có hạch di căn, FNA thuộc nhóm lành tính. Không có chỉ định phẫu thuật lúc này.</p>
+                <button class="btn btn-warning" style="margin-top:15px; color:#333;" onclick="switchTab('tab2')">👉 Chuyển sang Lên Kế Hoạch Theo Dõi (Tab 2)</button>
+            `;
+            resultBox.className = 'result-box show success';
+        }
+
+        resultBox.innerHTML = html;
+    }
+
+    // --- Tab 2: Theo Dõi ---
+    function syncToTab2() {
+        if(patientData.preOp.fna) {
+            document.getElementById('t2_sync_notice').innerHTML = `<span>🔄 <strong>Đã đồng bộ dữ liệu:</strong> FNA thuộc nhóm ${document.getElementById('t1_fna').options[document.getElementById('t1_fna').selectedIndex].text}.</span>`;
+            if (['B3', 'B4'].includes(patientData.preOp.fna)) document.getElementById('t2_risk').value = 'medium';
+            else document.getElementById('t2_risk').value = 'low';
+
+            if (['T1'].includes(patientData.preOp.cT)) document.getElementById('t2_size').value = 'small';
+            else document.getElementById('t2_size').value = 'large';
+        }
+    }
+
+    function generateFollowUpPlan() {
+        const risk = document.getElementById('t2_risk').value;
+        const size = document.getElementById('t2_size').value;
+        const resBox = document.getElementById('t2_result');
+
+        let html = `<h3 style="color: #b45309; margin-bottom:15px;">🗓️ Mốc Thời Gian Theo Dõi Bệnh Nhân Không Mổ</h3><div class="timeline">`;
+
+        if (risk === 'low' && size === 'small') {
+            html += `
+                <div class="timeline-item">
+                    <div class="timeline-time">Tháng thứ 12 (1 năm/lần)</div>
+                    <div class="timeline-content">
+                        <strong>Khám định kỳ:</strong>
+                        <ul>
+                            <li>Siêu âm vùng cổ đánh giá lại kích thước nhân giáp.</li>
+                            <li>Xét nghiệm TSH đo lường chức năng tuyến giáp.</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="timeline-item">
+                    <div class="timeline-time">Tháng thứ 3 - 6</div>
+                    <div class="timeline-content">
+                        <strong>Theo dõi sát:</strong>
+                        <ul>
+                            <li>Siêu âm vùng cổ: Đánh giá tốc độ phát triển của khối u.</li>
+                            <li>Xét nghiệm TSH, FT4.</li>
+                            <li><em>Lưu ý:</em> Nếu u tăng thể tích > 50% hoặc tăng 2mm ở ít nhất 2 chiều, xem xét lặp lại FNA.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">Tháng thứ 12 - 24</div>
+                    <div class="timeline-content">
+                        <strong>Giãn cách theo dõi (Nếu ổn định):</strong>
+                        <ul>
+                            <li>Siêu âm cổ mỗi năm 1 lần.</li>
+                            <li>Khám lâm sàng đánh giá hạch vùng cổ.</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        html += `</div>`;
+        resBox.innerHTML = html;
+        resBox.className = 'result-box show warning';
+    }
+
+    // --- Tab 3: Bệnh nhân Mổ / Sau Mổ ---
+    function syncToTab3() {
+        if(patientData.preOp.cT) {
+            document.getElementById('t3_sync_notice').innerHTML = `<span>🔄 <strong>Đã đồng bộ từ trước mổ:</strong> Giai đoạn lâm sàng ${patientData.preOp.cT} - ${patientData.preOp.cN}. Hãy điền kết quả Giải phẫu bệnh thực tế bên dưới.</span>`;
+            document.getElementById('t3_pT').value = 'p' + patientData.preOp.cT;
+            let cN = patientData.preOp.cN;
+            document.getElementById('t3_pN').value = cN === 'N0' ? 'pN0' : (cN === 'N1a' ? 'pN1a' : 'pN1b');
+        }
+    }
+
+    function generateAdjuvantPlan() {
+        const pT = document.getElementById('t3_pT').value;
+        const pN = document.getElementById('t3_pN').value;
+        const rMargin = document.getElementById('t3_r_margin').checked;
+        const rVasc = document.getElementById('t3_r_vasc').checked;
+        const rGrade = document.getElementById('t3_r_grade').checked;
+
+        let isHighRisk = (pT === 'pT4' || pN === 'pN1b' || rMargin || rVasc || rGrade);
+        let isMediumRisk = (pT === 'pT3' || pN === 'pN1a');
+
+        const resBox = document.getElementById('t3_result');
+        let html = `<h3 style="color: #047857; margin-bottom:15px;">💊 Kế Hoạch Điều Trị Bổ Trợ & Theo Dõi Sau Mổ</h3>`;
+
+        // 1. Chỉ định hỗ trợ điều trị
+        html += `<div style="background: white; border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="color:#0f172a; margin-bottom: 10px;">☢️ Quyết định Điều trị Iod phóng xạ (RAI) & Thuốc nội tiết:</h4>
+            <ul style="padding-left: 20px;">`;
+        
+        if (isHighRisk) {
+            html += `<li><strong>I-131 (RAI):</strong> Có chỉ định thường quy (Liều cao) để diệt mô giáp tàn dư và di căn.</li>
+                     <li><strong>Ức chế TSH:</strong> Duy trì mục tiêu TSH rất thấp < 0.1 mU/L.</li>`;
+        } else if (isMediumRisk) {
+            html += `<li><strong>I-131 (RAI):</strong> Cân nhắc lựa chọn (Selectively recommended). Tùy thuộc vào nồng độ Tg sau mổ.</li>
+                     <li><strong>Ức chế TSH:</strong> Duy trì TSH ở mức 0.1 - 0.5 mU/L.</li>`;
+        } else {
+            html += `<li><strong>I-131 (RAI):</strong> Không khuyến cáo thường quy (Bệnh nhân nguy cơ thấp).</li>
+                     <li><strong>Ức chế TSH:</strong> Duy trì TSH ở khoảng bình thường nửa dưới (0.5 - 2.0 mU/L).</li>`;
+        }
+        html += `</ul></div>`;
+
+        // 2. Lịch trình theo dõi (Timeline)
+        html += `<h4 style="color:#0f172a; margin-bottom: 15px;">🗓️ Mốc Thời Gian Theo Dõi Sau Mổ:</h4><div class="timeline">`;
+
+        html += `
+            <div class="timeline-item">
+                <div class="timeline-time">Tuần thứ 6 - 12 (Sau mổ/Sau RAI)</div>
+                <div class="timeline-content">
+                    <strong>Đánh giá nền tảng (Baseline):</strong>
+                    <ul>
+                        <li>Xét nghiệm: Thyroglobulin (Tg), kháng thể TgAb, và TSH.</li>
+                        <li>Đánh giá hiệu quả ức chế hormon (Levothyroxine).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">Tháng thứ 6 - 12</div>
+                <div class="timeline-content">
+                    <strong>Đánh giá đáp ứng cấu trúc:</strong>
+                    <ul>
+                        <li>Siêu âm vùng cổ: Phát hiện tái phát hạch hoặc tại giường tuyến giáp.</li>
+                        <li>Xét nghiệm lại Tg, TgAb, TSH.</li>
+                        <li><em>Nếu Tg tăng cao:</em> Cân nhắc làm thêm CT cổ/ngực hoặc WBS (Xạ hình toàn thân).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">Hàng năm (Từ năm thứ 2 trở đi)</div>
+                <div class="timeline-content">
+                    <strong>Theo dõi dài hạn:</strong>
+                    <ul>
+                        <li>Siêu âm cổ và Xét nghiệm Tg/TgAb mỗi 12 tháng.</li>
+                        <li>Giảm dần mức độ ức chế TSH nếu không có bằng chứng bệnh tái phát sau nhiều năm.</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+
+        html += `</div>`;
+        resBox.innerHTML = html;
+        resBox.className = 'result-box show success';
+    }
+</script>
+
+</body>
+</html>
