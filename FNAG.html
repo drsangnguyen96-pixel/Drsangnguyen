@@ -1,0 +1,393 @@
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn Đánh giá và Theo dõi Nhân giáp (ETA 2023)</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border-top: 4px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .data-category {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .data-category:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .data-title {
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clickable {
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            transition: opacity 0.2s;
+            color: var(--secondary-color);
+        }
+
+        .clickable:hover {
+            opacity: 0.7;
+            color: var(--primary-color);
+        }
+
+        .low-risk { color: #27ae60; }
+        .med-risk { color: #f39c12; }
+        .high-risk { color: #c0392b; }
+        .surgery-color { color: #8e44ad; }
+        .bethesda-color { color: #d35400; }
+
+        .rom {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-weight: normal;
+        }
+
+        .rule-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .rule-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .rule-list li:before {
+            content: "•";
+            color: var(--secondary-color);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        /* Styles for Modal (Popup) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .modal-title {
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Tiếp cận & Theo dõi Nhân giáp</h1>
+        <p>Theo Hướng dẫn Thực hành Lâm sàng của Hiệp hội Tuyến giáp Châu Âu (ETA) 2023</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <div class="card-header">
+                📍 Chỉ định chọc hút tế bào (FNA)
+            </div>
+            <div class="card-body">
+                <div class="data-category">
+                    <div class="data-title low-risk">
+                        <span class="clickable low-risk" onclick="openModal('EU-TIRADS 3')">EU-TIRADS 3</span> 
+                    </div>
+                    <ul class="rule-list">
+                        <li>Chỉ định FNA khi kích thước <strong>> 20 mm</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="data-category">
+                    <div class="data-title med-risk">
+                        <span class="clickable med-risk" onclick="openModal('EU-TIRADS 4')">EU-TIRADS 4</span> 
+                    </div>
+                    <ul class="rule-list">
+                        <li>Chỉ định FNA khi kích thước <strong>> 15 mm</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="data-category">
+                    <div class="data-title high-risk">
+                        <span class="clickable high-risk" onclick="openModal('EU-TIRADS 5')">EU-TIRADS 5</span> 
+                    </div>
+                    <ul class="rule-list">
+                        <li>Chỉ định FNA khi kích thước <strong>> 10 mm</strong>.</li>
+                        <li><em>Lưu ý (5-10mm):</em> FNA nếu có hạch nghi ngờ, xâm lấn ngoài tuyến giáp, hoặc có kế hoạch điều trị.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔬 Kết quả Tế bào học (Bethesda)
+            </div>
+            <div class="card-body">
+                <div class="data-category">
+                    <div class="data-title bethesda-color">
+                        Nhóm nguy cơ thấp
+                    </div>
+                    <ul class="rule-list">
+                        <li><span class="clickable" onclick="openModal('Bethesda I')">Bethesda I (Không chẩn đoán)</span></li>
+                        <li><span class="clickable" onclick="openModal('Bethesda II')">Bethesda II (Lành tính)</span></li>
+                    </ul>
+                </div>
+
+                <div class="data-category">
+                    <div class="data-title bethesda-color">
+                        Nhóm không xác định (Indeterminate)
+                    </div>
+                    <ul class="rule-list">
+                        <li><span class="clickable" onclick="openModal('Bethesda III')">Bethesda III (AUS/FLUS)</span></li>
+                        <li><span class="clickable" onclick="openModal('Bethesda IV')">Bethesda IV (FN/SFN)</span></li>
+                    </ul>
+                </div>
+
+                <div class="data-category">
+                    <div class="data-title bethesda-color">
+                        Nhóm nguy cơ cao
+                    </div>
+                    <ul class="rule-list">
+                        <li><span class="clickable" onclick="openModal('Bethesda V')">Bethesda V (Nghi ngờ ác tính)</span></li>
+                        <li><span class="clickable" onclick="openModal('Bethesda VI')">Bethesda VI (Ác tính)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                ⏱ Theo dõi (Surveillance)
+            </div>
+            <div class="card-body">
+                <div class="data-category">
+                    <div class="data-title low-risk">
+                        <span class="clickable low-risk" onclick="openModal('EU-TIRADS 2')">EU-TIRADS 2</span> 
+                    </div>
+                    <ul class="rule-list">
+                        <li>Kích thước <strong>> 10 mm</strong>: Siêu âm lại sau <strong>3 - 5 năm</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="data-category">
+                    <div class="data-title low-risk">
+                        <span class="clickable low-risk" onclick="openModal('EU-TIRADS 3')">EU-TIRADS 3</span> 
+                    </div>
+                    <ul class="rule-list">
+                        <li>Kích thước <strong>10 - 20 mm</strong>: Siêu âm lại sau <strong>3 - 5 năm</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="data-category">
+                    <div class="data-title med-risk">
+                        <span class="clickable med-risk" onclick="openModal('EU-TIRADS 4')">EU-TIRADS 4</span> 
+                    </div>
+                    <ul class="rule-list">
+                        <li>Kích thước <strong>≤ 15 mm</strong>: Siêu âm lại sau <strong>1 năm</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="data-category">
+                    <div class="data-title high-risk">
+                        <span class="clickable high-risk" onclick="openModal('EU-TIRADS 5')">EU-TIRADS 5</span> 
+                    </div>
+                    <ul class="rule-list">
+                        <li>Kích thước <strong>5 - 10 mm</strong>: Siêu âm lại mỗi <strong>6 - 12 tháng</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                🔪 Chỉ định Phẫu thuật
+            </div>
+            <div class="card-body">
+                <div class="data-category">
+                    <div class="data-title surgery-color">
+                        Các trường hợp xem xét phẫu thuật
+                    </div>
+                    <ul class="rule-list">
+                        <li>Bệnh lý nhân giáp có triệu chứng chèn ép tại chỗ.</li>
+                        <li>Nhân giáp tăng kích thước và gây triệu chứng dù tế bào học/siêu âm lành tính.</li>
+                        <li>Mức Calcitonin tăng cao hoặc có đáp ứng kích thích ở người mang đột biến gen RET.</li>
+                        <li>Nhân giáp thuộc Bethesda III/IV mà không phù hợp để theo dõi tiếp (kích thước lớn, siêu âm nghi ngờ cao).</li>
+                        <li>Nhân có kết quả tế bào học Bethesda V và VI.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Lưu ý chung trong quá trình theo dõi:</strong> Chỉ định FNA lặp lại ngay hoặc can thiệp nếu nốt có sự phát triển đáng kể (tăng ≥20% ở ít nhất 2 đường kính và tối thiểu 2mm, hoặc thể tích tăng >50%), xuất hiện đặc điểm siêu âm đáng lo ngại mới.
+    </div>
+</div>
+
+<div class="modal-overlay" id="myModal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h3 class="modal-title" id="modalTitle">Tiêu đề</h3>
+        <div id="modalBody">
+            Nội dung chi tiết sẽ hiện ở đây.
+        </div>
+    </div>
+</div>
+
+<script>
+    const popupData = {
+        // EU-TIRADS Data
+        "EU-TIRADS 2": "<strong>Lành tính (Benign):</strong><br>Bao gồm các nang đơn thuần hoặc nốt dạng bọt biển hoàn toàn.<br><br><strong>Nguy cơ ác tính:</strong> < 1%",
+        "EU-TIRADS 3": "<strong>Nguy cơ thấp (Low risk):</strong><br>Đồng âm hoặc tăng âm. Không có bất kỳ đặc điểm siêu âm nghi ngờ cao nào.<br><br><strong>Nguy cơ ác tính:</strong> 2 - 4%",
+        "EU-TIRADS 4": "<strong>Nguy cơ trung bình (Intermediate risk):</strong><br>Giảm âm nhẹ. Không có đặc điểm siêu âm nghi ngờ cao nào.<br><br><strong>Nguy cơ ác tính:</strong> 6 - 17%",
+        "EU-TIRADS 5": "<strong>Nguy cơ cao (High risk):</strong><br>Có ít nhất 1 đặc điểm: Hình dạng không đều, bờ không đều, vi vôi hóa, hoặc giảm âm mạnh/rõ rệt.<br><br><strong>Nguy cơ ác tính:</strong> 26 - 87%",
+        
+        // Bethesda Data
+        "Bethesda I": "<strong>Mô tả:</strong> Không chẩn đoán được (Non-diagnostic / Unsatisfactory).<br><strong>Nguy cơ ác tính:</strong> 5 - 10%<br><strong>Hướng xử trí:</strong> Lặp lại FNA (có thể kết hợp sinh thiết lõi CNB nếu tiếp tục không chẩn đoán được).",
+        "Bethesda II": "<strong>Mô tả:</strong> Lành tính (Benign).<br><strong>Nguy cơ ác tính:</strong> 0 - 3%<br><strong>Hướng xử trí:</strong> Theo dõi lâm sàng và siêu âm định kỳ (3 - 5 năm).",
+        "Bethesda III": "<strong>Mô tả:</strong> Tế bào không điển hình ý nghĩa không xác định / Tổn thương nang không xác định (AUS/FLUS).<br><strong>Nguy cơ ác tính:</strong> 10 - 30%<br><strong>Hướng xử trí:</strong> Lặp lại FNA, xét nghiệm sinh học phân tử (nếu có), hoặc xem xét phẫu thuật.",
+        "Bethesda IV": "<strong>Mô tả:</strong> Tân sinh nang / Nghi ngờ tân sinh nang (FN/SFN).<br><strong>Nguy cơ ác tính:</strong> 25 - 40%<br><strong>Hướng xử trí:</strong> Đề nghị phẫu thuật hoặc xét nghiệm sinh học phân tử.",
+        "Bethesda V": "<strong>Mô tả:</strong> Nghi ngờ ác tính (Suspicious of malignancy).<br><strong>Nguy cơ ác tính:</strong> 50 - 75%<br><strong>Hướng xử trí:</strong> Khuyến cáo phẫu thuật.",
+        "Bethesda VI": "<strong>Mô tả:</strong> Ác tính (Malignant).<br><strong>Nguy cơ ác tính:</strong> 97 - 99%<br><strong>Hướng xử trí:</strong> Khuyến cáo phẫu thuật."
+    };
+
+    function openModal(titleKey) {
+        document.getElementById("modalTitle").innerText = titleKey;
+        document.getElementById("modalBody").innerHTML = popupData[titleKey] || "Không có dữ liệu.";
+        document.getElementById("myModal").style.display = "flex";
+    }
+
+    function closeModal(event) {
+        if (!event || event.target.id === 'myModal' || event.target.className === 'close-btn') {
+            document.getElementById("myModal").style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
