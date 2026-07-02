@@ -28,6 +28,17 @@
         h1 { text-align: center; color: var(--primary); font-size: 1.6rem; margin-bottom: 5px; text-transform: uppercase; }
         .subtitle { text-align: center; color: #64748b; font-size: 0.95rem; margin-bottom: 25px; }
 
+        /* Patient Info Section */
+        .patient-info {
+            background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+        .patient-info input, .patient-info select {
+            width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;
+            font-size: 0.95rem; outline: none; transition: 0.2s; background: #fff;
+        }
+        .patient-info input:focus, .patient-info select:focus { border-color: var(--secondary); }
+
         /* Tabs styling */
         .tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 25px; }
         .tab { 
@@ -48,16 +59,14 @@
         label.section-label { display: block; font-weight: 600; margin-bottom: 5px; color: var(--primary); font-size: 1.05rem; }
         .label-desc { font-size: 0.85rem; color: #64748b; margin-bottom: 12px; display: block; font-weight: 400; }
         
-        .input-grid { 
-            display: grid; grid-template-columns: 1fr; gap: 12px; 
-        }
+        .input-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
         @media(min-width: 600px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        @media(min-width: 768px) { .patient-info .input-grid { grid-template-columns: 1fr 1fr 1fr; } }
         .input-grid.full-width { grid-template-columns: 1fr; }
 
         .item-card {
             display: flex; align-items: flex-start; border: 1px solid var(--border); 
-            border-radius: 8px; padding: 14px; cursor: pointer; background: #f8fafc; transition: all 0.2s ease;
-            position: relative;
+            border-radius: 8px; padding: 14px; cursor: pointer; background: #ffffff; transition: all 0.2s ease;
         }
         .item-card:hover { background: #f0f9ff; border-color: #7dd3fc; }
         
@@ -78,23 +87,100 @@
         .risk-status-box.high { background: #fee2e2; border-left-color: #ef4444; color: #991b1b; }
         .risk-status-box.low { background: #dcfce7; border-left-color: #22c55e; color: #166534; }
 
-        /* Result Panel */
+        /* Result Panel & Print Button */
         .result-panel {
             background: #f0fdf4; border: 2px solid #86efac;
-            border-radius: 8px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border-radius: 8px; padding: 20px; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
         .result-title { font-size: 1.15rem; font-weight: bold; color: #166534; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed #bbf7d0; padding-bottom: 8px;}
         .result-content { font-size: 1.05rem; font-weight: 500; color: #14532d; }
-        .citation { font-size: 0.85rem; color: #166534; font-style: italic; margin-top: 8px; display: block; }
+
+        .btn-print {
+            width: 100%; padding: 15px; background: #0284c7; color: white; border: none; 
+            border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; 
+            font-size: 1.1rem; text-transform: uppercase; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-print:hover { background: #0369a1; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);}
 
         .hidden { display: none !important; }
+
+        /* Print Layout - A5 Portrait Size with Times New Roman */
+        #print-area { display: none; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            body { 
+                background: white; 
+                margin: 0; 
+                padding: 0; 
+                font-family: 'Times New Roman', Times, serif !important; 
+                font-size: 12pt; 
+                line-height: 1.2 !important; 
+                color: #000; 
+            }
+            #main-ui { display: none; }
+            
+            #print-area, #print-area * { visibility: visible; }
+            #print-area {
+                display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+                font-family: 'Times New Roman', Times, serif !important; color: #000; padding: 0;
+            }
+            
+            @page { size: A5 portrait; margin: 10mm 15mm; }
+            
+            .p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+            .p-header-left { text-align: left; font-size: 11pt; line-height: 1.3; flex: 0 0 40%; }
+            .p-header-left strong { font-size: 11pt; }
+            
+            .p-header-right { text-align: center; font-size: 11pt; line-height: 1.3; flex: 0 0 60%; }
+            .p-header-right strong { font-size: 12pt; white-space: nowrap; }
+            .p-line { width: 50%; margin: 2px auto 0 auto; border-top: 1px solid #000; }
+            
+            .p-title { text-align: center; font-size: 14pt; font-weight: bold; margin: 12px 0 15px 0; text-transform: uppercase; }
+            
+            .p-section-title { font-size: 12pt; font-weight: bold; margin: 10px 0 4px 0; text-decoration: underline; text-transform: uppercase; }
+            
+            .p-row { display: flex; margin-bottom: 4px; }
+            .p-col { flex: 1; }
+            .p-text { margin: 0; font-size: 12pt; }
+            
+            .p-box { border: 1px dotted #333; padding: 6px 10px; margin-top: 4px; border-radius: 4px; }
+            .p-box p { margin: 3px 0; font-size: 12pt; line-height: 1.25;}
+            
+            .p-footer { margin-top: 15px; display: flex; justify-content: flex-end; text-align: center; page-break-inside: avoid; }
+            .p-signature p { margin: 2px 0; font-size: 12pt; }
+            .p-signature .sig-space { height: 60px; }
+            
+            ul { margin: 3px 0; padding-left: 20px; }
+            li { margin-bottom: 3px; font-size: 12pt; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<!-- GIAO DIỆN LÀM VIỆC -->
+<div class="container" id="main-ui">
     <h1>Quản Lý Nốt Phổi</h1>
     <div class="subtitle">Dựa trên Hướng dẫn Fleischner 2017 & ACR Lung-RADS v2022</div>
+
+    <!-- Thông tin bệnh nhân -->
+    <div class="patient-info">
+        <label class="section-label">Thông tin Bệnh nhân (Mục đích in phiếu y lệnh):</label>
+        <div class="input-grid">
+            <input type="text" id="pt_name" placeholder="Họ và tên bệnh nhân">
+            <input type="text" id="pt_yob" placeholder="Năm sinh / Tuổi">
+            <select id="pt_gender">
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+            </select>
+        </div>
+        <div class="input-grid" style="grid-template-columns: 1fr 1fr; margin-top: 12px;">
+            <input type="text" id="pt_id" placeholder="Mã hồ sơ / Số bệnh án">
+            <input type="text" id="dr_name" value="BS. CK1. Nguyễn Văn Sang" placeholder="Tên Bác sĩ đánh giá">
+        </div>
+    </div>
 
     <div class="tabs">
         <button class="tab active" onclick="switchTab('incidental')">Phát Hiện Tình Cờ (Fleischner)</button>
@@ -103,93 +189,88 @@
 
     <!-- PHẦN 1: FLEISCHNER 2017 (TÌNH CỜ) -->
     <div id="incidental" class="form-section active">
-        
         <div class="form-group">
             <label class="section-label">1. Đánh giá Yếu tố nguy cơ cao:</label>
-            <span class="label-desc">(Tick vào các yếu tố bên dưới nếu có. Bệnh nhân sẽ được xếp vào "Nguy Cơ Cao" nếu có >= 1 yếu tố)</span>
+            <span class="label-desc">(Tick vào các yếu tố bên dưới nếu có. Bệnh nhân sẽ được xếp vào "Nguy Cơ Cao" nếu có ≥ 1 yếu tố)</span>
             
             <div class="input-grid">
-                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="smoking">
+                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="Hút thuốc lá nặng">
                     <div><span class="label-text">Hút thuốc lá nặng</span><span class="label-text-desc">≥ 30 gói-năm, hoặc bỏ < 15 năm</span></div>
                 </label>
-                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="age">
+                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="Tuổi cao">
                     <span class="label-text">Tuổi cao</span>
                 </label>
-                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="exposure">
-                    <div><span class="label-text">Phơi nhiễm chất gây ung thư</span><span class="label-text-desc">Amiăng, Uranium, Radon...</span></div>
+                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="Phơi nhiễm hóa chất">
+                    <div><span class="label-text">Phơi nhiễm hóa chất</span><span class="label-text-desc">Amiăng, Uranium, Radon...</span></div>
                 </label>
-                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="family">
-                    <span class="label-text">Tiền sử gia đình mắc ung thư phổi</span>
+                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="Tiền sử gia đình mắc UT phổi">
+                    <span class="label-text">Tiền sử gia đình mắc UT phổi</span>
                 </label>
-                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="disease">
-                    <span class="label-text">Có Khí phế thũng hoặc Xơ phổi</span>
+                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="Khí phế thũng / Xơ phổi">
+                    <span class="label-text">Khí phế thũng / Xơ phổi</span>
                 </label>
-                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="nodule">
-                    <div><span class="label-text">Đặc điểm nốt nghi ngờ</span><span class="label-text-desc">Bờ tua gai/không đều, nằm ở thùy trên</span></div>
+                <label class="item-card"><input type="checkbox" class="fl_risk_factor" value="Đặc điểm nốt nghi ngờ (Bờ tua gai, thùy trên)">
+                    <div><span class="label-text">Đặc điểm nốt nghi ngờ</span><span class="label-text-desc">Bờ tua gai/không đều, thùy trên</span></div>
                 </label>
             </div>
-            
-            <div id="fl_risk_status" class="risk-status-box low">
-                Phân loại hiện tại: NGUY CƠ THẤP
-            </div>
+            <div id="fl_risk_status" class="risk-status-box low">Phân loại hiện tại: NGUY CƠ THẤP</div>
         </div>
 
         <div class="form-group">
             <label class="section-label">2. Số lượng nốt phổi:</label>
             <div class="input-grid">
-                <label class="item-card"><input type="radio" name="fl_multi" value="single" checked><span class="label-text">Đơn độc (1 nốt)</span></label>
-                <label class="item-card"><input type="radio" name="fl_multi" value="multiple"><span class="label-text">Nhiều nốt (≥ 2 nốt)</span></label>
+                <label class="item-card"><input type="radio" name="fl_multi" value="single" data-label="Đơn độc (1 nốt)" checked><span class="label-text">Đơn độc (1 nốt)</span></label>
+                <label class="item-card"><input type="radio" name="fl_multi" value="multiple" data-label="Nhiều nốt (≥ 2 nốt)"><span class="label-text">Nhiều nốt (≥ 2 nốt)</span></label>
             </div>
         </div>
 
         <div class="form-group">
             <label class="section-label">3. Đặc điểm hình ảnh của nốt (hoặc nốt đáng ngờ nhất):</label>
             <div class="input-grid">
-                <label class="item-card"><input type="radio" name="fl_type" value="solid" checked><span class="label-text">Nốt đặc (Solid)</span></label>
-                <label class="item-card"><input type="radio" name="fl_type" value="pgg"><span class="label-text">Nốt kính mờ thuần nhất (Pure Ground-Glass)</span></label>
-                <label class="item-card"><input type="radio" name="fl_type" value="part_solid"><span class="label-text">Nốt bán đặc (Part-Solid)</span></label>
+                <label class="item-card"><input type="radio" name="fl_type" value="solid" data-label="Nốt đặc (Solid)" checked><span class="label-text">Nốt đặc (Solid)</span></label>
+                <label class="item-card"><input type="radio" name="fl_type" value="pgg" data-label="Nốt kính mờ thuần nhất (Pure Ground-Glass)"><span class="label-text">Nốt kính mờ thuần (Pure Ground-Glass)</span></label>
+                <label class="item-card"><input type="radio" name="fl_type" value="part_solid" data-label="Nốt bán đặc (Part-Solid)"><span class="label-text">Nốt bán đặc (Part-Solid)</span></label>
             </div>
         </div>
 
         <div class="form-group">
             <label class="section-label">4. Kích thước trung bình của nốt (mm):</label>
             <div class="input-grid">
-                <label class="item-card"><input type="radio" name="fl_size" value="<6" checked><span class="label-text">< 6 mm</span></label>
-                <label class="item-card"><input type="radio" name="fl_size" value="6-8"><span class="label-text">6 - 8 mm</span></label>
-                <label class="item-card"><input type="radio" name="fl_size" value=">8"><span class="label-text">> 8 mm</span></label>
+                <label class="item-card"><input type="radio" name="fl_size" value="<6" data-label="< 6 mm" checked><span class="label-text">< 6 mm</span></label>
+                <label class="item-card"><input type="radio" name="fl_size" value="6-8" data-label="6 - 8 mm"><span class="label-text">6 - 8 mm</span></label>
+                <label class="item-card"><input type="radio" name="fl_size" value=">8" data-label="> 8 mm"><span class="label-text">> 8 mm</span></label>
             </div>
         </div>
 
         <div class="form-group hidden" id="fl_solid_component_group">
             <label class="section-label">5. Kích thước phần đặc (đối với nốt bán đặc ≥ 6mm):</label>
             <div class="input-grid">
-                <label class="item-card"><input type="radio" name="fl_solid_size" value="<6" checked><span class="label-text">< 6 mm</span></label>
-                <label class="item-card"><input type="radio" name="fl_solid_size" value=">=6"><span class="label-text">≥ 6 mm</span></label>
+                <label class="item-card"><input type="radio" name="fl_solid_size" value="<6" data-label="Phần đặc < 6 mm" checked><span class="label-text">< 6 mm</span></label>
+                <label class="item-card"><input type="radio" name="fl_solid_size" value=">=6" data-label="Phần đặc ≥ 6 mm"><span class="label-text">≥ 6 mm</span></label>
             </div>
         </div>
 
         <div class="result-panel">
-            <div class="result-title">🎯 Khuyến nghị theo Fleischner 2017:</div>
+            <div class="result-title">🎯 Khuyến nghị (Fleischner 2017):</div>
             <div class="result-content" id="fl_result">Đang tải kết quả...</div>
         </div>
     </div>
 
     <!-- PHẦN 2: LUNG-RADS v2022 (TẦM SOÁT) -->
     <div id="screening" class="form-section">
-        
         <div class="form-group">
             <label class="section-label">1. Loại tổn thương đặc thù tại lần chụp này:</label>
             <div class="input-grid full-width">
-                <label class="item-card"><input type="radio" name="lr_type" value="cyst">
+                <label class="item-card"><input type="radio" name="lr_type" value="cyst" data-label="Nang phổi không điển hình (Atypical Cysts)">
                     <span class="label-text">Nang phổi không điển hình (Atypical Cysts)</span>
                 </label>
-                <label class="item-card"><input type="radio" name="lr_type" value="juxta">
+                <label class="item-card"><input type="radio" name="lr_type" value="juxta" data-label="Nốt cạnh màng phổi (Juxtapleural Nodules)">
                     <span class="label-text">Nốt cạnh màng phổi (Juxtapleural Nodules)</span>
                 </label>
-                <label class="item-card"><input type="radio" name="lr_type" value="airway">
+                <label class="item-card"><input type="radio" name="lr_type" value="airway" data-label="Nốt đường thở (Airway Nodules)">
                     <span class="label-text">Nốt đường thở (Airway Nodules)</span>
                 </label>
-                <label class="item-card"><input type="radio" name="lr_type" value="infectious">
+                <label class="item-card"><input type="radio" name="lr_type" value="infectious" data-label="Nghi ngờ Viêm/Nhiễm trùng (Infectious/Inflammatory)">
                     <span class="label-text">Nghi ngờ Viêm/Nhiễm trùng (Infectious/Inflammatory)</span>
                 </label>
             </div>
@@ -200,19 +281,19 @@
             <div class="form-group">
                 <label class="section-label">2. Đặc điểm của nang:</label>
                 <div class="input-grid full-width">
-                    <label class="item-card"><input type="radio" name="lr_cyst_feature" value="base" checked>
-                        <span class="label-text">Nang thành dày (≥ 2mm) HOẶC Nang nhiều thùy (Multilocular) lúc ban đầu</span>
+                    <label class="item-card"><input type="radio" name="lr_cyst_feature" value="base" data-label="Nang thành dày (≥ 2mm) HOẶC Nang nhiều thùy lúc ban đầu" checked>
+                        <span class="label-text">Nang thành dày (≥ 2mm) HOẶC Nang nhiều thùy lúc ban đầu</span>
                     </label>
-                    <label class="item-card"><input type="radio" name="lr_cyst_feature" value="growing">
-                        <span class="label-text">Nang thành dày có phần thành/nốt lớn lên HOẶC Nang nhiều thùy lớn lên/tăng độ mờ</span>
+                    <label class="item-card"><input type="radio" name="lr_cyst_feature" value="growing" data-label="Nang thành dày/nhiều thùy tăng kích thước, tăng độ mờ">
+                        <span class="label-text">Nang thành dày/nhiều thùy tăng kích thước, tăng độ mờ</span>
                     </label>
                 </div>
             </div>
             <div class="form-group">
                 <label class="section-label">3. Có kèm nốt đặc ≥ 8mm không?</label>
                 <div class="input-grid">
-                    <label class="item-card"><input type="radio" name="lr_cyst_solid" value="no" checked><span class="label-text">Không</span></label>
-                    <label class="item-card"><input type="radio" name="lr_cyst_solid" value="yes"><span class="label-text">Có (Nốt đặc ≥ 8mm)</span></label>
+                    <label class="item-card"><input type="radio" name="lr_cyst_solid" value="no" data-label="Không có nốt đặc ≥ 8mm" checked><span class="label-text">Không</span></label>
+                    <label class="item-card"><input type="radio" name="lr_cyst_solid" value="yes" data-label="Có nốt đặc ≥ 8mm"><span class="label-text">Có (Nốt đặc ≥ 8mm)</span></label>
                 </div>
             </div>
         </div>
@@ -220,12 +301,12 @@
         <!-- Cạnh màng phổi -->
         <div id="lr_juxta_group" class="hidden">
             <div class="form-group">
-                <label class="section-label">2. Đặc điểm nốt cạnh màng phổi (Perifissural, costal...):</label>
+                <label class="section-label">2. Đặc điểm nốt cạnh màng phổi:</label>
                 <div class="input-grid full-width">
-                    <label class="item-card"><input type="radio" name="lr_juxta_feature" value="benign" checked>
+                    <label class="item-card"><input type="radio" name="lr_juxta_feature" value="benign" data-label="< 10 mm, nốt đặc, bờ nhẵn, hình oval/thấu kính/tam giác" checked>
                         <span class="label-text">< 10 mm, nốt đặc, bờ nhẵn, hình oval/thấu kính/tam giác</span>
                     </label>
-                    <label class="item-card"><input type="radio" name="lr_juxta_feature" value="other">
+                    <label class="item-card"><input type="radio" name="lr_juxta_feature" value="other" data-label="Không thỏa mãn các tiêu chí lành tính">
                         <span class="label-text">Không thỏa mãn các tiêu chí lành tính trên</span>
                     </label>
                 </div>
@@ -237,14 +318,14 @@
             <div class="form-group">
                 <label class="section-label">2. Vị trí và đặc điểm nốt đường thở:</label>
                 <div class="input-grid full-width">
-                    <label class="item-card"><input type="radio" name="lr_airway_loc" value="subseg" checked>
-                        <span class="label-text">Dưới phân thùy (Subsegmental) - nốt mới hoặc ổn định</span>
+                    <label class="item-card"><input type="radio" name="lr_airway_loc" value="subseg" data-label="Dưới phân thùy (Subsegmental)" checked>
+                        <span class="label-text">Dưới phân thùy (Subsegmental)</span>
                     </label>
-                    <label class="item-card"><input type="radio" name="lr_airway_loc" value="proximal">
-                        <span class="label-text">Phân thùy hoặc trung tâm hơn (Segmental/Proximal) - lúc ban đầu</span>
+                    <label class="item-card"><input type="radio" name="lr_airway_loc" value="proximal" data-label="Phân thùy hoặc trung tâm hơn - lúc ban đầu">
+                        <span class="label-text">Phân thùy hoặc trung tâm hơn - lúc ban đầu</span>
                     </label>
-                    <label class="item-card"><input type="radio" name="lr_airway_loc" value="proximal_stable">
-                        <span class="label-text">Phân thùy hoặc trung tâm hơn - Ổn định hoặc lớn lên khi theo dõi</span>
+                    <label class="item-card"><input type="radio" name="lr_airway_loc" value="proximal_stable" data-label="Phân thùy hoặc trung tâm hơn - Ổn định/lớn lên khi theo dõi">
+                        <span class="label-text">Phân thùy hoặc trung tâm hơn - Ổn định/lớn lên khi theo dõi</span>
                     </label>
                 </div>
             </div>
@@ -255,32 +336,90 @@
             <div class="form-group">
                 <label class="section-label">2. Dấu hiệu nghi ngờ viêm/nhiễm trùng:</label>
                 <div class="input-grid full-width">
-                    <label class="item-card"><input type="radio" name="lr_infect_feature" value="major" checked>
-                        <span class="label-text">Đông đặc phân thùy/thùy, xuất hiện >6 nốt mới, HOẶC nốt đặc ≥8mm xuất hiện trong thời gian ngắn</span>
+                    <label class="item-card"><input type="radio" name="lr_infect_feature" value="major" data-label="Đông đặc thùy, >6 nốt mới, HOẶC nốt đặc ≥8mm xuất hiện nhanh" checked>
+                        <span class="label-text">Đông đặc phân thùy/thùy, >6 nốt mới, HOẶC nốt đặc ≥8mm xuất hiện nhanh</span>
                     </label>
-                    <label class="item-card"><input type="radio" name="lr_infect_feature" value="minor">
-                        <span class="label-text">Các dấu hiệu khác (ví dụ: tree-in-bud, nốt kính mờ mới <3cm)</span>
+                    <label class="item-card"><input type="radio" name="lr_infect_feature" value="minor" data-label="Các dấu hiệu nhỏ (tree-in-bud, nốt kính mờ mới <3cm)">
+                        <span class="label-text">Các dấu hiệu khác (tree-in-bud, nốt kính mờ mới <3cm)</span>
                     </label>
                 </div>
             </div>
         </div>
 
         <div class="result-panel">
-            <div class="result-title">🎯 Phân loại & Khuyến nghị theo Lung-RADS v2022:</div>
+            <div class="result-title">🎯 Khuyến nghị (Lung-RADS v2022):</div>
             <div class="result-content" id="lr_result">Vui lòng chọn loại tổn thương.</div>
+        </div>
+    </div>
+
+    <button class="btn-print" onclick="prepareAndPrint()">
+        🖨️ IN PHIẾU ĐÁNH GIÁ & THEO DÕI
+    </button>
+</div>
+
+<!-- KHU VỰC IN (A5 DỌC, TIMES NEW ROMAN) -->
+<div id="print-area">
+    <div class="p-header">
+        <div class="p-header-left">
+            SỞ Y TẾ ĐỒNG NAI<br>
+            <strong>BỆNH VIỆN ĐK THỐNG NHẤT</strong><br>
+            Khoa Ngoại Lồng Ngực
+        </div>
+        <div class="p-header-right">
+            <strong>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong><br>
+            Độc lập - Tự do - Hạnh phúc<br>
+            <div class="p-line"></div>
+        </div>
+    </div>
+
+    <div class="p-title">PHIẾU ĐÁNH GIÁ VÀ THEO DÕI NỐT PHỔI</div>
+
+    <div class="p-section-title">I. PHẦN HÀNH CHÍNH</div>
+    <div class="p-row">
+        <div class="p-col"><p class="p-text">Họ và tên bệnh nhân: <strong id="pr_name">.......................................................................</strong></p></div>
+    </div>
+    <div class="p-row" style="margin-top: 4px;">
+        <div class="p-col"><p class="p-text">Năm sinh: <span id="pr_age">.......................</span></p></div>
+        <div class="p-col"><p class="p-text">Giới tính: <span id="pr_gender">.......................</span></p></div>
+    </div>
+    <div class="p-row" style="margin-top: 4px;">
+        <div class="p-col"><p class="p-text">Mã hồ sơ/BA: <span id="pr_id">......................................................</span></p></div>
+    </div>
+
+    <div class="p-section-title">II. MÔ TẢ TỔN THƯƠNG</div>
+    <p class="p-text"><strong>Phương pháp phân loại:</strong> <span id="pr_classification"></span></p>
+    <div style="margin-top: 4px;">
+        <p class="p-text"><strong>Đặc điểm ghi nhận:</strong></p>
+        <ul id="pr_lesion_desc" style="margin: 2px 0; padding-left: 20px;">
+            <!-- Render automatically -->
+        </ul>
+    </div>
+
+    <div class="p-section-title">III. ĐỊNH HƯỚNG THEO DÕI & ĐIỀU TRỊ</div>
+    <div class="p-box">
+        <span id="pr_recommendation"></span>
+    </div>
+    
+    <p class="p-text" style="margin-top: 10px;"><strong>Thời gian dự kiến tái khám/chụp lại:</strong> .....................................................</p>
+    <p class="p-text" style="font-style: italic; margin-top: 3px;">(Bệnh nhân vui lòng mang theo phiếu này và các phim chụp cũ khi tái khám)</p>
+
+    <div class="p-footer">
+        <div class="p-signature">
+            <p><em>Đồng Nai, ngày <span id="pr_day">...</span> tháng <span id="pr_month">...</span> năm 20<span id="pr_year">...</span></em></p>
+            <p><strong>BÁC SĨ ĐÁNH GIÁ</strong></p>
+            <div class="sig-space"></div>
+            <p><strong id="pr_doctor">................................................</strong></p>
         </div>
     </div>
 </div>
 
 <script>
-    // Xử lý Tab
+    // Tab switching
     function switchTab(tabId) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
-        
         event.target.classList.add('active');
         document.getElementById(tabId).classList.add('active');
-        
         if(tabId === 'incidental') evaluateFleischner();
         if(tabId === 'screening') evaluateLungRads();
     }
@@ -289,15 +428,12 @@
     function updateInputStyles() {
         document.querySelectorAll('.item-card').forEach(item => {
             const input = item.querySelector('input[type="radio"], input[type="checkbox"]');
-            if (input && input.checked) {
-                item.classList.add('selected');
-            } else {
-                item.classList.remove('selected');
-            }
+            if (input && input.checked) item.classList.add('selected');
+            else item.classList.remove('selected');
         });
     }
 
-    // Lắng nghe sự thay đổi của tất cả các input
+    // Lắng nghe thay đổi
     document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
         input.addEventListener('change', () => {
             updateInputStyles();
@@ -306,17 +442,21 @@
         });
     });
 
-    // Hàm đánh giá Fleischner 2017
+    // Lấy nhãn data-label của radio/checkbox đang được chọn
+    function getLabel(selector) {
+        const node = document.querySelector(selector);
+        return node ? node.getAttribute('data-label') : '';
+    }
+
+    // Đánh giá Fleischner
     function evaluateFleischner() {
-        // Đếm số lượng yếu tố nguy cơ được tick
-        const riskChecked = document.querySelectorAll('.fl_risk_factor:checked').length;
-        const risk = riskChecked > 0 ? 'high' : 'low';
+        const riskNodes = document.querySelectorAll('.fl_risk_factor:checked');
+        const risk = riskNodes.length > 0 ? 'high' : 'low';
         
-        // Cập nhật UI trạng thái rủi ro
         const statusBox = document.getElementById('fl_risk_status');
         if(risk === 'high') {
             statusBox.className = "risk-status-box high";
-            statusBox.innerText = "Phân loại hiện tại: NGUY CƠ CAO (Có " + riskChecked + " yếu tố)";
+            statusBox.innerText = "Phân loại hiện tại: NGUY CƠ CAO (Có " + riskNodes.length + " yếu tố)";
         } else {
             statusBox.className = "risk-status-box low";
             statusBox.innerText = "Phân loại hiện tại: NGUY CƠ THẤP";
@@ -330,14 +470,12 @@
         const solidGroup = document.getElementById('fl_solid_component_group');
         let res = "";
 
-        // Hiển thị group kích thước phần đặc nếu nốt bán đặc >= 6mm
         if (type === 'part_solid' && (size === '6-8' || size === '>8')) {
             solidGroup.classList.remove('hidden');
         } else {
             solidGroup.classList.add('hidden');
         }
 
-        // Logic Nốt Đặc
         if (type === 'solid') {
             if (mult === 'single') {
                 if (size === '<6') res = risk === 'low' ? "Không cần theo dõi thường quy." : "Tùy chọn chụp CT ở tháng thứ 12.";
@@ -347,9 +485,7 @@
                 if (size === '<6') res = risk === 'low' ? "Không cần theo dõi thường quy." : "Tùy chọn chụp CT ở tháng thứ 12.";
                 if (size === '6-8' || size === '>8') res = risk === 'low' ? "Chụp CT ở tháng thứ 3-6, sau đó cân nhắc chụp lại ở tháng thứ 18-24. (Quản lý theo nốt đáng ngờ nhất)." : "Chụp CT ở tháng thứ 3-6, sau đó chụp lại ở tháng thứ 18-24. (Quản lý theo nốt đáng ngờ nhất).";
             }
-        } 
-        // Logic Nốt Kính Mờ Thuần Nhất
-        else if (type === 'pgg') {
+        } else if (type === 'pgg') {
             if (mult === 'single') {
                 if (size === '<6') res = "Không cần theo dõi thường quy.";
                 if (size === '6-8' || size === '>8') res = "Chụp CT ở tháng thứ 6-12 để xác nhận sự tồn tại, sau đó chụp CT mỗi 2 năm cho đến khi đủ 5 năm.";
@@ -357,14 +493,12 @@
                 if (size === '<6') res = "Chụp CT ở tháng thứ 3-6. Nếu ổn định, cân nhắc chụp CT ở năm thứ 2 và thứ 4.";
                 if (size === '6-8' || size === '>8') res = "Chụp CT ở tháng thứ 3-6. Các quyết định quản lý tiếp theo dựa trên nốt đáng ngờ nhất.";
             }
-        } 
-        // Logic Nốt Bán Đặc
-        else if (type === 'part_solid') {
+        } else if (type === 'part_solid') {
             if (mult === 'single') {
                 if (size === '<6') res = "Không cần theo dõi thường quy.";
                 if (size === '6-8' || size === '>8') {
                     if (solidSize === '<6') res = "Chụp CT ở tháng thứ 3-6 để xác nhận sự tồn tại. Nếu không thay đổi và phần đặc vẫn < 6mm, chụp CT hàng năm trong 5 năm.";
-                    if (solidSize === '>=6') res = "Rất đáng ngờ. Chụp CT ở tháng thứ 3-6. Cân nhắc PET/CT, sinh thiết, hoặc phẫu thuật cắt bỏ.";
+                    if (solidSize === '>=6') res = "<strong>Rất đáng ngờ.</strong> Chụp CT ở tháng thứ 3-6. Cân nhắc PET/CT, sinh thiết, hoặc phẫu thuật cắt bỏ.";
                 }
             } else { 
                 if (size === '<6') res = "Chụp CT ở tháng thứ 3-6. Nếu ổn định, cân nhắc chụp CT ở năm thứ 2 và thứ 4.";
@@ -375,7 +509,7 @@
         document.getElementById('fl_result').innerHTML = res + " <span class='citation'>[cite: 3]</span>";
     }
 
-    // Hàm đánh giá Lung-RADS v2022
+    // Đánh giá Lung-RADS v2022
     function evaluateLungRads() {
         const typeNode = document.querySelector('input[name="lr_type"]:checked');
         const cystGroup = document.getElementById('lr_cyst_group');
@@ -383,71 +517,131 @@
         const airwayGroup = document.getElementById('lr_airway_group');
         const infectGroup = document.getElementById('lr_infect_group');
 
-        // Reset hiển thị
         [cystGroup, juxtaGroup, airwayGroup, infectGroup].forEach(g => g.classList.add('hidden'));
 
         let res = "";
 
         if (!typeNode) {
-            res = "Vui lòng chọn loại tổn thương ở Mục 1 để xem khuyến nghị.";
+            res = "Vui lòng chọn loại tổn thương để xem khuyến nghị.";
         } else {
             const type = typeNode.value;
-
             if (type === 'cyst') {
                 cystGroup.classList.remove('hidden');
                 const feat = document.querySelector('input[name="lr_cyst_feature"]:checked').value;
                 const solid = document.querySelector('input[name="lr_cyst_solid"]:checked').value;
-                
                 if (feat === 'base') {
-                    res = "<strong>Phân loại: Lung-RADS 4A</strong><br>Khuyến nghị: Chụp LDCT theo dõi ở tháng thứ 3.";
-                    if(solid === 'yes') res += "<br><em>Lưu ý: Có thể cân nhắc chụp PET/CT do có nốt đặc ≥ 8mm.</em>";
+                    res = "<strong>Phân loại: Lung-RADS 4A.</strong><br>Khuyến nghị: Chụp LDCT theo dõi ở tháng thứ 3.";
+                    if(solid === 'yes') res += " (Có thể cân nhắc chụp PET/CT do có nốt đặc ≥ 8mm).";
                 } else {
-                    res = "<strong>Phân loại: Lung-RADS 4B</strong><br>Khuyến nghị: Chụp CT ngực chẩn đoán (có/không cản quang); HOẶC chọc hút sinh thiết; HOẶC hội chẩn chuyên khoa.";
-                    if(solid === 'yes') res += "<br><em>Lưu ý: Có thể cân nhắc chụp PET/CT do có nốt đặc/phần đặc ≥ 8mm.</em>";
+                    res = "<strong>Phân loại: Lung-RADS 4B.</strong><br>Khuyến nghị: Chụp CT ngực chẩn đoán (có/không cản quang); HOẶC chọc hút sinh thiết; HOẶC hội chẩn chuyên khoa.";
+                    if(solid === 'yes') res += " (Có thể cân nhắc chụp PET/CT do có nốt đặc/phần đặc ≥ 8mm).";
                 }
-                res += " <span class='citation'>[cite: 4]</span>";
-
             } else if (type === 'juxta') {
                 juxtaGroup.classList.remove('hidden');
                 const feat = document.querySelector('input[name="lr_juxta_feature"]:checked').value;
-                
                 if (feat === 'benign') {
-                    res = "<strong>Phân loại: Lung-RADS 2</strong><br>Khuyến nghị: Tiếp tục chụp LDCT tầm soát định kỳ 12 tháng.";
+                    res = "<strong>Phân loại: Lung-RADS 2.</strong><br>Khuyến nghị: Tiếp tục chụp LDCT tầm soát định kỳ 12 tháng.";
                 } else {
-                    res = "Chuyển sang đánh giá và phân loại theo tiêu chuẩn kích thước của Nốt đặc thông thường trong Lung-RADS.";
+                    res = "Chuyển sang đánh giá và phân loại theo tiêu chuẩn kích thước của Nốt đặc thông thường.";
                 }
-                res += " <span class='citation'>[cite: 4]</span>";
-
             } else if (type === 'airway') {
                 airwayGroup.classList.remove('hidden');
                 const loc = document.querySelector('input[name="lr_airway_loc"]:checked').value;
-                
                 if (loc === 'subseg') {
-                    res = "<strong>Phân loại: Lung-RADS 2</strong><br>Khuyến nghị: Tiếp tục chụp LDCT tầm soát định kỳ 12 tháng.";
+                    res = "<strong>Phân loại: Lung-RADS 2.</strong><br>Khuyến nghị: Tiếp tục chụp LDCT tầm soát định kỳ 12 tháng.";
                 } else if (loc === 'proximal') {
-                    res = "<strong>Phân loại: Lung-RADS 4A</strong><br>Khuyến nghị: Chụp LDCT theo dõi ở tháng thứ 3.";
+                    res = "<strong>Phân loại: Lung-RADS 4A.</strong><br>Khuyến nghị: Chụp LDCT theo dõi ở tháng thứ 3.";
                 } else if (loc === 'proximal_stable') {
-                    res = "<strong>Phân loại: Lung-RADS 4B</strong><br>Khuyến nghị: Cần chuyển hội chẩn đánh giá lâm sàng chuyên sâu (thường là chỉ định nội soi phế quản).";
+                    res = "<strong>Phân loại: Lung-RADS 4B.</strong><br>Khuyến nghị: Cần chuyển hội chẩn đánh giá lâm sàng chuyên sâu (Nội soi phế quản).";
                 }
-                res += " <span class='citation'>[cite: 4]</span>";
-
             } else if (type === 'infectious') {
                 infectGroup.classList.remove('hidden');
                 const feat = document.querySelector('input[name="lr_infect_feature"]:checked').value;
-                
                 if (feat === 'major') {
-                    res = "<strong>Phân loại: Lung-RADS 0</strong><br>Khuyến nghị: Chụp LDCT theo dõi trong 1 đến 3 tháng để chờ tình trạng viêm/nhiễm trùng thuyên giảm. Sẽ tiến hành phân loại lại sau khi chụp.";
+                    res = "<strong>Phân loại: Lung-RADS 0.</strong><br>Khuyến nghị: Chụp LDCT theo dõi trong 1 đến 3 tháng. Sẽ tiến hành phân loại lại sau khi chụp.";
                 } else {
-                    res = "Không thỏa chuẩn Lung-RADS 0 của viêm nhiễm nặng. <br>Đánh giá dựa trên kích thước và tính chất của nốt nguy hiểm nhất (Thường sẽ rơi vào <strong>Lung-RADS 2</strong>, tiếp tục LDCT 12 tháng).";
+                    res = "Không thỏa chuẩn Lung-RADS 0. Đánh giá theo nốt nguy hiểm nhất (Thường sẽ rơi vào <strong>Lung-RADS 2</strong>, tiếp tục LDCT 12 tháng).";
                 }
-                res += " <span class='citation'>[cite: 4]</span>";
             }
+            res += " <span class='citation'>[cite: 4]</span>";
         }
-
         document.getElementById('lr_result').innerHTML = res;
     }
 
-    // Khởi tạo giao diện ban đầu
+    // Logic in phiếu
+    function prepareAndPrint() {
+        // Hành chính
+        document.getElementById('pr_name').innerText = document.getElementById('pt_name').value || ".......................................................................";
+        document.getElementById('pr_age').innerText = document.getElementById('pt_yob').value || ".......................";
+        document.getElementById('pr_gender').innerText = document.getElementById('pt_gender').value;
+        document.getElementById('pr_id').innerText = document.getElementById('pt_id').value || "......................................................";
+        document.getElementById('pr_doctor').innerText = document.getElementById('dr_name').value || "................................................";
+
+        // Ngày tháng năm (Tự động lấy ngày hôm nay)
+        const today = new Date();
+        document.getElementById('pr_day').innerText = String(today.getDate()).padStart(2, '0');
+        document.getElementById('pr_month').innerText = String(today.getMonth() + 1).padStart(2, '0');
+        document.getElementById('pr_year').innerText = String(today.getFullYear()).slice(-2);
+
+        // Nội dung in
+        let classification = '';
+        let descList = '';
+        let recommendationHTML = '';
+
+        if (document.getElementById('incidental').classList.contains('active')) {
+            classification = "Phát hiện tình cờ (Fleischner 2017)";
+            
+            const riskNodes = document.querySelectorAll('.fl_risk_factor:checked');
+            let risks = [];
+            riskNodes.forEach(n => risks.push(n.value));
+            const riskText = risks.length > 0 ? "Nguy cơ CAO (" + risks.join(", ") + ")" : "Nguy cơ THẤP";
+            
+            descList += `<li>Yếu tố nguy cơ: ${riskText}</li>`;
+            descList += `<li>Số lượng: ${getLabel('input[name="fl_multi"]:checked')}</li>`;
+            descList += `<li>Loại nốt: ${getLabel('input[name="fl_type"]:checked')}</li>`;
+            descList += `<li>Kích thước: ${getLabel('input[name="fl_size"]:checked')}</li>`;
+            
+            if (!document.getElementById('fl_solid_component_group').classList.contains('hidden')) {
+                descList += `<li>Kích thước phần đặc: ${getLabel('input[name="fl_solid_size"]:checked')}</li>`;
+            }
+            
+            recommendationHTML = document.getElementById('fl_result').innerHTML;
+
+        } else {
+            classification = "Tầm soát (ACR Lung-RADS v2022)";
+            
+            const lrType = document.querySelector('input[name="lr_type"]:checked');
+            if (lrType) {
+                descList += `<li>Loại tổn thương: ${lrType.getAttribute('data-label')}</li>`;
+                const typeVal = lrType.value;
+                if (typeVal === 'cyst') {
+                    descList += `<li>Đặc điểm: ${getLabel('input[name="lr_cyst_feature"]:checked')}</li>`;
+                    descList += `<li>Có nốt đặc ≥ 8mm: ${getLabel('input[name="lr_cyst_solid"]:checked')}</li>`;
+                } else if (typeVal === 'juxta') {
+                    descList += `<li>Đặc điểm: ${getLabel('input[name="lr_juxta_feature"]:checked')}</li>`;
+                } else if (typeVal === 'airway') {
+                    descList += `<li>Vị trí/Tình trạng: ${getLabel('input[name="lr_airway_loc"]:checked')}</li>`;
+                } else if (typeVal === 'infectious') {
+                    descList += `<li>Dấu hiệu: ${getLabel('input[name="lr_infect_feature"]:checked')}</li>`;
+                }
+            } else {
+                descList = "<li>Chưa chọn loại tổn thương.</li>";
+            }
+            
+            recommendationHTML = document.getElementById('lr_result').innerHTML;
+        }
+
+        // Đổ dữ liệu
+        document.getElementById('pr_classification').innerText = classification;
+        document.getElementById('pr_lesion_desc').innerHTML = descList;
+        // Loại bỏ thẻ citation khi in y lệnh cho bệnh nhân
+        document.getElementById('pr_recommendation').innerHTML = recommendationHTML.replace(/<span class="citation">.*?<\/span>/g, '');
+
+        // Lệnh in
+        window.print();
+    }
+
+    // Khởi tạo
     updateInputStyles();
     evaluateFleischner();
     evaluateLungRads();
