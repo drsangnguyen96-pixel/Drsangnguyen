@@ -340,8 +340,37 @@
             font-family: 'Segoe UI', Arial, sans-serif;
         }
 
-        /* Mặc định ẩn giao diện in trên màn hình */
+        /* ---- CSS POPUP (MODAL) ĐỂ TÍNH ĐIỂM ---- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; border-radius: 12px; width: 90%; max-width: 500px;
+            padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .modal-header {
+            font-size: 18px; font-weight: bold; margin-bottom: 15px;
+            border-bottom: 1px solid #eee; padding-bottom: 10px; color: #0a2942;
+        }
+        .modal-body { max-height: 60vh; overflow-y: auto; margin-bottom: 20px; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+        .chk-group {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+            font-size: 15px; cursor: pointer; padding: 4px 0;
+        }
+        .chk-group input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .chk-group input[type="number"] {
+            padding: 8px 12px; border: 1px solid #d4e0ec; border-radius: 6px;
+            font-size: 15px; font-family: 'Times New Roman', Times, serif; width: 120px;
+        }
+        .modal-note { font-size: 12px; color: #666; font-style: italic; margin-bottom: 15px; }
+
+        /* Mặc định ẩn giao diện in và modal khi in */
         .print-area { display: none; }
+        @media print {
+            .modal-overlay { display: none !important; }
+        }
 
         /* ========================================================= */
         /* CSS DÀNH CHO BẢN IN A4 (VĂN PHONG Y TẾ)                   */
@@ -350,10 +379,7 @@
             @page { size: A4 portrait; margin: 15mm; }
             body { background: white; margin: 0; padding: 0; color: #000; font-family: 'Times New Roman', Times, serif; }
             
-            /* Ẩn giao diện phần mềm */
             .app { display: none !important; }
-            
-            /* Hiển thị vùng in */
             .print-area { display: block !important; font-size: 12pt; line-height: 1.3; }
 
             .header-table { width: 100%; margin-bottom: 15px; font-size: 12pt; }
@@ -370,17 +396,17 @@
 
             .section-title { font-weight: bold; margin: 12px 0 8px; font-size: 12pt; text-transform: uppercase; }
 
-            .result-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11pt; }
+            .result-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10.5pt; }
             .result-table th, .result-table td { border: 1px solid #000; padding: 4px 6px; text-align: left; vertical-align: middle; }
             .result-table th { text-align: center; font-weight: bold; background-color: #f2f2f2; }
             .col-stt { width: 5%; text-align: center !important; }
-            .col-name { width: 40%; }
-            .col-result { width: 35%; }
+            .col-name { width: 35%; }
+            .col-result { width: 40%; }
             .col-eval { width: 20%; text-align: center !important; font-weight: bold; }
 
             .conclusion-box { border: 1.5px solid #000; padding: 10px; margin-bottom: 15px; border-radius: 4px; }
             .conclusion-box p { margin: 4px 0; }
-            .miss-list { padding-left: 20px; margin: 4px 0; font-style: italic; font-size: 11pt; }
+            .miss-list { padding-left: 20px; margin: 4px 0; font-style: italic; font-size: 10.5pt; }
             .miss-list li { margin-bottom: 3px; }
             .final-verdict { font-weight: bold; font-size: 12pt; text-align: center; padding-top: 8px; margin-top: 8px; border-top: 1px dashed #000; }
 
@@ -395,7 +421,6 @@
 <body>
 <div class="app" id="app">
 
-    <!-- HEADER MÀN HÌNH -->
     <div class="screen-header">
         <div class="left">
             <div class="icon"><i class="fas fa-heart-pulse"></i></div>
@@ -435,7 +460,6 @@
                 <label>Khoa</label>
                 <input type="text" id="in_dept" placeholder="Nhập khoa...">
             </div>
-            <!-- Ô NHẬP BÁC SĨ ĐÁNH GIÁ (Sẽ cập nhật badge và bản in) -->
             <div class="admin-group" style="flex: 1;">
                 <label>Bác sĩ đánh giá</label>
                 <input type="text" id="in_doctor" placeholder="Nhập tên bác sĩ..." oninput="document.getElementById('badge_doctor').innerHTML = '<i class=\'fas fa-user-md\'></i> ' + (this.value ? this.value : 'Bác sĩ đánh giá');">
@@ -451,7 +475,6 @@
         </div>
     </div>
 
-    <!-- SUMMARY PILLS -->
     <div class="summary-pills">
         <div class="pill-item green"><i class="fas fa-check-circle" style="color:#1a7a4a;"></i> Đạt: <span class="num" id="passCount">0</span></div>
         <div class="pill-item red"><i class="fas fa-exclamation-triangle" style="color:#b13e3e;"></i> Chưa đạt: <span class="num" id="failCount">0</span></div>
@@ -459,10 +482,8 @@
         <div class="overall-status" id="overallStatus"><i class="fas fa-check-circle"></i> Sẵn sàng</div>
     </div>
 
-    <!-- GRID ĐÁNH GIÁ -->
     <div class="grid" id="parameterGrid"></div>
 
-    <!-- BUTTONS -->
     <div class="button-bar">
         <button class="btn btn-outline" onclick="resetAll()"><i class="fas fa-undo-alt"></i> Đặt lại</button>
         <button class="btn btn-print" onclick="prepareAndPrint()"><i class="fas fa-print"></i> In báo cáo y khoa</button>
@@ -473,7 +494,20 @@
     </div>
 </div>
 
-<!-- VÙNG GIAO DIỆN IN (Dành riêng khi in A4) -->
+<!-- POPUP ĐÁNH GIÁ ĐIỂM -->
+<div id="scoreModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header" id="modalTitle">Đánh giá</div>
+        <div class="modal-note">Hãy tick vào các mục tương ứng. Điểm sẽ được tự động cộng dồn.</div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal()">Hủy</button>
+            <button class="btn btn-primary" onclick="saveModal()">Lưu đánh giá</button>
+        </div>
+    </div>
+</div>
+
+<!-- VÙNG GIAO DIỆN IN -->
 <div class="print-area" id="printArea">
     <table class="header-table">
         <tr>
@@ -502,7 +536,7 @@
         <p>Dự kiến phẫu thuật: <b><span id="out_surg">..............................................................................................................................................</span></b></p>
     </div>
 
-    <div class="section-title">I. TÓM TẮT XÉT NGHIỆM VÀ LÂM SÀNG</div>
+    <div class="section-title">I. TÓM TẮT XÉT NGHIỆM VÀ ĐÁNH GIÁ TIỀN PHẪU</div>
     <table class="result-table">
         <thead>
             <tr>
@@ -512,18 +546,14 @@
                 <th class="col-eval">Đánh giá</th>
             </tr>
         </thead>
-        <tbody id="printTableBody">
-            <!-- Nội dung bảng sẽ được điền tự động -->
-        </tbody>
+        <tbody id="printTableBody"></tbody>
     </table>
 
     <div class="section-title">II. KẾT LUẬN VÀ KHUYẾN CÁO CAN THIỆP</div>
     <div class="conclusion-box">
         <p><b>1. Trạng thái chung:</b> Đáp ứng được <span id="printPassNum">0</span>/<span id="printTotalNum">0</span> tiêu chí đánh giá.</p>
         <p><b>2. Yếu tố còn thiếu và can thiệp đề nghị:</b></p>
-        <ul class="miss-list" id="printMissingList">
-            <!-- Các can thiệp sẽ được liệt kê ở đây -->
-        </ul>
+        <ul class="miss-list" id="printMissingList"></ul>
         <div class="final-verdict" id="printFinalVerdict"></div>
     </div>
 
@@ -531,7 +561,6 @@
         <div class="signature-box">
             <div class="sig-date">Đồng Nai, ngày ..... tháng ..... năm 202...</div>
             <div class="sig-title">BÁC SĨ ĐÁNH GIÁ</div>
-            <!-- Phần tên bác sĩ sẽ tự động cập nhật nếu có nhập liệu -->
             <div class="sig-name" id="out_doctor">..........................................</div>
         </div>
     </div>
@@ -539,9 +568,77 @@
 
 <script>
     // ======================================================================
-    //  ĐỊNH NGHĨA THAM SỐ — ĐẦY ĐỦ 19 TIÊU CHÍ TỪ GỐC
+    //  ĐỊNH NGHĨA THAM SỐ — KÈM THUỘC TÍNH TÍNH ĐIỂM (SCORE)
     // ======================================================================
     const params = [
+        // ----- NHÓM THANG ĐIỂM (SCORE) -----
+        {
+            id: 'risk_score', label: 'Nguy cơ EuroSCORE II / STS', icon: 'fa-calculator',
+            type: 'score', calcType: 'input', unit: '%',
+            default: null, pass: (v) => v !== null,
+            detail: 'Sử dụng EuroSCORE II hoặc STS để phân tầng rủi ro tử vong và biến chứng.',
+            failMsg: 'Bắt buộc đánh giá nguy cơ tử vong và biến chứng bằng EuroSCORE II hoặc STS.'
+        },
+        {
+            id: 'delirium_risk', label: 'Sàng lọc nguy cơ sảng (Delirium)', icon: 'fa-head-side-virus',
+            type: 'score', calcType: 'checkbox', unit: 'yếu tố',
+            questions: [
+                { label: 'Tuổi cao (≥ 70 tuổi)', points: 1 },
+                { label: 'Tình trạng suy kiệt (Frailty)', points: 1 },
+                { label: 'Rối loạn/suy giảm nhận thức', points: 1 },
+                { label: 'Tiền sử lạm dụng rượu/chất', points: 1 }
+            ],
+            default: null, pass: (v) => v !== null,
+            detail: 'Kiểm tra tuổi tác, tình trạng suy kiệt, rối loạn nhận thức và lạm dụng rượu.',
+            failMsg: 'Cần sàng lọc các yếu tố nguy cơ sảng trước mổ.'
+        },
+        {
+            id: 'osa_screen', label: 'Ngưng thở khi ngủ (STOP-BANG)', icon: 'fa-bed',
+            type: 'score', calcType: 'checkbox', unit: 'điểm',
+            questions: [
+                { label: 'Ngáy to (Snoring)', points: 1 },
+                { label: 'Mệt mỏi ban ngày (Tired)', points: 1 },
+                { label: 'Quan sát thấy ngưng thở (Observed)', points: 1 },
+                { label: 'Tăng huyết áp (Pressure)', points: 1 },
+                { label: 'BMI > 35 kg/m²', points: 1 },
+                { label: 'Tuổi > 50', points: 1 },
+                { label: 'Vòng cổ > 40 cm', points: 1 },
+                { label: 'Giới tính Nam', points: 1 }
+            ],
+            default: null, pass: (v) => v !== null,
+            detail: 'OSA làm tăng nguy cơ biến chứng hô hấp, rung nhĩ và sảng sau mổ.',
+            failMsg: 'Cần đánh giá hội chứng ngưng thở khi ngủ bằng thang điểm STOP-BANG.'
+        },
+        {
+            id: 'opioid_tolerance', label: 'Đánh giá dung nạp Opioid', icon: 'fa-pills',
+            type: 'score', calcType: 'checkbox', unit: 'yếu tố',
+            questions: [
+                { label: 'Đau mạn tính chưa kiểm soát', points: 1 },
+                { label: 'Đang sử dụng Opioid mạn tính (>3 tháng)', points: 1 },
+                { label: 'Tiền sử lạm dụng chất', points: 1 }
+            ],
+            default: null, pass: (v) => v !== null,
+            detail: 'Nhận diện bệnh nhân đau mạn tính hoặc lạm dụng chất để cá thể hóa giảm đau.',
+            failMsg: 'Cần đánh giá tình trạng sử dụng opioid trước mổ.'
+        },
+        {
+            id: 'af_risk', label: 'Nguy cơ rung nhĩ (CHA2DS2-VASc)', icon: 'fa-heartbeat',
+            type: 'score', calcType: 'checkbox', unit: 'điểm',
+            questions: [
+                { label: 'Suy tim sung huyết (Congestive Heart Failure)', points: 1 },
+                { label: 'Tăng huyết áp (Hypertension)', points: 1 },
+                { label: 'Tuổi ≥ 75 tuổi', points: 2 },
+                { label: 'Đái tháo đường (Diabetes)', points: 1 },
+                { label: 'Tiền sử Đột quỵ / TIA', points: 2 },
+                { label: 'Bệnh lý mạch máu (Vascular disease)', points: 1 },
+                { label: 'Tuổi từ 65 - 74 tuổi', points: 1 },
+                { label: 'Giới tính Nữ', points: 1 }
+            ],
+            default: null, pass: (v) => v !== null,
+            detail: 'Lập chiến lược dự phòng rung nhĩ (POAF) bằng Beta-blocker/Amiodarone.',
+            failMsg: 'Cần đánh giá CHA2DS2-VASc để có chiến lược dự phòng rung nhĩ sau mổ.'
+        },
+
         // ----- Xét nghiệm số -----
         {
             id: 'hemoglobin', label: 'Huyết sắc tố (Hb)', icon: 'fa-droplet',
@@ -551,9 +648,9 @@
         },
         {
             id: 'albumin', label: 'Albumin huyết thanh', icon: 'fa-flask',
-            type: 'number', unit: 'g/L', targetLabel: '> 30 g/L', default: 35, range: [10,55],
-            pass: (v) => v >= 30,
-            failMsg: 'Albumin thấp: bổ sung protein đường uống/tĩnh mạch, xem xét nuôi ăn ống.'
+            type: 'number', unit: 'g/L', targetLabel: '> 40 g/L', default: 42, range: [10,55],
+            pass: (v) => v >= 40,
+            failMsg: 'Giảm Albumin: chỉ báo suy dinh dưỡng, cần bổ sung protein đường uống/tĩnh mạch.'
         },
         {
             id: 'prealbumin', label: 'Prealbumin', icon: 'fa-vial',
@@ -565,19 +662,19 @@
             id: 'bmi', label: 'Chỉ số BMI', icon: 'fa-weight-scale',
             type: 'number', unit: 'kg/m²', targetLabel: '20–35 kg/m²', default: 26, range: [12,55],
             pass: (v) => v >= 20 && v <= 35,
-            failMsg: 'BMI < 20 (suy dinh dưỡng) hoặc > 35 (béo phì): tối ưu chế độ ăn, Heart Team.'
+            failMsg: 'BMI < 20 hoặc > 35: tối ưu chế độ ăn dinh dưỡng theo hội chẩn.'
         },
         {
             id: 'hba1c', label: 'HbA1c', icon: 'fa-bolt',
             type: 'number', unit: '%', targetLabel: '< 7.0%', default: 6.4, range: [4.0,14.0],
             pass: (v) => v < 7.0,
-            failMsg: 'HbA1c ≥ 8%: trì hoãn mổ để tối ưu hóa kiểm soát đường huyết.'
+            failMsg: 'HbA1c ≥ 7.0%: trì hoãn mổ để tối ưu hóa kiểm soát đường huyết.'
         },
         {
             id: 'creatinine', label: 'Creatinine', icon: 'fa-kidney',
             type: 'number', unit: 'mg/dL', targetLabel: '≤ 1.2 mg/dL', default: 1.0, range: [0.3,8.0],
             pass: (v) => v <= 1.2,
-            failMsg: 'Rối loạn chức năng thận: tối ưu huyết động, trì hoãn 24–72h sau chụp cản quang.'
+            failMsg: 'Rối loạn chức năng thận: tối ưu huyết động, tránh thuốc độc thận.'
         },
         {
             id: 'bilirubin', label: 'Bilirubin tổng', icon: 'fa-liver',
@@ -589,146 +686,140 @@
             id: 'bnp', label: 'BNP / NT-proBNP', icon: 'fa-heart-pulse',
             type: 'number', unit: 'pg/mL', targetLabel: 'BNP < 300', default: 180, range: [5,6000],
             pass: (v) => v < 300,
-            failMsg: 'Peptide natri lợi niệu cao: tối ưu điều trị suy tim.'
+            failMsg: 'Peptide natri lợi niệu cao: tối ưu phác đồ điều trị suy tim.'
         },
 
-        // ----- Nhóm phi số -----
+        // ----- Nhóm lựa chọn phi số -----
         {
-            id: 'smoking', label: 'Cai thuốc lá', icon: 'fa-smoking',
-            type: 'choice',
-            options: [
-                { value: 'cai_4tuan', label: '✅ Đã cai ≥ 4 tuần' },
-                { value: 'chua_cai', label: '❌ Đang hút / cai < 4 tuần' }
-            ],
-            default: 'cai_4tuan',
-            pass: (v) => v === 'cai_4tuan',
+            id: 'smoking', label: 'Cai thuốc lá', icon: 'fa-smoking', type: 'choice',
+            options: [ { value: 'cai_4tuan', label: '✅ Đã cai ≥ 4 tuần' }, { value: 'chua_cai', label: '❌ Đang hút/Cai <4 tuần' } ],
+            default: 'cai_4tuan', pass: (v) => v === 'cai_4tuan',
             detail: 'Cai thuốc ít nhất 4–8 tuần trước mổ để phục hồi chức năng lông chuyển.',
-            failMsg: 'Hút thuốc làm tăng 7 lần tử vong. Yêu cầu cai ít nhất 4–8 tuần trước mổ.'
+            failMsg: 'Yêu cầu cai thuốc lá ít nhất 4 tuần trước mổ.'
         },
         {
-            id: 'prehab_imt', label: 'Tập thở (IMT)', icon: 'fa-lungs',
-            type: 'choice',
-            options: [
-                { value: 'tap_2tuan', label: '✅ Đã tập IMT ≥ 2 tuần' },
-                { value: 'chua_tap', label: '❌ Chưa tập / < 2 tuần' }
-            ],
-            default: 'tap_2tuan',
-            pass: (v) => v === 'tap_2tuan',
+            id: 'prehab_imt', label: 'Tập thở (IMT)', icon: 'fa-lungs', type: 'choice',
+            options: [ { value: 'tap_2tuan', label: '✅ Đã tập IMT ≥ 2 tuần' }, { value: 'chua_tap', label: '❌ Chưa tập / < 2 tuần' } ],
+            default: 'tap_2tuan', pass: (v) => v === 'tap_2tuan',
             detail: 'Cường độ 30–50% MIP, 2–3 hiệp/ngày, 10–30 lần/hiệp.',
-            failMsg: 'Tập thở áp lực (IMT) ít nhất 2 tuần giảm viêm phổi và xẹp phổi hậu phẫu.'
+            failMsg: 'Tập thở áp lực (IMT) ít nhất 2 tuần giảm viêm phổi hậu phẫu.'
         },
         {
-            id: 'nutrition_ons', label: 'Hỗ trợ dinh dưỡng (ONS)', icon: 'fa-utensils',
-            type: 'choice',
-            options: [
-                { value: 'da_bo_sung', label: '✅ Đã bổ sung ONS ≥ 7 ngày' },
-                { value: 'chua_bo_sung', label: '❌ Chưa bổ sung / < 7 ngày' }
-            ],
-            default: 'da_bo_sung',
-            pass: (v) => v === 'da_bo_sung',
-            detail: 'Sữa giàu năng lượng, protein, vi chất. Dinh dưỡng miễn dịch (Arginine, Omega-3).',
+            id: 'nutrition_ons', label: 'Hỗ trợ dinh dưỡng (ONS)', icon: 'fa-utensils', type: 'choice',
+            options: [ { value: 'da_bo_sung', label: '✅ Đã bổ sung ONS ≥ 7 ngày' }, { value: 'chua_bo_sung', label: '❌ Chưa bổ sung' } ],
+            default: 'da_bo_sung', pass: (v) => v === 'da_bo_sung',
+            detail: 'Sữa giàu năng lượng, protein. Dinh dưỡng miễn dịch (Arginine, Omega-3).',
             failMsg: 'Bổ sung ONS ít nhất 7–10 ngày trước mổ cho bệnh nhân suy dinh dưỡng.'
         },
         {
-            id: 'frailty', label: 'Suy kiệt (CFS)', icon: 'fa-person-walking',
-            type: 'choice',
-            options: [
-                { value: 'cfs_le4', label: '✅ CFS ≤ 4 (không suy kiệt)' },
-                { value: 'cfs_ge5', label: '❌ CFS ≥ 5 (suy kiệt)' }
-            ],
-            default: 'cfs_le4',
-            pass: (v) => v === 'cfs_le4',
-            detail: 'Suy kiệt chiếm 20–32% BN phẫu thuật tim.',
-            failMsg: 'Suy kiệt (CFS ≥ 5): cần chương trình prehabilitation tích cực.'
+            id: 'frailty', label: 'Tình trạng suy kiệt (Frailty)', icon: 'fa-person-walking', type: 'choice',
+            options: [ { value: 'cfs_le4', label: '✅ Không suy kiệt' }, { value: 'cfs_ge5', label: '❌ Có suy kiệt' } ],
+            default: 'cfs_le4', pass: (v) => v === 'cfs_le4',
+            detail: 'Bệnh nhân suy kiệt có tỷ lệ biến chứng cao hơn.',
+            failMsg: 'Tình trạng suy kiệt: cần chương trình phục hồi chức năng prehab tích cực.'
         },
         {
-            id: 'infection_screen', label: 'Sàng lọc nhiễm trùng', icon: 'fa-bacteria',
-            type: 'choice',
-            options: [
-                { value: 'da_sang_loc', label: '✅ Đã sàng lọc & điều trị' },
-                { value: 'chua_sang_loc', label: '❌ Chưa sàng lọc' }
-            ],
-            default: 'da_sang_loc',
-            pass: (v) => v === 'da_sang_loc',
+            id: 'infection_screen', label: 'Sàng lọc nhiễm trùng', icon: 'fa-bacteria', type: 'choice',
+            options: [ { value: 'da_sang_loc', label: '✅ Đã sàng lọc & điều trị' }, { value: 'chua_sang_loc', label: '❌ Chưa sàng lọc' } ],
+            default: 'da_sang_loc', pass: (v) => v === 'da_sang_loc',
             detail: 'Khám răng, da, nước tiểu. Tắm sát khuẩn, loại bỏ S. aureus ở mũi.',
             failMsg: 'Trì hoãn mổ để điều trị triệt để ổ nhiễm trùng (răng, da, tiết niệu).'
         },
         {
-            id: 'psychological', label: 'Tư vấn tâm lý', icon: 'fa-brain',
-            type: 'choice',
-            options: [
-                { value: 'da_tu_van', label: '✅ Đã tư vấn, giảm lo âu' },
-                { value: 'chua_tu_van', label: '❌ Chưa tư vấn' }
-            ],
-            default: 'da_tu_van',
-            pass: (v) => v === 'da_tu_van',
-            detail: 'Lo âu 32%, trầm cảm 45% BN phẫu thuật tim.',
-            failMsg: 'Cần tư vấn kỹ, giải thích quy trình, trao quyền cho bệnh nhân.'
+            id: 'psychological', label: 'Tư vấn tâm lý & kỳ vọng', icon: 'fa-brain', type: 'choice',
+            options: [ { value: 'da_tu_van', label: '✅ Đã tư vấn, giảm lo âu' }, { value: 'chua_tu_van', label: '❌ Chưa tư vấn' } ],
+            default: 'da_tu_van', pass: (v) => v === 'da_tu_van',
+            detail: 'Gắn liền với quá trình ra quyết định chung (Shared Decision Making).',
+            failMsg: 'Cần tư vấn kỹ, giải thích quy trình, giảm lo âu cho bệnh nhân trước phẫu thuật.'
         },
         {
-            id: 'sglt2_glp1', label: 'Thuốc tiểu đường (SGLT2i/GLP-1)', icon: 'fa-syringe',
-            type: 'choice',
-            options: [
-                { value: 'da_ngung_dung', label: '✅ Đã ngừng đúng thời điểm' },
-                { value: 'chua_dieu_chinh', label: '❌ Chưa điều chỉnh' }
-            ],
-            default: 'da_ngung_dung',
-            pass: (v) => v === 'da_ngung_dung',
-            detail: 'SGLT2i: ngừng 3 ngày (ertugliflozin 4 ngày). GLP-1: ngừng ngày mổ (hàng ngày) hoặc 7 ngày (tuần).',
-            failMsg: 'SGLT2i ngừng 3 ngày trước mổ để phòng toan ceton. GLP-1 ngừng 7 ngày (tuần) hoặc ngày mổ để tránh hít sặc.'
+            id: 'sglt2_glp1', label: 'Thuốc tiểu đường (SGLT2i/GLP-1)', icon: 'fa-syringe', type: 'choice',
+            options: [ { value: 'da_ngung_dung', label: '✅ Đã ngừng đúng thời điểm' }, { value: 'chua_dieu_chinh', label: '❌ Chưa điều chỉnh' } ],
+            default: 'da_ngung_dung', pass: (v) => v === 'da_ngung_dung',
+            detail: 'SGLT2i: ngừng 3-4 ngày. GLP-1: ngừng ngày mổ (hàng ngày) hoặc 7 ngày (tuần).',
+            failMsg: 'SGLT2i ngừng >3 ngày trước mổ. GLP-1 ngừng để tránh hít sặc.'
         },
         {
-            id: 'anticoagulant', label: 'Kháng đông / kháng tiểu cầu', icon: 'fa-clock',
-            type: 'choice',
-            options: [
-                { value: 'da_ngung_dung_dh', label: '✅ Đã ngừng theo dược động học' },
-                { value: 'chua_toi_uu', label: '❌ Chưa tối ưu' }
-            ],
-            default: 'da_ngung_dung_dh',
-            pass: (v) => v === 'da_ngung_dung_dh',
-            detail: 'P2Y12: Ticagrelor 3 ngày, Clopidogrel 5 ngày, Prasugrel 7 ngày. DOAC: 48–96h theo CrCl.',
-            failMsg: 'Ngưng P2Y12: Ticagrelor ≥3 ngày, Clopidogrel ≥5 ngày, Prasugrel ≥7 ngày. DOAC: 48–96h theo CrCl.'
+            id: 'anticoagulant', label: 'Kháng đông / kháng tiểu cầu', icon: 'fa-clock', type: 'choice',
+            options: [ { value: 'da_ngung_dung_dh', label: '✅ Đã ngừng đúng chuẩn' }, { value: 'chua_toi_uu', label: '❌ Chưa tối ưu' } ],
+            default: 'da_ngung_dung_dh', pass: (v) => v === 'da_ngung_dung_dh',
+            detail: 'P2Y12: Ticagrelor 3 ngày, Clopidogrel 5 ngày, Prasugrel 7 ngày. DOAC: 48–96h.',
+            failMsg: 'Ngưng P2Y12: Ticagrelor ≥3 ngày, Clopidogrel ≥5 ngày. DOAC: 48–96h.'
         },
         {
-            id: 'beta_statin', label: 'Chẹn beta + Statin', icon: 'fa-capsules',
-            type: 'choice',
-            options: [
-                { value: 'duy_tri', label: '✅ Đang duy trì' },
-                { value: 'khong_duy_tri', label: '❌ Không duy trì' }
-            ],
-            default: 'duy_tri',
-            pass: (v) => v === 'duy_tri',
+            id: 'beta_statin', label: 'Chẹn beta + Statin', icon: 'fa-capsules', type: 'choice',
+            options: [ { value: 'duy_tri', label: '✅ Đang duy trì' }, { value: 'khong_duy_tri', label: '❌ Không duy trì' } ],
+            default: 'duy_tri', pass: (v) => v === 'duy_tri',
             detail: 'Chẹn beta duy trì đến sáng mổ. Statin giảm MACE và cải thiện sống còn.',
-            failMsg: 'Chẹn beta duy trì đến sáng mổ. Statin giảm biến cố tim mạch chính (MACE).'
+            failMsg: 'Cần duy trì chẹn beta đến sáng mổ và đảm bảo sử dụng Statin.'
         },
         {
-            id: 'ace_arb', label: 'ACE-I / ARB', icon: 'fa-bullseye',
-            type: 'choice',
-            options: [
-                { value: 'ngung_24h', label: '✅ Đã ngưng 24h trước mổ' },
-                { value: 'chua_ngung', label: '❌ Chưa ngưng' }
-            ],
-            default: 'ngung_24h',
-            pass: (v) => v === 'ngung_24h',
+            id: 'ace_arb', label: 'ACE-I / ARB', icon: 'fa-bullseye', type: 'choice',
+            options: [ { value: 'ngung_24h', label: '✅ Đã ngưng 24h trước mổ' }, { value: 'chua_ngung', label: '❌ Chưa ngưng' } ],
+            default: 'ngung_24h', pass: (v) => v === 'ngung_24h',
             detail: 'Ngưng ACE-I/ARB 24h trước mổ để giảm nguy cơ vasoplegia.',
             failMsg: 'Ngưng ACE-I/ARB 24h trước mổ để giảm nguy cơ hội chứng liệt mạch.'
         },
         {
-            id: 'carb_load', label: 'Nạp carbohydrate', icon: 'fa-wine-bottle',
-            type: 'choice',
-            options: [
-                { value: 'da_nap', label: '✅ Đã nạp 2h trước mổ' },
-                { value: 'chua_nap', label: '❌ Chưa thực hiện' }
-            ],
-            default: 'da_nap',
-            pass: (v) => v === 'da_nap',
-            detail: 'Nạp carbohydrate lỏng 2h trước mổ giúp giảm kháng insulin, lo âu.',
-            failMsg: 'Nạp carbohydrate lỏng 2h trước mổ giảm kháng insulin và lo âu.'
+            id: 'carb_load', label: 'Nạp carbohydrate lỏng', icon: 'fa-wine-bottle', type: 'choice',
+            options: [ { value: 'da_nap', label: '✅ Đã nạp 2h trước mổ' }, { value: 'chua_nap', label: '❌ Chưa thực hiện' } ],
+            default: 'da_nap', pass: (v) => v === 'da_nap',
+            detail: 'Giới hạn nhịn ăn lỏng đến 2h trước mổ, giúp giảm kháng insulin và lo âu.',
+            failMsg: 'Nạp carbohydrate lỏng 2h trước mổ giúp giảm kháng insulin và lo âu.'
         }
     ];
 
-    // ========== STATE ==========
+    // ========== STATE & MODAL LOGIC ==========
     let state = {};
+    let currentModalId = null;
+
+    function openModal(id) {
+        currentModalId = id;
+        const p = params.find(x => x.id === id);
+        document.getElementById('modalTitle').innerText = p.label;
+        
+        let html = '';
+        if (p.calcType === 'checkbox') {
+            p.questions.forEach((q, idx) => {
+                html += `<label class="chk-group"><input type="checkbox" id="chk_${idx}" value="${q.points}"> ${q.label} (<b>${q.points}</b> đ)</label>`;
+            });
+        } else if (p.calcType === 'input') {
+            const currentVal = state[id] !== null ? state[id] : '';
+            html += `<label class="chk-group">Nhập % nguy cơ tử vong: <input type="number" id="num_score" step="0.1" value="${currentVal}" placeholder="VD: 2.5"></label>`;
+        }
+        
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('scoreModal').style.display = 'flex';
+    }
+
+    function saveModal() {
+        const p = params.find(x => x.id === currentModalId);
+        let total = 0;
+        
+        if (p.calcType === 'checkbox') {
+            p.questions.forEach((q, idx) => {
+                if (document.getElementById(`chk_${idx}`).checked) {
+                    total += q.points;
+                }
+            });
+        } else if (p.calcType === 'input') {
+            const val = document.getElementById('num_score').value;
+            if(val === '') {
+                alert("Vui lòng nhập số % nguy cơ.");
+                return;
+            }
+            total = parseFloat(val);
+        }
+        
+        state[currentModalId] = total;
+        closeModal();
+        render();
+    }
+
+    function closeModal() {
+        document.getElementById('scoreModal').style.display = 'none';
+        currentModalId = null;
+    }
 
     // ========== RENDER MÀN HÌNH ==========
     const grid = document.getElementById('parameterGrid');
@@ -750,6 +841,7 @@
             `;
 
             const inputArea = document.createElement('div');
+            
             if (p.type === 'number') {
                 inputArea.className = 'input-group';
                 inputArea.innerHTML = `
@@ -758,6 +850,27 @@
                            onchange="updateNumber('${p.id}', this.value)" />
                     <span class="target-hint"><i class="far fa-bullseye"></i> ${p.targetLabel}</span>
                 `;
+            } else if (p.type === 'score') {
+                inputArea.className = 'choice-group';
+                if (p.detail) {
+                    const detailDiv = document.createElement('div');
+                    detailDiv.className = 'choice-detail';
+                    detailDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${p.detail}`;
+                    inputArea.appendChild(detailDiv);
+                }
+                const row = document.createElement('div');
+                row.className = 'choice-row';
+                
+                const evaluated = (val !== null);
+                const btn = document.createElement('span');
+                btn.className = `choice-btn ${evaluated ? 'active' : ''}`;
+                btn.innerHTML = evaluated 
+                    ? `<i class="fas fa-check-circle"></i> Đã đánh giá (<b>${val}</b> ${p.unit})` 
+                    : `<i class="fas fa-clipboard-check"></i> Đánh giá ngay`;
+                btn.onclick = () => openModal(p.id);
+                
+                row.appendChild(btn);
+                inputArea.appendChild(row);
             } else {
                 inputArea.className = 'choice-group';
                 if (p.detail) {
@@ -832,7 +945,6 @@
 
     function resetAll() {
         params.forEach(p => { state[p.id] = p.default; });
-        // Xoá luôn các thông tin hành chính đã nhập
         document.getElementById('in_name').value = '';
         document.getElementById('in_age').value = '';
         document.getElementById('in_gender').value = '';
@@ -847,7 +959,6 @@
 
     // ========== CHUẨN BỊ VÀ THỰC THI IN ==========
     function prepareAndPrint() {
-        // 1. Cập nhật thông tin hành chính từ form vào bản in
         document.getElementById('out_name').textContent = document.getElementById('in_name').value || '....................................................................................';
         document.getElementById('out_age').textContent = document.getElementById('in_age').value || '............';
         document.getElementById('out_gender').textContent = document.getElementById('in_gender').value || '............';
@@ -855,11 +966,8 @@
         document.getElementById('out_dept').textContent = document.getElementById('in_dept').value || '..................................................................................';
         document.getElementById('out_diag').textContent = document.getElementById('in_diag').value || '..................................................................................................................................................';
         document.getElementById('out_surg').textContent = document.getElementById('in_surg').value || '..............................................................................................................................................';
-        
-        // Cập nhật tên bác sĩ đánh giá ở chữ ký (nếu có nhập)
         document.getElementById('out_doctor').textContent = document.getElementById('in_doctor').value || '..........................................';
 
-        // 2. Cập nhật dữ liệu y khoa vào bản in
         const tbody = document.getElementById('printTableBody');
         const missList = document.getElementById('printMissingList');
         
@@ -873,10 +981,20 @@
             const val = state[p.id] !== undefined ? state[p.id] : p.default;
             const pass = p.pass(val);
             
-            // Xử lý chuỗi hiển thị cho gọn gàng (lọc bỏ các icon ✅ ❌ trong lựa chọn)
             let displayVal = val;
+            let evalStatus = pass ? 'Đạt' : 'Chưa đạt';
+
             if (p.type === 'number') {
                 displayVal = `${val} ${p.unit}`;
+            } else if (p.type === 'score') {
+                // Định dạng hiển thị riêng cho loại tính điểm
+                if (pass) {
+                    displayVal = `Đã đánh giá (${val} ${p.unit})`;
+                    evalStatus = 'Đạt';
+                } else {
+                    displayVal = 'Chưa đánh giá';
+                    evalStatus = 'Chưa đạt';
+                }
             } else {
                 const optObj = p.options.find(o => o.value === val);
                 if (optObj) displayVal = optObj.label.replace(/✅|❌/g, '').trim();
@@ -886,21 +1004,19 @@
                 passCount++;
             } else {
                 failCount++;
-                missList.innerHTML += `<li><b>${p.label}:</b> Ghi nhận ${displayVal}. <i>Đề nghị: ${p.failMsg}</i></li>`;
+                missList.innerHTML += `<li><b>${p.label}:</b> Ghi nhận: ${displayVal}. <i>Đề nghị: ${p.failMsg}</i></li>`;
             }
 
-            // Đưa vào bảng
             tbody.innerHTML += `
                 <tr>
                     <td class="col-stt">${idx + 1}</td>
                     <td>${p.label}</td>
                     <td>${displayVal}</td>
-                    <td class="col-eval" style="color: ${pass ? 'black' : '#b13e3e'}">${pass ? 'Đạt' : 'Chưa đạt'}</td>
+                    <td class="col-eval" style="color: ${pass ? 'black' : '#b13e3e'}">${evalStatus}</td>
                 </tr>
             `;
         });
 
-        // Điền tổng kết
         document.getElementById('printPassNum').textContent = passCount;
         document.getElementById('printTotalNum').textContent = params.length;
         
@@ -912,11 +1028,9 @@
             finalVerdict.innerHTML = `<span style="color: #b13e3e;">KẾT LUẬN: ĐỀ NGHỊ TRÌ HOÃN, CẦN TỐI ƯU HÓA THÊM ${failCount} YẾU TỐ</span>`;
         }
 
-        // Gọi lệnh in
         window.print();
     }
 
-    // ========== INIT ==========
     params.forEach(p => { state[p.id] = p.default; });
     render();
 </script>
