@@ -69,6 +69,35 @@
             font-family: 'Segoe UI', Arial, sans-serif;
         }
 
+        /* ---- CSS THÊM MỚI: PHẦN NHẬP THÔNG TIN HÀNH CHÍNH ---- */
+        .admin-info-card {
+            background: white; border-radius: 20px; padding: 20px;
+            margin-bottom: 24px; border: 1px solid #dce5ef;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .admin-header {
+            font-weight: 700; color: #0a2942; margin-bottom: 15px;
+            font-size: 16px; display: flex; align-items: center; gap: 8px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            border-bottom: 1px solid #e2ecf5; padding-bottom: 10px;
+        }
+        .admin-grid {
+            display: flex; flex-wrap: wrap; gap: 15px;
+        }
+        .admin-group {
+            display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 200px;
+        }
+        .admin-group label {
+            font-size: 13px; font-weight: 600; color: #396181; font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .admin-group input, .admin-group select {
+            padding: 10px 14px; border: 1px solid #d4e0ec; border-radius: 8px;
+            font-size: 15px; font-family: 'Times New Roman', Times, serif; outline: none; transition: 0.2s;
+        }
+        .admin-group input:focus, .admin-group select:focus {
+            border-color: #1f78b4; box-shadow: 0 0 0 3px rgba(26,115,179,0.12);
+        }
+
         /* Summary pills */
         .summary-pills {
             display: flex;
@@ -377,6 +406,45 @@
         <span class="badge"><i class="fas fa-user-md"></i> BS. Nguyễn Văn Sang</span>
     </div>
 
+    <!-- KHỐI NHẬP THÔNG TIN HÀNH CHÍNH MỚI THÊM -->
+    <div class="admin-info-card">
+        <div class="admin-header"><i class="fas fa-id-card"></i> Thông tin hành chính</div>
+        <div class="admin-grid">
+            <div class="admin-group" style="flex: 2;">
+                <label>Họ và tên người bệnh</label>
+                <input type="text" id="in_name" placeholder="Nhập họ tên...">
+            </div>
+            <div class="admin-group" style="flex: 0 0 100px;">
+                <label>Tuổi</label>
+                <input type="number" id="in_age" placeholder="Tuổi">
+            </div>
+            <div class="admin-group" style="flex: 0 0 120px;">
+                <label>Giới tính</label>
+                <select id="in_gender">
+                    <option value="">Chọn...</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                </select>
+            </div>
+            <div class="admin-group" style="flex: 1;">
+                <label>Số bệnh án</label>
+                <input type="text" id="in_record" placeholder="Nhập số BA...">
+            </div>
+            <div class="admin-group" style="flex: 1;">
+                <label>Khoa</label>
+                <input type="text" id="in_dept" placeholder="Nhập khoa...">
+            </div>
+            <div class="admin-group" style="flex: 0 0 100%;">
+                <label>Chẩn đoán bệnh</label>
+                <input type="text" id="in_diag" placeholder="Nhập chẩn đoán...">
+            </div>
+            <div class="admin-group" style="flex: 0 0 100%;">
+                <label>Dự kiến phẫu thuật</label>
+                <input type="text" id="in_surg" placeholder="Nhập phương pháp phẫu thuật...">
+            </div>
+        </div>
+    </div>
+
     <!-- SUMMARY PILLS -->
     <div class="summary-pills">
         <div class="pill-item green"><i class="fas fa-check-circle" style="color:#1a7a4a;"></i> Đạt: <span class="num" id="passCount">0</span></div>
@@ -422,10 +490,10 @@
     </div>
 
     <div class="patient-info">
-        <p>Họ và tên người bệnh: ............................................................................ Tuổi: ............ Giới tính: ............</p>
-        <p>Số bệnh án: ................................................ Khoa: .....................................................................................</p>
-        <p>Chẩn đoán bệnh: ........................................................................................................................................</p>
-        <p>Dự kiến phẫu thuật: ....................................................................................................................................</p>
+        <p>Họ và tên người bệnh: <b><span id="out_name">....................................................................................</span></b> <span style="display:inline-block; width: 20px;"></span> Tuổi: <b><span id="out_age">............</span></b> <span style="display:inline-block; width: 20px;"></span> Giới tính: <b><span id="out_gender">............</span></b></p>
+        <p>Số bệnh án: <b><span id="out_record">......................................................</span></b> <span style="display:inline-block; width: 20px;"></span> Khoa: <b><span id="out_dept">..................................................................................</span></b></p>
+        <p>Chẩn đoán bệnh: <b><span id="out_diag">..................................................................................................................................................</span></b></p>
+        <p>Dự kiến phẫu thuật: <b><span id="out_surg">..............................................................................................................................................</span></b></p>
     </div>
 
     <div class="section-title">I. TÓM TẮT XÉT NGHIỆM VÀ LÂM SÀNG</div>
@@ -757,11 +825,29 @@
 
     function resetAll() {
         params.forEach(p => { state[p.id] = p.default; });
+        // Xoá luôn các thông tin hành chính đã nhập
+        document.getElementById('in_name').value = '';
+        document.getElementById('in_age').value = '';
+        document.getElementById('in_gender').value = '';
+        document.getElementById('in_record').value = '';
+        document.getElementById('in_dept').value = '';
+        document.getElementById('in_diag').value = '';
+        document.getElementById('in_surg').value = '';
         render();
     }
 
     // ========== CHUẨN BỊ VÀ THỰC THI IN ==========
     function prepareAndPrint() {
+        // 1. Cập nhật thông tin hành chính từ form vào bản in
+        document.getElementById('out_name').textContent = document.getElementById('in_name').value || '....................................................................................';
+        document.getElementById('out_age').textContent = document.getElementById('in_age').value || '............';
+        document.getElementById('out_gender').textContent = document.getElementById('in_gender').value || '............';
+        document.getElementById('out_record').textContent = document.getElementById('in_record').value || '......................................................';
+        document.getElementById('out_dept').textContent = document.getElementById('in_dept').value || '..................................................................................';
+        document.getElementById('out_diag').textContent = document.getElementById('in_diag').value || '..................................................................................................................................................';
+        document.getElementById('out_surg').textContent = document.getElementById('in_surg').value || '..............................................................................................................................................';
+
+        // 2. Cập nhật dữ liệu y khoa vào bản in
         const tbody = document.getElementById('printTableBody');
         const missList = document.getElementById('printMissingList');
         
