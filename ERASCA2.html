@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ERAS Trong và Sau Phẫu Thuật Tim</title>
+    <!-- Font Awesome 6 (miễn phí) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: #e8edf3;
+            padding: 20px;
+            color: #1a1a1a;
+        }
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ---- PHIÊN BẢN MÀN HÌNH ---- */
+        .screen-header {
+            background: linear-gradient(135deg, #0a2a44 0%, #1a4d6e 100%);
+            border-radius: 20px;
+            padding: 18px 28px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(0,20,50,0.2);
+        }
+        .screen-header .left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .screen-header .left .icon {
+            background: rgba(255,255,255,0.15);
+            width: 48px;
+            height: 48px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        .screen-header .left h1 {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .screen-header .left .sub {
+            font-size: 13px;
+            opacity: 0.8;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .screen-header .badge {
+            background: rgba(255,255,255,0.12);
+            padding: 6px 22px;
+            border-radius: 60px;
+            font-size: 14px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            transition: all 0.3s;
+        }
+
+        /* ---- PHẦN NHẬP THÔNG TIN HÀNH CHÍNH ---- */
+        .admin-info-card {
+            background: white; border-radius: 20px; padding: 20px;
+            margin-bottom: 24px; border: 1px solid #dce5ef;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .admin-header {
+            font-weight: 700; color: #0a2942; margin-bottom: 15px;
+            font-size: 16px; display: flex; align-items: center; gap: 8px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            border-bottom: 1px solid #e2ecf5; padding-bottom: 10px;
+        }
+        .admin-grid {
+            display: flex; flex-wrap: wrap; gap: 15px;
+        }
+        .admin-group {
+            display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 200px;
+        }
+        .admin-group label {
+            font-size: 13px; font-weight: 600; color: #396181; font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .admin-group input, .admin-group select {
+            padding: 10px 14px; border: 1px solid #d4e0ec; border-radius: 8px;
+            font-size: 15px; font-family: 'Times New Roman', Times, serif; outline: none; transition: 0.2s;
+        }
+        .admin-group input:focus, .admin-group select:focus {
+            border-color: #1f78b4; box-shadow: 0 0 0 3px rgba(26,115,179,0.12);
+        }
+
+        /* Summary pills */
+        .summary-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            background: white;
+            border-radius: 50px;
+            padding: 12px 26px;
+            margin-bottom: 24px;
+            border: 1px solid #dce5ef;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .pill-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        .pill-item .num {
+            font-weight: 700;
+            font-size: 22px;
+            min-width: 28px;
+        }
+        .pill-item.green .num { color: #1a7a4a; }
+        .pill-item.red .num { color: #b13e3e; }
+        .pill-item.blue .num { color: #1f6b9e; }
+        .overall-status {
+            font-weight: 600;
+            padding: 4px 22px;
+            border-radius: 40px;
+            background: #e3f0e8;
+            color: #136b3a;
+            font-size: 15px;
+        }
+        .overall-status.warn {
+            background: #fdedd6;
+            color: #a65d1a;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 16px 20px 18px;
+            border: 1px solid #e2ecf5;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .card-header .label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            color: #0a2942;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .card-header .label i {
+            font-size: 18px;
+            color: #1f6390;
+            width: 24px;
+            text-align: center;
+        }
+        .card-header .tag {
+            background: #eef3f9;
+            padding: 2px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #1f4a6e;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 4px 0 8px;
+        }
+        .input-group input[type="number"] {
+            flex: 1;
+            min-width: 80px;
+            padding: 8px 14px;
+            border: 1px solid #d4e0ec;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 500;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .input-group input:focus {
+            border-color: #1f78b4;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26,115,179,0.12);
+        }
+        .input-group .target-hint {
+            font-size: 13px;
+            background: #e9f0f8;
+            padding: 4px 16px;
+            border-radius: 40px;
+            color: #1e4d70;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .choice-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin: 4px 0 8px;
+        }
+        .choice-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .choice-btn {
+            background: #f0f5fc;
+            border: 1.5px solid #d0ddee;
+            padding: 5px 16px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.1s;
+            color: #1f3d5a;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .choice-btn:hover { background: #e3ecf7; }
+        .choice-btn.active {
+            background: #0e4b74;
+            border-color: #0e4b74;
+            color: white;
+            box-shadow: 0 4px 10px rgba(14,75,116,0.2);
+        }
+        .choice-btn.active i { color: white; }
+        .choice-btn i { color: #4f7b9e; font-size: 13px; }
+        .choice-detail {
+            font-size: 12px;
+            color: #1f4d70;
+            background: #f0f7fe;
+            padding: 4px 14px;
+            border-radius: 40px;
+            border: 1px dashed #b8cfe0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .status-line {
+            margin-top: 10px;
+            padding: 8px 14px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            background: #f5f9ff;
+            border-left: 4px solid #b3c9df;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .status-line.pass {
+            background: #e6f5ec;
+            border-left-color: #1d8a4e;
+        }
+        .status-line.fail {
+            background: #fdeeec;
+            border-left-color: #b13e3e;
+        }
+        .status-line .action {
+            background: rgba(0,0,0,0.02);
+            padding: 3px 14px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #0e3c5a;
+            font-size: 12px;
+            flex: 1;
+            min-width: 120px;
+            line-height: 1.4;
+        }
+        .status-line .action i {
+            color: #b5722c;
+            margin-right: 4px;
+        }
+
+        .button-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+            margin: 8px 0 16px;
+        }
+        .btn {
+            border: none;
+            background: white;
+            padding: 10px 30px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            border: 1px solid #c7d8ea;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #1a3450;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .btn-primary { background: #0a4d73; border-color: #0a4d73; color: white; }
+        .btn-primary:hover { background: #0f5f8a; }
+        .btn-print { background: #1d5f47; border-color: #1d5f47; color: white; }
+        .btn-print:hover { background: #267a5b; }
+        .btn-outline:hover { background: #e5eef7; }
+
+        .footer {
+            text-align: center;
+            color: #396181;
+            font-size: 13px;
+            border-top: 1px solid #dae3ed;
+            padding-top: 16px;
+            margin-top: 6px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        /* ---- CSS POPUP (MODAL) ĐỂ TÍNH ĐIỂM ---- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; border-radius: 12px; width: 90%; max-width: 500px;
+            padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .modal-header {
+            font-size: 18px; font-weight: bold; margin-bottom: 15px;
+            border-bottom: 1px solid #eee; padding-bottom: 10px; color: #0a2942;
+        }
+        .modal-body { max-height: 60vh; overflow-y: auto; margin-bottom: 20px; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+        .chk-group {
+            display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;
+            font-size: 15px; cursor: pointer; padding: 4px 0; line-height: 1.4;
+        }
+        .chk-group input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; margin-top: 2px; }
+        .chk-group input[type="number"] {
+            padding: 8px 12px; border: 1px solid #d4e0ec; border-radius: 6px;
+            font-size: 15px; font-family: 'Times New Roman', Times, serif; width: 120px;
+        }
+        .modal-note { font-size: 12px; color: #666; font-style: italic; margin-bottom: 15px; }
+
+        /* Mặc định ẩn giao diện in và modal khi in */
+        .print-area { display: none; }
+        @media print {
+            .modal-overlay { display: none !important; }
+        }
+
+        /* ========================================================= */
+        /* CSS DÀNH CHO BẢN IN A4 (VĂN PHONG Y TẾ)                   */
+        /* ========================================================= */
+        @media print {
+            @page { size: A4 portrait; margin: 15mm; }
+            body { background: white; margin: 0; padding: 0; color: #000; font-family: 'Times New Roman', Times, serif; }
+            
+            .app { display: none !important; }
+            .print-area { display: block !important; font-size: 12pt; line-height: 1.3; }
+
+            .header-table { width: 100%; margin-bottom: 15px; font-size: 12pt; }
+            .header-table td { text-align: center; vertical-align: top; }
+            .header-left { font-weight: normal; }
+            .header-right { font-weight: bold; }
+            .line-under { display: inline-block; width: 120px; border-top: 1px solid #000; margin-top: 2px; }
+
+            .doc-title { text-align: center; font-size: 15pt; font-weight: bold; margin: 20px 0 10px; text-transform: uppercase; }
+            .doc-subtitle { font-size: 11pt; font-weight: normal; font-style: italic; text-transform: none; }
+
+            .patient-info { margin-bottom: 15px; }
+            .patient-info p { margin: 4px 0; }
+
+            .section-title { font-weight: bold; margin: 12px 0 8px; font-size: 12pt; text-transform: uppercase; }
+
+            .result-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10.5pt; }
+            .result-table th, .result-table td { border: 1px solid #000; padding: 4px 6px; text-align: left; vertical-align: middle; }
+            .result-table th { text-align: center; font-weight: bold; background-color: #f2f2f2; }
+            .col-stt { width: 5%; text-align: center !important; }
+            .col-name { width: 35%; }
+            .col-result { width: 40%; }
+            .col-eval { width: 20%; text-align: center !important; font-weight: bold; }
+
+            .conclusion-box { border: 1.5px solid #000; padding: 10px; margin-bottom: 15px; border-radius: 4px; }
+            .conclusion-box p { margin: 4px 0; }
+            .miss-list { padding-left: 20px; margin: 4px 0; font-style: italic; font-size: 10.5pt; }
+            .miss-list li { margin-bottom: 3px; }
+            .final-verdict { font-weight: bold; font-size: 12pt; text-align: center; padding-top: 8px; margin-top: 8px; border-top: 1px dashed #000; }
+
+            .signature-section { display: flex; justify-content: flex-end; margin-top: 20px; page-break-inside: avoid; }
+            .signature-box { text-align: center; width: 45%; }
+            .sig-date { font-style: italic; margin-bottom: 5px; }
+            .sig-title { font-weight: bold; margin-bottom: 70px; }
+            .sig-name { font-weight: bold; }
+        }
+    </style>
+</head>
+<body>
+<div class="app" id="app">
+
+    <div class="screen-header">
+        <div class="left">
+            <div class="icon"><i class="fas fa-heart-pulse"></i></div>
+            <div>
+                <h1>Tối ưu hóa ERAS Trong & Sau Phẫu Thuật Tim</h1>
+                <div class="sub">ERAS / EACTS 2024 · Heart Team</div>
+            </div>
+        </div>
+        <span class="badge" id="badge_doctor"><i class="fas fa-user-md"></i> BS. CKI Nguyễn Văn Sang</span>
+    </div>
+
+    <!-- KHỐI NHẬP THÔNG TIN HÀNH CHÍNH -->
+    <div class="admin-info-card">
+        <div class="admin-header"><i class="fas fa-id-card"></i> Thông tin hành chính</div>
+        <div class="admin-grid">
+            <div class="admin-group" style="flex: 2;">
+                <label>Họ và tên người bệnh</label>
+                <input type="text" id="in_name" placeholder="Nhập họ tên...">
+            </div>
+            <div class="admin-group" style="flex: 0 0 100px;">
+                <label>Tuổi</label>
+                <input type="number" id="in_age" placeholder="Tuổi">
+            </div>
+            <div class="admin-group" style="flex: 0 0 120px;">
+                <label>Giới tính</label>
+                <select id="in_gender">
+                    <option value="">Chọn...</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                </select>
+            </div>
+            <div class="admin-group" style="flex: 1;">
+                <label>Số bệnh án</label>
+                <input type="text" id="in_record" placeholder="Nhập số BA...">
+            </div>
+            <div class="admin-group" style="flex: 1;">
+                <label>Khoa</label>
+                <input type="text" id="in_dept" placeholder="Nhập khoa...">
+            </div>
+            <div class="admin-group" style="flex: 1;">
+                <label>Bác sĩ đánh giá</label>
+                <input type="text" id="in_doctor" value="BS. CKI Nguyễn Văn Sang" placeholder="Nhập tên bác sĩ..." oninput="document.getElementById('badge_doctor').innerHTML = '<i class=\'fas fa-user-md\'></i> ' + (this.value ? this.value : 'Bác sĩ đánh giá');">
+            </div>
+            <div class="admin-group" style="flex: 0 0 100%;">
+                <label>Chẩn đoán bệnh</label>
+                <input type="text" id="in_diag" placeholder="Nhập chẩn đoán...">
+            </div>
+            <div class="admin-group" style="flex: 0 0 100%;">
+                <label>Dự kiến phẫu thuật</label>
+                <input type="text" id="in_surg" placeholder="Nhập phương pháp phẫu thuật...">
+            </div>
+        </div>
+    </div>
+
+    <div class="summary-pills">
+        <div class="pill-item green"><i class="fas fa-check-circle" style="color:#1a7a4a;"></i> Đạt: <span class="num" id="passCount">0</span></div>
+        <div class="pill-item red"><i class="fas fa-exclamation-triangle" style="color:#b13e3e;"></i> Chưa đạt: <span class="num" id="failCount">0</span></div>
+        <div class="pill-item blue"><i class="fas fa-clipboard-list"></i> Tổng: <span class="num" id="totalCount">0</span></div>
+        <div class="overall-status" id="overallStatus"><i class="fas fa-check-circle"></i> Sẵn sàng</div>
+    </div>
+
+    <div class="grid" id="parameterGrid"></div>
+
+    <div class="button-bar">
+        <button class="btn btn-outline" onclick="resetAll()"><i class="fas fa-undo-alt"></i> Đặt lại</button>
+        <button class="btn btn-print" onclick="prepareAndPrint()"><i class="fas fa-print"></i> In báo cáo y khoa</button>
+    </div>
+
+    <div class="footer">
+        <i class="fas fa-heart" style="color:#b03a2e;"></i> Đánh giá đa chiều — chi tiết từng tiêu chí, khuyến cáo can thiệp cụ thể
+    </div>
+</div>
+
+<!-- POPUP ĐÁNH GIÁ ĐIỂM -->
+<div id="scoreModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header" id="modalTitle">Đánh giá</div>
+        <div class="modal-note">Hãy tick vào các mục tương ứng. Điểm sẽ được tự động cộng dồn.</div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal()">Hủy</button>
+            <button class="btn btn-primary" onclick="saveModal()">Lưu đánh giá</button>
+        </div>
+    </div>
+</div>
+
+<!-- VÙNG GIAO DIỆN IN -->
+<div class="print-area" id="printArea">
+    <table class="header-table">
+        <tr>
+            <td class="header-left">
+                SỞ Y TẾ ĐỒNG NAI<br>
+                <b>BVĐK THỐNG NHẤT</b><br>
+                <div class="line-under"></div>
+            </td>
+            <td class="header-right">
+                CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br>
+                Độc lập - Tự do - Hạnh phúc<br>
+                <div class="line-under"></div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="doc-title">
+        PHIẾU ĐÁNH GIÁ TỐI ƯU HÓA TRONG & SAU MỔ TIM<br>
+        <span class="doc-subtitle">(Dựa trên hướng dẫn ERAS / EACTS 2024)</span>
+    </div>
+
+    <div class="patient-info">
+        <p>Họ và tên người bệnh: <b><span id="out_name">....................................................................................</span></b> <span style="display:inline-block; width: 20px;"></span> Tuổi: <b><span id="out_age">............</span></b> <span style="display:inline-block; width: 20px;"></span> Giới tính: <b><span id="out_gender">............</span></b></p>
+        <p>Số bệnh án: <b><span id="out_record">......................................................</span></b> <span style="display:inline-block; width: 20px;"></span> Khoa: <b><span id="out_dept">..................................................................................</span></b></p>
+        <p>Chẩn đoán bệnh: <b><span id="out_diag">..................................................................................................................................................</span></b></p>
+        <p>Phẫu thuật: <b><span id="out_surg">..............................................................................................................................................</span></b></p>
+    </div>
+
+    <div class="section-title">I. KẾT QUẢ ĐÁNH GIÁ TRONG MỔ & SAU MỔ</div>
+    <table class="result-table">
+        <thead>
+            <tr>
+                <th class="col-stt">STT</th>
+                <th class="col-name">Thông số / Tiêu chí</th>
+                <th class="col-result">Kết quả ghi nhận</th>
+                <th class="col-eval">Đánh giá</th>
+            </tr>
+        </thead>
+        <tbody id="printTableBody"></tbody>
+    </table>
+
+    <div class="section-title">II. KẾT LUẬN VÀ KHUYẾN CÁO CAN THIỆP</div>
+    <div class="conclusion-box">
+        <p><b>1. Trạng thái chung:</b> Đáp ứng được <span id="printPassNum">0</span>/<span id="printTotalNum">0</span> tiêu chí đánh giá.</p>
+        <p><b>2. Yếu tố còn thiếu và can thiệp đề nghị:</b></p>
+        <ul class="miss-list" id="printMissingList"></ul>
+        <div class="final-verdict" id="printFinalVerdict"></div>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-box">
+            <div class="sig-date">Đồng Nai, ngày ..... tháng ..... năm 202...</div>
+            <div class="sig-title">BÁC SĨ ĐÁNH GIÁ</div>
+            <div class="sig-name" id="out_doctor">..........................................</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ======================================================================
+    //  ĐỊNH NGHĨA THAM SỐ — TRONG MỔ VÀ SAU MỔ (ERAS 2024)
+    // ======================================================================
+    const params = [
+        // --- TRONG MỔ (INTRAOPERATIVE) ---
+        {
+            id: 'tee_monitor', label: 'Siêu âm tim qua thực quản (TEE)', icon: 'fa-heart-circle-bolt', type: 'choice',
+            options: [ { value: 'co_tee', label: '✅ Có thực hiện TEE' }, { value: 'khong_tee', label: '❌ Không thực hiện' } ],
+            default: 'co_tee', pass: (v) => v === 'co_tee',
+            detail: 'Khuyến cáo đánh giá TEE cho bệnh nhân có nguy cơ phẫu thuật trung bình đến cao.',
+            failMsg: 'Thiếu TEE có thể làm giảm hiệu quả đánh giá giải phẫu và huyết động theo thời gian thực.'
+        },
+        {
+            id: 'lung_protection', label: 'Thông khí bảo vệ phổi (Intraop)', icon: 'fa-lungs',
+            type: 'score', calcType: 'checkbox', unit: 'tiêu chí',
+            questions: [
+                { label: 'Thể tích khí lưu thông (Vt) 6-8 mL/kg', points: 1 },
+                { label: 'PEEP ≥ 5 cm H2O', points: 1 },
+                { label: 'Áp lực đẩy (Driving Pressure) < 16 cm H2O', points: 1 }
+            ],
+            default: null, pass: (v) => v === 3,
+            detail: 'Chiến lược thông khí bảo vệ phổi giúp giảm đáng kể biến chứng hô hấp sau mổ.',
+            failMsg: 'Cần tuân thủ đầy đủ 3 tiêu chí thông khí bảo vệ phổi (Vt, PEEP, Driving pressure).'
+        },
+        {
+            id: 'intraop_pbm', label: 'Quản lý máu trong mổ (PBM)', icon: 'fa-droplet',
+            type: 'score', calcType: 'checkbox', unit: 'tiêu chí',
+            questions: [
+                { label: 'Sử dụng thuốc chống tiêu sợi huyết (TXA/EACA)', points: 1 },
+                { label: 'Thu hồi máu bằng máy Cell Saver', points: 1 },
+                { label: 'Giảm thể tích mồi/Retrograde autologous priming', points: 1 },
+                { label: 'Sử dụng checklist cầm máu trước khi đóng ngực', points: 1 }
+            ],
+            default: null, pass: (v) => v >= 3,
+            detail: 'Chiến lược bảo tồn máu giúp giảm tổn thương tạng và giảm truyền máu dị ghép.',
+            failMsg: 'Cần áp dụng ít nhất 3 biện pháp trong gói quản lý máu (PBM) nội viện.'
+        },
+        {
+            id: 'gdp_cpb', label: 'Tưới máu theo mục tiêu (GDP)', icon: 'fa-pump-medical', type: 'choice',
+            options: [ { value: 'dat_muc_tieu', label: '✅ DO2 > 280 mL/min/m²' }, { value: 'khong_dat', label: '❌ Không đạt / Không theo dõi' } ],
+            default: 'dat_muc_tieu', pass: (v) => v === 'dat_muc_tieu',
+            detail: 'Duy trì cung lượng oxy (DO2) > 280 mL/min/m² trên CPB giúp giảm nguy cơ AKI.',
+            failMsg: 'Cần thiết lập thuật toán tưới máu theo mục tiêu (DO2 > 280 mL/min/m²).'
+        },
+        {
+            id: 'ssi_intraop', label: 'Dự phòng nhiễm khuẩn (SSI)', icon: 'fa-shield-virus',
+            type: 'score', calcType: 'checkbox', unit: 'tiêu chí',
+            questions: [
+                { label: 'Cắt lông bằng tông đơ (không dùng dao cạo)', points: 1 },
+                { label: 'Sát khuẩn da bằng Chlorhexidine-alcohol', points: 1 },
+                { label: 'Kháng sinh dự phòng < 60 phút trước rạch da', points: 1 },
+                { label: 'Duy trì thân nhiệt trung tâm > 36°C', points: 1 }
+            ],
+            default: null, pass: (v) => v === 4,
+            detail: 'Áp dụng trọn gói (bundle) dự phòng nhiễm khuẩn tại phòng mổ mang lại hiệu quả cao nhất.',
+            failMsg: 'Cần tuân thủ nghiêm ngặt gói dự phòng nhiễm khuẩn tại phòng mổ.'
+        },
+
+        // --- SAU MỔ (POSTOPERATIVE) ---
+        {
+            id: 'glucose_control', label: 'Đường huyết sau mổ', icon: 'fa-cubes',
+            type: 'number', unit: 'mg/dL', targetLabel: '< 180 mg/dL', default: 140, range: [50, 400],
+            pass: (v) => v < 180,
+            failMsg: 'Tăng đường huyết làm tăng nguy cơ nhiễm trùng. Cần truyền insulin duy trì đường huyết < 180 mg/dL.'
+        },
+        {
+            id: 'early_extubation', label: 'Rút nội khí quản sớm', icon: 'fa-wind', type: 'choice',
+            options: [ { value: 'duoi_6h', label: '✅ Sớm (< 6 giờ)' }, { value: 'tren_6h', label: '❌ Muộn (> 6 giờ)' } ],
+            default: 'duoi_6h', pass: (v) => v === 'duoi_6h',
+            detail: 'Rút NKQ dưới 6 giờ sau mổ an toàn và thúc đẩy phục hồi cho phần lớn bệnh nhân.',
+            failMsg: 'Sử dụng các protocol chuẩn hóa để thúc đẩy việc rút NKQ trong vòng 6 giờ sau mổ.'
+        },
+        {
+            id: 'aki_kdigo', label: 'Dự phòng AKI (Gói KDIGO)', icon: 'fa-kidney',
+            type: 'score', calcType: 'checkbox', unit: 'tiêu chí',
+            questions: [
+                { label: 'Theo dõi sát Creatinine huyết thanh (SCr)', points: 1 },
+                { label: 'Định lượng chặt chẽ thể tích nước tiểu', points: 1 },
+                { label: 'Bù dịch dựa trên các thuật toán huyết động', points: 1 },
+                { label: 'Duy trì các mục tiêu huyết động', points: 1 },
+                { label: 'Tránh sử dụng các thuốc gây độc cho thận', points: 1 }
+            ],
+            default: null, pass: (v) => v === 5,
+            detail: 'Áp dụng đầy đủ gói KDIGO giúp giảm tỷ lệ và mức độ tổn thương thận cấp (AKI).',
+            failMsg: 'Cần áp dụng đầy đủ 5 tiêu chí của gói KDIGO để phòng ngừa AKI.'
+        },
+        {
+            id: 'multimodal_pain', label: 'Giảm đau đa phương thức', icon: 'fa-syringe',
+            type: 'score', calcType: 'checkbox', unit: 'phương pháp',
+            questions: [
+                { label: 'Dùng Paracetamol / NSAIDs thường quy', points: 1 },
+                { label: 'Gây tê vùng (Fascial plane blocks, ESP...)', points: 1 },
+                { label: 'Giảm thiểu dùng Opioid (Opioid-sparing)', points: 1 }
+            ],
+            default: null, pass: (v) => v >= 2,
+            detail: 'Sử dụng đa phương pháp giúp giảm phụ thuộc opioid, giảm nôn ói và tăng tốc phục hồi.',
+            failMsg: 'Khuyến cáo bổ sung thuốc non-opioid và gây tê vùng thành ngực để tối ưu giảm đau.'
+        },
+        {
+            id: 'early_mobilization', label: 'Vận động sớm sau mổ', icon: 'fa-person-walking', type: 'choice',
+            options: [ { value: 'co_van_dong', label: '✅ Vận động trong 24h đầu' }, { value: 'khong_van_dong', label: '❌ Nằm tại giường > 24h' } ],
+            default: 'co_van_dong', pass: (v) => v === 'co_van_dong',
+            detail: 'Vận động sớm giúp giảm nguy cơ xẹp phổi, tràn dịch màng phổi và rút ngắn thời gian nằm ICU.',
+            failMsg: 'Cần phối hợp với vật lý trị liệu để triển khai vận động và tập tay sớm (Keep Your Move in the Tube).'
+        },
+        {
+            id: 'poaf_prevention', label: 'Dự phòng Rung nhĩ (POAF)', icon: 'fa-heart-circle-exclamation', type: 'choice',
+            options: [ { value: 'co_du_phong', label: '✅ Đã dùng Beta-blocker/Amiodarone' }, { value: 'khong_du_phong', label: '❌ Chưa dùng dự phòng' } ],
+            default: 'co_du_phong', pass: (v) => v === 'co_du_phong',
+            detail: 'Dùng Beta-blocker/Amiodarone quanh mổ kết hợp tránh ứ máu màng ngoài tim giúp giảm tỷ lệ POAF.',
+            failMsg: 'Bệnh nhân có nguy cơ cần được thiết lập phác đồ dự phòng rung nhĩ (Beta-blocker/Amiodarone).'
+        },
+        {
+            id: 'delirium_icu', label: 'Phòng ngừa Sảng (CAM-ICU & ABCDEF)', icon: 'fa-brain',
+            type: 'score', calcType: 'checkbox', unit: 'tiêu chí',
+            questions: [
+                { label: 'Sàng lọc CAM-ICU (Đánh giá nhận thức, mức độ ý thức, chú ý và tư duy)', points: 1 },
+                { label: 'A: Assess/Manage Pain (Đánh giá, dự phòng & quản lý đau)', points: 1 },
+                { label: 'B: Both SAT/SBT (Thử nghiệm thức tỉnh & tự thở)', points: 1 },
+                { label: 'C: Choice of Sedation (Lựa chọn thuốc an thần/giảm đau tối ưu)', points: 1 },
+                { label: 'D: Delirium management (Đánh giá & quản lý sảng phi dược lý)', points: 1 },
+                { label: 'E: Early Mobility (Vận động và tập luyện sớm)', points: 1 },
+                { label: 'F: Family Engagement (Tương tác và hỗ trợ từ gia đình)', points: 1 }
+            ],
+            default: null, pass: (v) => v === 7,
+            detail: 'Sàng lọc CAM-ICU mỗi ca trực và tuân thủ gói can thiệp phi dược lý ABCDEF.',
+            failMsg: 'Cần áp dụng đầy đủ công cụ sàng lọc CAM-ICU và 6 thành phần của gói ABCDEF.'
+        }
+    ];
+
+    // ========== STATE & MODAL LOGIC ==========
+    let state = {};
+    let currentModalId = null;
+
+    function openModal(id) {
+        currentModalId = id;
+        const p = params.find(x => x.id === id);
+        document.getElementById('modalTitle').innerText = p.label;
+        
+        let html = '';
+        if (p.calcType === 'checkbox') {
+            p.questions.forEach((q, idx) => {
+                html += `<label class="chk-group"><input type="checkbox" id="chk_${idx}" value="${q.points}"> <span>${q.label} (<b>${q.points}</b> đ)</span></label>`;
+            });
+        } else if (p.calcType === 'input') {
+            const currentVal = state[id] !== null ? state[id] : '';
+            html += `<label class="chk-group">Nhập số liệu: <input type="number" id="num_score" step="0.1" value="${currentVal}" placeholder="VD: 2.5"></label>`;
+        }
+        
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('scoreModal').style.display = 'flex';
+    }
+
+    function saveModal() {
+        const p = params.find(x => x.id === currentModalId);
+        let total = 0;
+        
+        if (p.calcType === 'checkbox') {
+            p.questions.forEach((q, idx) => {
+                if (document.getElementById(`chk_${idx}`).checked) {
+                    total += q.points;
+                }
+            });
+        } else if (p.calcType === 'input') {
+            const val = document.getElementById('num_score').value;
+            if(val === '') {
+                alert("Vui lòng nhập giá trị.");
+                return;
+            }
+            total = parseFloat(val);
+        }
+        
+        state[currentModalId] = total;
+        closeModal();
+        render();
+    }
+
+    function closeModal() {
+        document.getElementById('scoreModal').style.display = 'none';
+        currentModalId = null;
+    }
+
+    // ========== RENDER MÀN HÌNH ==========
+    const grid = document.getElementById('parameterGrid');
+
+    function render() {
+        grid.innerHTML = '';
+        params.forEach(p => {
+            const val = state[p.id] !== undefined ? state[p.id] : p.default;
+            const pass = p.pass(val);
+
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const header = document.createElement('div');
+            header.className = 'card-header';
+            header.innerHTML = `
+                <span class="label"><i class="fas ${p.icon}"></i> ${p.label}</span>
+                <span class="tag">${p.type === 'number' ? p.unit : ''}</span>
+            `;
+
+            const inputArea = document.createElement('div');
+            
+            if (p.type === 'number') {
+                inputArea.className = 'input-group';
+                inputArea.innerHTML = `
+                    <input type="number" step="0.1" value="${val}" 
+                           min="${p.range[0]}" max="${p.range[1]}" 
+                           onchange="updateNumber('${p.id}', this.value)" />
+                    <span class="target-hint"><i class="far fa-bullseye"></i> ${p.targetLabel}</span>
+                `;
+            } else if (p.type === 'score') {
+                inputArea.className = 'choice-group';
+                if (p.detail) {
+                    const detailDiv = document.createElement('div');
+                    detailDiv.className = 'choice-detail';
+                    detailDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${p.detail}`;
+                    inputArea.appendChild(detailDiv);
+                }
+                const row = document.createElement('div');
+                row.className = 'choice-row';
+                
+                const evaluated = (val !== null);
+                const btn = document.createElement('span');
+                btn.className = `choice-btn ${evaluated ? 'active' : ''}`;
+                btn.innerHTML = evaluated 
+                    ? `<i class="fas fa-check-circle"></i> Đã đánh giá (<b>${val}</b> ${p.unit})` 
+                    : `<i class="fas fa-clipboard-check"></i> Đánh giá ngay`;
+                btn.onclick = () => openModal(p.id);
+                
+                row.appendChild(btn);
+                inputArea.appendChild(row);
+            } else {
+                inputArea.className = 'choice-group';
+                if (p.detail) {
+                    const detailDiv = document.createElement('div');
+                    detailDiv.className = 'choice-detail';
+                    detailDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${p.detail}`;
+                    inputArea.appendChild(detailDiv);
+                }
+                const row = document.createElement('div');
+                row.className = 'choice-row';
+                p.options.forEach(opt => {
+                    const active = (val === opt.value) ? 'active' : '';
+                    const btn = document.createElement('span');
+                    btn.className = `choice-btn ${active}`;
+                    btn.innerHTML = `${val === opt.value ? '<i class="fas fa-check-circle"></i>' : '<i class="far fa-circle"></i>'} ${opt.label}`;
+                    btn.onclick = () => updateChoice(p.id, opt.value);
+                    row.appendChild(btn);
+                });
+                inputArea.appendChild(row);
+            }
+
+            const statusLine = document.createElement('div');
+            statusLine.className = `status-line ${pass ? 'pass' : 'fail'}`;
+            const icon = pass ? 'fa-check-circle' : 'fa-exclamation-circle';
+            const msg = pass ? '✅ Đạt' : '⚠️ Cần can thiệp';
+            const action = pass ? '' : p.failMsg;
+            statusLine.innerHTML = `
+                <i class="fas ${icon}" style="${pass ? 'color:#1a7a4a;' : 'color:#b13e3e;'}"></i>
+                <span style="font-weight:500;">${msg}</span>
+                ${action ? `<span class="action"><i class="fas fa-lightbulb"></i> ${action}</span>` : ''}
+            `;
+
+            card.appendChild(header);
+            card.appendChild(inputArea);
+            card.appendChild(statusLine);
+            grid.appendChild(card);
+        });
+        updateSummary();
+    }
+
+    function updateNumber(id, val) {
+        const num = parseFloat(val);
+        if (!isNaN(num)) state[id] = num;
+        else state[id] = params.find(p => p.id === id)?.default || 0;
+        render();
+    }
+
+    function updateChoice(id, val) {
+        state[id] = val;
+        render();
+    }
+
+    function updateSummary() {
+        let passCount = 0, failCount = 0;
+        params.forEach(p => {
+            const v = state[p.id] !== undefined ? state[p.id] : p.default;
+            if (p.pass(v)) passCount++; else failCount++;
+        });
+        document.getElementById('passCount').textContent = passCount;
+        document.getElementById('failCount').textContent = failCount;
+        document.getElementById('totalCount').textContent = params.length;
+
+        const overall = document.getElementById('overallStatus');
+        if (failCount === 0) {
+            overall.className = 'overall-status';
+            overall.innerHTML = '<i class="fas fa-check-circle"></i> Sẵn sàng kết thúc lộ trình ERAS';
+        } else {
+            overall.className = 'overall-status warn';
+            overall.innerHTML = `<i class="fas fa-triangle-exclamation"></i> Cần tối ưu ${failCount} yếu tố`;
+        }
+    }
+
+    function resetAll() {
+        params.forEach(p => { state[p.id] = p.default; });
+        document.getElementById('in_name').value = '';
+        document.getElementById('in_age').value = '';
+        document.getElementById('in_gender').value = '';
+        document.getElementById('in_record').value = '';
+        document.getElementById('in_dept').value = '';
+        document.getElementById('in_doctor').value = 'BS. CKI Nguyễn Văn Sang';
+        document.getElementById('in_diag').value = '';
+        document.getElementById('in_surg').value = '';
+        document.getElementById('badge_doctor').innerHTML = '<i class="fas fa-user-md"></i> BS. CKI Nguyễn Văn Sang';
+        render();
+    }
+
+    // ========== CHUẨN BỊ VÀ THỰC THI IN ==========
+    function prepareAndPrint() {
+        document.getElementById('out_name').textContent = document.getElementById('in_name').value || '....................................................................................';
+        document.getElementById('out_age').textContent = document.getElementById('in_age').value || '............';
+        document.getElementById('out_gender').textContent = document.getElementById('in_gender').value || '............';
+        document.getElementById('out_record').textContent = document.getElementById('in_record').value || '......................................................';
+        document.getElementById('out_dept').textContent = document.getElementById('in_dept').value || '..................................................................................';
+        document.getElementById('out_diag').textContent = document.getElementById('in_diag').value || '..................................................................................................................................................';
+        document.getElementById('out_surg').textContent = document.getElementById('in_surg').value || '..............................................................................................................................................';
+        document.getElementById('out_doctor').textContent = document.getElementById('in_doctor').value || '..........................................';
+
+        const tbody = document.getElementById('printTableBody');
+        const missList = document.getElementById('printMissingList');
+        
+        tbody.innerHTML = '';
+        missList.innerHTML = '';
+        
+        let passCount = 0;
+        let failCount = 0;
+
+        params.forEach((p, idx) => {
+            const val = state[p.id] !== undefined ? state[p.id] : p.default;
+            const pass = p.pass(val);
+            
+            let displayVal = val;
+            let evalStatus = pass ? 'Đạt' : 'Chưa đạt';
+
+            if (p.type === 'number') {
+                displayVal = `${val} ${p.unit}`;
+            } else if (p.type === 'score') {
+                if (pass) {
+                    displayVal = `Đã đánh giá (${val} ${p.unit})`;
+                    evalStatus = 'Đạt';
+                } else {
+                    displayVal = 'Chưa đánh giá đầy đủ';
+                    evalStatus = 'Chưa đạt';
+                }
+            } else {
+                const optObj = p.options.find(o => o.value === val);
+                if (optObj) displayVal = optObj.label.replace(/✅|❌/g, '').trim();
+            }
+            
+            if (pass) {
+                passCount++;
+            } else {
+                failCount++;
+                missList.innerHTML += `<li><b>${p.label}:</b> Ghi nhận: ${displayVal}. <i>Đề nghị: ${p.failMsg}</i></li>`;
+            }
+
+            tbody.innerHTML += `
+                <tr>
+                    <td class="col-stt">${idx + 1}</td>
+                    <td>${p.label}</td>
+                    <td>${displayVal}</td>
+                    <td class="col-eval" style="color: ${pass ? 'black' : '#b13e3e'}">${evalStatus}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('printPassNum').textContent = passCount;
+        document.getElementById('printTotalNum').textContent = params.length;
+        
+        const finalVerdict = document.getElementById('printFinalVerdict');
+        if (failCount === 0) {
+            missList.innerHTML = '<li>Bệnh nhân đã được kiểm soát tốt các yếu tố nguy cơ. Các chỉ số đều nằm trong giới hạn mục tiêu an toàn theo khuyến cáo ERAS.</li>';
+            finalVerdict.innerHTML = '<span style="color: #1a7a4a;">KẾT LUẬN: ĐẠT TIÊU CHUẨN TỐI ƯU HÓA ERAS</span>';
+        } else {
+            finalVerdict.innerHTML = `<span style="color: #b13e3e;">KẾT LUẬN: CẦN TỐI ƯU HÓA THÊM ${failCount} YẾU TỐ</span>`;
+        }
+
+        window.print();
+    }
+
+    params.forEach(p => { state[p.id] = p.default; });
+    render();
+</script>
+</body>
+</html>
