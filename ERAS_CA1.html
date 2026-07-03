@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đánh giá tối ưu hóa tiền phẫu tim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: #e8edf3;
+            padding: 20px;
+            color: #1a1a1a;
+        }
+        .app { max-width: 1200px; margin: 0 auto; }
+
+        /* Màn hình */
+        .screen-header {
+            background: linear-gradient(135deg, #0a2a44 0%, #1a4d6e 100%);
+            border-radius: 20px;
+            padding: 18px 28px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(0,20,50,0.2);
+        }
+        .screen-header .left { display: flex; align-items: center; gap: 14px; }
+        .screen-header .left .icon { background: rgba(255,255,255,0.15); width: 48px; height: 48px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .screen-header .left h1 { font-size: 22px; font-weight: 700; font-family: 'Segoe UI', Arial, sans-serif; }
+        .screen-header .left .sub { font-size: 13px; opacity: 0.8; font-family: 'Segoe UI', Arial, sans-serif; }
+        .screen-header .badge { background: rgba(255,255,255,0.12); padding: 6px 22px; border-radius: 60px; font-size: 14px; font-family: 'Segoe UI', Arial, sans-serif; }
+
+        .summary-pills {
+            display: flex; flex-wrap: wrap; gap: 10px 20px; background: white; border-radius: 50px;
+            padding: 12px 26px; margin-bottom: 24px; border: 1px solid #dce5ef;
+            justify-content: space-between; align-items: center; font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .pill-item { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 15px; }
+        .pill-item .num { font-weight: 700; font-size: 22px; min-width: 28px; }
+        .pill-item.green .num { color: #1a7a4a; }
+        .pill-item.red .num { color: #b13e3e; }
+        .pill-item.blue .num { color: #1f6b9e; }
+        .overall-status { font-weight: 600; padding: 4px 22px; border-radius: 40px; background: #e3f0e8; color: #136b3a; font-size: 15px; }
+        .overall-status.warn { background: #fdedd6; color: #a65d1a; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 18px; margin-bottom: 28px; }
+        .card { background: white; border-radius: 20px; padding: 16px 20px 18px; border: 1px solid #e2ecf5; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px; }
+        .card-header .label { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; color: #0a2942; font-family: 'Segoe UI', Arial, sans-serif; }
+        .card-header .label i { font-size: 18px; color: #1f6390; width: 24px; text-align: center; }
+        .card-header .tag { background: #eef3f9; padding: 2px 14px; border-radius: 40px; font-size: 12px; font-weight: 500; color: #1f4a6e; font-family: 'Segoe UI', Arial, sans-serif; }
+
+        .input-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 8px; }
+        .input-group input[type="number"] { flex: 1; min-width: 80px; padding: 8px 14px; border: 1px solid #d4e0ec; border-radius: 40px; font-size: 15px; font-weight: 500; font-family: 'Times New Roman', Times, serif; }
+        .input-group input:focus { border-color: #1f78b4; outline: none; box-shadow: 0 0 0 3px rgba(26,115,179,0.12); }
+        .input-group .target-hint { font-size: 13px; background: #e9f0f8; padding: 4px 16px; border-radius: 40px; color: #1e4d70; font-family: 'Segoe UI', Arial, sans-serif; }
+
+        .choice-group { display: flex; flex-direction: column; gap: 5px; margin: 4px 0 8px; }
+        .choice-row { display: flex; flex-wrap: wrap; gap: 6px; }
+        .choice-btn { background: #f0f5fc; border: 1.5px solid #d0ddee; padding: 5px 16px; border-radius: 40px; font-weight: 500; font-size: 13px; cursor: pointer; transition: 0.1s; color: #1f3d5a; display: inline-flex; align-items: center; gap: 6px; font-family: 'Segoe UI', Arial, sans-serif; }
+        .choice-btn:hover { background: #e3ecf7; }
+        .choice-btn.active { background: #0e4b74; border-color: #0e4b74; color: white; box-shadow: 0 4px 10px rgba(14,75,116,0.2); }
+        .choice-btn.active i { color: white; }
+        .choice-btn i { color: #4f7b9e; font-size: 13px; }
+        .choice-detail { font-size: 12px; color: #1f4d70; background: #f0f7fe; padding: 4px 14px; border-radius: 40px; border: 1px dashed #b8cfe0; font-family: 'Segoe UI', Arial, sans-serif; }
+
+        .status-line { margin-top: 10px; padding: 8px 14px; border-radius: 40px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13px; background: #f5f9ff; border-left: 4px solid #b3c9df; font-family: 'Segoe UI', Arial, sans-serif; }
+        .status-line.pass { background: #e6f5ec; border-left-color: #1d8a4e; }
+        .status-line.fail { background: #fdeeec; border-left-color: #b13e3e; }
+        .status-line .action { background: rgba(0,0,0,0.02); padding: 3px 14px; border-radius: 40px; font-weight: 500; color: #0e3c5a; font-size: 12px; flex: 1; min-width: 120px; line-height: 1.4; }
+        .status-line .action i { color: #b5722c; margin-right: 4px; }
+
+        .button-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 8px 0 16px; }
+        .btn { border: none; background: white; padding: 10px 30px; border-radius: 60px; font-weight: 600; font-size: 15px; cursor: pointer; border: 1px solid #c7d8ea; transition: 0.15s; display: inline-flex; align-items: center; gap: 10px; color: #1a3450; font-family: 'Segoe UI', Arial, sans-serif; }
+        .btn-primary { background: #0a4d73; border-color: #0a4d73; color: white; }
+        .btn-primary:hover { background: #0f5f8a; }
+        .btn-print { background: #1d5f47; border-color: #1d5f47; color: white; }
+        .btn-print:hover { background: #267a5b; }
+        .btn-outline:hover { background: #e5eef7; }
+        .footer { text-align: center; color: #396181; font-size: 13px; border-top: 1px solid #dae3ed; padding-top: 16px; margin-top: 6px; font-family: 'Segoe UI', Arial, sans-serif; }
+
+        /* ====== BẢN IN A4 ====== */
+        .print-only { display: none; }
+
+        @media print {
+            .screen-header, .button-bar, .footer, .no-print, .summary-pills { display: none !important; }
+            body { background: white; padding: 0.2in; font-family: 'Times New Roman', Times, serif !important; font-size: 12pt; color: #000; }
+            .app { max-width: 100%; margin: 0; }
+            .grid { display: none !important; }
+            .print-only { display: block !important; }
+
+            .print-header { text-align: center; margin-bottom: 6px; border-bottom: 2px solid #222; padding-bottom: 8px; }
+            .print-header .quoc-hieu { font-size: 14pt; font-weight: 700; letter-spacing: 1px; }
+            .print-header .tieu-ngu { font-size: 16pt; font-weight: 700; margin: 2px 0; }
+            .print-header .tieu-de-bao-cao { font-size: 15pt; font-weight: 700; margin-top: 4px; color: #0a2a44; }
+
+            .print-patient { border: 1px solid #333; padding: 8px 14px; margin: 6px 0 12px; border-radius: 4px; background: #f9f9f9; font-size: 13pt; }
+            .print-patient table { width: 100%; border-collapse: collapse; }
+            .print-patient td { padding: 2px 10px 2px 0; vertical-align: top; }
+            .print-patient .label { font-weight: 700; width: 130px; }
+
+            .print-section { margin: 10px 0 6px; font-weight: 700; font-size: 14pt; border-bottom: 1.5px solid #444; padding-bottom: 2px; color: #0a2a44; }
+
+            .print-item { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; border-bottom: 1px dotted #ddd; font-size: 12pt; }
+            .print-item .left { font-weight: 500; }
+            .print-item .right { font-weight: 400; text-align: right; }
+            .print-item .right.pass { color: #1a7a4a; }
+            .print-item .right.fail { color: #b13e3e; font-weight: 600; }
+            .print-item .right .action-text { font-weight: 400; color: #333; font-size: 11pt; font-style: italic; }
+
+            .print-summary { margin-top: 14px; border: 2px solid #222; padding: 10px 16px; border-radius: 4px; background: #f5f7fa; }
+            .print-summary .title { font-weight: 700; font-size: 14pt; text-align: center; border-bottom: 1px solid #888; padding-bottom: 4px; margin-bottom: 8px; }
+            .print-summary .row { display: flex; justify-content: space-between; padding: 2px 0; font-size: 12.5pt; }
+            .print-summary .total-pass { color: #1a7a4a; font-weight: 700; }
+            .print-summary .total-fail { color: #b13e3e; font-weight: 700; }
+            .print-summary .overall-result { font-weight: 700; font-size: 13.5pt; text-align: center; margin-top: 6px; padding-top: 6px; border-top: 1px solid #aaa; }
+            .print-summary .overall-result.pass { color: #1a7a4a; }
+            .print-summary .overall-result.fail { color: #b13e3e; }
+
+            .print-fail-list { margin: 8px 0 4px; padding: 6px 14px; background: #fef6f5; border-left: 4px solid #b13e3e; border-radius: 4px; }
+            .print-fail-list .fail-item { padding: 2px 0; font-size: 12pt; }
+            .print-fail-list .fail-item strong { color: #b13e3e; }
+
+            .print-recommend { margin-top: 6px; padding: 6px 14px; background: #f0f7fe; border-left: 4px solid #1f6390; border-radius: 4px; font-size: 12pt; }
+
+            .print-footer { text-align: center; font-size: 11pt; margin-top: 14px; color: #555; border-top: 1px solid #ccc; padding-top: 8px; }
+
+            /* Đảm bảo các mục đạt hiển thị đầy đủ */
+            .print-all-items { margin: 4px 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="app" id="app">
+
+    <!-- HEADER MÀN HÌNH -->
+    <div class="screen-header no-print">
+        <div class="left">
+            <div class="icon"><i class="fas fa-heart-pulse"></i></div>
+            <div>
+                <h1>Tối ưu hóa tiền phẫu tim</h1>
+                <div class="sub">ERAS / EACTS 2024 · Heart Team</div>
+            </div>
+        </div>
+        <span class="badge"><i class="fas fa-user-md"></i> BS Nguyễn Văn Sang</span>
+    </div>
+
+    <!-- SUMMARY PILLS -->
+    <div class="summary-pills no-print">
+        <div class="pill-item green"><i class="fas fa-check-circle" style="color:#1a7a4a;"></i> Đạt: <span class="num" id="passCount">0</span></div>
+        <div class="pill-item red"><i class="fas fa-exclamation-triangle" style="color:#b13e3e;"></i> Chưa đạt: <span class="num" id="failCount">0</span></div>
+        <div class="pill-item blue"><i class="fas fa-clipboard-list"></i> Tổng: <span class="num" id="totalCount">0</span></div>
+        <div class="overall-status" id="overallStatus"><i class="fas fa-check-circle"></i> Sẵn sàng</div>
+    </div>
+
+    <!-- ====== PHẦN IN A4 ====== -->
+    <div class="print-only" id="printArea">
+        <div class="print-header">
+            <div class="quoc-hieu">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+            <div class="tieu-ngu">Độc lập - Tự do - Hạnh phúc</div>
+            <div class="tieu-de-bao-cao">BẢNG ĐÁNH GIÁ TỐI ƯU HÓA TRƯỚC PHẪU THUẬT TIM</div>
+            <div style="font-size:12pt; font-weight:400; margin-top:2px;">(Dựa trên hướng dẫn ERAS / EACTS 2024)</div>
+        </div>
+
+        <div class="print-patient">
+            <table>
+                <tr><td class="label">Họ và tên bệnh nhân:</td><td>...................................</td><td style="width:100px;">Tuổi: .........</td></tr>
+                <tr><td class="label">Mã số bệnh án / Khoa:</td><td>...................................</td><td>Ngày đánh giá: .........</td></tr>
+                <tr><td class="label">Chẩn đoán chỉ định mổ:</td><td colspan="2">............................................................................</td></tr>
+                <tr><td class="label">Bác sĩ đánh giá:</td><td colspan="2">BS Nguyễn Văn Sang</td></tr>
+            </table>
+        </div>
+
+        <!-- Nội dung đánh giá đầy đủ: cả đạt và chưa đạt -->
+        <div id="printContent"></div>
+
+        <!-- TÓM TẮT NGẮN GỌN -->
+        <div class="print-summary">
+            <div class="title">📋 TÓM TẮT ĐÁNH GIÁ</div>
+            <div class="row"><span>Tổng số tiêu chí:</span><span id="printTotal">0</span></div>
+            <div class="row"><span class="total-pass">Số tiêu chí ĐẠT:</span><span class="total-pass" id="printPass">0</span></div>
+            <div class="row"><span class="total-fail">Số tiêu chí CHƯA ĐẠT:</span><span class="total-fail" id="printFail">0</span></div>
+
+            <div id="printFailList" class="print-fail-list" style="display:none;">
+                <div style="font-weight:700; margin-bottom:4px;">⚠️ Các yếu tố cần cải thiện:</div>
+                <div id="failItemsList"></div>
+            </div>
+
+            <div id="printRecommendBox" class="print-recommend">
+                <strong>Khuyến cáo:</strong> <span id="printRecommendation">Tất cả các chỉ số đều đạt ngưỡng tối ưu.</span>
+            </div>
+
+            <div class="overall-result" id="printOverall">✅ Sẵn sàng phẫu thuật</div>
+        </div>
+
+        <div class="print-footer">
+            <i class="fas fa-heart" style="color:#b03a2e;"></i> Báo cáo được tạo từ phần mềm đánh giá tiền phẫu tim mạch
+        </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid" id="parameterGrid"></div>
+
+    <!-- BUTTONS -->
+    <div class="button-bar no-print">
+        <button class="btn btn-outline" onclick="resetAll()"><i class="fas fa-undo-alt"></i> Đặt lại</button>
+        <button class="btn btn-print" onclick="prepareAndPrint()"><i class="fas fa-print"></i> In báo cáo A4</button>
+    </div>
+
+    <div class="footer no-print">
+        <i class="fas fa-heart" style="color:#b03a2e;"></i> Đánh giá đa chiều — chi tiết từng tiêu chí, khuyến cáo can thiệp cụ thể
+    </div>
+</div>
+
+<script>
+    // ======================================================================
+    //  ĐỊNH NGHĨA THAM SỐ
+    // ======================================================================
+    const params = [
+        // Xét nghiệm số
+        { id: 'hemoglobin', label: 'Huyết sắc tố (Hb)', icon: 'fa-droplet', type: 'number', unit: 'g/dL', targetLabel: '> 10', default: 11.2, range: [5,20], pass: (v) => v >= 10, failMsg: 'Bổ sung sắt tĩnh mạch hoặc EPO.' },
+        { id: 'albumin', label: 'Albumin huyết thanh', icon: 'fa-flask', type: 'number', unit: 'g/L', targetLabel: '> 30', default: 35, range: [10,55], pass: (v) => v >= 30, failMsg: 'Bổ sung protein, xem xét nuôi ăn ống.' },
+        { id: 'prealbumin', label: 'Prealbumin', icon: 'fa-vial', type: 'number', unit: 'mg/dL', targetLabel: '> 20', default: 22, range: [2,50], pass: (v) => v >= 20, failMsg: 'Hỗ trợ dinh dưỡng cao năng lượng 7–14 ngày.' },
+        { id: 'bmi', label: 'Chỉ số BMI', icon: 'fa-weight-scale', type: 'number', unit: 'kg/m²', targetLabel: '20–35', default: 26, range: [12,55], pass: (v) => v >= 20 && v <= 35, failMsg: 'Tối ưu chế độ ăn, phối hợp Heart Team.' },
+        { id: 'hba1c', label: 'HbA1c', icon: 'fa-bolt', type: 'number', unit: '%', targetLabel: '< 7.0', default: 6.4, range: [4.0,14.0], pass: (v) => v < 7.0, failMsg: 'Trì hoãn mổ để tối ưu hóa đường huyết.' },
+        { id: 'creatinine', label: 'Creatinine', icon: 'fa-kidney', type: 'number', unit: 'mg/dL', targetLabel: '≤ 1.2', default: 1.0, range: [0.3,8.0], pass: (v) => v <= 1.2, failMsg: 'Tối ưu huyết động, trì hoãn 24–72h sau chụp cản quang.' },
+        { id: 'bilirubin', label: 'Bilirubin tổng', icon: 'fa-liver', type: 'number', unit: 'µmol/L', targetLabel: '< 40', default: 18, range: [2,150], pass: (v) => v < 40, failMsg: 'Tăng lợi tiểu, giảm hậu gánh, hội chẩn tiêu hóa.' },
+        { id: 'bnp', label: 'BNP / NT-proBNP', icon: 'fa-heart-pulse', type: 'number', unit: 'pg/mL', targetLabel: 'BNP < 300', default: 180, range: [5,6000], pass: (v) => v < 300, failMsg: 'Tối ưu điều trị suy tim.' },
+
+        // Phi số
+        { id: 'smoking', label: 'Cai thuốc lá', icon: 'fa-smoking', type: 'choice',
+          options: [{ value: 'cai_4tuan', label: '✅ Đã cai ≥ 4 tuần' }, { value: 'chua_cai', label: '❌ Đang hút / cai < 4 tuần' }],
+          default: 'cai_4tuan', pass: (v) => v === 'cai_4tuan', failMsg: 'Cai thuốc ít nhất 4–8 tuần trước mổ.' },
+        { id: 'prehab_imt', label: 'Tập thở (IMT)', icon: 'fa-lungs', type: 'choice',
+          options: [{ value: 'tap_2tuan', label: '✅ Đã tập ≥ 2 tuần' }, { value: 'chua_tap', label: '❌ Chưa tập / < 2 tuần' }],
+          default: 'tap_2tuan', pass: (v) => v === 'tap_2tuan', failMsg: 'Tập thở áp lực (IMT) ít nhất 2 tuần.' },
+        { id: 'nutrition_ons', label: 'Hỗ trợ dinh dưỡng (ONS)', icon: 'fa-utensils', type: 'choice',
+          options: [{ value: 'da_bo_sung', label: '✅ Đã bổ sung ≥ 7 ngày' }, { value: 'chua_bo_sung', label: '❌ Chưa bổ sung' }],
+          default: 'da_bo_sung', pass: (v) => v === 'da_bo_sung', failMsg: 'Bổ sung ONS ít nhất 7–10 ngày trước mổ.' },
+        { id: 'frailty', label: 'Suy kiệt (CFS)', icon: 'fa-person-walking', type: 'choice',
+          options: [{ value: 'cfs_le4', label: '✅ CFS ≤ 4' }, { value: 'cfs_ge5', label: '❌ CFS ≥ 5' }],
+          default: 'cfs_le4', pass: (v) => v === 'cfs_le4', failMsg: 'Cần chương trình prehabilitation tích cực.' },
+        { id: 'infection_screen', label: 'Sàng lọc nhiễm trùng', icon: 'fa-bacteria', type: 'choice',
+          options: [{ value: 'da_sang_loc', label: '✅ Đã sàng lọc & điều trị' }, { value: 'chua_sang_loc', label: '❌ Chưa sàng lọc' }],
+          default: 'da_sang_loc', pass: (v) => v === 'da_sang_loc', failMsg: 'Điều trị triệt để ổ nhiễm trùng trước mổ.' },
+        { id: 'psychological', label: 'Tư vấn tâm lý', icon: 'fa-brain', type: 'choice',
+          options: [{ value: 'da_tu_van', label: '✅ Đã tư vấn' }, { value: 'chua_tu_van', label: '❌ Chưa tư vấn' }],
+          default: 'da_tu_van', pass: (v) => v === 'da_tu_van', failMsg: 'Cần tư vấn kỹ, giảm lo âu, trao quyền cho bệnh nhân.' },
+        { id: 'sglt2_glp1', label: 'Thuốc tiểu đường (SGLT2i/GLP-1)', icon: 'fa-syringe', type: 'choice',
+          options: [{ value: 'da_ngung_dung', label: '✅ Đã ngừng đúng' }, { value: 'chua_dieu_chinh', label: '❌ Chưa điều chỉnh' }],
+          default: 'da_ngung_dung', pass: (v) => v === 'da_ngung_dung', failMsg: 'SGLT2i ngừng 3 ngày, GLP-1 ngừng 7 ngày (tuần) hoặc ngày mổ.' },
+        { id: 'anticoagulant', label: 'Kháng đông / kháng tiểu cầu', icon: 'fa-clock', type: 'choice',
+          options: [{ value: 'da_ngung_dung_dh', label: '✅ Đã ngừng theo dược động học' }, { value: 'chua_toi_uu', label: '❌ Chưa tối ưu' }],
+          default: 'da_ngung_dung_dh', pass: (v) => v === 'da_ngung_dung_dh', failMsg: 'Ngưng P2Y12: Ticagrelor 3 ngày, Clopidogrel 5 ngày, Prasugrel 7 ngày. DOAC: 48–96h theo CrCl.' },
+        { id: 'beta_statin', label: 'Chẹn beta + Statin', icon: 'fa-capsules', type: 'choice',
+          options: [{ value: 'duy_tri', label: '✅ Đang duy trì' }, { value: 'khong_duy_tri', label: '❌ Không duy trì' }],
+          default: 'duy_tri', pass: (v) => v === 'duy_tri', failMsg: 'Duy trì Chẹn beta đến sáng mổ. Statin giảm MACE.' },
+        { id: 'ace_arb', label: 'ACE-I / ARB', icon: 'fa-bullseye', type: 'choice',
+          options: [{ value: 'ngung_24h', label: '✅ Đã ngưng 24h' }, { value: 'chua_ngung', label: '❌ Chưa ngưng' }],
+          default: 'ngung_24h', pass: (v) => v === 'ngung_24h', failMsg: 'Ngưng ACE-I/ARB 24h trước mổ để tránh vasoplegia.' },
+        { id: 'carb_load', label: 'Nạp carbohydrate', icon: 'fa-wine-bottle', type: 'choice',
+          options: [{ value: 'da_nap', label: '✅ Đã nạp 2h trước mổ' }, { value: 'chua_nap', label: '❌ Chưa thực hiện' }],
+          default: 'da_nap', pass: (v) => v === 'da_nap', failMsg: 'Nạp carbohydrate lỏng 2h trước mổ.' }
+    ];
+
+    // ========== STATE ==========
+    let state = {};
+
+    // ========== RENDER ==========
+    const grid = document.getElementById('parameterGrid');
+
+    function render() {
+        grid.innerHTML = '';
+        params.forEach(p => {
+            const val = state[p.id] !== undefined ? state[p.id] : p.default;
+            const pass = p.pass(val);
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const header = document.createElement('div');
+            header.className = 'card-header';
+            header.innerHTML = `<span class="label"><i class="fas ${p.icon}"></i> ${p.label}</span>
+                <span class="tag">${p.type === 'number' ? p.unit : ''}</span>`;
+
+            const inputArea = document.createElement('div');
+            if (p.type === 'number') {
+                inputArea.className = 'input-group';
+                inputArea.innerHTML = `<input type="number" step="0.1" value="${val}" min="${p.range[0]}" max="${p.range[1]}" onchange="updateNumber('${p.id}', this.value)" />
+                    <span class="target-hint"><i class="far fa-bullseye"></i> ${p.targetLabel}</span>`;
+            } else {
+                inputArea.className = 'choice-group';
+                if (p.detail) {
+                    const detailDiv = document.createElement('div');
+                    detailDiv.className = 'choice-detail';
+                    detailDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${p.detail}`;
+                    inputArea.appendChild(detailDiv);
+                }
+                const row = document.createElement('div');
+                row.className = 'choice-row';
+                p.options.forEach(opt => {
+                    const active = (val === opt.value) ? 'active' : '';
+                    const btn = document.createElement('span');
+                    btn.className = `choice-btn ${active}`;
+                    btn.innerHTML = `${val === opt.value ? '<i class="fas fa-check-circle"></i>' : '<i class="far fa-circle"></i>'} ${opt.label}`;
+                    btn.onclick = () => updateChoice(p.id, opt.value);
+                    row.appendChild(btn);
+                });
+                inputArea.appendChild(row);
+            }
+
+            const statusLine = document.createElement('div');
+            statusLine.className = `status-line ${pass ? 'pass' : 'fail'}`;
+            const icon = pass ? 'fa-check-circle' : 'fa-exclamation-circle';
+            const msg = pass ? '✅ Đạt' : '⚠️ Cần can thiệp';
+            const action = pass ? '' : p.failMsg;
+            statusLine.innerHTML = `<i class="fas ${icon}" style="${pass ? 'color:#1a7a4a;' : 'color:#b13e3e;'}"></i>
+                <span style="font-weight:500;">${msg}</span>
+                ${action ? `<span class="action"><i class="fas fa-lightbulb"></i> ${action}</span>` : ''}`;
+
+            card.appendChild(header);
+            card.appendChild(inputArea);
+            card.appendChild(statusLine);
+            grid.appendChild(card);
+        });
+        updateSummary();
+    }
+
+    function updateNumber(id, val) {
+        const num = parseFloat(val);
+        if (!isNaN(num)) state[id] = num;
+        else state[id] = params.find(p => p.id === id)?.default || 0;
+        render();
+    }
+
+    function updateChoice(id, val) {
+        state[id] = val;
+        render();
+    }
+
+    function updateSummary() {
+        let passCount = 0, failCount = 0;
+        params.forEach(p => {
+            const v = state[p.id] !== undefined ? state[p.id] : p.default;
+            if (p.pass(v)) passCount++; else failCount++;
+        });
+        document.getElementById('passCount').textContent = passCount;
+        document.getElementById('failCount').textContent = failCount;
+        document.getElementById('totalCount').textContent = params.length;
+        const overall = document.getElementById('overallStatus');
+        if (failCount === 0) { overall.className = 'overall-status'; overall.innerHTML = '<i class="fas fa-check-circle"></i> Sẵn sàng phẫu thuật'; }
+        else { overall.className = 'overall-status warn'; overall.innerHTML = `<i class="fas fa-triangle-exclamation"></i> Cần tối ưu ${failCount} yếu tố`; }
+    }
+
+    function resetAll() {
+        params.forEach(p => { state[p.id] = p.default; });
+        render();
+    }
+
+    // ========== CHUẨN BỊ IN ==========
+    function prepareAndPrint() {
+        let passCount = 0, failCount = 0;
+        const results = params.map(p => {
+            const val = state[p.id] !== undefined ? state[p.id] : p.default;
+            const pass = p.pass(val);
+            if (pass) passCount++; else failCount++;
+            // Lấy giá trị hiển thị
+            let displayVal;
+            if (p.type === 'number') {
+                displayVal = val + ' ' + (p.unit || '');
+            } else {
+                const opt = p.options.find(o => o.value === val);
+                displayVal = opt ? opt.label.replace(/[✅❌]\s*/, '') : val;
+            }
+            return {
+                id: p.id,
+                label: p.label,
+                value: displayVal,
+                pass: pass,
+                failMsg: p.failMsg || ''
+            };
+        });
+
+        // Nhóm: xét nghiệm số (8 mục đầu) và lâm sàng
+        const numericIds = ['hemoglobin','albumin','prealbumin','bmi','hba1c','creatinine','bilirubin','bnp'];
+        const numericItems = results.filter(r => numericIds.includes(r.id));
+        const clinicalItems = results.filter(r => !numericIds.includes(r.id));
+
+        // Xây dựng nội dung in: HIỂN THỊ TẤT CẢ
+        let html = '';
+
+        // Nhóm 1: Xét nghiệm
+        html += `<div class="print-section">1. XÉT NGHIỆM HUYẾT HỌC - SINH HÓA</div>`;
+        numericItems.forEach(item => {
+            const status = item.pass ? 'Đạt' : 'Chưa đạt';
+            const cls = item.pass ? 'pass' : 'fail';
+            const action = item.pass ? '' : ` <span class="action-text">→ ${item.failMsg}</span>`;
+            html += `
+                <div class="print-item">
+                    <span class="left">${item.label}</span>
+                    <span class="right ${cls}">${item.value} — ${status}${action}</span>
+                </div>
+            `;
+        });
+
+        // Nhóm 2: Lâm sàng
+        html += `<div class="print-section" style="margin-top:10px;">2. ĐÁNH GIÁ LÂM SÀNG - CÁC YẾU TỐ KHÁC</div>`;
+        clinicalItems.forEach(item => {
+            const status = item.pass ? 'Đạt' : 'Chưa đạt';
+            const cls = item.pass ? 'pass' : 'fail';
+            const action = item.pass ? '' : ` <span class="action-text">→ ${item.failMsg}</span>`;
+            html += `
+                <div class="print-item">
+                    <span class="left">${item.label}</span>
+                    <span class="right ${cls}">${item.value} — ${status}${action}</span>
+                </div>
+            `;
+        });
+
+        document.getElementById('printContent').innerHTML = html;
+
+        // Tóm tắt
+        document.getElementById('printTotal').textContent = results.length;
+        document.getElementById('printPass').textContent = passCount;
+        document.getElementById('printFail').textContent = failCount;
+
+        const overall = document.getElementById('printOverall');
+        const rec = document.getElementById('printRecommendation');
+        const failListDiv = document.getElementById('printFailList');
+        const failItemsList = document.getElementById('failItemsList');
+
+        const failItems = results.filter(r => !r.pass);
+
+        if (failCount === 0) {
+            overall.className = 'overall-result pass';
+            overall.textContent = '✅ SẴN SÀNG PHẪU THUẬT — Tất cả tiêu chí đều đạt';
+            rec.textContent = 'Bệnh nhân đã được tối ưu hóa đầy đủ. Có thể tiến hành phẫu thuật chương trình.';
+            failListDiv.style.display = 'none';
+        } else {
+            overall.className = 'overall-result fail';
+            overall.textContent = `⚠️ CẦN TỐI ƯU ${failCount} YẾU TỐ TRƯỚC PHẪU THUẬT`;
+            rec.textContent = 'Vui lòng thực hiện các can thiệp theo khuyến cáo và đánh giá lại trước khi tiến hành mổ.';
+            failListDiv.style.display = 'block';
+            failItemsList.innerHTML = failItems.map(item =>
+                `<div class="fail-item"><strong>• ${item.label}:</strong> ${item.failMsg}</div>`
+            ).join('');
+        }
+
+        window.print();
+    }
+
+    // ========== EXPOSE ==========
+    window.updateNumber = updateNumber;
+    window.updateChoice = updateChoice;
+    window.resetAll = resetAll;
+    window.prepareAndPrint = prepareAndPrint;
+
+    // ========== INIT ==========
+    params.forEach(p => { state[p.id] = p.default; });
+    render();
+</script>
+</body>
+</html>
