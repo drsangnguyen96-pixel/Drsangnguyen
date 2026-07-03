@@ -67,9 +67,10 @@
             border-radius: 60px;
             font-size: 14px;
             font-family: 'Segoe UI', Arial, sans-serif;
+            transition: all 0.3s;
         }
 
-        /* ---- CSS THÊM MỚI: PHẦN NHẬP THÔNG TIN HÀNH CHÍNH ---- */
+        /* ---- PHẦN NHẬP THÔNG TIN HÀNH CHÍNH ---- */
         .admin-info-card {
             background: white; border-radius: 20px; padding: 20px;
             margin-bottom: 24px; border: 1px solid #dce5ef;
@@ -403,10 +404,10 @@
                 <div class="sub">ERAS / EACTS 2024 · Heart Team</div>
             </div>
         </div>
-        <span class="badge"><i class="fas fa-user-md"></i> BS. Nguyễn Văn Sang</span>
+        <span class="badge" id="badge_doctor"><i class="fas fa-user-md"></i> Bác sĩ đánh giá</span>
     </div>
 
-    <!-- KHỐI NHẬP THÔNG TIN HÀNH CHÍNH MỚI THÊM -->
+    <!-- KHỐI NHẬP THÔNG TIN HÀNH CHÍNH -->
     <div class="admin-info-card">
         <div class="admin-header"><i class="fas fa-id-card"></i> Thông tin hành chính</div>
         <div class="admin-grid">
@@ -433,6 +434,11 @@
             <div class="admin-group" style="flex: 1;">
                 <label>Khoa</label>
                 <input type="text" id="in_dept" placeholder="Nhập khoa...">
+            </div>
+            <!-- Ô NHẬP BÁC SĨ ĐÁNH GIÁ (Sẽ cập nhật badge và bản in) -->
+            <div class="admin-group" style="flex: 1;">
+                <label>Bác sĩ đánh giá</label>
+                <input type="text" id="in_doctor" placeholder="Nhập tên bác sĩ..." oninput="document.getElementById('badge_doctor').innerHTML = '<i class=\'fas fa-user-md\'></i> ' + (this.value ? this.value : 'Bác sĩ đánh giá');">
             </div>
             <div class="admin-group" style="flex: 0 0 100%;">
                 <label>Chẩn đoán bệnh</label>
@@ -525,7 +531,8 @@
         <div class="signature-box">
             <div class="sig-date">Đồng Nai, ngày ..... tháng ..... năm 202...</div>
             <div class="sig-title">BÁC SĨ ĐÁNH GIÁ</div>
-            <div class="sig-name">BS. Nguyễn Văn Sang</div>
+            <!-- Phần tên bác sĩ sẽ tự động cập nhật nếu có nhập liệu -->
+            <div class="sig-name" id="out_doctor">..........................................</div>
         </div>
     </div>
 </div>
@@ -831,8 +838,10 @@
         document.getElementById('in_gender').value = '';
         document.getElementById('in_record').value = '';
         document.getElementById('in_dept').value = '';
+        document.getElementById('in_doctor').value = '';
         document.getElementById('in_diag').value = '';
         document.getElementById('in_surg').value = '';
+        document.getElementById('badge_doctor').innerHTML = '<i class="fas fa-user-md"></i> Bác sĩ đánh giá';
         render();
     }
 
@@ -846,6 +855,9 @@
         document.getElementById('out_dept').textContent = document.getElementById('in_dept').value || '..................................................................................';
         document.getElementById('out_diag').textContent = document.getElementById('in_diag').value || '..................................................................................................................................................';
         document.getElementById('out_surg').textContent = document.getElementById('in_surg').value || '..............................................................................................................................................';
+        
+        // Cập nhật tên bác sĩ đánh giá ở chữ ký (nếu có nhập)
+        document.getElementById('out_doctor').textContent = document.getElementById('in_doctor').value || '..........................................';
 
         // 2. Cập nhật dữ liệu y khoa vào bản in
         const tbody = document.getElementById('printTableBody');
