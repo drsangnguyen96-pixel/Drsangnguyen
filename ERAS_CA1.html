@@ -294,17 +294,9 @@
             color: #1a3450;
             font-family: 'Segoe UI', Arial, sans-serif;
         }
-        .btn-primary {
-            background: #0a4d73;
-            border-color: #0a4d73;
-            color: white;
-        }
+        .btn-primary { background: #0a4d73; border-color: #0a4d73; color: white; }
         .btn-primary:hover { background: #0f5f8a; }
-        .btn-print {
-            background: #1d5f47;
-            border-color: #1d5f47;
-            color: white;
-        }
+        .btn-print { background: #1d5f47; border-color: #1d5f47; color: white; }
         .btn-print:hover { background: #267a5b; }
         .btn-outline:hover { background: #e5eef7; }
 
@@ -318,254 +310,63 @@
             font-family: 'Segoe UI', Arial, sans-serif;
         }
 
-        /* ============================================================ */
-        /*               PHIÊN BẢN IN - A4 với Times New Roman            */
-        /* ============================================================ */
+        /* Mặc định ẩn giao diện in trên màn hình */
+        .print-area { display: none; }
+
+        /* ========================================================= */
+        /* CSS DÀNH CHO BẢN IN A4 (VĂN PHONG Y TẾ)                   */
+        /* ========================================================= */
         @media print {
-            /* Ẩn các nút, header màn hình */
-            .screen-header, .button-bar, .footer, .no-print {
-                display: none !important;
-            }
-            body {
-                background: white;
-                padding: 0.15in;
-                font-family: 'Times New Roman', Times, serif !important;
-                font-size: 12pt;
-                color: #000;
-            }
-            .app {
-                max-width: 100%;
-                margin: 0;
-            }
-            .summary-pills {
-                display: none !important;
-            }
+            @page { size: A4 portrait; margin: 15mm; }
+            body { background: white; margin: 0; padding: 0; color: #000; font-family: 'Times New Roman', Times, serif; }
+            
+            /* Ẩn giao diện phần mềm */
+            .app { display: none !important; }
+            
+            /* Hiển thị vùng in */
+            .print-area { display: block !important; font-size: 12pt; line-height: 1.3; }
 
-            /* Grid in thành 1 cột hoặc 2 cột tùy khổ */
-            .grid {
-                display: block !important;
-                margin: 0;
-                padding: 0;
-            }
-            .card {
-                break-inside: avoid;
-                page-break-inside: avoid;
-                border: 1px solid #aaa;
-                border-radius: 6px;
-                padding: 10px 14px;
-                margin-bottom: 8px;
-                background: white;
-                box-shadow: none;
-            }
-            .card-header .label {
-                font-size: 13pt;
-                font-weight: 700;
-            }
-            .card-header .tag {
-                font-size: 11pt;
-                background: #eee;
-            }
-            .input-group input[type="number"] {
-                border: 1px solid #666;
-                background: #fafafa;
-                font-size: 13pt;
-                padding: 4px 10px;
-            }
-            .choice-btn {
-                background: #f0f0f0;
-                border: 1px solid #999;
-                font-size: 12pt;
-                padding: 4px 14px;
-            }
-            .choice-btn.active {
-                background: #0a3a5a;
-                color: white;
-                border-color: #0a3a5a;
-            }
-            .choice-detail {
-                font-size: 11pt;
-                background: #f5f5f5;
-                border-color: #ccc;
-            }
-            .status-line {
-                font-size: 12pt;
-                padding: 6px 12px;
-                border-radius: 4px;
-            }
-            .status-line .action {
-                font-size: 11pt;
-                background: transparent;
-                padding: 0 6px;
-            }
+            .header-table { width: 100%; margin-bottom: 15px; font-size: 12pt; }
+            .header-table td { text-align: center; vertical-align: top; }
+            .header-left { font-weight: normal; }
+            .header-right { font-weight: bold; }
+            .line-under { display: inline-block; width: 120px; border-top: 1px solid #000; margin-top: 2px; }
 
-            /* ---- In bố cục A4: Quốc hiệu, bệnh nhân, nhóm ---- */
-            .print-header {
-                display: block !important;
-                text-align: center;
-                margin-bottom: 6px;
-                border-bottom: 2px solid #222;
-                padding-bottom: 8px;
-            }
-            .print-header .quoc-hieu {
-                font-size: 14pt;
-                font-weight: 700;
-                letter-spacing: 1px;
-            }
-            .print-header .tieu-ngu {
-                font-size: 16pt;
-                font-weight: 700;
-                margin: 2px 0;
-            }
-            .print-header .tieu-de-bao-cao {
-                font-size: 15pt;
-                font-weight: 700;
-                margin-top: 4px;
-                color: #0a2a44;
-            }
+            .doc-title { text-align: center; font-size: 15pt; font-weight: bold; margin: 20px 0 10px; text-transform: uppercase; }
+            .doc-subtitle { font-size: 11pt; font-weight: normal; font-style: italic; text-transform: none; }
 
-            .print-patient {
-                display: block !important;
-                border: 1px solid #333;
-                padding: 8px 14px;
-                margin: 6px 0 12px;
-                border-radius: 4px;
-                background: #f9f9f9;
-                font-size: 13pt;
-            }
-            .print-patient table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            .print-patient td {
-                padding: 2px 10px 2px 0;
-                vertical-align: top;
-            }
-            .print-patient .label {
-                font-weight: 700;
-                width: 130px;
-            }
+            .patient-info { margin-bottom: 15px; }
+            .patient-info p { margin: 4px 0; }
 
-            .print-section {
-                display: block !important;
-                margin: 10px 0 6px;
-                font-weight: 700;
-                font-size: 14pt;
-                border-bottom: 1.5px solid #444;
-                padding-bottom: 2px;
-                color: #0a2a44;
-            }
+            .section-title { font-weight: bold; margin: 12px 0 8px; font-size: 12pt; text-transform: uppercase; }
 
-            .print-item {
-                display: flex !important;
-                justify-content: space-between;
-                align-items: baseline;
-                padding: 2px 0;
-                border-bottom: 1px dotted #ddd;
-                font-size: 12pt;
-            }
-            .print-item .left {
-                font-weight: 500;
-            }
-            .print-item .right {
-                font-weight: 400;
-                text-align: right;
-            }
-            .print-item .right.pass {
-                color: #1a7a4a;
-            }
-            .print-item .right.fail {
-                color: #b13e3e;
-                font-weight: 600;
-            }
-            .print-item .right .action-text {
-                font-weight: 400;
-                color: #333;
-                font-size: 11pt;
-                font-style: italic;
-                max-width: 280px;
-                display: inline-block;
-            }
+            .result-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11pt; }
+            .result-table th, .result-table td { border: 1px solid #000; padding: 4px 6px; text-align: left; vertical-align: middle; }
+            .result-table th { text-align: center; font-weight: bold; background-color: #f2f2f2; }
+            .col-stt { width: 5%; text-align: center !important; }
+            .col-name { width: 40%; }
+            .col-result { width: 35%; }
+            .col-eval { width: 20%; text-align: center !important; font-weight: bold; }
 
-            .print-summary {
-                display: block !important;
-                margin-top: 14px;
-                border: 2px solid #222;
-                padding: 10px 16px;
-                border-radius: 4px;
-                background: #f5f7fa;
-            }
-            .print-summary .title {
-                font-weight: 700;
-                font-size: 14pt;
-                text-align: center;
-                border-bottom: 1px solid #888;
-                padding-bottom: 4px;
-                margin-bottom: 8px;
-            }
-            .print-summary .row {
-                display: flex;
-                justify-content: space-between;
-                padding: 2px 0;
-                font-size: 12.5pt;
-            }
-            .print-summary .total-pass {
-                color: #1a7a4a;
-                font-weight: 700;
-            }
-            .print-summary .total-fail {
-                color: #b13e3e;
-                font-weight: 700;
-            }
-            .print-summary .overall-result {
-                font-weight: 700;
-                font-size: 13.5pt;
-                text-align: center;
-                margin-top: 6px;
-                padding-top: 6px;
-                border-top: 1px solid #aaa;
-            }
-            .print-summary .overall-result.pass {
-                color: #1a7a4a;
-            }
-            .print-summary .overall-result.fail {
-                color: #b13e3e;
-            }
+            .conclusion-box { border: 1.5px solid #000; padding: 10px; margin-bottom: 15px; border-radius: 4px; }
+            .conclusion-box p { margin: 4px 0; }
+            .miss-list { padding-left: 20px; margin: 4px 0; font-style: italic; font-size: 11pt; }
+            .miss-list li { margin-bottom: 3px; }
+            .final-verdict { font-weight: bold; font-size: 12pt; text-align: center; padding-top: 8px; margin-top: 8px; border-top: 1px dashed #000; }
 
-            .print-footer {
-                display: block !important;
-                text-align: center;
-                font-size: 11pt;
-                margin-top: 14px;
-                color: #555;
-                border-top: 1px solid #ccc;
-                padding-top: 8px;
-            }
-            /* Ẩn các phần tử không cần in */
-            .card .status-line .action i {
-                display: none;
-            }
-            /* Đảm bảo hiển thị đúng các phần print */
-            .print-only {
-                display: none !important;
-            }
-            @media print {
-                .print-only {
-                    display: block !important;
-                }
-            }
-        }
-
-        /* Mặc định ẩn phần in */
-        .print-only {
-            display: none;
+            .signature-section { display: flex; justify-content: flex-end; margin-top: 20px; page-break-inside: avoid; }
+            .signature-box { text-align: center; width: 45%; }
+            .sig-date { font-style: italic; margin-bottom: 5px; }
+            .sig-title { font-weight: bold; margin-bottom: 70px; }
+            .sig-name { font-weight: bold; }
         }
     </style>
 </head>
 <body>
 <div class="app" id="app">
 
-    <!-- HEADER MÀN HÌNH (không in) -->
-    <div class="screen-header no-print">
+    <!-- HEADER MÀN HÌNH -->
+    <div class="screen-header">
         <div class="left">
             <div class="icon"><i class="fas fa-heart-pulse"></i></div>
             <div>
@@ -573,76 +374,97 @@
                 <div class="sub">ERAS / EACTS 2024 · Heart Team</div>
             </div>
         </div>
-        <span class="badge"><i class="fas fa-user-md"></i> BS Nguyễn Văn Sang</span>
+        <span class="badge"><i class="fas fa-user-md"></i> BS. Nguyễn Văn Sang</span>
     </div>
 
-    <!-- SUMMARY PILLS (không in) -->
-    <div class="summary-pills no-print">
+    <!-- SUMMARY PILLS -->
+    <div class="summary-pills">
         <div class="pill-item green"><i class="fas fa-check-circle" style="color:#1a7a4a;"></i> Đạt: <span class="num" id="passCount">0</span></div>
         <div class="pill-item red"><i class="fas fa-exclamation-triangle" style="color:#b13e3e;"></i> Chưa đạt: <span class="num" id="failCount">0</span></div>
         <div class="pill-item blue"><i class="fas fa-clipboard-list"></i> Tổng: <span class="num" id="totalCount">0</span></div>
         <div class="overall-status" id="overallStatus"><i class="fas fa-check-circle"></i> Sẵn sàng</div>
     </div>
 
-    <!-- ================================================================ -->
-    <!-- PHẦN IN A4 (chỉ hiển thị khi in)                                 -->
-    <!-- ================================================================ -->
-    <div class="print-only" id="printArea">
-        <!-- Quốc hiệu - Tiêu ngữ -->
-        <div class="print-header">
-            <div class="quoc-hieu">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-            <div class="tieu-ngu">Độc lập - Tự do - Hạnh phúc</div>
-            <div class="tieu-de-bao-cao">BẢNG ĐÁNH GIÁ TỐI ƯU HÓA TRƯỚC PHẪU THUẬT TIM</div>
-            <div style="font-size:12pt; font-weight:400; margin-top:2px;">(Dựa trên hướng dẫn ERAS / EACTS 2024)</div>
-        </div>
-
-        <!-- Thông tin bệnh nhân -->
-        <div class="print-patient">
-            <table>
-                <tr><td class="label">Họ và tên bệnh nhân:</td><td>...................................</td><td style="width:100px;">Tuổi: .........</td></tr>
-                <tr><td class="label">Mã số bệnh án / Khoa:</td><td>...................................</td><td>Ngày đánh giá: .........</td></tr>
-                <tr><td class="label">Chẩn đoán chỉ định mổ:</td><td colspan="2">............................................................................</td></tr>
-                <tr><td class="label">Bác sĩ đánh giá:</td><td colspan="2">BS Nguyễn Văn Sang</td></tr>
-            </table>
-        </div>
-
-        <!-- Nội dung đánh giá sẽ được JavaScript chèn vào đây -->
-        <div id="printContent"></div>
-
-        <!-- Phần tóm tắt đánh giá -->
-        <div class="print-summary" id="printSummary">
-            <div class="title">📋 TÓM TẮT ĐÁNH GIÁ</div>
-            <div class="row"><span>Tổng số tiêu chí đánh giá:</span><span id="printTotal">0</span></div>
-            <div class="row"><span class="total-pass">Số tiêu chí ĐẠT:</span><span class="total-pass" id="printPass">0</span></div>
-            <div class="row"><span class="total-fail">Số tiêu chí CHƯA ĐẠT:</span><span class="total-fail" id="printFail">0</span></div>
-            <div class="overall-result" id="printOverall">✅ Sẵn sàng phẫu thuật</div>
-            <div style="margin-top:8px; font-size:11.5pt; border-top:1px dashed #aaa; padding-top:6px;">
-                <strong>Khuyến cáo:</strong> <span id="printRecommendation">Tất cả các chỉ số đều đạt ngưỡng tối ưu.</span>
-            </div>
-        </div>
-
-        <div class="print-footer">
-    </div>
-
-    <!-- ================================================================ -->
-    <!-- GRID ĐÁNH GIÁ (hiển thị trên màn hình)                           -->
-    <!-- ================================================================ -->
+    <!-- GRID ĐÁNH GIÁ -->
     <div class="grid" id="parameterGrid"></div>
 
     <!-- BUTTONS -->
-    <div class="button-bar no-print">
+    <div class="button-bar">
         <button class="btn btn-outline" onclick="resetAll()"><i class="fas fa-undo-alt"></i> Đặt lại</button>
-        <button class="btn btn-print" onclick="prepareAndPrint()"><i class="fas fa-print"></i> In báo cáo A4</button>
+        <button class="btn btn-print" onclick="prepareAndPrint()"><i class="fas fa-print"></i> In báo cáo y khoa</button>
     </div>
 
-    <div class="footer no-print">
+    <div class="footer">
         <i class="fas fa-heart" style="color:#b03a2e;"></i> Đánh giá đa chiều — chi tiết từng tiêu chí, khuyến cáo can thiệp cụ thể
+    </div>
+</div>
+
+<!-- VÙNG GIAO DIỆN IN (Dành riêng khi in A4) -->
+<div class="print-area" id="printArea">
+    <table class="header-table">
+        <tr>
+            <td class="header-left">
+                SỞ Y TẾ ĐỒNG NAI<br>
+                <b>BVĐK THỐNG NHẤT</b><br>
+                <div class="line-under"></div>
+            </td>
+            <td class="header-right">
+                CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br>
+                Độc lập - Tự do - Hạnh phúc<br>
+                <div class="line-under"></div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="doc-title">
+        PHIẾU ĐÁNH GIÁ TỐI ƯU HÓA TIỀN PHẪU TIM MẠCH<br>
+        <span class="doc-subtitle">(Dựa trên hướng dẫn ERAS / EACTS 2024)</span>
+    </div>
+
+    <div class="patient-info">
+        <p>Họ và tên người bệnh: ............................................................................ Tuổi: ............ Giới tính: ............</p>
+        <p>Số bệnh án: ................................................ Khoa: .....................................................................................</p>
+        <p>Chẩn đoán bệnh: ........................................................................................................................................</p>
+        <p>Dự kiến phẫu thuật: ....................................................................................................................................</p>
+    </div>
+
+    <div class="section-title">I. TÓM TẮT XÉT NGHIỆM VÀ LÂM SÀNG</div>
+    <table class="result-table">
+        <thead>
+            <tr>
+                <th class="col-stt">STT</th>
+                <th class="col-name">Thông số / Tiêu chí</th>
+                <th class="col-result">Kết quả ghi nhận</th>
+                <th class="col-eval">Đánh giá</th>
+            </tr>
+        </thead>
+        <tbody id="printTableBody">
+            <!-- Nội dung bảng sẽ được điền tự động -->
+        </tbody>
+    </table>
+
+    <div class="section-title">II. KẾT LUẬN VÀ KHUYẾN CÁO CAN THIỆP</div>
+    <div class="conclusion-box">
+        <p><b>1. Trạng thái chung:</b> Đáp ứng được <span id="printPassNum">0</span>/<span id="printTotalNum">0</span> tiêu chí đánh giá.</p>
+        <p><b>2. Yếu tố còn thiếu và can thiệp đề nghị:</b></p>
+        <ul class="miss-list" id="printMissingList">
+            <!-- Các can thiệp sẽ được liệt kê ở đây -->
+        </ul>
+        <div class="final-verdict" id="printFinalVerdict"></div>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-box">
+            <div class="sig-date">Đồng Nai, ngày ..... tháng ..... năm 202...</div>
+            <div class="sig-title">BÁC SĨ ĐÁNH GIÁ</div>
+            <div class="sig-name">BS. Nguyễn Văn Sang</div>
+        </div>
     </div>
 </div>
 
 <script>
     // ======================================================================
-    //  ĐỊNH NGHĨA THAM SỐ — RẤT CHI TIẾT
+    //  ĐỊNH NGHĨA THAM SỐ — ĐẦY ĐỦ 19 TIÊU CHÍ TỪ GỐC
     // ======================================================================
     const params = [
         // ----- Xét nghiệm số -----
@@ -938,88 +760,63 @@
         render();
     }
 
-    // ========== CHUẨN BỊ NỘI DUNG IN ==========
+    // ========== CHUẨN BỊ VÀ THỰC THI IN ==========
     function prepareAndPrint() {
-        // Gom dữ liệu
-        let passCount = 0, failCount = 0;
-        const results = params.map(p => {
+        const tbody = document.getElementById('printTableBody');
+        const missList = document.getElementById('printMissingList');
+        
+        tbody.innerHTML = '';
+        missList.innerHTML = '';
+        
+        let passCount = 0;
+        let failCount = 0;
+
+        params.forEach((p, idx) => {
             const val = state[p.id] !== undefined ? state[p.id] : p.default;
             const pass = p.pass(val);
-            if (pass) passCount++; else failCount++;
-            return {
-                id: p.id,
-                label: p.label,
-                value: p.type === 'number' ? val + ' ' + (p.unit || '') : (p.options.find(o => o.value === val)?.label || val),
-                pass: pass,
-                failMsg: p.failMsg || ''
-            };
-        });
+            
+            // Xử lý chuỗi hiển thị cho gọn gàng (lọc bỏ các icon ✅ ❌ trong lựa chọn)
+            let displayVal = val;
+            if (p.type === 'number') {
+                displayVal = `${val} ${p.unit}`;
+            } else {
+                const optObj = p.options.find(o => o.value === val);
+                if (optObj) displayVal = optObj.label.replace(/✅|❌/g, '').trim();
+            }
+            
+            if (pass) {
+                passCount++;
+            } else {
+                failCount++;
+                missList.innerHTML += `<li><b>${p.label}:</b> Ghi nhận ${displayVal}. <i>Đề nghị: ${p.failMsg}</i></li>`;
+            }
 
-        // Nhóm theo loại
-        const numericIds = ['hemoglobin','albumin','prealbumin','bmi','hba1c','creatinine','bilirubin','bnp'];
-        const numericItems = results.filter(r => numericIds.includes(r.id));
-        const clinicalItems = results.filter(r => !numericIds.includes(r.id));
-
-        // Xây dựng nội dung in
-        let html = '';
-
-        // Nhóm 1: Huyết học - Sinh hóa
-        html += `<div class="print-section">1. XÉT NGHIỆM HUYẾT HỌC - SINH HÓA</div>`;
-        numericItems.forEach(item => {
-            const status = item.pass ? 'Đạt' : 'Chưa đạt';
-            const cls = item.pass ? 'pass' : 'fail';
-            const action = item.pass ? '' : `<span class="action-text"> → ${item.failMsg}</span>`;
-            html += `
-                <div class="print-item">
-                    <span class="left">${item.label}</span>
-                    <span class="right ${cls}">${item.value} — ${status} ${action}</span>
-                </div>
+            // Đưa vào bảng
+            tbody.innerHTML += `
+                <tr>
+                    <td class="col-stt">${idx + 1}</td>
+                    <td>${p.label}</td>
+                    <td>${displayVal}</td>
+                    <td class="col-eval" style="color: ${pass ? 'black' : '#b13e3e'}">${pass ? 'Đạt' : 'Chưa đạt'}</td>
+                </tr>
             `;
         });
 
-        // Nhóm 2: Đánh giá lâm sàng - miễn dịch - các yếu tố khác
-        html += `<div class="print-section" style="margin-top:10px;">2. ĐÁNH GIÁ LÂM SÀNG - MIỄN DỊCH - CÁC YẾU TỐ KHÁC</div>`;
-        clinicalItems.forEach(item => {
-            const status = item.pass ? 'Đạt' : 'Chưa đạt';
-            const cls = item.pass ? 'pass' : 'fail';
-            const action = item.pass ? '' : `<span class="action-text"> → ${item.failMsg}</span>`;
-            html += `
-                <div class="print-item">
-                    <span class="left">${item.label}</span>
-                    <span class="right ${cls}">${item.value} — ${status} ${action}</span>
-                </div>
-            `;
-        });
-
-        document.getElementById('printContent').innerHTML = html;
-
-        // Tóm tắt
-        document.getElementById('printTotal').textContent = results.length;
-        document.getElementById('printPass').textContent = passCount;
-        document.getElementById('printFail').textContent = failCount;
-
-        const overall = document.getElementById('printOverall');
-        const rec = document.getElementById('printRecommendation');
+        // Điền tổng kết
+        document.getElementById('printPassNum').textContent = passCount;
+        document.getElementById('printTotalNum').textContent = params.length;
+        
+        const finalVerdict = document.getElementById('printFinalVerdict');
         if (failCount === 0) {
-            overall.className = 'overall-result pass';
-            overall.textContent = '✅ Sẵn sàng phẫu thuật — Tất cả tiêu chí đều đạt';
-            rec.textContent = 'Bệnh nhân đã được tối ưu hóa đầy đủ theo các khuyến cáo. Có thể tiến hành phẫu thuật chương trình.';
+            missList.innerHTML = '<li>Bệnh nhân không có yếu tố thiếu hụt. Các chỉ số đều nằm trong giới hạn mục tiêu an toàn theo khuyến cáo ERAS.</li>';
+            finalVerdict.innerHTML = '<span style="color: #1a7a4a;">KẾT LUẬN: ĐỦ ĐIỀU KIỆN PHẪU THUẬT CHƯƠNG TRÌNH</span>';
         } else {
-            overall.className = 'overall-result fail';
-            overall.textContent = `⚠️ Cần tối ưu ${failCount} yếu tố trước phẫu thuật`;
-            const failItems = results.filter(r => !r.pass).map(r => r.label).join('; ');
-            rec.textContent = `Các yếu tố cần cải thiện: ${failItems}. Vui lòng thực hiện các can thiệp theo khuyến cáo và đánh giá lại.`;
+            finalVerdict.innerHTML = `<span style="color: #b13e3e;">KẾT LUẬN: ĐỀ NGHỊ TRÌ HOÃN, CẦN TỐI ƯU HÓA THÊM ${failCount} YẾU TỐ</span>`;
         }
 
-        // In
+        // Gọi lệnh in
         window.print();
     }
-
-    // ========== EXPOSE ==========
-    window.updateNumber = updateNumber;
-    window.updateChoice = updateChoice;
-    window.resetAll = resetAll;
-    window.prepareAndPrint = prepareAndPrint;
 
     // ========== INIT ==========
     params.forEach(p => { state[p.id] = p.default; });
