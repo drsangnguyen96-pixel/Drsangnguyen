@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Y Lệnh truyền Natri · Cài đặt bơm tiêm</title>
+  <title>Y Lệnh truyền Natri · Có duy trì sau khi đạt</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
@@ -189,14 +189,34 @@
     .timepoint-item .label { font-size: 0.6rem; color: #6c8aa8; font-weight: 600; }
     .timepoint-item input { width: 100%; border: 1px solid #d6e1ed; border-radius: 8px; padding: 0.1rem 0.3rem; font-size: 0.9rem; }
     .timepoint-item .status { font-size: 0.55rem; padding: 0.05rem 0.3rem; border-radius: 40px; display: inline-block; margin-top: 0.1rem; }
+
+    .duy-tri-box {
+      background: #e8f5e9;
+      border-radius: 16px;
+      padding: 0.8rem 1rem;
+      margin-top: 0.6rem;
+      border: 2px solid #27ae60;
+    }
+    .duy-tri-box .title { font-weight: 700; color: #1a6b3a; font-size: 0.9rem; }
+    .duy-tri-box .item { display: flex; gap: 10px; padding: 0.15rem 0; font-size: 0.85rem; align-items: flex-start; }
+    .duy-tri-box .item i { color: #27ae60; margin-top: 0.15rem; width: 1.2rem; text-align: center; }
+
+    .xutri-box {
+      background: #f5f9ff;
+      border-radius: 16px;
+      padding: 0.8rem 1rem;
+      margin-top: 0.4rem;
+      border: 1px solid #d6e4f5;
+    }
+    .xutri-box .item { display: flex; gap: 10px; padding: 0.15rem 0; font-size: 0.85rem; align-items: flex-start; }
+    .xutri-box .item i { margin-top: 0.15rem; width: 1.2rem; text-align: center; }
   </style>
 </head>
 <body>
 <div class="card" id="app">
   <h1><i class="fas fa-droplet" style="color: #1a6bc4;"></i> Y Lệnh truyền Natri</h1>
-  <div class="subhead">Đánh giá → Chọn dịch → Y lệnh (có hướng dẫn cài bơm tiêm) → Theo dõi</div>
+  <div class="subhead">Đánh giá → Chọn dịch → Y lệnh → Theo dõi (đạt/chưa đạt)</div>
 
-  <!-- TABS -->
   <div class="tabs">
     <button class="tab-btn active" @click="activeTab=1" :class="{active: activeTab===1}">
       <i class="fas fa-clipboard-check"></i> 1. Đánh giá
@@ -319,7 +339,7 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- TAB 2: Y LỆNH (CÓ CÀI ĐẶT BƠM TIÊM) -->
+  <!-- TAB 2: Y LỆNH -->
   <!-- ============================================================ -->
   <div class="tab-content" :class="{active: activeTab===2}">
     <div class="flex" style="margin-bottom:0.8rem;">
@@ -332,7 +352,7 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- TAB 3: THEO DÕI -->
+  <!-- TAB 3: THEO DÕI (Đạt / Chưa đạt) -->
   <!-- ============================================================ -->
   <div class="tab-content" :class="{active: activeTab===3}">
     <div class="flex" style="margin-bottom:0.8rem;">
@@ -530,18 +550,19 @@
 
         const dose = Math.round(w * 1.5);
         const timeMin = 15;
-
-        // === TÍNH TỐC ĐỘ ===
         const rateMlMin = (dose / timeMin).toFixed(1);
-        const rateMlH = Math.round(dose / timeMin * 60); // <--- QUAN TRỌNG: Cài đặt bơm tiêm
-
+        const rateMlH = Math.round(dose / timeMin * 60);
         const dropFactor = 20;
         const dropsPerMin = Math.round((dose / timeMin) * dropFactor);
-        const dropsPerSec = (dropsPerMin / 60).toFixed(2);
-
         const volL = dose / 1000;
         const deltaNa = ((naConc - na) * volL) / (tbw + volL);
         const soTui = Math.ceil(dose / pack);
+
+        // Duy trì
+        const maintRateMlH = 25;
+        const maintDropsPerMin = Math.round((maintRateMlH / 60) * dropFactor);
+        const maintPackSize = 500;
+        const maintHoursPerBag = Math.round(maintPackSize / maintRateMlH);
 
         const naLabel = this.selectedNatri === 'nacl3' ? 'NaCl 3% (513 mmol/L)' :
           this.selectedNatri === 'nacl09' ? 'NaCl 0.9% (154 mmol/L)' :
@@ -561,27 +582,23 @@
           <div class="line"><span class="label">Cách lấy:</span><span class="value">Rút ${dose} mL từ ${soTui} chai ${pack}mL</span></div>
           <div class="line"><span class="label">Thời gian:</span><span class="value"><strong>${timeMin} phút</strong></span></div>
 
-          <!-- BẢNG TỐC ĐỘ - CÓ CÀI ĐẶT BƠM TIÊM -->
           <div class="toc-do-box">
             <div style="font-weight:600; color:#0a2a44; margin-bottom:0.2rem;">
               <i class="fas fa-tachometer-alt"></i> HƯỚNG DẪN CÀI ĐẶT BƠM TIÊM:
             </div>
             <div class="row" style="background:#e8f5e9; border-radius:8px; padding:0.3rem 0.6rem;">
               <span><strong>🖥️ BƠM TIÊM ĐIỆN:</strong> <span class="highlight-big">${rateMlH} mL/giờ</span></span>
-              <span style="font-size:0.8rem; color:#4f6f8f;">(hầu hết bơm tiêm chỉ cài được mL/giờ)</span>
+              <span style="font-size:0.8rem; color:#4f6f8f;">(cài mL/giờ, chạy 15 phút)</span>
             </div>
             <div class="row" style="margin-top:0.2rem;">
               <span><strong>mL/phút:</strong> ${rateMlMin} mL/phút</span>
               <span><strong>mL/giờ:</strong> ${rateMlH} mL/giờ</span>
             </div>
             <div class="row" style="background:#fce4e4; border-radius:8px; padding:0.2rem 0.6rem; margin-top:0.2rem;">
-              <span><strong>🔄 GIỌT/PHÚT:</strong> ${dropsPerMin} giọt/phút</span>
-              <span><strong>🔄 GIỌT/GIÂY:</strong> ${dropsPerSec} giọt/giây</span>
+              <span><strong>🔄 GIỌT/PHÚT:</strong> <span class="highlight-big">${dropsPerMin}</span> giọt/phút</span>
             </div>
             <div style="font-size:0.75rem; color:#4f6f8f; margin-top:0.2rem; border-top:1px dashed #d6e1ed; padding-top:0.2rem;">
               <i class="fas fa-info-circle"></i> Dây truyền: <strong>20 giọt/mL</strong> (tiêu chuẩn)
-              <br>• Bơm tiêm điện: Cài <strong>${rateMlH} mL/giờ</strong>, chạy trong 15 phút
-              <br>• Nếu dùng dây vi lượng (60 giọt/mL): nhân x3 số giọt
             </div>
           </div>
 
@@ -593,7 +610,32 @@
           <div class="info-box" style="margin-top:0.3rem;">
             <i class="fas fa-syringe"></i> <strong>Hướng dẫn điều dưỡng:</strong> 
             <br>• <strong>Bơm tiêm điện:</strong> Cài đặt <strong>${rateMlH} mL/giờ</strong>, thời gian chạy 15 phút
-            <br>• <strong>Truyền tay:</strong> Điều chỉnh <strong>${dropsPerSec} giọt/giây</strong> (≈ ${dropsPerMin} giọt/phút)
+            <br>• <strong>Truyền tay:</strong> Điều chỉnh <strong>${dropsPerMin} giọt/phút</strong>
+          </div>
+
+          <!-- DUY TRÌ -->
+          <div class="duy-tri-box">
+            <div class="title"><i class="fas fa-check-circle"></i> ✅ SAU KHI ĐẠT MỤC TIÊU (tăng +4-6 mmol/L):</div>
+            <div class="item"><i class="fas fa-arrow-right"></i> <strong>Chuyển sang NaCl 0.9%</strong> (154 mmol/L) để duy trì</div>
+            <div class="item"><i class="fas fa-cube"></i> <strong>Quy cách:</strong> Túi NaCl 0.9% <strong>500 mL</strong></div>
+            <div class="item"><i class="fas fa-tachometer-alt"></i> <strong>Tốc độ:</strong> 20-30 mL/giờ (trung bình 25 mL/giờ)</div>
+            <div class="item"><i class="fas fa-tint"></i> <strong>Giọt/phút:</strong> <span class="highlight">${maintDropsPerMin} giọt/phút</span></div>
+            <div class="item"><i class="fas fa-clock"></i> <strong>Thời gian:</strong> 1 túi 500mL dùng trong <strong>${maintHoursPerBag} giờ</strong></div>
+            <div class="item"><i class="fas fa-syringe"></i> <strong>Bơm tiêm điện:</strong> Cài đặt <strong>${maintRateMlH} mL/giờ</strong></div>
+            <div class="item"><i class="fas fa-undo-alt"></i> <strong>Hạn chế dịch:</strong> ≤ 1.5 L/ngày (nếu SIAD)</div>
+            <div class="item"><i class="fas fa-clock"></i> <strong>Theo dõi:</strong> Na⁺ máu mỗi 4-6 giờ</div>
+          </div>
+
+          ${this.odsRiskItems.some(i => i.id === 7 && i.checked) ? `
+          <div class="info-box" style="margin-top:0.4rem; border-left-color:#27ae60;">
+            <i class="fas fa-info-circle" style="color:#27ae60;"></i> <strong>Có SIAD — có thể cân nhắc:</strong>
+            <br>• <strong>Tolvaptan</strong> 7.5 mg/ngày (uống sáng)
+            <br>• <strong>Urea</strong> 15-30 g/ngày (pha với nước ngọt)
+            <br>• NaCl 0.9% + <strong>Furosemide</strong> 20-40 mg/ngày
+          </div>` : ''}
+
+          <div style="margin-top:0.5rem; font-size:0.8rem; color:#4f6f8f; border-top:1px dashed #dce1e8; padding-top:0.4rem;">
+            <i class="fas fa-syringe"></i> <strong>Hạn chế dịch:</strong> ≤ 1.5 L/ngày · <strong>Mục tiêu:</strong> Na⁺ ≥ 130 mmol/L
           </div>
         `;
 
@@ -611,16 +653,6 @@
         if (this.calculatedUOsm !== null && this.calculatedUOsm > 500) {
           html += `<div class="warning" style="margin-top:0.4rem;"><i class="fas fa-info-circle"></i> UOsm > 500: hạn chế dịch đơn thuần có thể thất bại → cân nhắc urea hoặc vaptans</div>`;
         }
-        if (this.odsRiskItems.some(i => i.id === 7 && i.checked)) {
-          html += `<div class="success" style="margin-top:0.4rem;"><i class="fas fa-info-circle"></i> Có SIAD → cân nhắc tolvaptan 7.5mg sáng sớm</div>`;
-        }
-
-        html += `
-          <div style="margin-top:0.5rem; font-size:0.8rem; color:#4f6f8f; border-top:1px dashed #dce1e8; padding-top:0.4rem;">
-            <i class="fas fa-syringe"></i> <strong>Hạn chế dịch:</strong> ≤ 1.5 L/ngày · 
-            <strong>Mục tiêu:</strong> Na⁺ ≥ 130 mmol/L
-          </div>
-        `;
 
         this.ylenhHtml = html;
         this.activeTab = 2;
@@ -628,6 +660,12 @@
 
       analyzeAllTimePoints() {
         const baseline = this.sodium || 118;
+        const w = this.weight || 65;
+        const maintRateMlH = 25;
+        const maintDropsPerMin = Math.round((maintRateMlH / 60) * 20);
+        const maintPackSize = 500;
+        const maintHoursPerBag = Math.round(maintPackSize / maintRateMlH);
+
         let html = `
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.5rem;">
             <span style="background:#e67e22; color:white; padding:0.1rem 0.8rem; border-radius:40px; font-size:0.7rem; font-weight:600;">
@@ -641,13 +679,11 @@
         let hasData = false;
         let lastNa = baseline;
         let lastLabel = 'Ban đầu';
-        let maxDelta = 0;
 
         for (const tp of this.timePoints) {
           if (tp.value !== null && tp.value !== '' && !isNaN(tp.value)) {
             hasData = true;
             const delta = tp.value - baseline;
-            maxDelta = Math.max(maxDelta, delta);
 
             let status = '';
             let statusClass = '';
@@ -684,43 +720,49 @@
         if (totalDelta >= 4 && totalDelta <= 6) {
           html += `
             <div class="success"><i class="fas fa-check-circle"></i> <strong>✅ ĐẠT MỤC TIÊU</strong> sau ${lastLabel} (tăng ${totalDelta.toFixed(1)} mmol/L)</div>
-            <div class="xutri-box" style="margin-top:0.3rem; background:#f5f9ff; border-radius:16px; padding:0.8rem 1rem; border:1px solid #d6e4f5;">
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#27ae60;"></i> Ngừng NaCl ưu trương, chuyển NaCl 0.9% duy trì 20-30 mL/giờ</div>
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#27ae60;"></i> Theo dõi Na⁺ mỗi 4-6 giờ</div>
+            <div class="duy-tri-box" style="margin-top:0.3rem;">
+              <div class="title"><i class="fas fa-check-circle"></i> ✅ CHUYỂN SANG DUY TRÌ:</div>
+              <div class="item"><i class="fas fa-arrow-right"></i> <strong>NaCl 0.9%</strong> (154 mmol/L)</div>
+              <div class="item"><i class="fas fa-cube"></i> <strong>Quy cách:</strong> Túi 500 mL</div>
+              <div class="item"><i class="fas fa-tachometer-alt"></i> <strong>Tốc độ:</strong> 20-30 mL/giờ (trung bình 25 mL/giờ)</div>
+              <div class="item"><i class="fas fa-tint"></i> <strong>Giọt/phút:</strong> <span class="highlight">${maintDropsPerMin} giọt/phút</span></div>
+              <div class="item"><i class="fas fa-clock"></i> <strong>Thời gian:</strong> 1 túi 500mL dùng trong <strong>${maintHoursPerBag} giờ</strong></div>
+              <div class="item"><i class="fas fa-syringe"></i> <strong>Bơm tiêm điện:</strong> Cài đặt <strong>${maintRateMlH} mL/giờ</strong></div>
+              <div class="item"><i class="fas fa-clock"></i> <strong>Theo dõi:</strong> Na⁺ máu mỗi 4-6 giờ</div>
             </div>
           `;
         } else if (totalDelta < 4 && totalDelta > 0) {
-          const doseLap = Math.round((this.weight || 65) * 1);
+          const doseLap = Math.round(w * 1);
           html += `
             <div class="warning"><i class="fas fa-exclamation-triangle"></i> <strong>⚠️ CHƯA ĐẠT</strong> sau ${lastLabel} (tăng ${totalDelta.toFixed(1)} mmol/L)</div>
-            <div class="xutri-box" style="margin-top:0.3rem; background:#f5f9ff; border-radius:16px; padding:0.8rem 1rem; border:1px solid #d6e4f5;">
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#e67e22;"></i> Truyền thêm <strong>${doseLap} mL</strong> NaCl 3% trong 10-15 phút</div>
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#e67e22;"></i> Đo lại Na⁺ sau 1 giờ</div>
+            <div class="xutri-box">
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e67e22;"></i> Truyền thêm <strong>${doseLap} mL</strong> NaCl 3% trong 10-15 phút</div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e67e22;"></i> Đo lại Na⁺ sau 1 giờ</div>
             </div>
           `;
         } else if (totalDelta > 6 && totalDelta <= 10) {
           html += `
             <div class="warning" style="border-left-color:#f39c12;"><i class="fas fa-exclamation-triangle" style="color:#f39c12;"></i> <strong>⚡ TĂNG NHANH</strong> (${totalDelta.toFixed(1)} mmol/L)</div>
-            <div class="xutri-box" style="margin-top:0.3rem; background:#f5f9ff; border-radius:16px; padding:0.8rem 1rem; border:1px solid #d6e4f5;">
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#f39c12;"></i> Giảm tốc độ truyền 50%</div>
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#f39c12;"></i> Nếu tiếp tục tăng → ngừng truyền, dùng D5W 50-100 mL/giờ</div>
+            <div class="xutri-box">
+              <div class="item"><i class="fas fa-arrow-right" style="color:#f39c12;"></i> Giảm tốc độ truyền 50%</div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#f39c12;"></i> Nếu tiếp tục tăng → ngừng truyền, dùng D5W 50-100 mL/giờ</div>
             </div>
           `;
         } else if (totalDelta > 10) {
           const targetNa = Math.round(baseline + 10);
           html += `
             <div class="danger"><i class="fas fa-exclamation-circle"></i> <strong>🔴 QUÁ NHANH — NGUY CƠ ODS</strong> (tăng ${totalDelta.toFixed(1)} mmol/L)</div>
-            <div class="xutri-box" style="margin-top:0.3rem; background:#f5f9ff; border-radius:16px; padding:0.8rem 1rem; border:1px solid #d6e4f5;">
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>NGỪNG NGAY</strong> mọi dung dịch chứa Natri</div>
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>D5W 10 mL/kg</strong> trong 2-4 giờ (hạ Na⁺)</div>
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>Desmopressin</strong> 2µg IV/SC mỗi 6-8 giờ</div>
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>Theo dõi Na⁺ mỗi 1-2 giờ</strong> đến khi ổn định</div>
-              <div class="item" style="display:flex; gap:10px; padding:0.2rem 0;"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>Mục tiêu:</strong> Đưa Na⁺ về dưới ${targetNa} mmol/L</div>
-              ${this.isHighRiskODS ? `<div class="item" style="display:flex; gap:10px; padding:0.2rem 0; color:#c0392b; font-weight:700;"><i class="fas fa-exclamation-triangle"></i> ⚠️ BN CÓ NGUY CƠ ODS CAO!</div>` : ''}
+            <div class="xutri-box">
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>NGỪNG NGAY</strong> mọi dung dịch chứa Natri</div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>D5W 10 mL/kg</strong> trong 2-4 giờ (hạ Na⁺)</div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>Desmopressin</strong> 2µg IV/SC mỗi 6-8 giờ</div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>Theo dõi Na⁺ mỗi 1-2 giờ</strong> đến khi ổn định</div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>Mục tiêu:</strong> Đưa Na⁺ về dưới ${targetNa} mmol/L</div>
+              ${this.isHighRiskODS ? `<div class="item" style="color:#c0392b; font-weight:700;"><i class="fas fa-exclamation-triangle"></i> ⚠️ BN CÓ NGUY CƠ ODS CAO!</div>` : ''}
             </div>
           `;
         } else {
-          html += `<div class="info-box">Không có đủ dữ liệu để kết luận. Vui lòng nhập thêm các mốc thời gian.</div>`;
+          html += `<div class="info-box">Không có đủ dữ liệu để kết luận.</div>`;
         }
 
         html += `</div>`;
