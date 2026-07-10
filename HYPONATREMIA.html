@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Y Lệnh truyền Natri · Có duy trì sau khi đạt</title>
+  <title>Y Lệnh truyền Natri · Cài đặt bơm tiêm</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
@@ -49,9 +49,6 @@
     }
     .tab-btn:hover { background: #f2f9ff; border-color: #b6d2f0; }
     .tab-btn.active { background: #1a5fa0; color: white; border-color: #1a5fa0; }
-    .tab-btn .badge-tab { background: rgba(255,255,255,0.2); padding: 0.05rem 0.5rem; border-radius: 40px; font-size: 0.65rem; color: white; }
-    .tab-btn.active .badge-tab { background: rgba(255,255,255,0.25); }
-    .tab-btn:not(.active) .badge-tab { background: #e2edfb; color: #1a4a7a; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
@@ -105,7 +102,7 @@
     }
     .ylenh-box .line { display: flex; align-items: baseline; gap: 8px; padding: 0.15rem 0; font-size: 0.9rem; border-bottom: 1px dashed #e8edf4; }
     .ylenh-box .line:last-child { border-bottom: none; }
-    .ylenh-box .label { font-weight: 600; color: #1f3d5c; min-width: 100px; }
+    .ylenh-box .label { font-weight: 600; color: #1f3d5c; min-width: 105px; }
     .ylenh-box .value { color: #0a2a44; font-weight: 500; }
     .ylenh-box .highlight { background: #fcefcf; padding: 0.05rem 0.4rem; border-radius: 6px; font-weight: 700; }
     .tag { background: #d5e6fc; padding: 0.1rem 0.7rem; border-radius: 40px; font-size: 0.65rem; font-weight: 600; color: #123b62; display: inline-block; }
@@ -116,42 +113,22 @@
     .empty { text-align: center; color: #6c8aa8; background: #f0f6fe; border-radius: 40px; padding: 1.5rem; margin-top: 0.8rem; }
 
     .step-number {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #1f70c4;
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 700;
-      margin-right: 6px;
-      flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 50%; background: #1f70c4;
+      color: white; font-size: 0.7rem; font-weight: 700; margin-right: 6px; flex-shrink: 0;
     }
     .step-title { font-weight: 600; font-size: 0.85rem; color: #0a2a44; margin: 0.5rem 0 0.3rem; display: flex; align-items: center; gap: 6px; }
     .step-title i { color: #1f70c4; }
 
     .popup-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000;
+      justify-content: center; align-items: center;
     }
     .popup-overlay.active { display: flex; }
     .popup {
-      background: white;
-      border-radius: 32px;
-      max-width: 700px;
-      width: 90%;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 2rem;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+      background: white; border-radius: 32px; max-width: 700px; width: 90%;
+      max-height: 85vh; overflow-y: auto; padding: 2rem; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
     }
     .popup .close { float: right; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #6c8aa8; transition: 0.15s; }
     .popup .close:hover { color: #c0392b; transform: rotate(90deg); }
@@ -167,58 +144,36 @@
     .popup-option .info { flex: 1; }
     .popup-option .info .name { font-weight: 600; color: #0a2a44; }
     .popup-option .info .desc { font-size: 0.8rem; color: #4f6f8f; }
-    .popup-option .info .badge-sugg { font-size: 0.65rem; background: #e8f5e9; padding: 0.05rem 0.5rem; border-radius: 40px; color: #27ae60; }
-    .popup-option .info .badge-warn { font-size: 0.65rem; background: #fff3e0; padding: 0.05rem 0.5rem; border-radius: 40px; color: #e67e22; }
 
-    .toc-do-box {
-      background: #e8f0fe;
-      border-radius: 12px;
-      padding: 0.6rem 0.8rem;
-      margin-top: 0.3rem;
-      border-left: 4px solid #1f70c4;
-    }
-    .toc-do-box .row { display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.9rem; padding: 0.15rem 0; }
-    .toc-do-box .row strong { color: #0a2a44; }
-    .toc-do-box .highlight-big { font-size: 1.2rem; font-weight: 700; color: #c0392b; }
+    .toc-do-box { background: #f8fafc; border-radius: 12px; padding: 0; margin-top: 0.8rem; }
+    .toc-do-box .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .toc-do-box .rate-card { flex: 1; border-radius: 12px; padding: 0.8rem; min-width: 150px; }
 
-    .timepoints { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .timepoint-item {
-      background: white; border-radius: 12px; padding: 0.4rem 0.6rem;
-      border: 1px solid #d6e1ed; flex: 1; min-width: 70px;
-    }
-    .timepoint-item .label { font-size: 0.6rem; color: #6c8aa8; font-weight: 600; }
-    .timepoint-item input { width: 100%; border: 1px solid #d6e1ed; border-radius: 8px; padding: 0.1rem 0.3rem; font-size: 0.9rem; }
-    .timepoint-item .status { font-size: 0.55rem; padding: 0.05rem 0.3rem; border-radius: 40px; display: inline-block; margin-top: 0.1rem; }
+    .toggle-header { cursor: pointer; user-select: none; transition: 0.2s; }
+    .toggle-header:hover { color: #1f70c4; }
+    
+    /* CSS MỚI CHO BẢNG TÍNH DỰ KIẾN TĂNG */
+    .prediction-box { background: white; border-radius: 16px; padding: 1.2rem; border: 1px solid #dce1e8; margin: 1rem 0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+    .pred-title { font-weight: 700; color: #1f70c4; margin-bottom: 0.8rem; font-size: 0.85rem; text-transform: uppercase; display: flex; align-items: center; gap: 8px;}
+    .radio-item-group { display: flex; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+    .radio-item-group .radio-label { cursor: pointer; flex: 1; min-width: 200px; display: flex; align-items: flex-start; gap: 10px; border-radius: 12px; padding: 0.6rem 0.8rem; border: 1px solid #c0d4e8; background: #fdfdfd; transition: 0.2s;}
+    .radio-item-group .radio-label:hover { background: #f2f9ff; border-color: #1f70c4; }
+    .radio-item-group .radio-label input { margin-top: 4px; accent-color: #1f70c4; width: 16px; height: 16px;}
+    .calc-panel { background: #f8fafc; border-radius: 12px; padding: 1rem; border: 1px dashed #c0d4e8; transition: 0.3s;}
+    .formula { font-family: 'Courier New', monospace; font-size: 0.8rem; color: #4f6f8f; background: rgba(255,255,255,0.8); padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.8rem; border: 1px solid #e1e8f0; font-weight: 600; text-align: center;}
 
-    .duy-tri-box {
-      background: #e8f5e9;
-      border-radius: 16px;
-      padding: 0.8rem 1rem;
-      margin-top: 0.6rem;
-      border: 2px solid #27ae60;
-    }
-    .duy-tri-box .title { font-weight: 700; color: #1a6b3a; font-size: 0.9rem; }
-    .duy-tri-box .item { display: flex; gap: 10px; padding: 0.15rem 0; font-size: 0.85rem; align-items: flex-start; }
-    .duy-tri-box .item i { color: #27ae60; margin-top: 0.15rem; width: 1.2rem; text-align: center; }
-
-    .xutri-box {
-      background: #f5f9ff;
-      border-radius: 16px;
-      padding: 0.8rem 1rem;
-      margin-top: 0.4rem;
-      border: 1px solid #d6e4f5;
-    }
-    .xutri-box .item { display: flex; gap: 10px; padding: 0.15rem 0; font-size: 0.85rem; align-items: flex-start; }
-    .xutri-box .item i { margin-top: 0.15rem; width: 1.2rem; text-align: center; }
+    .xutri-box { margin-top:0.5rem; background:#f5f9ff; border-radius:16px; padding:0.8rem 1.2rem; border:1px solid #d6e4f5; }
+    .xutri-box .item { display:flex; gap:12px; padding:0.3rem 0; align-items: flex-start; }
+    .xutri-box .item i { margin-top: 4px; }
   </style>
 </head>
 <body>
 <div class="card" id="app">
   <h1><i class="fas fa-droplet" style="color: #1a6bc4;"></i> Y Lệnh truyền Natri</h1>
-  <div class="subhead">Đánh giá → Chọn dịch → Y lệnh → Theo dõi (đạt/chưa đạt)</div>
+  <div class="subhead">Đánh giá → Chọn dịch → Y lệnh (có hướng dẫn tốc độ truyền) → Theo dõi</div>
 
   <div class="tabs">
-    <button class="tab-btn active" @click="activeTab=1" :class="{active: activeTab===1}">
+    <button class="tab-btn" @click="activeTab=1" :class="{active: activeTab===1}">
       <i class="fas fa-clipboard-check"></i> 1. Đánh giá
     </button>
     <button class="tab-btn" @click="activeTab=2" :class="{active: activeTab===2}">
@@ -229,10 +184,7 @@
     </button>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- TAB 1: ĐÁNH GIÁ -->
-  <!-- ============================================================ -->
-  <div class="tab-content active" :class="{active: activeTab===1}">
+  <div class="tab-content" :class="{active: activeTab===1}">
     <div style="background:white; border-radius:20px; padding:1rem 1.2rem; border:1px solid #e8edf4; margin-bottom:1rem;">
       <div class="step-title"><span class="step-number">1</span> <i class="fas fa-stethoscope"></i> Phân loại lâm sàng</div>
       <div class="grid-2">
@@ -272,18 +224,14 @@
 
     <div style="background:white; border-radius:20px; padding:1rem 1.2rem; border:1px solid #e8edf4; margin-bottom:1rem;">
       <div class="step-title"><span class="step-number">2</span> <i class="fas fa-weight-scale"></i> Thông số bệnh nhân</div>
-      <div class="row-3">
+      <div class="grid-2">
         <div class="form-group">
           <label><i class="fas fa-weight-scale"></i> Cân nặng (kg)</label>
           <input type="number" v-model.number="weight" placeholder="65" step="0.5">
         </div>
         <div class="form-group">
-          <label><i class="fas fa-water"></i> Na⁺ máu (mmol/L)</label>
+          <label><i class="fas fa-water"></i> Na⁺ máu ban đầu (mmol/L)</label>
           <input type="number" v-model.number="sodium" placeholder="118" step="0.5">
-        </div>
-        <div class="form-group">
-          <label><i class="fas fa-cube"></i> Đóng gói (mL/chai)</label>
-          <input type="number" v-model.number="packSize" placeholder="100" step="1">
         </div>
       </div>
     </div>
@@ -300,36 +248,36 @@
         </span>
         <span v-else style="color:#8aa3bc;">Chưa chọn</span>
       </div>
-      <div v-if="suggestionText" style="background:#f0f7fe; border-radius:12px; padding:0.5rem 0.8rem; margin-top:0.5rem; font-size:0.85rem; border-left:4px solid #1f70c4;">
-        <i class="fas fa-lightbulb" style="color:#e67e22;"></i> <strong>Gợi ý:</strong> {{ suggestionText }}
-      </div>
     </div>
 
     <div style="background:white; border-radius:20px; padding:1rem 1.2rem; border:1px solid #e8edf4; margin-bottom:1rem;">
-      <div class="step-title"><span class="step-number">4</span> <i class="fas fa-kidney"></i> Tính UOsm</div>
-      <div class="row-3">
-        <div class="form-group">
-          <label><i class="fas fa-flask"></i> Na⁺ niệu (mmol/L)</label>
-          <input type="number" v-model.number="urineNa" placeholder="40" step="0.5">
-        </div>
-        <div class="form-group">
-          <label><i class="fas fa-flask"></i> K⁺ niệu (mmol/L)</label>
-          <input type="number" v-model.number="urineK" placeholder="20" step="0.5">
-        </div>
-        <div class="form-group">
-          <label><i class="fas fa-flask"></i> Urea niệu (mmol/L)</label>
-          <input type="number" v-model.number="urineUrea" placeholder="300" step="5">
-        </div>
+      <div class="step-title toggle-header" style="justify-content: space-between; margin: 0;" @click="showUOsm = !showUOsm">
+        <span><span class="step-number">4</span> <i class="fas fa-microscope"></i> Đánh giá chuyên sâu (Tùy chọn - Tính UOsm)</span>
+        <i class="fas" :class="showUOsm ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
       </div>
-      <div style="font-size:0.8rem; color:#4f6f8f; background:#f5f8fc; border-radius:12px; padding:0.4rem 0.8rem;">
-        <strong>UOsm</strong> = 2×(Na⁺ + K⁺) + Urea
-        <span v-if="calculatedUOsm !== null" style="font-weight:600; color:#0a2a44; margin-left:0.8rem;">
-          → <strong>{{ calculatedUOsm }}</strong> mOsm/kg
-        </span>
-        <span v-else style="color:#8aa3bc; margin-left:0.8rem;">(nhập Na⁺ & K⁺ niệu)</span>
-        <span v-if="calculatedUOsm !== null && calculatedUOsm > 500" style="margin-left:0.8rem; background:#fff3e0; padding:0.1rem 0.6rem; border-radius:40px; font-size:0.7rem; color:#e67e22;">
-          <i class="fas fa-exclamation-triangle"></i> Cao > 500
-        </span>
+      
+      <div v-if="showUOsm" style="margin-top:1rem; padding-top:1rem; border-top:1px dashed #dce1e8;">
+        <div class="row-3">
+          <div class="form-group">
+            <label><i class="fas fa-flask"></i> Na⁺ niệu (mmol/L)</label>
+            <input type="number" v-model.number="urineNa" placeholder="40" step="0.5">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-flask"></i> K⁺ niệu (mmol/L)</label>
+            <input type="number" v-model.number="urineK" placeholder="20" step="0.5">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-flask"></i> Urea niệu (mmol/L)</label>
+            <input type="number" v-model.number="urineUrea" placeholder="300" step="5">
+          </div>
+        </div>
+        <div style="font-size:0.8rem; color:#4f6f8f; background:#f5f8fc; border-radius:12px; padding:0.4rem 0.8rem; margin-top:0.5rem;">
+          <strong>UOsm</strong> = 2×(Na⁺ + K⁺) + Urea
+          <span v-if="calculatedUOsm !== null" style="font-weight:600; color:#0a2a44; margin-left:0.8rem;">
+            → <strong>{{ calculatedUOsm }}</strong> mOsm/kg
+          </span>
+          <span v-else style="color:#8aa3bc; margin-left:0.8rem;">(nhập Na⁺ & K⁺ niệu)</span>
+        </div>
       </div>
     </div>
 
@@ -338,58 +286,162 @@
     </button>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- TAB 2: Y LỆNH -->
-  <!-- ============================================================ -->
-  <div class="tab-content" :class="{active: activeTab===2}">
+  <div class="tab-content active" :class="{active: activeTab===2}">
     <div class="flex" style="margin-bottom:0.8rem;">
-      <button class="btn" @click="activeTab=1"><i class="fas fa-arrow-left"></i> Quay lại</button>
-      <button class="btn btn-success" @click="generatePlan()"><i class="fas fa-sync"></i> Cập nhật</button>
-      <button class="btn" style="background:#6c8aa8;" @click="activeTab=3"><i class="fas fa-arrow-right"></i> Sang Theo dõi</button>
+      <button class="btn" @click="activeTab=1"><i class="fas fa-arrow-left"></i> Đánh giá</button>
+      <button class="btn btn-success" @click="generatePlan()"><i class="fas fa-sync"></i> Cập nhật Y lệnh</button>
+      <button class="btn" style="background:#6c8aa8;" @click="activeTab=3">Sang Theo dõi <i class="fas fa-arrow-right"></i></button>
     </div>
-    <div v-if="ylenhHtml" class="ylenh-box" v-html="ylenhHtml"></div>
-    <div v-else class="empty"><i class="fas fa-info-circle"></i> Chưa có y lệnh</div>
-  </div>
 
-  <!-- ============================================================ -->
-  <!-- TAB 3: THEO DÕI (Đạt / Chưa đạt) -->
-  <!-- ============================================================ -->
-  <div class="tab-content" :class="{active: activeTab===3}">
-    <div class="flex" style="margin-bottom:0.8rem;">
-      <button class="btn" @click="activeTab=2"><i class="fas fa-arrow-left"></i> Quay lại</button>
-      <button class="btn btn-success" @click="resetFollowUp()" style="background:#6c8aa8;">
-        <i class="fas fa-eraser"></i> Xóa tất cả
-      </button>
-    </div>
-    <div style="background:white; border-radius:20px; padding:1.2rem; border:1px solid #e8edf4;">
-      <div style="font-weight:600; font-size:0.9rem; color:#0a2a44; margin-bottom:0.5rem;">
-        <i class="fas fa-clock"></i> Nhập kết quả Na⁺ theo các mốc thời gian:
+    <div v-if="plan" class="ylenh-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.5rem;">
+        <span style="background:#1f70c4; color:white; padding:0.1rem 0.8rem; border-radius:40px; font-size:0.7rem; font-weight:600;">
+          {{ plan.isAcute ? 'CẤP TÍNH' : 'MẠN TÍNH' }}
+        </span>
       </div>
-      <div class="timepoints">
-        <div class="timepoint-item" v-for="(item, idx) in timePoints" :key="idx">
-          <div class="label">{{ item.label }}</div>
-          <input type="number" v-model.number="item.value" placeholder="___" step="0.5">
-          <div v-if="item.result" class="status" :class="item.result.class">{{ item.result.text }}</div>
+      <div class="line"><span class="label">Dung dịch:</span><span class="value"><strong>{{ plan.naLabel }}</strong></span></div>
+      <div class="line"><span class="label">Thể tích truyền:</span><span class="value"><strong>{{ plan.dose }} mL</strong></span></div>
+      <div class="line"><span class="label">Thời gian:</span><span class="value"><strong>{{ plan.timeMin }} phút</strong></span></div>
+
+      <div class="toc-do-box">
+        <div style="font-weight:600; color:#0a2a44; margin-bottom:0.4rem;">
+          <i class="fas fa-tachometer-alt"></i> HƯỚNG DẪN TỐC ĐỘ TRUYỀN:
+        </div>
+        <div class="row">
+          <div class="rate-card" style="background:#e8f5e9; border: 1px solid #c8e6c9;">
+            <div style="font-size:0.75rem; color:#2e7d32; font-weight:600; margin-bottom:0.3rem;"><i class="fas fa-desktop"></i> BƠM TIÊM ĐIỆN</div>
+            <div style="font-size:1.6rem; font-weight:700; color:#1b5e20;">{{ plan.rateMlH }} <span style="font-size:0.8rem; font-weight:600;">mL/giờ</span></div>
+          </div>
+          <div class="rate-card" style="background:#fff3e0; border: 1px solid #ffe0b2;">
+            <div style="font-size:0.75rem; color:#e65100; font-weight:600; margin-bottom:0.3rem;"><i class="fas fa-tint"></i> NHỎ GIỌT (DÂY 20 giọt/mL)</div>
+            <div style="font-size:1.6rem; font-weight:700; color:#e65100;">{{ plan.dropsPerMin }} <span style="font-size:0.8rem; font-weight:600;">giọt/phút</span></div>
+          </div>
         </div>
       </div>
-      <button class="btn btn-success" style="margin-top:0.5rem; width:auto; padding:0.4rem 1.5rem;" @click="analyzeAllTimePoints">
-        <i class="fas fa-calculator"></i> Phân tích tất cả
+
+      <div class="line" style="margin-top:0.8rem;"><span class="label">Lượng Na⁺ vào:</span><span class="value">{{ plan.naAmount }} mmol</span></div>
+
+      <div class="prediction-box">
+        <div class="pred-title"><i class="fas fa-chart-line"></i> DỰ KIẾN TĂNG Na⁺ (MÔ HÌNH TOÁN HỌC)</div>
+        
+        <div class="radio-item-group">
+          <label class="radio-label" :style="calcMethod === 'am' ? 'background: #f2f9ff; border-color: #1f70c4;' : ''">
+            <input type="radio" v-model="calcMethod" value="am">
+            <span><strong>C.thức Adrogué-Madias</strong><br><small style="color:#6c8aa8;">(Kinh điển - Chỉ tính dịch truyền)</small></span>
+          </label>
+          <label class="radio-label" :style="calcMethod === 'edelman' ? 'background: #fdfaf5; border-color: #f39c12;' : ''">
+            <input type="radio" v-model="calcMethod" value="edelman">
+            <span><strong>P.trình Edelman</strong><br><small style="color:#6c8aa8;">(Cân bằng khối - Gồm nước tiểu)</small></span>
+          </label>
+        </div>
+
+        <div v-if="calcMethod === 'am'" class="calc-panel">
+          <div class="formula">ΔNa = [ V_dịch × (Na_dịch - Na_máu) ] / (TBW + V_dịch)</div>
+          <div class="line" style="align-items: center; border:none; padding:0;">
+            <span class="label">Sau khi truyền:</span>
+            <span class="value">
+              <span class="highlight">+{{ deltaAM.toFixed(2) }} mmol/L</span> 
+              <span style="color:#6c8aa8; margin:0 6px;">➔</span> 
+              Đạt mức <strong style="color:#0a2a44;">~{{ (sodium + deltaAM).toFixed(2) }} mmol/L</strong>
+            </span>
+          </div>
+        </div>
+
+        <div v-if="calcMethod === 'edelman'" class="calc-panel" style="background: #fdfaf5; border-color: #f6e5c0;">
+          <div class="formula">Na_mới = [ (Na_máu × TBW) + Nhập(Na) - Xuất(Na+K) ] / (TBW + V_dịch - V_niệu)</div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 0.8rem 0; background: white; padding: 0.8rem; border-radius: 8px; border: 1px solid #f6e5c0;">
+            <div class="form-group" style="margin:0;">
+              <label>Thể tích tiểu (L)</label>
+              <input type="number" v-model.number="urineVol" placeholder="VD: 0.1">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Na⁺ niệu</label>
+              <input type="number" v-model.number="urineNa" placeholder="Tab 1">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>K⁺ niệu</label>
+              <input type="number" v-model.number="urineK" placeholder="Tab 1">
+            </div>
+          </div>
+          
+          <div class="line" style="align-items: center; border:none; padding:0;">
+            <span class="label">Sau khi truyền:</span>
+            <span class="value">
+              <span class="highlight" :style="deltaEdelman < 0 ? 'background:#fce4e4; color:#c0392b;' : 'background:#e8f5e9; color:#27ae60;'">
+                {{ deltaEdelman > 0 ? '+' : '' }}{{ deltaEdelman.toFixed(2) }} mmol/L
+              </span> 
+              <span style="color:#6c8aa8; margin:0 6px;">➔</span> 
+              Đạt mức <strong style="color:#0a2a44;">~{{ (sodium + deltaEdelman).toFixed(2) }} mmol/L</strong>
+            </span>
+          </div>
+          <div v-if="deltaEdelman < 0" class="danger" style="margin-top:0.6rem;">
+            <i class="fas fa-skull-crossbones"></i> <strong>Bẫy nước tiểu thải muối (Desalination):</strong> Thận đang thải ra lượng điện giải lớn hơn lượng bù vào. Việc truyền dịch lúc này sẽ tiếp tục làm <strong>HẠ</strong> thêm Na⁺ máu! Cần thận trọng!
+          </div>
+        </div>
+      </div>
+
+      <div v-if="!plan.isAcute" class="line" style="border-top:1px dashed #e8edf4; padding-top:0.8rem;"><span class="label">Mục tiêu tăng:</span><span class="value">≤ {{ plan.highOdsRisk ? 6 : 8 }} mmol/L/ngày</span></div>
+      <div class="warning"><i class="fas fa-exclamation-triangle"></i> <strong>KHÔNG</strong> tiêm tĩnh mạch trực tiếp (Push nhanh)</div>
+      
+      <div v-if="plan.highUosm" class="warning" style="margin-top:0.4rem;"><i class="fas fa-info-circle"></i> UOsm > 500: hạn chế dịch đơn thuần có thể thất bại → cân nhắc urea hoặc vaptans</div>
+      <div v-if="plan.hasSiad" class="success" style="margin-top:0.4rem;"><i class="fas fa-info-circle"></i> Có SIAD → cân nhắc tolvaptan 7.5mg sáng sớm</div>
+    </div>
+    
+    <div v-else class="empty"><i class="fas fa-info-circle"></i> Chưa tạo Y lệnh. Vui lòng bấm nút "Cập nhật".</div>
+  </div>
+
+  <div class="tab-content" :class="{active: activeTab===3}">
+    <div class="flex" style="margin-bottom:0.8rem;">
+      <button class="btn" @click="activeTab=2"><i class="fas fa-arrow-left"></i> Xem lại Y lệnh</button>
+      <button class="btn btn-success" @click="resetFollowUp()" style="background:#6c8aa8;">
+        <i class="fas fa-eraser"></i> Đặt lại
       </button>
     </div>
-    <div v-if="followUpHtml" class="ylenh-box" style="border-left-color:#e67e22;" v-html="followUpHtml"></div>
-    <div v-else-if="hasAnyFollowUp" class="empty"><i class="fas fa-spinner fa-spin"></i> Nhấn "Phân tích tất cả"</div>
-    <div v-else class="empty"><i class="fas fa-clock"></i> Nhập Na⁺ vào các mốc thời gian</div>
-    <div v-if="ylenhHtml" style="margin-top:1.2rem; font-size:0.8rem; color:#4f6f8f; border-top:1px dashed #dce1e8; padding-top:0.8rem;">
+
+    <div style="background:white; border-radius:20px; padding:1.5rem; border:1px solid #e8edf4; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+      <div style="font-weight:600; font-size:1rem; color:#0a2a44; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center;">
+        <span><i class="fas fa-vial" style="color:#1f70c4;"></i> Nhập kết quả Na⁺ mới nhất</span>
+        <span class="tag" style="font-size:0.75rem;">Na⁺ ban đầu: <strong>{{ sodium || '?' }}</strong> mmol/L</span>
+      </div>
+      
+      <div style="display:flex; gap:1.2rem; flex-wrap:wrap; align-items:flex-end;">
+        <div class="form-group" style="flex:1; min-width:120px;">
+          <label>Thời gian tính từ lúc truyền:</label>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="number" v-model.number="followUpTime" placeholder="VD: 2" step="0.5" style="width: 80px;">
+            <span style="font-weight:600; color:#4f6f8f; font-size:0.9rem;">Giờ</span>
+          </div>
+        </div>
+        <div class="form-group" style="flex:1; min-width:150px;">
+          <label>Na⁺ máu đo được:</label>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="number" v-model.number="followUpNa" placeholder="VD: 122" step="0.5" style="width: 100px;">
+            <span style="font-weight:600; color:#4f6f8f; font-size:0.9rem;">mmol/L</span>
+          </div>
+        </div>
+        <button class="btn btn-success" style="padding:0.6rem 1.5rem; margin-bottom:0.15rem;" @click="analyzeSingleTimePoint">
+          <i class="fas fa-bolt"></i> Phân tích & Xử trí
+        </button>
+      </div>
+    </div>
+
+    <div v-if="followUpHtml" class="ylenh-box" style="border-left-color:#e67e22; margin-top:1.2rem;" v-html="followUpHtml"></div>
+    <div v-else class="empty" style="margin-top:1.2rem;"><i class="fas fa-laptop-medical"></i> Nhập kết quả xét nghiệm để xem bước xử trí tiếp theo.</div>
+
+    <div v-if="plan" style="margin-top:1.5rem; font-size:0.8rem; color:#4f6f8f; border-top:1px dashed #dce1e8; padding-top:1rem;">
       <details>
-        <summary style="cursor:pointer; font-weight:600;"><i class="fas fa-syringe"></i> Xem lại Y lệnh</summary>
-        <div class="ylenh-box" style="margin-top:0.5rem; font-size:0.85rem;" v-html="ylenhHtml"></div>
+        <summary style="cursor:pointer; font-weight:600; font-size:0.9rem; color:#1f70c4;"><i class="fas fa-syringe"></i> Bấm để xem lại Y lệnh lúc đầu</summary>
+        <div class="ylenh-box" style="margin-top:0.8rem; font-size:0.85rem;">
+          <div class="line"><span class="label">Dung dịch:</span><span class="value"><strong>{{ plan.naLabel }}</strong></span></div>
+          <div class="line"><span class="label">Thể tích truyền:</span><span class="value"><strong>{{ plan.dose }} mL</strong></span></div>
+          <div class="line"><span class="label">Thời gian:</span><span class="value"><strong>{{ plan.timeMin }} phút</strong></span></div>
+          <div class="line"><span class="label">Lượng Na⁺:</span><span class="value">{{ plan.naAmount }} mmol</span></div>
+        </div>
       </details>
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- POPUP CHỌN NATRI -->
-  <!-- ============================================================ -->
   <div class="popup-overlay" :class="{active: showPopup}" @click.self="showPopup = false">
     <div class="popup">
       <button class="close" @click="showPopup = false">&times;</button>
@@ -421,6 +473,7 @@
     data: {
       activeTab: 1,
       showPopup: false,
+      showUOsm: false,
 
       naLevel: 'moderate',
       naOptions: [
@@ -452,22 +505,18 @@
 
       weight: 65,
       sodium: 118,
-      packSize: 100,
       urineNa: null,
       urineK: null,
       urineUrea: null,
       selectedNatri: null,
 
-      timePoints: [
-        { label: '2 giờ', value: null, result: null },
-        { label: '4 giờ', value: null, result: null },
-        { label: '6 giờ', value: null, result: null },
-        { label: '8 giờ', value: null, result: null },
-        { label: '12 giờ', value: null, result: null },
-        { label: '24 giờ', value: null, result: null }
-      ],
+      // State cho tính toán Y Lệnh
+      plan: null,
+      calcMethod: 'am',
+      urineVol: null,
 
-      ylenhHtml: '',
+      followUpTime: 2,
+      followUpNa: null,
       followUpHtml: ''
     },
 
@@ -525,8 +574,37 @@
             recommended: severe && acute, warn: true }
         ];
       },
-      hasAnyFollowUp() {
-        return this.timePoints.some(t => t.value !== null && t.value !== '');
+      deltaAM() {
+        if (!this.plan) return 0;
+        const w = this.weight || 65;
+        const na = this.sodium || 118;
+        const tbw = w * 0.6;
+        const volL = this.plan.dose / 1000;
+        const naConc = this.plan.naConc;
+        return ((naConc - na) * volL) / (tbw + volL);
+      },
+      deltaEdelman() {
+        if (!this.plan) return 0;
+        const w = this.weight || 65;
+        const na1 = this.sodium || 118;
+        const tbw = w * 0.6;
+        
+        const volIV = this.plan.dose / 1000;
+        const naIV = this.plan.naConc;
+        
+        const volUrine = this.urineVol || 0;
+        const naUrine = this.urineNa || 0;
+        const kUrine = this.urineK || 0;
+
+        const totalNaK_initial = na1 * tbw;
+        const input = volIV * naIV;
+        const output = volUrine * (naUrine + kUrine);
+        
+        const newTBW = tbw + volIV - volUrine;
+        if (newTBW <= 0) return 0;
+
+        const na2 = (totalNaK_initial + input - output) / newTBW;
+        return na2 - na1;
       }
     },
 
@@ -539,241 +617,118 @@
       generatePlan() {
         const w = this.weight || 65;
         const na = this.sodium || 118;
-        const tbw = w * 0.6;
         const naConc = this.natriConcentration;
-        const pack = this.packSize || 100;
 
         if (naConc === null) {
-          this.ylenhHtml = `<div class="warning"><i class="fas fa-exclamation-triangle"></i> Vui lòng chọn loại Natri</div>`;
+          alert("Vui lòng Chọn loại Natri trước khi Cập nhật Y lệnh!");
           return;
         }
 
         const dose = Math.round(w * 1.5);
         const timeMin = 15;
-        const rateMlMin = (dose / timeMin).toFixed(1);
-        const rateMlH = Math.round(dose / timeMin * 60);
-        const dropFactor = 20;
-        const dropsPerMin = Math.round((dose / timeMin) * dropFactor);
-        const volL = dose / 1000;
-        const deltaNa = ((naConc - na) * volL) / (tbw + volL);
-        const soTui = Math.ceil(dose / pack);
+        const rateMlH = Math.round(dose / timeMin * 60); 
+        const dropsPerMin = Math.round((dose / timeMin) * 20); 
 
-        // Duy trì
-        const maintRateMlH = 25;
-        const maintDropsPerMin = Math.round((maintRateMlH / 60) * dropFactor);
-        const maintPackSize = 500;
-        const maintHoursPerBag = Math.round(maintPackSize / maintRateMlH);
-
-        const naLabel = this.selectedNatri === 'nacl3' ? 'NaCl 3% (513 mmol/L)' :
-          this.selectedNatri === 'nacl09' ? 'NaCl 0.9% (154 mmol/L)' :
-          this.selectedNatri === 'nacl15' ? 'NaCl 1.5% (257 mmol/L)' :
-          'NaCl 5% (856 mmol/L)';
-
-        let html = `
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.5rem;">
-            <span style="background:#1f70c4; color:white; padding:0.1rem 0.8rem; border-radius:40px; font-size:0.7rem; font-weight:600;">
-              ${this.isAcuteSymptomatic ? 'CẤP TÍNH' : 'MẠN TÍNH'}
-            </span>
-            <span class="tag"><i class="fas fa-cube"></i> Đóng gói: ${pack} mL/chai</span>
-          </div>
-          <div class="line"><span class="label">Dung dịch:</span><span class="value"><strong>${naLabel}</strong></span></div>
-          <div class="line"><span class="label">Liều bolus:</span><span class="value"><strong>${dose} mL</strong></span></div>
-          <div class="line"><span class="label">Số chai:</span><span class="value">${soTui} chai</span></div>
-          <div class="line"><span class="label">Cách lấy:</span><span class="value">Rút ${dose} mL từ ${soTui} chai ${pack}mL</span></div>
-          <div class="line"><span class="label">Thời gian:</span><span class="value"><strong>${timeMin} phút</strong></span></div>
-
-          <div class="toc-do-box">
-            <div style="font-weight:600; color:#0a2a44; margin-bottom:0.2rem;">
-              <i class="fas fa-tachometer-alt"></i> HƯỚNG DẪN CÀI ĐẶT BƠM TIÊM:
-            </div>
-            <div class="row" style="background:#e8f5e9; border-radius:8px; padding:0.3rem 0.6rem;">
-              <span><strong>🖥️ BƠM TIÊM ĐIỆN:</strong> <span class="highlight-big">${rateMlH} mL/giờ</span></span>
-              <span style="font-size:0.8rem; color:#4f6f8f;">(cài mL/giờ, chạy 15 phút)</span>
-            </div>
-            <div class="row" style="margin-top:0.2rem;">
-              <span><strong>mL/phút:</strong> ${rateMlMin} mL/phút</span>
-              <span><strong>mL/giờ:</strong> ${rateMlH} mL/giờ</span>
-            </div>
-            <div class="row" style="background:#fce4e4; border-radius:8px; padding:0.2rem 0.6rem; margin-top:0.2rem;">
-              <span><strong>🔄 GIỌT/PHÚT:</strong> <span class="highlight-big">${dropsPerMin}</span> giọt/phút</span>
-            </div>
-            <div style="font-size:0.75rem; color:#4f6f8f; margin-top:0.2rem; border-top:1px dashed #d6e1ed; padding-top:0.2rem;">
-              <i class="fas fa-info-circle"></i> Dây truyền: <strong>20 giọt/mL</strong> (tiêu chuẩn)
-            </div>
-          </div>
-
-          <div class="line"><span class="label">Lượng Na⁺:</span><span class="value">${Math.round(dose/1000*naConc*10)/10} mmol</span></div>
-          <div class="line"><span class="label">Dự kiến tăng:</span><span class="value highlight">+${deltaNa.toFixed(2)} mmol/L</span></div>
-          <div class="line"><span class="label">Theo dõi:</span><span class="value">Na⁺ sau 2h, 4h, 6h, 8h, 12h, 24h</span></div>
-          ${!this.isAcuteSymptomatic ? `<div class="line"><span class="label">Mục tiêu:</span><span class="value">≤ ${this.isHighRiskODS ? 6 : 8} mmol/L/ngày</span></div>` : ''}
-          <div class="warning"><i class="fas fa-exclamation-triangle"></i> <strong>KHÔNG</strong> tiêm bolus nhanh — nguy cơ phù phổi, tăng Na⁺ đột ngột</div>
-          <div class="info-box" style="margin-top:0.3rem;">
-            <i class="fas fa-syringe"></i> <strong>Hướng dẫn điều dưỡng:</strong> 
-            <br>• <strong>Bơm tiêm điện:</strong> Cài đặt <strong>${rateMlH} mL/giờ</strong>, thời gian chạy 15 phút
-            <br>• <strong>Truyền tay:</strong> Điều chỉnh <strong>${dropsPerMin} giọt/phút</strong>
-          </div>
-
-          <!-- DUY TRÌ -->
-          <div class="duy-tri-box">
-            <div class="title"><i class="fas fa-check-circle"></i> ✅ SAU KHI ĐẠT MỤC TIÊU (tăng +4-6 mmol/L):</div>
-            <div class="item"><i class="fas fa-arrow-right"></i> <strong>Chuyển sang NaCl 0.9%</strong> (154 mmol/L) để duy trì</div>
-            <div class="item"><i class="fas fa-cube"></i> <strong>Quy cách:</strong> Túi NaCl 0.9% <strong>500 mL</strong></div>
-            <div class="item"><i class="fas fa-tachometer-alt"></i> <strong>Tốc độ:</strong> 20-30 mL/giờ (trung bình 25 mL/giờ)</div>
-            <div class="item"><i class="fas fa-tint"></i> <strong>Giọt/phút:</strong> <span class="highlight">${maintDropsPerMin} giọt/phút</span></div>
-            <div class="item"><i class="fas fa-clock"></i> <strong>Thời gian:</strong> 1 túi 500mL dùng trong <strong>${maintHoursPerBag} giờ</strong></div>
-            <div class="item"><i class="fas fa-syringe"></i> <strong>Bơm tiêm điện:</strong> Cài đặt <strong>${maintRateMlH} mL/giờ</strong></div>
-            <div class="item"><i class="fas fa-undo-alt"></i> <strong>Hạn chế dịch:</strong> ≤ 1.5 L/ngày (nếu SIAD)</div>
-            <div class="item"><i class="fas fa-clock"></i> <strong>Theo dõi:</strong> Na⁺ máu mỗi 4-6 giờ</div>
-          </div>
-
-          ${this.odsRiskItems.some(i => i.id === 7 && i.checked) ? `
-          <div class="info-box" style="margin-top:0.4rem; border-left-color:#27ae60;">
-            <i class="fas fa-info-circle" style="color:#27ae60;"></i> <strong>Có SIAD — có thể cân nhắc:</strong>
-            <br>• <strong>Tolvaptan</strong> 7.5 mg/ngày (uống sáng)
-            <br>• <strong>Urea</strong> 15-30 g/ngày (pha với nước ngọt)
-            <br>• NaCl 0.9% + <strong>Furosemide</strong> 20-40 mg/ngày
-          </div>` : ''}
-
-          <div style="margin-top:0.5rem; font-size:0.8rem; color:#4f6f8f; border-top:1px dashed #dce1e8; padding-top:0.4rem;">
-            <i class="fas fa-syringe"></i> <strong>Hạn chế dịch:</strong> ≤ 1.5 L/ngày · <strong>Mục tiêu:</strong> Na⁺ ≥ 130 mmol/L
-          </div>
-        `;
-
-        if (soTui > 1) {
-          html += `
-            <div class="info-box" style="margin-top:0.3rem;">
-              <i class="fas fa-syringe"></i> <strong>Lấy thuốc:</strong> 
-              <br>• Chai 1: Rút hết ${pack} mL
-              <br>• Chai 2: Rút ${dose - (soTui-1)*pack} mL
-              ${soTui > 2 ? `<br>• Các chai còn lại: Rút hết ${pack} mL` : ''}
-            </div>
-          `;
-        }
-
-        if (this.calculatedUOsm !== null && this.calculatedUOsm > 500) {
-          html += `<div class="warning" style="margin-top:0.4rem;"><i class="fas fa-info-circle"></i> UOsm > 500: hạn chế dịch đơn thuần có thể thất bại → cân nhắc urea hoặc vaptans</div>`;
-        }
-
-        this.ylenhHtml = html;
+        this.plan = {
+          isAcute: this.isAcuteSymptomatic,
+          naLabel: this.selectedNatriLabel + ` (${naConc} mmol/L)`,
+          naConc: naConc,
+          dose: dose,
+          timeMin: timeMin,
+          rateMlH: rateMlH,
+          dropsPerMin: dropsPerMin,
+          naAmount: Math.round(dose/1000*naConc*10)/10,
+          highUosm: this.calculatedUOsm !== null && this.calculatedUOsm > 500,
+          hasSiad: this.odsRiskItems.some(i => i.id === 7 && i.checked),
+          highOdsRisk: this.isHighRiskODS
+        };
+        
         this.activeTab = 2;
       },
 
-      analyzeAllTimePoints() {
+      analyzeSingleTimePoint() {
         const baseline = this.sodium || 118;
-        const w = this.weight || 65;
-        const maintRateMlH = 25;
-        const maintDropsPerMin = Math.round((maintRateMlH / 60) * 20);
-        const maintPackSize = 500;
-        const maintHoursPerBag = Math.round(maintPackSize / maintRateMlH);
+        const currentNa = this.followUpNa;
+        const time = this.followUpTime || '?';
 
-        let html = `
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:0.5rem;">
-            <span style="background:#e67e22; color:white; padding:0.1rem 0.8rem; border-radius:40px; font-size:0.7rem; font-weight:600;">
-              <i class="fas fa-clock"></i> THEO DÕI ĐA THỜI ĐIỂM
-            </span>
-            <span class="tag">Na⁺ ban đầu: ${baseline} mmol/L</span>
-          </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.3rem; font-size:0.85rem;">
-        `;
-
-        let hasData = false;
-        let lastNa = baseline;
-        let lastLabel = 'Ban đầu';
-
-        for (const tp of this.timePoints) {
-          if (tp.value !== null && tp.value !== '' && !isNaN(tp.value)) {
-            hasData = true;
-            const delta = tp.value - baseline;
-
-            let status = '';
-            let statusClass = '';
-            if (delta >= 4 && delta <= 6) { status = '✅ Đạt'; statusClass = 'success'; }
-            else if (delta < 4 && tp.value > 0) { status = '⚠️ Chưa đạt'; statusClass = 'warning'; }
-            else if (delta > 6 && delta <= 10) { status = '⚡ Nhanh'; statusClass = 'warning'; }
-            else if (delta > 10) { status = '🔴 Quá nhanh!'; statusClass = 'danger'; }
-            else { status = '⏳ Theo dõi'; statusClass = ''; }
-
-            html += `
-              <div style="background:#f5f8fc; border-radius:8px; padding:0.3rem 0.6rem; display:flex; justify-content:space-between;">
-                <span><strong>${tp.label}:</strong> ${tp.value} mmol/L</span>
-                <span style="font-weight:600; color:${delta > 0 ? '#c0392b' : '#27ae60'};">${delta > 0 ? '+' : ''}${delta.toFixed(1)}</span>
-                <span class="status" style="font-size:0.6rem; padding:0.05rem 0.4rem; border-radius:40px; background:${statusClass === 'success' ? '#e8f5e9' : statusClass === 'warning' ? '#fff3e0' : statusClass === 'danger' ? '#fce4e4' : '#f5f5f5'};">
-                  ${status}
-                </span>
-              </div>
-            `;
-            lastNa = tp.value;
-            lastLabel = tp.label;
-          }
-        }
-
-        html += `</div>`;
-
-        if (!hasData) {
-          this.followUpHtml = `<div class="warning"><i class="fas fa-exclamation-triangle"></i> Chưa có dữ liệu Na⁺ nào được nhập</div>`;
+        if (currentNa === null || currentNa === '') {
+          this.followUpHtml = `<div class="warning"><i class="fas fa-exclamation-triangle"></i> Bạn chưa nhập nồng độ Na⁺ đo được!</div>`;
           return;
         }
 
-        const totalDelta = lastNa - baseline;
-        html += `<div style="margin-top:0.6rem; border-top:1px dashed #dce1e8; padding-top:0.5rem; font-size:0.9rem;">`;
+        const totalDelta = currentNa - baseline;
+        let html = `
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #dce1e8; padding-bottom:0.8rem; margin-bottom:0.8rem;">
+            <div>
+              <span style="font-size:0.8rem; color:#4f6f8f; display:block; margin-bottom:4px;">Kết quả tại giờ thứ <strong>${time}</strong></span>
+              <span style="font-size:1.6rem; font-weight:700; color:#0a2a44;">${currentNa} <span style="font-size:0.9rem; font-weight:500;">mmol/L</span></span>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:0.8rem; color:#4f6f8f; display:block; margin-bottom:4px;">Mức chênh lệch (Delta)</span>
+              <span style="font-size:1.4rem; font-weight:700; color:${totalDelta > 0 ? '#c0392b' : '#27ae60'};">${totalDelta > 0 ? '+' : ''}${totalDelta.toFixed(1)}</span>
+            </div>
+          </div>
+        `;
 
         if (totalDelta >= 4 && totalDelta <= 6) {
           html += `
-            <div class="success"><i class="fas fa-check-circle"></i> <strong>✅ ĐẠT MỤC TIÊU</strong> sau ${lastLabel} (tăng ${totalDelta.toFixed(1)} mmol/L)</div>
-            <div class="duy-tri-box" style="margin-top:0.3rem;">
-              <div class="title"><i class="fas fa-check-circle"></i> ✅ CHUYỂN SANG DUY TRÌ:</div>
-              <div class="item"><i class="fas fa-arrow-right"></i> <strong>NaCl 0.9%</strong> (154 mmol/L)</div>
-              <div class="item"><i class="fas fa-cube"></i> <strong>Quy cách:</strong> Túi 500 mL</div>
-              <div class="item"><i class="fas fa-tachometer-alt"></i> <strong>Tốc độ:</strong> 20-30 mL/giờ (trung bình 25 mL/giờ)</div>
-              <div class="item"><i class="fas fa-tint"></i> <strong>Giọt/phút:</strong> <span class="highlight">${maintDropsPerMin} giọt/phút</span></div>
-              <div class="item"><i class="fas fa-clock"></i> <strong>Thời gian:</strong> 1 túi 500mL dùng trong <strong>${maintHoursPerBag} giờ</strong></div>
-              <div class="item"><i class="fas fa-syringe"></i> <strong>Bơm tiêm điện:</strong> Cài đặt <strong>${maintRateMlH} mL/giờ</strong></div>
-              <div class="item"><i class="fas fa-clock"></i> <strong>Theo dõi:</strong> Na⁺ máu mỗi 4-6 giờ</div>
+            <div class="success"><i class="fas fa-check-circle"></i> <strong>✅ ĐẠT MỤC TIÊU CẤP CỨU</strong></div>
+            <div class="xutri-box">
+              <div class="item"><i class="fas fa-arrow-right" style="color:#27ae60;"></i> <span>Ngừng dịch muối ưu trương (NaCl 3%).</span></div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#27ae60;"></i> <span>Chuyển sang <strong>NaCl 0.9% duy trì</strong> với tốc độ <strong>20-30 mL/giờ</strong> (hoặc <strong>7-10 giọt/phút</strong>).</span></div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#27ae60;"></i> <span>Kiểm tra lại nồng độ Natri máu sau mỗi 4-6 giờ.</span></div>
             </div>
           `;
         } else if (totalDelta < 4 && totalDelta > 0) {
-          const doseLap = Math.round(w * 1);
+          const doseLap = Math.round((this.weight || 65) * 1);
+          const rateLapMlH = Math.round(doseLap * 4);
+          const rateLapDrops = Math.round((doseLap/15)*20);
           html += `
-            <div class="warning"><i class="fas fa-exclamation-triangle"></i> <strong>⚠️ CHƯA ĐẠT</strong> sau ${lastLabel} (tăng ${totalDelta.toFixed(1)} mmol/L)</div>
+            <div class="warning"><i class="fas fa-exclamation-triangle"></i> <strong>⚠️ CHƯA ĐẠT MỤC TIÊU</strong></div>
             <div class="xutri-box">
-              <div class="item"><i class="fas fa-arrow-right" style="color:#e67e22;"></i> Truyền thêm <strong>${doseLap} mL</strong> NaCl 3% trong 10-15 phút</div>
-              <div class="item"><i class="fas fa-arrow-right" style="color:#e67e22;"></i> Đo lại Na⁺ sau 1 giờ</div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e67e22;"></i> <span>Bolus thêm <strong>${doseLap} mL NaCl 3%</strong> trong 15 phút.</span></div>
+              <div class="item"><i class="fas fa-bolt" style="color:#e67e22;"></i> <span><strong>Bơm tiêm điện:</strong> ${rateLapMlH} mL/giờ. <br><strong>Truyền nhỏ giọt:</strong> ${rateLapDrops} giọt/phút.</span></div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e67e22;"></i> <span>Đo lại nồng độ Natri máu sau 1 giờ.</span></div>
             </div>
           `;
         } else if (totalDelta > 6 && totalDelta <= 10) {
           html += `
-            <div class="warning" style="border-left-color:#f39c12;"><i class="fas fa-exclamation-triangle" style="color:#f39c12;"></i> <strong>⚡ TĂNG NHANH</strong> (${totalDelta.toFixed(1)} mmol/L)</div>
+            <div class="warning" style="border-left-color:#f39c12; background:#fff8e1;"><i class="fas fa-exclamation-triangle" style="color:#f39c12;"></i> <strong>⚡ TĂNG HƠI NHANH</strong></div>
             <div class="xutri-box">
-              <div class="item"><i class="fas fa-arrow-right" style="color:#f39c12;"></i> Giảm tốc độ truyền 50%</div>
-              <div class="item"><i class="fas fa-arrow-right" style="color:#f39c12;"></i> Nếu tiếp tục tăng → ngừng truyền, dùng D5W 50-100 mL/giờ</div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#f39c12;"></i> <span>Ngay lập tức <strong>giảm tốc độ truyền tĩnh mạch xuống 50%</strong>.</span></div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#f39c12;"></i> <span>Nếu lần đo tiếp theo Na⁺ vẫn tăng nhanh → ngừng mọi dịch có Natri, chuẩn bị sẵn dịch <strong>D5W 50-100 mL/giờ</strong> (hoặc <strong>17-33 giọt/phút</strong>).</span></div>
             </div>
           `;
         } else if (totalDelta > 10) {
           const targetNa = Math.round(baseline + 10);
+          const volD5W = Math.round((this.weight || 65) * 10); 
+          const d5wRateH = Math.round(volD5W / 3); 
+          const d5wRateDrops = Math.round(d5wRateH * 20 / 60);
+
           html += `
-            <div class="danger"><i class="fas fa-exclamation-circle"></i> <strong>🔴 QUÁ NHANH — NGUY CƠ ODS</strong> (tăng ${totalDelta.toFixed(1)} mmol/L)</div>
-            <div class="xutri-box">
-              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>NGỪNG NGAY</strong> mọi dung dịch chứa Natri</div>
-              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>D5W 10 mL/kg</strong> trong 2-4 giờ (hạ Na⁺)</div>
-              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>Desmopressin</strong> 2µg IV/SC mỗi 6-8 giờ</div>
-              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>Theo dõi Na⁺ mỗi 1-2 giờ</strong> đến khi ổn định</div>
-              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <strong>Mục tiêu:</strong> Đưa Na⁺ về dưới ${targetNa} mmol/L</div>
-              ${this.isHighRiskODS ? `<div class="item" style="color:#c0392b; font-weight:700;"><i class="fas fa-exclamation-triangle"></i> ⚠️ BN CÓ NGUY CƠ ODS CAO!</div>` : ''}
+            <div class="danger"><i class="fas fa-exclamation-circle"></i> <strong>🔴 TĂNG QUÁ NHANH — NGUY CƠ ODS</strong></div>
+            <div class="xutri-box" style="background:#fce4e4; border-color:#f5b7b1;">
+              <div class="item"><i class="fas fa-times-circle" style="color:#e74c3c;"></i> <span><strong>NGỪNG NGAY</strong> mọi dung dịch chứa Natri.</span></div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <span>Truyền cấp cứu <strong>D5W ${volD5W} mL</strong> trong 2-4 giờ để hạ Natri xuống.<br>(Tốc độ trung bình cho 3h: <strong>${d5wRateH} mL/giờ</strong> hoặc <strong>${d5wRateDrops} giọt/phút</strong>)</span></div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <span>Dùng thêm <strong>Desmopressin</strong> 2µg (đường IV hoặc tiêm dưới da) mỗi 6-8 giờ.</span></div>
+              <div class="item"><i class="fas fa-arrow-right" style="color:#e74c3c;"></i> <span>Theo dõi sát Na⁺ mỗi 1-2 giờ. <strong>Mục tiêu: Kéo Na⁺ về lại mức dưới ${targetNa} mmol/L.</strong></span></div>
+              ${this.isHighRiskODS ? `<div class="item" style="color:#c0392b; font-weight:700;"><i class="fas fa-skull-crossbones"></i> ⚠️ BỆNH NHÂN ĐANG THUỘC NHÓM CÓ NGUY CƠ ODS RẤT CAO!</div>` : ''}
             </div>
           `;
         } else {
-          html += `<div class="info-box">Không có đủ dữ liệu để kết luận.</div>`;
+          html += `
+            <div class="info-box">
+              <i class="fas fa-info-circle"></i> Nồng độ Natri máu đang thấp hơn lúc bắt đầu truyền. Có thể do cơ chế bẫy thải muối (điện giải niệu > điện giải máu) hoặc lỗi sinh hóa. Xem lại phương trình Edelman ở tab Y lệnh để rà soát.
+            </div>
+          `;
         }
 
-        html += `</div>`;
         this.followUpHtml = html;
       },
 
       resetFollowUp() {
-        for (const tp of this.timePoints) {
-          tp.value = null;
-          tp.result = null;
-        }
+        this.followUpTime = 2;
+        this.followUpNa = null;
         this.followUpHtml = '';
       }
     }
