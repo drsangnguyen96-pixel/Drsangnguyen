@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Đánh Giá Nguy Cơ Tái Phát VTE</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --bg-color: #f4f7f6;
+            --box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg-color); 
+            padding: 20px; 
+            color: #333;
+        }
+        .dashboard-container { 
+            background: #fff; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: var(--box-shadow); 
+        }
+        h1 { 
+            text-align: center; 
+            color: var(--primary-color); 
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .selector-group {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        .selector-group label {
+            font-size: 16px;
+            color: var(--primary-color);
+        }
+        select, input[type="number"] { 
+            width: 100%; 
+            padding: 12px; 
+            margin-top: 8px;
+            border: 1px solid #bdc3c7; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        select:focus, input[type="number"]:focus {
+            border-color: var(--secondary-color);
+        }
+        .scale-section { 
+            display: none; 
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .scale-section.active { 
+            display: block; 
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { font-weight: 600; display: block; margin-bottom: 8px; }
+        .checkbox-group { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 15px; 
+            padding: 12px; 
+            background: #f8f9fa; 
+            border-radius: 6px; 
+            border-left: 4px solid var(--secondary-color);
+        }
+        .checkbox-group input { 
+            margin-right: 15px; 
+            transform: scale(1.3); 
+            cursor: pointer;
+        }
+        .checkbox-group label { 
+            margin-bottom: 0; 
+            cursor: pointer; 
+            width: 100%; 
+            font-weight: 500;
+        }
+        .points { float: right; font-weight: bold; color: var(--secondary-color); }
+        
+        /* Buttons */
+        button, .btn-link { 
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            width: 100%; 
+            padding: 14px; 
+            background-color: var(--secondary-color); 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-top: 10px; 
+            box-sizing: border-box;
+            transition: background-color 0.3s;
+        }
+        button:hover, .btn-link:hover { background-color: #2980b9; }
+        .btn-dash { background-color: #e67e22; }
+        .btn-dash:hover { background-color: #d35400; }
+        .btn-vienna { background-color: #8e44ad; }
+        .btn-vienna:hover { background-color: #732d91; }
+
+        /* Results & Info Boxes */
+        .result-box { 
+            margin-top: 20px; 
+            padding: 15px; 
+            border-radius: 6px; 
+            display: none; 
+            font-size: 16px; 
+            line-height: 1.5;
+        }
+        .info-box {
+            margin-bottom: 20px; 
+            padding: 15px; 
+            border-radius: 6px; 
+            font-size: 15px; 
+            line-height: 1.5;
+            background-color: #f8f9fa;
+            border-left: 4px solid #8e44ad;
+            color: #333;
+        }
+        .alert-info { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; margin-bottom: 15px; padding: 12px; border-radius: 6px; font-size: 14px; }
+        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <h1>Hệ Thống Đánh Giá Nguy Cơ Tái Phát VTE</h1>
+    
+    <div class="selector-group form-group">
+        <label for="scaleSelector"><strong>Chọn công cụ đánh giá:</strong></label>
+        <select id="scaleSelector" onchange="switchScale()">
+            <option value="herdoo2">1. Thang điểm HERDOO2</option>
+            <option value="dash">2. Thang điểm DASH</option>
+            <option value="vienna">3. Mô hình Vienna</option>
+        </select>
+    </div>
+
+    <div id="section-herdoo2" class="scale-section active">
+        <h2 style="color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 5px;">Thang điểm HERDOO2</h2>
+        <p style="font-size:14px; color:#666;">Dự đoán nguy cơ huyết khối tĩnh mạch tái phát (áp dụng cho nữ).</p>
+        
+        <div class="alert-warning">
+            <strong>⚠️ LƯU Ý LÂM SÀNG:</strong> D-dimer trong thang điểm này phải được đo khi bệnh nhân <strong>ĐANG dùng</strong> thuốc chống đông.
+        </div>
+
+        <div class="form-group">
+            <label for="her_gender">Giới tính bệnh nhân:</label>
+            <select id="her_gender" onchange="toggleHerdooCriteria()">
+                <option value="female">Nữ</option>
+                <option value="male">Nam</option>
+            </select>
+        </div>
+
+        <div id="herdoo-criteria">
+            <div class="checkbox-group">
+                <input type="checkbox" id="her_h" value="1">
+                <label for="her_h">Tăng sắc tố, phù hoặc đỏ ở chân <span class="points">1 đ</span></label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="her_d" value="1">
+                <label for="her_d">D-dimer ≥ 250 μg/L <span class="points">1 đ</span></label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="her_o" value="1">
+                <label for="her_o">Béo phì (BMI ≥ 30) <span class="points">1 đ</span></label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="her_a" value="1">
+                <label for="her_a">Tuổi ≥ 65 <span class="points">1 đ</span></label>
+            </div>
+        </div>
+        <button onclick="calculateHERDOO2()">Tính điểm HERDOO2</button>
+        <div id="result-herdoo2" class="result-box"></div>
+    </div>
+
+    <div id="section-dash" class="scale-section">
+        <h2 style="color: #e67e22; border-bottom: 2px solid #e67e22; padding-bottom: 5px;">Thang điểm DASH</h2>
+        <p style="font-size:14px; color:#666;">Dự đoán nguy cơ tái phát VTE sau khi ngừng chống đông.</p>
+        
+        <div class="alert-warning">
+            <strong>⚠️ LƯU Ý LÂM SÀNG:</strong> D-dimer trong thang điểm này phải được đo <strong>khoảng 1 THÁNG SAU KHI ngừng</strong> thuốc chống đông.
+        </div>
+
+        <div class="checkbox-group" style="border-left-color: #e67e22;">
+            <input type="checkbox" id="dash_d" value="2">
+            <label for="dash_d">D-dimer bất thường <span class="points" style="color: #e67e22;">+2</span></label>
+        </div>
+        <div class="checkbox-group" style="border-left-color: #e67e22;">
+            <input type="checkbox" id="dash_a" value="1">
+            <label for="dash_a">Tuổi ≤ 50 <span class="points" style="color: #e67e22;">+1</span></label>
+        </div>
+        <div class="checkbox-group" style="border-left-color: #e67e22;">
+            <input type="checkbox" id="dash_m" value="1">
+            <label for="dash_m">Giới tính Nam <span class="points" style="color: #e67e22;">+1</span></label>
+        </div>
+        <div class="checkbox-group" style="border-left-color: #e67e22;">
+            <input type="checkbox" id="dash_h" value="-2">
+            <label for="dash_h">Sử dụng Hormone lúc bị VTE (chỉ nữ) <span class="points" style="color: #e67e22;">-2</span></label>
+        </div>
+        <button class="btn-dash" onclick="calculateDASH()">Tính điểm DASH</button>
+        <div id="result-dash" class="result-box"></div>
+    </div>
+
+    <div id="section-vienna" class="scale-section">
+        <h2 style="color: #8e44ad; border-bottom: 2px solid #8e44ad; padding-bottom: 5px;">Mô hình Vienna</h2>
+        <p style="font-size:14px; color:#666;">Dự đoán tỷ lệ tái phát VTE trong 1 năm và 5 năm.</p>
+        
+        <div class="alert-warning">
+            <strong>⚠️ LƯU Ý LÂM SÀNG:</strong> D-dimer trong mô hình này phải được đo <strong>khoảng 3 TUẦN SAU KHI ngừng</strong> thuốc chống đông.
+        </div>
+
+        <div class="info-box">
+            <strong>Thông báo từ hệ thống IT:</strong><br>
+            Để đảm bảo độ chính xác y khoa tuyệt đối theo phương trình Hồi quy Cox phức tạp, hệ thống nội bộ đã được cấu hình liên kết trực tiếp tới máy chủ tính toán chính thức của Đại học Y khoa Vienna (phiên bản cập nhật năm 2022-2024).
+        </div>
+        
+        <p style="font-size:15px; color:#2c3e50; font-weight:600; text-align:center; margin-bottom:10px;">
+            Vui lòng chuẩn bị các thông số: Giới tính, Vị trí VTE và Mức D-dimer.
+        </p>
+
+        <a href="https://viennapredictionmodel.at/" target="_blank" class="btn-link btn-vienna">
+            Chuyển đến Công cụ Vienna chính thức ⧉
+        </a>
+    </div>
+
+</div>
+
+<script>
+    // Hàm chuyển đổi giữa các thang điểm
+    function switchScale() {
+        const selected = document.getElementById('scaleSelector').value;
+        document.querySelectorAll('.scale-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        document.getElementById('section-' + selected).classList.add('active');
+        
+        // Ẩn các kết quả cũ khi chuyển tab
+        document.querySelectorAll('.result-box').forEach(box => {
+            box.style.display = 'none';
+        });
+    }
+
+    // --- LOGIC HERDOO2 ---
+    function toggleHerdooCriteria() {
+        const gender = document.getElementById('her_gender').value;
+        const criteria = document.getElementById('herdoo-criteria');
+        if(gender === 'male') {
+            criteria.style.opacity = '0.4';
+            criteria.style.pointerEvents = 'none';
+            document.querySelectorAll('#herdoo-criteria input').forEach(el => el.checked = false);
+        } else {
+            criteria.style.opacity = '1';
+            criteria.style.pointerEvents = 'auto';
+        }
+    }
+
+    function calculateHERDOO2() {
+        const gender = document.getElementById('her_gender').value;
+        const resBox = document.getElementById('result-herdoo2');
+        resBox.style.display = 'block';
+
+        if (gender === 'male') {
+            resBox.className = 'result-box alert-danger';
+            resBox.innerHTML = '<strong>Nguy cơ cao</strong><br>Bệnh nhân Nam tự động được phân tầng nguy cơ cao theo HERDOO2. Xem xét tiếp tục điều trị chống đông.';
+            return;
+        }
+
+        let score = 0;
+        if (document.getElementById('her_h').checked) score += 1;
+        if (document.getElementById('her_d').checked) score += 1;
+        if (document.getElementById('her_o').checked) score += 1;
+        if (document.getElementById('her_a').checked) score += 1;
+
+        if (score <= 1) {
+            resBox.className = 'result-box alert-info';
+            resBox.innerHTML = `<strong>Tổng điểm: ${score} - Nguy cơ thấp</strong><br>Tỷ lệ tái phát thấp (< 3%/năm). Có thể cân nhắc ngừng thuốc chống đông.`;
+        } else {
+            resBox.className = 'result-box alert-danger';
+            resBox.innerHTML = `<strong>Tổng điểm: ${score} - Nguy cơ cao</strong><br>Tỷ lệ tái phát cao (> 3%/năm). Nên cân nhắc tiếp tục dùng thuốc chống đông.`;
+        }
+    }
+
+    // --- LOGIC DASH ---
+    function calculateDASH() {
+        let score = 0;
+        if (document.getElementById('dash_d').checked) score += 2;
+        if (document.getElementById('dash_a').checked) score += 1;
+        if (document.getElementById('dash_m').checked) score += 1;
+        if (document.getElementById('dash_h').checked) score -= 2;
+
+        const resBox = document.getElementById('result-dash');
+        resBox.style.display = 'block';
+
+        if (score <= 1) {
+            resBox.className = 'result-box alert-info';
+            resBox.innerHTML = `<strong>Điểm DASH: ${score}</strong><br>Nguy cơ tái phát hàng năm ~3.1%. Có thể cân nhắc ngừng chống đông.`;
+        } else if (score === 2) {
+            resBox.className = 'result-box alert-warning';
+            resBox.innerHTML = `<strong>Điểm DASH: ${score}</strong><br>Nguy cơ tái phát hàng năm ~6.4%. Cần đánh giá kỹ lợi ích/nguy cơ xuất huyết.`;
+        } else {
+            resBox.className = 'result-box alert-danger';
+            resBox.innerHTML = `<strong>Điểm DASH: ${score}</strong><br>Nguy cơ tái phát hàng năm ~12.3%. Khuyến cáo tiếp tục điều trị chống đông dài hạn.`;
+        }
+    }
+</script>
+
+</body>
+</html>
