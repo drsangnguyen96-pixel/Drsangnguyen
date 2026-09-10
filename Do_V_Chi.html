@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lymphedema Volume Calculator</title>
+    <!-- Sử dụng Bootstrap để có giao diện chuẩn y khoa, responsive trên điện thoại -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding-top: 20px; }
+        .calculator-card { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 20px; }
+        .result-box { background-color: #e9ecef; border-left: 4px solid #0d6efd; padding: 15px; border-radius: 5px; font-size: 1.25rem; font-weight: 600; display: none; }
+        .formula-note { font-size: 0.85rem; color: #6c757d; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator-card">
+        <h3 class="mb-3 text-primary">Tính Thể Tích Chi Dưới</h3>
+        <p class="text-muted mb-4">Mô hình nón cụt (Truncated Cone Formula) đánh giá mức độ Phù bạch huyết.</p>
+        
+        <form id="volumeForm">
+            <!-- Khoảng cách các mốc đo (h) -->
+            <div class="mb-3">
+                <label for="interval" class="form-label fw-bold">Khoảng cách chuẩn giữa các mốc đo (h):</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="interval" value="4" step="0.5" required>
+                    <span class="input-group-text">cm</span>
+                </div>
+                <div class="form-text">Theo chuẩn thường là 4 cm để đảm bảo độ chính xác.</div>
+            </div>
+
+            <!-- Các mốc chu vi (C) -->
+            <div class="mb-3">
+                <label for="circumferences" class="form-label fw-bold">Chu vi các mốc (Từ xa đến gần):</label>
+                <input type="text" class="form-control" id="circumferences" placeholder="VD: 21, 23.5, 26, 30, 32" required>
+                <div class="form-text">Nhập chu vi (cm) tại các mốc, cách nhau bằng dấu phẩy. Bắt đầu từ nếp lằn cổ chân trở lên.</div>
+            </div>
+
+            <!-- Nút Tính toán -->
+            <button type="button" class="btn btn-primary w-100 py-2 mb-3" onclick="calculateVolume()">
+                Tính Thể Tích Ước Tính
+            </button>
+        </form>
+
+        <!-- Hiển thị Kết quả -->
+        <div id="resultBox" class="result-box mt-3">
+            <span class="text-secondary">Tổng thể tích: </span>
+            <span id="totalVolume" class="text-primary">0</span> <span class="text-secondary">ml (cm³)</span>
+        </div>
+
+        <hr class="my-4">
+        
+        <!-- Chú thích lâm sàng -->
+        <div class="formula-note">
+            <strong>Thuật toán:</strong> V = (h / 12π) × (C₁² + C₁C₂ + C₂²)<br>
+            <em>* Công cụ này tính toán tổng thể tích bằng cách cộng dồn thể tích của từng phân đoạn nón cụt (mỗi đoạn cao h cm).</em>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateVolume() {
+        // Lấy giá trị đầu vào
+        const h = parseFloat(document.getElementById('interval').value);
+        const c_input = document.getElementById('circumferences').value;
+        const resultBox = document.getElementById('resultBox');
+        
+        // Xóa khoảng trắng và tách mảng bằng dấu phẩy
+        const circumferences = c_input.split(',').map(val => parseFloat(val.trim())).filter(val => !isNaN(val));
+
+        // Bắt lỗi nhập liệu
+        if (!h || h <= 0) {
+            alert("Vui lòng nhập khoảng cách (h) hợp lệ.");
+            return;
+        }
+        if (circumferences.length < 2) {
+            alert("Vui lòng nhập ít nhất 2 mốc chu vi để tính toán một phân đoạn.");
+            return;
+        }
+
+        let totalVolume = 0;
+
+        // Vòng lặp tính thể tích từng đoạn nón cụt rồi cộng dồn
+        for (let i = 0; i < circumferences.length - 1; i++) {
+            let c1 = circumferences[i];
+            let c2 = circumferences[i + 1];
+            
+            // Công thức: V = (h / 12π) * (c1^2 + c1*c2 + c2^2)
+            let segmentVolume = (h / (12 * Math.PI)) * (Math.pow(c1, 2) + (c1 * c2) + Math.pow(c2, 2));
+            totalVolume += segmentVolume;
+        }
+
+        // Cập nhật giao diện
+        document.getElementById('totalVolume').innerText = totalVolume.toFixed(2);
+        resultBox.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
