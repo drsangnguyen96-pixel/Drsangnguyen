@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABI Calculator (Ankle-Brachial Index)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding-top: 20px; }
+        .calculator-card { max-width: 650px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 25px; }
+        .result-box { background-color: #e9ecef; border-left: 4px solid #198754; padding: 15px; border-radius: 5px; display: none; }
+        .alert-severe { border-left-color: #dc3545; background-color: #f8d7da; color: #842029; }
+        .alert-borderline { border-left-color: #ffc107; background-color: #fff3cd; color: #664d03; }
+        .alert-calcified { border-left-color: #0dcaf0; background-color: #cff4fc; color: #055160; }
+        h5 { color: #0d6efd; margin-top: 15px; border-bottom: 1px solid #dee2e6; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator-card">
+        <h3 class="mb-2 text-primary">Đo Chỉ Số ABI</h3>
+        <p class="text-muted mb-4">Tầm soát Bệnh lý Động mạch Ngoại biên (PAD)</p>
+        
+        <form id="abiForm">
+            <!-- Huyết áp Cánh tay -->
+            <h5>1. Huyết áp tâm thu Cánh tay (Brachial)</h5>
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label class="form-label">Tay Phải (mmHg)</label>
+                    <input type="number" class="form-control" id="armRight" required>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">Tay Trái (mmHg)</label>
+                    <input type="number" class="form-control" id="armLeft" required>
+                </div>
+            </div>
+
+            <!-- Huyết áp Cổ chân Phải -->
+            <h5>2. Huyết áp tâm thu Cổ chân PHẢI (Ankle)</h5>
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label class="form-label">ĐM Mu chân (DP)</label>
+                    <input type="number" class="form-control" id="ankleRightDP" required>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">ĐM Chày sau (PT)</label>
+                    <input type="number" class="form-control" id="ankleRightPT" required>
+                </div>
+            </div>
+
+            <!-- Huyết áp Cổ chân Trái -->
+            <h5>3. Huyết áp tâm thu Cổ chân TRÁI (Ankle)</h5>
+            <div class="row mb-4">
+                <div class="col-6">
+                    <label class="form-label">ĐM Mu chân (DP)</label>
+                    <input type="number" class="form-control" id="ankleLeftDP" required>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">ĐM Chày sau (PT)</label>
+                    <input type="number" class="form-control" id="ankleLeftPT" required>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary w-100 py-2 mb-4" onclick="calculateABI()">
+                Tính Toán ABI
+            </button>
+        </form>
+
+        <!-- Kết quả -->
+        <div id="resultBox" class="result-box">
+            <h5 class="text-success border-0 mb-3">Kết quả Lâm sàng:</h5>
+            <p><strong>Huyết áp tay cao nhất:</strong> <span id="highestArm"></span> mmHg</p>
+            
+            <div class="row mt-3">
+                <div class="col-md-6 mb-2">
+                    <div id="resultRightBox" class="p-2 border rounded bg-white">
+                        <strong>ABI Chân Phải:</strong> <span id="abiRightVal" class="fs-4 fw-bold"></span>
+                        <div id="interpRight" class="mt-1 small"></div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div id="resultLeftBox" class="p-2 border rounded bg-white">
+                        <strong>ABI Chân Trái:</strong> <span id="abiLeftVal" class="fs-4 fw-bold"></span>
+                        <div id="interpLeft" class="mt-1 small"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function getInterpretation(abi) {
+        if (abi > 1.4) return { text: "Mạch máu xơ cứng/vôi hóa (Incompressible). Cần đo TBI.", class: "text-info" };
+        if (abi >= 1.0 && abi <= 1.4) return { text: "Bình thường (Normal).", class: "text-success" };
+        if (abi >= 0.9 && abi < 1.0) return { text: "Giới hạn (Borderline).", class: "text-warning" };
+        if (abi >= 0.4 && abi < 0.9) return { text: "Bệnh lý động mạch ngoại biên (PAD) nhẹ - vừa.", class: "text-danger" };
+        if (abi < 0.4) return { text: "PAD nặng / Thiếu máu cục bộ trầm trọng.", class: "text-danger fw-bold" };
+        return { text: "Lỗi giá trị", class: "" };
+    }
+
+    function calculateABI() {
+        // Lấy dữ liệu Cánh tay
+        let armR = parseFloat(document.getElementById('armRight').value);
+        let armL = parseFloat(document.getElementById('armLeft').value);
+        
+        // Lấy dữ liệu Chân Phải
+        let ankleR_DP = parseFloat(document.getElementById('ankleRightDP').value);
+        let ankleR_PT = parseFloat(document.getElementById('ankleRightPT').value);
+        
+        // Lấy dữ liệu Chân Trái
+        let ankleL_DP = parseFloat(document.getElementById('ankleLeftDP').value);
+        let ankleL_PT = parseFloat(document.getElementById('ankleLeftPT').value);
+
+        if (isNaN(armR) || isNaN(armL) || isNaN(ankleR_DP) || isNaN(ankleR_PT) || isNaN(ankleL_DP) || isNaN(ankleL_PT)) {
+            alert("Vui lòng nhập đầy đủ tất cả các chỉ số huyết áp tâm thu.");
+            return;
+        }
+
+        // Thuật toán cốt lõi: AHA/ACC guidelines
+        let maxArm = Math.max(armR, armL);
+        let maxAnkleR = Math.max(ankleR_DP, ankleR_PT);
+        let maxAnkleL = Math.max(ankleL_DP, ankleL_PT);
+
+        if (maxArm === 0) {
+            alert("Huyết áp cánh tay không thể bằng 0.");
+            return;
+        }
+
+        let abiR = (maxAnkleR / maxArm).toFixed(2);
+        let abiL = (maxAnkleL / maxArm).toFixed(2);
+
+        // Hiển thị giao diện
+        document.getElementById('highestArm').innerText = maxArm;
+        
+        document.getElementById('abiRightVal').innerText = abiR;
+        let interpR = getInterpretation(abiR);
+        let elInterpR = document.getElementById('interpRight');
+        elInterpR.innerText = interpR.text;
+        elInterpR.className = "mt-1 small " + interpR.class;
+
+        document.getElementById('abiLeftVal').innerText = abiL;
+        let interpL = getInterpretation(abiL);
+        let elInterpL = document.getElementById('interpLeft');
+        elInterpL.innerText = interpL.text;
+        elInterpL.className = "mt-1 small " + interpL.class;
+
+        // Đổi màu nền Result Box theo mức độ nặng nhất
+        let minAbi = Math.min(parseFloat(abiR), parseFloat(abiL));
+        let maxAbi = Math.max(parseFloat(abiR), parseFloat(abiL));
+        let resultBox = document.getElementById('resultBox');
+        
+        resultBox.className = "result-box mt-4"; // reset class
+        if (maxAbi > 1.4) resultBox.classList.add("alert-calcified");
+        else if (minAbi < 0.9) resultBox.classList.add("alert-severe");
+        else if (minAbi < 1.0) resultBox.classList.add("alert-borderline");
+        else resultBox.style.display = 'block'; // Normal (green line)
+
+        resultBox.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
