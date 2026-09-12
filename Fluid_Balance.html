@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluid Balance & PGDT Monitor</title>
+    <style>
+        :root {
+            --primary: #00796b;
+            --danger: #d32f2f;
+            --warning: #f57c00;
+            --bg: #f0f4f4;
+            --card: #ffffff;
+            --border: #cfd8dc;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: #333;
+            max-width: 950px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        .header { text-align: center; color: var(--primary); margin-bottom: 25px; }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) { .grid-container { grid-template-columns: 1fr; } }
+        
+        .card { background: var(--card); padding: 20px; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card h3 { color: var(--primary); margin-top: 0; border-bottom: 2px solid var(--primary); padding-bottom: 8px; }
+        
+        .form-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .form-row label { font-weight: 500; flex: 1; }
+        .input-group { display: flex; align-items: center; width: 150px; }
+        .input-group input[type="number"] { width: 100%; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; text-align: right; }
+        .input-group span { margin-left: 8px; color: #777; font-size: 0.9em; }
+
+        .checkbox-row {
+            display: flex; align-items: center; padding: 10px; background: #f8f9fa; 
+            border: 1px solid var(--border); border-radius: 6px; margin-bottom: 10px; cursor: pointer;
+        }
+        .checkbox-row input { margin-right: 15px; width: 18px; height: 18px; }
+        
+        .result-panel {
+            background: #263238; color: white; padding: 20px; border-radius: 8px; 
+            margin-top: 20px; position: sticky; bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; }
+        .result-item h4 { margin: 0 0 5px 0; font-size: 0.9em; color: #b0bec5; text-transform: uppercase; }
+        .result-item .val { font-size: 1.8em; font-weight: bold; }
+        .alert-box {
+            margin-top: 15px; padding: 12px; border-radius: 4px; font-size: 0.95em; display: none; line-height: 1.5;
+        }
+        .alert-danger { background: #ffebee; color: var(--danger); border: 1px solid #ffcdd2; }
+        .alert-warning { background: #fff3e0; color: var(--warning); border: 1px solid #ffe0b2; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>Bảng Theo Dõi Cân Bằng Dịch & Hồi Sức Chu Phẫu (PGDT)</h2>
+        <p>Đánh giá lượng dịch chuẩn hóa (mL/kg/h) và can thiệp lâm sàng</p>
+    </div>
+
+    <form id="fluidForm">
+        <!-- Thông tin cơ bản -->
+        <div class="card" style="margin-bottom: 20px;">
+            <div class="form-row" style="justify-content: flex-start; gap: 30px;">
+                <div>
+                    <label>Cân nặng bệnh nhân:</label>
+                    <div class="input-group" style="margin-top: 5px;"><input type="number" id="weight" value="70" step="1" min="30"><span>kg</span></div>
+                </div>
+                <div>
+                    <label>Thời gian theo dõi:</label>
+                    <div class="input-group" style="margin-top: 5px;"><input type="number" id="hours" value="6" step="0.5" min="1"><span>giờ</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-container">
+            <!-- DỊCH VÀO -->
+            <div class="card">
+                <h3>DỊCH VÀO (Input)</h3>
+                <div class="form-row">
+                    <label>Dịch tinh thể (Crystalloid)</label>
+                    <div class="input-group"><input type="number" id="in_crystal" value="0" min="0"><span>mL</span></div>
+                </div>
+                <div class="form-row">
+                    <label>Dịch keo (Colloid)</label>
+                    <div class="input-group"><input type="number" id="in_colloid" value="0" min="0"><span>mL</span></div>
+                </div>
+                <div class="form-row">
+                    <label>Máu tự thân (Salvaged blood)</label>
+                    <div class="input-group"><input type="number" id="in_salvage" value="0" min="0"><span>mL</span></div>
+                </div>
+                <div class="form-row">
+                    <label>Hồng cầu lắng (PRBC)</label>
+                    <div class="input-group"><input type="number" id="in_prbc" value="0" min="0"><span>mL</span></div>
+                </div>
+                <div class="form-row">
+                    <label>Huyết tương tươi (FFP)</label>
+                    <div class="input-group"><input type="number" id="in_ffp" value="0" min="0"><span>mL</span></div>
+                </div>
+                <div class="form-row">
+                    <label>Thuốc / Pha dịch (Vận mạch...)</label>
+                    <div class="input-group"><input type="number" id="in_meds" value="0" min="0"><span>mL</span></div>
+                </div>
+            </div>
+
+            <!-- DỊCH RA & CAN THIỆP -->
+            <div class="card">
+                <h3>DỊCH RA (Output)</h3>
+                <div class="form-row">
+                    <label>Nước tiểu (Urine output)</label>
+                    <div class="input-group"><input type="number" id="out_urine" value="0" min="0"><span>mL</span></div>
+                </div>
+                <div class="form-row">
+                    <label>Máu mất / Dẫn lưu (Blood loss)</label>
+                    <div class="input-group"><input type="number" id="out_blood" value="0" min="0"><span>mL</span></div>
+                </div>
+
+                <h3 style="margin-top: 25px;">CAN THIỆP LÂM SÀNG (Tick)</h3>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="chk_colloid_challenge">
+                    Đã dùng > 2 lần test dịch (Colloid challenges > 2)
+                </label>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="chk_vasopressor">
+                    Phải dùng Noradrenaline (Norepinephrine bolus) để giữ MAP &ge; 65
+                </label>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="chk_diuretic">
+                    Đã sử dụng Lợi tiểu (Furosemide)
+                </label>
+            </div>
+        </div>
+    </form>
+
+    <!-- KẾT QUẢ ĐỘNG -->
+    <div class="result-panel">
+        <div class="result-grid">
+            <div class="result-item">
+                <h4>Tổng Dịch Vào</h4>
+                <div class="val" id="res_in">0.0 <span style="font-size:0.5em; font-weight:normal;">mL/kg/h</span></div>
+            </div>
+            <div class="result-item">
+                <h4>Tổng Dịch Ra</h4>
+                <div class="val" id="res_out">0.0 <span style="font-size:0.5em; font-weight:normal;">mL/kg/h</span></div>
+            </div>
+            <div class="result-item">
+                <h4>Cân Bằng Dịch</h4>
+                <div class="val" id="res_balance">0.0 <span style="font-size:0.5em; font-weight:normal;">mL/kg/h</span></div>
+            </div>
+        </div>
+        <div id="alertBox" class="alert-box"></div>
+    </div>
+
+    <script>
+        // Hàm lấy giá trị số, nếu rỗng thì trả về 0
+        const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
+
+        function calculateFluidBalance() {
+            const weight = getVal('weight');
+            const hours = getVal('hours');
+            
+            if (weight === 0 || hours === 0) return;
+
+            // Tính tổng thể tích
+            const totalIn = getVal('in_crystal') + getVal('in_colloid') + getVal('in_salvage') + getVal('in_prbc') + getVal('in_ffp') + getVal('in_meds');
+            const totalOut = getVal('out_urine') + getVal('out_blood');
+            const balance = totalIn - totalOut;
+
+            // Chuẩn hóa theo mL/kg/h
+            const stdIn = (totalIn / weight / hours).toFixed(2);
+            const stdOut = (totalOut / weight / hours).toFixed(2);
+            const stdBalance = (balance / weight / hours).toFixed(2);
+            const stdUrine = (getVal('out_urine') / weight / hours).toFixed(2);
+
+            // Cập nhật UI
+            document.getElementById('res_in').innerHTML = `${stdIn} <span style="font-size:0.5em; font-weight:normal;">mL/kg/h</span>`;
+            document.getElementById('res_out').innerHTML = `${stdOut} <span style="font-size:0.5em; font-weight:normal;">mL/kg/h</span>`;
+            document.getElementById('res_balance').innerHTML = `${stdBalance > 0 ? '+' : ''}${stdBalance} <span style="font-size:0.5em; font-weight:normal;">mL/kg/h</span>`;
+
+            // Đánh giá cảnh báo lâm sàng
+            let alerts = [];
+            let alertLevel = 'none';
+
+            // Dựa trên dữ liệu PGDT: Lượng dịch vào cao và cân bằng dương tính mạnh liên quan đến biến chứng
+            if (stdIn >= 8.0) {
+                alerts.push("⚠️ Dịch vào (Input) rất cao (&ge; 8.0 mL/kg/h). Nguy cơ phù nề mô, tổn thương glycocalyx.");
+                alertLevel = 'danger';
+            }
+            if (stdBalance >= 2.0) {
+                alerts.push("⚠️ Cân bằng dịch dương tính đáng kể. Tăng nguy cơ biến chứng hô hấp, thận và thiếu máu ruột.");
+                if (alertLevel !== 'danger') alertLevel = 'warning';
+            }
+            if (getVal('out_urine') > 0 && stdUrine < 0.5) {
+                alerts.push("⚠️ Thiểu niệu (Nước tiểu < 0.5 mL/kg/h). Cần đánh giá chức năng thận / tưới máu thận.");
+                alertLevel = 'danger';
+            }
+
+            // Đánh giá tick can thiệp
+            if (document.getElementById('chk_colloid_challenge').checked) {
+                alerts.push("📌 Cần test dịch keo > 2 lần: Dấu hiệu của mất dịch trong lòng mạch hoặc giãn mạch dai dẳng.");
+            }
+            if (document.getElementById('chk_vasopressor').checked) {
+                alerts.push("📌 Phụ thuộc vận mạch (Noradrenaline): Chú ý động học ScvO2 và Lactate để loại trừ sốc giảm thể tích ẩn.");
+            }
+
+            // Hiển thị cảnh báo
+            const alertBox = document.getElementById('alertBox');
+            if (alerts.length > 0) {
+                alertBox.style.display = 'block';
+                alertBox.className = 'alert-box ' + (alertLevel === 'danger' ? 'alert-danger' : 'alert-warning');
+                alertBox.innerHTML = alerts.join("<br><br>");
+            } else {
+                alertBox.style.display = 'none';
+            }
+        }
+
+        // Lắng nghe thay đổi tự động tính toán
+        document.getElementById('fluidForm').addEventListener('input', calculateFluidBalance);
+        document.getElementById('fluidForm').addEventListener('change', calculateFluidBalance);
+        
+        // Tính toán khởi tạo
+        window.onload = calculateFluidBalance;
+    </script>
+</body>
+</html>

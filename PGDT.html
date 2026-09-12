@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Giao Thức PGDT Toàn Diện (Huyết động xâm lấn)</title>
+    <style>
+        :root {
+            --primary: #0056b3;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --border: #dee2e6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h2 { color: var(--primary); margin-bottom: 5px; }
+        
+        .phase-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .phase-header {
+            background-color: #e9ecef;
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 1.15em;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+        }
+        
+        /* Cấu trúc phần SVI Calculator */
+        .svi-algorithm {
+            padding: 20px;
+            background-color: #f8fbff;
+            border-bottom: 2px solid var(--border);
+        }
+        .patient-profile {
+            display: flex; gap: 20px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; flex-wrap: wrap;
+        }
+        .input-group { display: flex; flex-direction: column; width: 150px; }
+        .input-group label { font-weight: bold; font-size: 0.9em; margin-bottom: 5px; color: #555; }
+        .input-group input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-weight: bold; }
+        
+        .step-box {
+            background: #fff; border: 1px solid #cce5ff; border-left: 5px solid #0056b3;
+            padding: 15px; margin-bottom: 15px; border-radius: 4px;
+        }
+        .step-box h4 { margin: 0 0 10px 0; color: #004085; display: flex; justify-content: space-between; }
+        
+        .svi-row { display: flex; align-items: center; gap: 20px; margin-top: 10px; flex-wrap: wrap; }
+        .result-badge { 
+            background: #e9ecef; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 1.1em; color: #0056b3;
+        }
+        
+        .alert-action {
+            display: none; padding: 12px; margin-top: 15px; border-radius: 4px; font-weight: bold;
+        }
+        .action-repeat { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .action-stop { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* Các mục tiêu khác */
+        .goal-item { padding: 20px; border-bottom: 1px solid var(--border); }
+        .goal-item:last-child { border-bottom: none; }
+        .goal-title { font-weight: bold; font-size: 1.05em; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
+        .action-buttons { display: flex; gap: 10px; }
+        .btn { padding: 6px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; white-space: nowrap;}
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-danger { background-color: var(--danger); color: white; }
+        
+        .management-box { display: none; background-color: #fff8e5; border-left: 4px solid var(--warning); padding: 15px; margin-top: 15px; border-radius: 0 4px 4px 0; }
+        .management-box h4 { margin: 0 0 10px 0; color: #856404; }
+        .status-achieved { background-color: #d4edda; border-left: 4px solid var(--success); }
+        .status-failed { background-color: #fff3cd; border-left: 4px solid var(--warning); }
+        .status-failed .management-box { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2>Giao Thức PGDT - OEAAS</h2>
+            <p>Tích hợp tính toán SVI tự động & Đánh giá lâm sàng toàn diện</p>
+        </div>
+
+        <!-- TRỤ CỘT 1: THUẬT TOÁN ĐÁNH GIÁ SVI TỰ ĐỘNG -->
+        <div class="phase-card">
+            <div class="phase-header">1. Tối Ưu Hóa Thể Tích Nhát Bóp (SVI)</div>
+            <div class="svi-algorithm">
+                <div class="patient-profile">
+                    <div class="input-group">
+                        <label>Chiều cao (cm)</label>
+                        <input type="number" id="height" value="165" oninput="calculateFlow()">
+                    </div>
+                    <div class="input-group">
+                        <label>Cân nặng (kg)</label>
+                        <input type="number" id="weight" value="65" oninput="calculateFlow()">
+                    </div>
+                    <div style="display: flex; align-items: flex-end; padding-bottom: 8px; font-weight: bold; color: var(--primary);">
+                        BSA (Mosteller): <span id="bsa_result" style="margin-left: 5px;">1.70</span> m<sup>2</sup>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h4>Bước 1: Ghi nhận SVI nền</h4>
+                    <div class="svi-row">
+                        <div class="input-group">
+                            <label>SV nền (mL)</label>
+                            <input type="number" id="sv_baseline" placeholder="VD: 60" oninput="calculateFlow()">
+                        </div>
+                        <div class="result-badge">
+                            SVI nền: <span id="svi_baseline_result">--</span> mL/m<sup>2</sup>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 10px 0; font-weight: bold; color: #d32f2f;">
+                    ⬇️ TEST DỊCH KEO (250ml trong 5-10 phút) ⬇️
+                </div>
+
+                <div class="step-box">
+                    <h4>Bước 2: Đánh giá đáp ứng sau bù dịch</h4>
+                    <div class="svi-row">
+                        <div class="input-group">
+                            <label>SV sau test (mL)</label>
+                            <input type="number" id="sv_post" placeholder="VD: 70" oninput="calculateFlow()">
+                        </div>
+                        <div class="result-badge">
+                            SVI sau test: <span id="svi_post_result">--</span> mL/m<sup>2</sup>
+                        </div>
+                        <div class="result-badge" style="background: #ffeeba; color: #856404;">
+                            Mức tăng (Δ): <span id="svi_delta">--</span> %
+                        </div>
+                    </div>
+
+                    <div id="svi_action_repeat" class="alert-action action-repeat">
+                        ✔️ ĐÁP ỨNG (Tăng &ge; 10%): Tiếp tục lặp lại test dịch keo (Colloid challenge).
+                    </div>
+                    <div id="svi_action_stop" class="alert-action action-stop">
+                        🚨 KHÔNG ĐÁP ỨNG (Tăng < 10%): Đạt bình nguyên thể tích. NGỪNG BÙ DỊCH. Chuyển sang Bước 2 nếu tụt huyết áp.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRỤ CỘT 2: DUY TRÌ HUYẾT ÁP -->
+        <div class="phase-card">
+            <div class="phase-header">2. Duy Trì Huyết Áp (MAP) & Vận Mạch</div>
+            <div class="goal-item" id="item-map">
+                <div class="goal-title">
+                    <span>Mục tiêu: Duy trì MAP &ge; 65 mmHg (Sau khi SVI tối ưu)</span>
+                    <div class="action-buttons">
+                        <button class="btn btn-success" onclick="toggleStatus('item-map', 'achieved')">Đạt</button>
+                        <button class="btn btn-danger" onclick="toggleStatus('item-map', 'failed')">Tụt MAP</button>
+                    </div>
+                </div>
+                <div class="management-box">
+                    <h4>Hướng xử trí lâm sàng:</h4>
+                    <ul>
+                        <li>Dùng <b>Norepinephrine (NE)</b> dạng bolus (1-3 liều) hoặc truyền liên tục để sửa chữa cơn tụt huyết áp thoáng qua.</li>
+                        <li>Nếu phải dùng liều NE cao liên tục, cần đánh giá lại tình trạng chảy máu hoặc sốc giãn mạch dai dẳng.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRỤ CỘT 3: CÂN BẰNG DỊCH -->
+        <div class="phase-card">
+            <div class="phase-header">3. Quản Lý Cân Bằng Dịch</div>
+            <div class="goal-item" id="item-fluid">
+                <div class="goal-title">
+                    <span>Mục tiêu: Tránh chỉ số cân bằng dịch dương tính quá cao</span>
+                    <div class="action-buttons">
+                        <button class="btn btn-success" onclick="toggleStatus('item-fluid', 'achieved')">Kiểm Soát Tốt</button>
+                        <button class="btn btn-danger" onclick="toggleStatus('item-fluid', 'failed')">Quá Tải Dịch</button>
+                    </div>
+                </div>
+                <div class="management-box">
+                    <h4>Hướng xử trí lâm sàng:</h4>
+                    <ul>
+                        <li>Truyền quá nhiều dịch sau mổ và cân bằng dịch dương tính cao là yếu tố nguy cơ hàng đầu gây biến chứng.</li>
+                        <li>Không bù dịch theo cảm tính. Cân nhắc dùng Furosemide để điều chỉnh thăng bằng dịch khi huyết động đã ổn định.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRỤ CỘT 4: ĐỘNG HỌC MÔ (BỔ SUNG) -->
+        <div class="phase-card">
+            <div class="phase-header">4. Giám Sát Động Học ScvO2 & Lactate</div>
+            
+            <div class="goal-item" id="item-scvo2">
+                <div class="goal-title">
+                    <span>Mục tiêu 4.1: ScvO2 không sụt giảm mạnh lúc kẹp ĐMC (T1) và cuối ca mổ (T3)</span>
+                    <div class="action-buttons">
+                        <button class="btn btn-success" onclick="toggleStatus('item-scvo2', 'achieved')">Ổn định</button>
+                        <button class="btn btn-danger" onclick="toggleStatus('item-scvo2', 'failed')">Giảm mạnh</button>
+                    </div>
+                </div>
+                <div class="management-box">
+                    <h4>Hướng xử trí lâm sàng:</h4>
+                    <ul>
+                        <li>Sụt giảm ScvO2 phản ánh sự mất cân bằng giữa cung cấp (DO2) và tiêu thụ oxy (VO2).</li>
+                        <li>Kiểm tra lại nồng độ Hemoglobin (chỉ định truyền hồng cầu lắng PRBC hoặc máu tự thân nếu thiếu).</li>
+                        <li>Đánh giá lại cung lượng tim và tối ưu SVI hoặc cân nhắc dùng thuốc tăng co bóp cơ tim.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="goal-item" id="item-lactate">
+                <div class="goal-title">
+                    <span>Mục tiêu 4.2: Lactate được thanh thải, không tăng cao ở thời điểm 6h (T5)</span>
+                    <div class="action-buttons">
+                        <button class="btn btn-success" onclick="toggleStatus('item-lactate', 'achieved')">Bình thường</button>
+                        <button class="btn btn-danger" onclick="toggleStatus('item-lactate', 'failed')">Lactate cao ở T5</button>
+                    </div>
+                </div>
+                <div class="management-box">
+                    <h4>Hướng xử trí lâm sàng:</h4>
+                    <ul>
+                        <li>Lactate cao ở T5 là tín hiệu báo động đỏ cho tình trạng tưới máu mô kém chưa được giải quyết.</li>
+                        <li>Tầm soát khẩn cấp các biến chứng phẫu thuật: Thiếu máu mạc treo (mesenteric ischemia) hoặc chảy máu sau phúc mạc.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Hàm tính toán dòng chảy tự động (Auto Calculate Flow)
+        function calculateFlow() {
+            const h = parseFloat(document.getElementById('height').value);
+            const w = parseFloat(document.getElementById('weight').value);
+            const svBase = parseFloat(document.getElementById('sv_baseline').value);
+            const svPost = parseFloat(document.getElementById('sv_post').value);
+            
+            // 1. Tính BSA (Mosteller)
+            if (h > 0 && w > 0) {
+                const bsa = Math.sqrt((h * w) / 3600);
+                document.getElementById('bsa_result').innerText = bsa.toFixed(2);
+                
+                // 2. Tính SVI Nền
+                let sviBase = null;
+                if (svBase > 0) {
+                    sviBase = svBase / bsa;
+                    document.getElementById('svi_baseline_result').innerText = sviBase.toFixed(1);
+                } else {
+                    document.getElementById('svi_baseline_result').innerText = '--';
+                }
+
+                // 3. Tính SVI Sau test & Delta %
+                if (svPost > 0 && sviBase > 0) {
+                    const sviPost = svPost / bsa;
+                    document.getElementById('svi_post_result').innerText = sviPost.toFixed(1);
+                    
+                    const delta = ((sviPost - sviBase) / sviBase) * 100;
+                    document.getElementById('svi_delta').innerText = (delta > 0 ? '+' : '') + delta.toFixed(1);
+                    
+                    // 4. Cảnh báo tự động
+                    const boxRepeat = document.getElementById('svi_action_repeat');
+                    const boxStop = document.getElementById('svi_action_stop');
+                    
+                    if (delta >= 10) {
+                        boxRepeat.style.display = 'block';
+                        boxStop.style.display = 'none';
+                    } else {
+                        boxRepeat.style.display = 'none';
+                        boxStop.style.display = 'block';
+                    }
+                } else {
+                    document.getElementById('svi_post_result').innerText = '--';
+                    document.getElementById('svi_delta').innerText = '--';
+                    document.getElementById('svi_action_repeat').style.display = 'none';
+                    document.getElementById('svi_action_stop').style.display = 'none';
+                }
+            }
+        }
+
+        window.onload = calculateFlow;
+
+        function toggleStatus(itemId, status) {
+            const item = document.getElementById(itemId);
+            item.classList.remove('status-achieved', 'status-failed');
+            if (status === 'achieved') {
+                item.classList.add('status-achieved');
+            } else if (status === 'failed') {
+                item.classList.add('status-failed');
+            }
+        }
+    </script>
+</body>
+</html>

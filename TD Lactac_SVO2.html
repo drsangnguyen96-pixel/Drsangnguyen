@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Động học ScvO2 & Lactate - Tiên lượng chu phẫu</title>
+    <!-- Tải thư viện Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1e88e5;
+            --danger: #e53935;
+            --warning: #fb8c00;
+            --success: #43a047;
+            --bg: #f4f6f8;
+            --surface: #ffffff;
+            --text: #333333;
+            --border: #e0e0e0;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h2 { color: var(--primary); text-align: center; margin-top: 0; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        
+        .data-grid {
+            display: grid;
+            grid-template-columns: 2fr repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .data-grid .header-cell {
+            font-weight: bold;
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        .data-grid .row-title {
+            text-align: left;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+        }
+        .data-grid input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .data-grid input:focus { border-color: var(--primary); outline: none; }
+
+        .clinical-ticks {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ffe0b2;
+            margin-bottom: 20px;
+        }
+        .clinical-ticks h4 { margin: 0 0 10px 0; color: #e65100; }
+        .tick-item {
+            display: inline-block;
+            margin-right: 20px;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+        .tick-item input { margin-right: 5px; width: 16px; height: 16px; vertical-align: middle; }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .alert-board {
+            background: #263238;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .alert-board h3 { margin-top: 0; color: #90caf9; }
+        .alert-msg {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+        }
+        .alert-msg:last-child { margin-bottom: 0; }
+        .alert-msg.critical { background-color: rgba(229, 57, 53, 0.2); border-left: 5px solid var(--danger); }
+        .alert-msg.warning { background-color: rgba(251, 140, 0, 0.2); border-left: 5px solid var(--warning); }
+        .alert-msg.ok { background-color: rgba(67, 160, 71, 0.2); border-left: 5px solid var(--success); }
+        
+        .icon { font-size: 1.2em; margin-right: 10px; line-height: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Theo Dõi Động Học ScvO2 & Lactate</h2>
+        
+        <!-- Bảng nhập liệu (Data Grid) -->
+        <div class="data-grid">
+            <div class="header-cell">Chỉ số / Thời điểm</div>
+            <div class="header-cell">T0<br><small>(Khởi mê)</small></div>
+            <div class="header-cell">T1<br><small>(Trước kẹp ĐMC)</small></div>
+            <div class="header-cell">T2<br><small>(Sau tháo kẹp)</small></div>
+            <div class="header-cell">T3<br><small>(Cuối ca mổ)</small></div>
+            <div class="header-cell">T4<br><small>(2h tại POCU)</small></div>
+            <div class="header-cell">T5<br><small>(6h tại POCU)</small></div>
+
+            <div class="row-title">ScvO2 (%)</div>
+            <div><input type="number" id="scvo2_t0" step="1" oninput="updateData()"></div>
+            <div><input type="number" id="scvo2_t1" step="1" oninput="updateData()"></div>
+            <div><input type="number" id="scvo2_t2" step="1" oninput="updateData()"></div>
+            <div><input type="number" id="scvo2_t3" step="1" oninput="updateData()"></div>
+            <div><input type="number" id="scvo2_t4" step="1" oninput="updateData()"></div>
+            <div><input type="number" id="scvo2_t5" step="1" oninput="updateData()"></div>
+
+            <div class="row-title">Lactate (mmol/L)</div>
+            <div><input type="number" id="lac_t0" step="0.1" oninput="updateData()"></div>
+            <div><input type="number" id="lac_t1" step="0.1" oninput="updateData()"></div>
+            <div><input type="number" id="lac_t2" step="0.1" oninput="updateData()"></div>
+            <div><input type="number" id="lac_t3" step="0.1" oninput="updateData()"></div>
+            <div><input type="number" id="lac_t4" step="0.1" oninput="updateData()"></div>
+            <div><input type="number" id="lac_t5" step="0.1" oninput="updateData()"></div>
+        </div>
+
+        <!-- Tick yếu tố lâm sàng -->
+        <div class="clinical-ticks">
+            <h4>Các yếu tố phối hợp (Đánh dấu nếu có):</h4>
+            <label class="tick-item"><input type="checkbox" id="chk_time" onchange="updateData()"> Thời gian kẹp ĐMC > 60 phút</label>
+            <label class="tick-item"><input type="checkbox" id="chk_fluid" onchange="updateData()"> Cân bằng dịch (+) > 2 mL/kg/h</label>
+            <label class="tick-item"><input type="checkbox" id="chk_urine" onchange="updateData()"> Nước tiểu < 1.0 mL/kg/h tại POCU</label>
+        </div>
+
+        <!-- Biểu đồ -->
+        <div class="chart-wrapper">
+            <canvas id="trendChart"></canvas>
+        </div>
+
+        <!-- Bảng cảnh báo lâm sàng -->
+        <div class="alert-board">
+            <h3>Hệ thống cảnh báo tự động (Căn cứ mô hình PGDT)</h3>
+            <div id="alertContainer">
+                <div class="alert-msg ok"><span class="icon">✔️</span> Vui lòng nhập dữ liệu để hệ thống phân tích động học.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Khởi tạo Chart.js
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        let trendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['T0 (Khởi mê)', 'T1 (Trước kẹp)', 'T2 (Sau tháo kẹp)', 'T3 (Cuối ca)', 'T4 (2h POCU)', 'T5 (6h POCU)'],
+                datasets: [
+                    {
+                        label: 'ScvO2 (%)',
+                        data: [null, null, null, null, null, null],
+                        borderColor: '#1e88e5',
+                        backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                        yAxisID: 'yScvo2',
+                        tension: 0.3,
+                        borderWidth: 3,
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'Lactate (mmol/L)',
+                        data: [null, null, null, null, null, null],
+                        borderColor: '#e53935',
+                        backgroundColor: 'rgba(229, 57, 53, 0.1)',
+                        yAxisID: 'yLactate',
+                        tension: 0.3,
+                        borderWidth: 3,
+                        pointRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    yScvo2: {
+                        type: 'linear', display: true, position: 'left',
+                        title: { display: true, text: 'ScvO2 (%)', color: '#1e88e5' },
+                        min: 50, max: 100
+                    },
+                    yLactate: {
+                        type: 'linear', display: true, position: 'right',
+                        title: { display: true, text: 'Lactate (mmol/L)', color: '#e53935' },
+                        min: 0, max: 10,
+                        grid: { drawOnChartArea: false } // Không vẽ lưới trùng lặp
+                    }
+                }
+            }
+        });
+
+        // Hàm đọc giá trị ô input
+        const getVal = (id) => {
+            const val = document.getElementById(id).value;
+            return val ? parseFloat(val) : null;
+        };
+
+        // Hàm chính xử lý khi dữ liệu thay đổi
+        function updateData() {
+            // 1. Cập nhật dữ liệu biểu đồ
+            const scvo2Data = [
+                getVal('scvo2_t0'), getVal('scvo2_t1'), getVal('scvo2_t2'), 
+                getVal('scvo2_t3'), getVal('scvo2_t4'), getVal('scvo2_t5')
+            ];
+            const lacData = [
+                getVal('lac_t0'), getVal('lac_t1'), getVal('lac_t2'), 
+                getVal('lac_t3'), getVal('lac_t4'), getVal('lac_t5')
+            ];
+            
+            trendChart.data.datasets[0].data = scvo2Data;
+            trendChart.data.datasets[1].data = lacData;
+            trendChart.update();
+
+            // 2. Phân tích lâm sàng và đưa ra báo động
+            evaluateAlerts(scvo2Data, lacData);
+        }
+
+        // Đánh giá logic cảnh báo dựa trên tài liệu
+        function evaluateAlerts(scvo2, lac) {
+            const container = document.getElementById('alertContainer');
+            let alerts = [];
+
+            const t0_scv = scvo2[0];
+            const t0_lac = lac[0];
+
+            // Phân tích động học ScvO2
+            if (t0_scv !== null) {
+                // Sụt giảm ScvO2 ở T1 (Trước kẹp)
+                if (scvo2[1] !== null) {
+                    const dropT1 = scvo2[1] - t0_scv;
+                    if (dropT1 < -3) {
+                        alerts.push({ type: 'warning', msg: `<b>ScvO2 giảm mạnh lúc kẹp ĐMC (T1):</b> Giảm ${Math.abs(dropT1)}% so với T0. Cảnh báo suy giảm cung cấp oxy (DO2) liên quan đến thay đổi tiền gánh hoặc co mạch.` });
+                    }
+                }
+                // Sụt giảm ScvO2 ở T3 (Cuối mổ)
+                if (scvo2[3] !== null) {
+                    const dropT3 = scvo2[3] - t0_scv;
+                    if (dropT3 < -4) {
+                        alerts.push({ type: 'critical', msg: `<b>ScvO2 giảm dai dẳng cuối ca mổ (T3):</b> Giảm ${Math.abs(dropT3)}% so với nền. Bệnh nhân có nguy cơ cao gặp biến chứng sau mổ do tưới máu không đủ trong quá trình can thiệp.` });
+                    }
+                }
+            }
+
+            // Phân tích động học Lactate
+            if (lac[5] !== null) { // Có dữ liệu T5 (6h tại POCU)
+                if (lac[5] >= 1.5) {
+                    alerts.push({ type: 'critical', msg: `<b>Lactate tăng cao ở thời điểm kết thúc PGDT (T5):</b> Đạt mức ${lac[5]} mmol/L. Dấu hiệu rõ ràng của giảm tưới máu mô kéo dài hoặc chuyển hóa yếm khí chưa được giải quyết. Tiên lượng nguy cơ tử vong/biến chứng tăng cao.` });
+                } else if (t0_lac !== null && lac[5] > t0_lac) {
+                    alerts.push({ type: 'warning', msg: `<b>Lactate chưa thanh thải hoàn toàn ở T5:</b> Hiện tại (${lac[5]}) vẫn cao hơn mức khởi mê (${t0_lac}). Cần tiếp tục theo dõi sát.` });
+                }
+            }
+
+            // Phân tích các yếu tố Tick lâm sàng
+            const chkTime = document.getElementById('chk_time').checked;
+            const chkFluid = document.getElementById('chk_fluid').checked;
+            
+            if (chkTime && chkFluid) {
+                alerts.push({ type: 'critical', msg: `<b>Yếu tố nguy cơ kép:</b> Phẫu thuật kéo dài + Quá tải dịch. Bệnh nhân có nguy cơ rất cao bị biến chứng đường ruột (thiếu máu mạc treo) hoặc suy hô hấp. Hãy đánh giá lại chiến lược bù dịch.` });
+            } else if (chkFluid) {
+                alerts.push({ type: 'warning', msg: `<b>Cân bằng dịch dương tính cao:</b> Liên quan đến tổn thương phế nang và rối loạn nhu động ruột sau mổ.` });
+            }
+
+            // Hiển thị kết quả
+            container.innerHTML = ''; // Xóa nội dung cũ
+            
+            if (alerts.length === 0) {
+                // Kiểm tra xem đã nhập đủ dữ liệu cơ bản chưa
+                if (scvo2.every(val => val === null) && lac.every(val => val === null)) {
+                    container.innerHTML = `<div class="alert-msg ok"><span class="icon">✔️</span> Vui lòng nhập dữ liệu để hệ thống phân tích động học.</div>`;
+                } else {
+                    container.innerHTML = `<div class="alert-msg ok"><span class="icon">✔️</span> <b>Tưới máu ổn định:</b> Các chỉ số hiện tại nằm trong khoảng dung nạp. Tiếp tục duy trì phác đồ PGDT.</div>`;
+                }
+            } else {
+                alerts.forEach(a => {
+                    const icon = a.type === 'critical' ? '🚨' : '⚠️';
+                    container.innerHTML += `<div class="alert-msg ${a.type}"><span class="icon">${icon}</span> <span>${a.msg}</span></div>`;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
