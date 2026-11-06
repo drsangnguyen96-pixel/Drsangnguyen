@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Y Lệnh Thuốc Gây Nghiện - Hướng Thần & Hỗ Trợ Lâm Sàng Đau Ung Thư</title>
+    <style>
+        :root {
+            --bg-main: #0b1120;
+            --bg-card: #1e293b;
+            --bg-input: #0f172a;
+            --text-primary: #f8fafc;
+            --text-muted: #94a3b8;
+            --teal-accent: #14b8a6;
+            --teal-dark: #0f766e;
+            --blue-accent: #38bdf8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --border: #334155;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 15px;
+            line-height: 1.5;
+        }
+        .app-container {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #134e4a 100%);
+            padding: 18px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--teal-dark);
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--teal-accent);
+            letter-spacing: 0.4px;
+        }
+        header p {
+            margin: 4px 0 0 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .badge-header {
+            background-color: rgba(20, 184, 166, 0.15);
+            border: 1px solid var(--teal-accent);
+            color: var(--teal-accent);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Patient Info Bar */
+        .patient-bar {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .patient-bar .form-group { margin-bottom: 0; }
+
+        /* Navigation Tabs (8 Nhánh) */
+        .nav-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 10px 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.81rem;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .tab-btn:hover {
+            border-color: var(--teal-accent);
+            color: var(--text-primary);
+        }
+        .tab-btn.active {
+            background-color: var(--teal-dark);
+            border-color: var(--teal-accent);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+        }
+
+        /* Tab Content */
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards & Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 16px;
+        }
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 16px;
+        }
+        .card-title {
+            font-size: 1.03rem;
+            font-weight: 700;
+            color: var(--blue-accent);
+            margin-top: 0;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* Form Controls */
+        .form-group { margin-bottom: 12px; }
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #cbd5e1;
+        }
+        select, input[type="number"], input[type="text"], textarea {
+            width: 100%;
+            padding: 9px 12px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.91rem;
+            font-family: inherit;
+        }
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--teal-accent);
+        }
+
+        /* Order Preview Box */
+        .order-sheet-box {
+            background-color: #090d16;
+            border: 1px solid var(--teal-accent);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 0.88rem;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            line-height: 1.55;
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 13px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+        .alert-safe {
+            background-color: rgba(16, 185, 129, 0.12);
+            border-left: 4px solid var(--success);
+            color: #6ee7b7;
+        }
+        .alert-warn {
+            background-color: rgba(245, 158, 11, 0.15);
+            border-left: 4px solid var(--warning);
+            color: #fcd34d;
+        }
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.18);
+            border-left: 4px solid var(--danger);
+            color: #fca5a5;
+        }
+
+        /* Progress Bar for Safety Gate */
+        .progress-wrapper {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            height: 24px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--warning), var(--success));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 8px 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: var(--bg-input);
+            color: var(--teal-accent);
+        }
+
+        /* Buttons & Timer */
+        .btn {
+            background-color: var(--teal-accent);
+            color: #0f172a;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.86rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn:hover { opacity: 0.92; }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        .timer-display {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--warning);
+            text-align: center;
+            margin: 10px 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            font-size: 0.89rem;
+            cursor: pointer;
+        }
+        .checklist-item input[type="checkbox"] {
+            margin-top: 4px;
+            transform: scale(1.25);
+            accent-color: var(--teal-accent);
+            cursor: pointer;
+        }
+        .pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+        .pill-red { background: rgba(239,68,68,0.2); color: #f87171; }
+        .pill-green { background: rgba(16,185,129,0.2); color: #34d399; }
+        .pill-yellow { background: rgba(245,158,11,0.2); color: #fbbf24; }
+
+        /* ================= A4 PRINT REPORT LAYOUT ================= */
+        #a4PrintSection { display: none; }
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 10mm 13mm 10mm 16mm;
+            }
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                font-family: "Times New Roman", Times, serif !important;
+                font-size: 10.5pt !important;
+                line-height: 1.28 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .app-container { display: none !important; }
+            #a4PrintSection {
+                display: block !important;
+                width: 100%;
+                color: #000;
+            }
+            .nd30-header {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 6px;
+            }
+            .nd30-header td {
+                border: none !important;
+                text-align: center;
+                vertical-align: top;
+                padding: 0;
+            }
+            .nd30-org { font-size: 10pt; text-transform: uppercase; }
+            .nd30-dept { font-size: 10pt; font-weight: bold; text-transform: uppercase; text-decoration: underline; }
+            .nd30-nation { font-size: 10pt; font-weight: bold; text-transform: uppercase; }
+            .nd30-motto { font-size: 10.5pt; font-weight: bold; text-decoration: underline; }
+            .report-title {
+                text-align: center;
+                font-size: 12.5pt;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin: 6px 0 2px 0;
+            }
+            .report-subtitle {
+                text-align: center;
+                font-size: 10pt;
+                font-style: italic;
+                margin-bottom: 6px;
+            }
+            .print-box {
+                border: 1px solid #000;
+                padding: 5px 8px;
+                margin-bottom: 6px;
+                page-break-inside: avoid;
+            }
+            .print-box-title {
+                font-weight: bold;
+                text-transform: uppercase;
+                font-size: 10pt;
+                border-bottom: 1px solid #000;
+                padding-bottom: 2px;
+                margin-bottom: 4px;
+            }
+            .print-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 2px;
+                font-size: 10pt;
+            }
+            .print-table th, .print-table td {
+                border: 1px solid #000 !important;
+                padding: 3px 5px;
+                color: #000 !important;
+                background: transparent !important;
+            }
+            .print-sign {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 8px;
+                page-break-inside: avoid;
+            }
+            .print-sign td {
+                border: none !important;
+                text-align: center;
+                width: 33.3%;
+                vertical-align: top;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div>
+            <h1>HỆ THỐNG KÊ Y LỆNH THUỐC GÂY NGHIỆN - HƯỚNG THẦN & AN TOÀN OPIOID</h1>
+            <p>Chuyên đề 07: Giảm đau trên bệnh nhân ung thư | BS. Nguyễn Văn Sang - CKI Ngoại Lồng Ngực</p>
+        </div>
+        <div class="header-actions">
+            <span class="badge-header">WHO / ESMO / EAPC / Pasero</span>
+            <button class="btn" onclick="printA4Report()">🖨️ In Phiếu Y Lệnh & Kiểm Soát A4</button>
+        </div>
+    </header>
+
+    <!-- THÔNG TIN HÀNH CHÍNH BỆNH NHÂN -->
+    <div class="patient-bar">
+        <div class="form-group">
+            <label>Họ và tên bệnh nhân:</label>
+            <input type="text" id="ptName" placeholder="VD: Nguyễn Văn A" oninput="generateMedicalOrder()">
+        </div>
+        <div class="form-group">
+            <label>Năm sinh / Tuổi:</label>
+            <input type="text" id="ptAge" placeholder="VD: 1958 (68 tuổi)" oninput="generateMedicalOrder()">
+        </div>
+        <div class="form-group">
+            <label>Mã HSBA / Giường:</label>
+            <input type="text" id="ptBed" placeholder="VD: Buồng 4 - Giường 12" oninput="generateMedicalOrder()">
+        </div>
+        <div class="form-group">
+            <label>Chẩn đoán lâm sàng:</label>
+            <input type="text" id="ptDiag" value="Ung thư phổi giai đoạn tiến xa" oninput="generateMedicalOrder()">
+        </div>
+    </div>
+
+    <!-- CÁC NHÁNH ĐIỀU HƯỚNG (8 TABS - NHÁNH 1 LÀ KÊ Y LỆNH TRỰC TIẾP) -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="openTab('tabOrder', this)">📝 1. Kê Y Lệnh Hướng Thần</button>
+        <button class="tab-btn" onclick="openTab('tab2', this)">🛡️ 2. Khóa An Toàn Checklist</button>
+        <button class="tab-btn" onclick="openTab('tab1', this)">💊 3. Tra Cứu Liều & Cơ Chế</button>
+        <button class="tab-btn" onclick="openTab('tab3', this)">🚨 4. Cấp Cứu POSS & Naloxone</button>
+        <button class="tab-btn" onclick="openTab('tab4', this)">⚖️ 5. Quy Đổi & Liều Cứu Trợ</button>
+        <button class="tab-btn" onclick="openTab('tab5', this)">⚡ 6. Thang Điểm DN4 (10 Câu)</button>
+        <button class="tab-btn" onclick="openTab('tab6', this)">🩺 7. An Toàn Thận - Gan</button>
+        <button class="tab-btn" onclick="openTab('tab7', this)">📋 8. Điểm BFI & Tiêu Hóa</button>
+    </div>
+
+    <!-- ================= NHÁNH 1 (MỚI): BỘ SOẠN THẢO Y LỆNH THUỐC GÂY NGHIỆN & HƯỚNG THẦN CHUẨN HỒ SƠ BỆNH ÁN ================= -->
+    <div id="tabOrder" class="tab-pane active">
+        <div class="grid-2">
+            <!-- Cột trái: Thiết lập thông số Y lệnh -->
+            <div class="card">
+                <h3 class="card-title">1. Thiết Lập Y Lệnh Thuốc Gây Nghiện, Hướng Thần & Bổ Trợ</h3>
+
+                <div class="form-group">
+                    <label>A. Chọn Thuốc Gây Nghiện / Opioid Nền Theo Giờ (Around-The-Clock - ATC):</label>
+                    <select id="ordAtcDrug" onchange="generateMedicalOrder()">
+                        <option value="morphine_ir_po">Morphine sulfate 10mg (Viên phóng thích tức thời IR - Uống mỗi 4 giờ)</option>
+                        <option value="morphine_sr_po">Morphine sulfate 30mg (Viên phóng thích kéo dài SR - Uống mỗi 12 giờ)</option>
+                        <option value="morphine_sc">Morphine 10mg/1mL (Tiêm dưới da ngắt quãng SC mỗi 4 giờ)</option>
+                        <option value="morphine_iv_pump">Morphine 10mg/1mL (Pha bơm tiêm điện 50mL NaCl 0.9% truyền TM liên tục)</option>
+                        <option value="fentanyl_iv_pump">Fentanyl 0.1mg/2mL (Pha bơm tiêm điện 50mL NaCl 0.9% truyền TM/SC liên tục - Suy thận eGFR &lt; 30)</option>
+                        <option value="fentanyl_td">Miếng dán Fentanyl 25mcg/giờ (Dán qua da TD mỗi 72 giờ - Khi nền đau đã ổn định)</option>
+                        <option value="alfentanil_pump">Alfentanil 1mg/2mL (Pha bơm tiêm điện 50mL truyền liên tục - Hàng 2 khi liều Fentanyl quá lớn)</option>
+                        <option value="oxycodone_pr">Oxycodone/Naloxone PR 10mg/5mg (Uống mỗi 12 giờ - Chống táo bón OIC)</option>
+                        <option value="tramadol_po">Tramadol 50mg (Opioid bậc 2 - Uống mỗi 6-8 giờ, tối đa 400mg/24h)</option>
+                    </select>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="form-group">
+                        <label>Tổng liều nền 24h (TDD - quy về mg Morphine PO):</label>
+                        <input type="number" id="ordTdd" value="60" min="5" step="5" oninput="generateMedicalOrder()">
+                    </div>
+                    <div class="form-group">
+                        <label>B. Đường dùng Liều Cứu Trợ Đau Bùng Phát (PRN):</label>
+                        <select id="ordPrnRoute" onchange="generateMedicalOrder()">
+                            <option value="PO">Morphine IR đường uống (PO - cách mỗi 1-2h)</option>
+                            <option value="SC">Morphine tiêm dưới da (SC - cách mỗi 30-60p)</option>
+                            <option value="IV">Morphine tiêm tĩnh mạch chậm (IV - cách mỗi 15-30p)</option>
+                            <option value="FENT_IV">Fentanyl Bolus TM/SC (10-15% TDD - cách mỗi 15-30p, ưu tiên khi eGFR &lt; 30)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>C. Y Lệnh Thuốc Hướng Thần / Hỗ Trợ Đau Thần Kinh & Xử Trí Mê Sảng:</label>
+                    <select id="ordPsychDrug" onchange="generateMedicalOrder()">
+                        <option value="pregabalin">Pregabalin 75mg (Uống buổi tối - Khởi đầu đau thần kinh DN4 &ge; 4)</option>
+                        <option value="gabapentin">Gabapentin 300mg (Uống buổi tối - Khởi đầu đau thần kinh DN4 &ge; 4)</option>
+                        <option value="amitriptyline">Amitriptyline 25mg (TCA - Uống buổi tối, giới hạn &le; 75mg/ngày)</option>
+                        <option value="duloxetine">Duloxetine 30mg (SNRI - Uống sáng, ưu tiên cho đau thần kinh do hóa trị CIPN)</option>
+                        <option value="haloperidol_delirium">Haloperidol 0.5mg - 1mg (Kiểm soát mê sảng/ảo giác do tích lũy M3G hoặc chống nôn CTZ)</option>
+                        <option value="none">Không dùng kèm thuốc hướng thần / thần kinh</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>D. Y Lệnh Thuốc Giảm Đau Bậc 1 & Corticosteroid Phối Hợp Đa Mô Thức:</label>
+                    <select id="ordStep1Drug" onchange="generateMedicalOrder()">
+                        <option value="para_standard">Paracetamol 500mg x 3-4 lần/ngày (Tổng liều &le; 3g/24h - Chức năng gan bình thường)</option>
+                        <option value="para_cachexia">Paracetamol 500mg x 2-3 lần/ngày (Giới hạn &lt; 2g/24h - Bệnh nhân suy kiệt/suy gan)</option>
+                        <option value="dexa_ppi">Dexamethasone 4mg - 8mg (Sáng 1 lần duy nhất) + Esomeprazole 40mg (Bảo vệ dạ dày)</option>
+                        <option value="nsaid_ppi">Celecoxib 200mg / Meloxicam + PPI (Chỉ dùng khi eGFR &ge; 30 và Tiểu cầu &ge; 50.000/&micro;L)</option>
+                        <option value="none">Không dùng kèm thuốc bậc 1 / Corticosteroid</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>E. Y Lệnh Bắt Buộc Dự Phòng Táo Bón (OIC) & Buồn Nôn (OINV) Ngay Ngày 1:</label>
+                    <select id="ordGiDrug" onchange="generateMedicalOrder()">
+                        <option value="macrogol_meto">Macrogol (Forlax) 10g x 1-2 gói/ngày + Bisacodyl 5mg (nếu BFI&gt;30) + Metoclopramide 10mg q8h</option>
+                        <option value="pamora_halo">Naldemedine 0.2mg/ngày (PAMORA trị OIC kháng trị) + Haloperidol 0.5mg tối (chống nôn CTZ)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Cột phải: Tờ Y Lệnh Hoàn Chỉnh (Copy trực tiếp vào bệnh án điện tử HIS) -->
+            <div class="card">
+                <h3 class="card-title">
+                    <span>2. Tờ Y Lệnh Chuẩn Hóa (Ghi Số & Bằng Chữ Theo Quy Chế)</span>
+                    <button class="btn" onclick="copyOrderText()">📋 Sao chép Y lệnh vào HIS</button>
+                </h3>
+                <p style="font-size:0.83rem; color:var(--text-muted); margin-top:0;">
+                    Y lệnh tự động quy đổi liều, ghi kèm chữ số & bằng chữ, giờ theo dõi đỉnh tác dụng và ngưỡng giữ cử thuốc cho Điều dưỡng:
+                </p>
+
+                <div id="orderSheetPreview" class="order-sheet-box"></div>
+
+                <div id="orderSafetyBanner" class="alert alert-warn" style="margin-top:12px;"></div>
+            </div>
+        </div>
+
+        <!-- BẢNG TÍNH PHA TRUYỀN BƠM TIÊM ĐIỆN FENTANYL / MORPHINE / ALFENTANIL 50mL -->
+        <div class="card" style="border-color: var(--teal-accent);">
+            <h3 class="card-title" style="color: var(--teal-accent);">
+                <span>💉 3. Bảng Tính Pha Truyền Bơm Tiêm Điện (Syringe Driver 50mL) - Fentanyl / Morphine / Alfentanil</span>
+                <span class="pill pill-green">Chuẩn Dược Lâm Sàng &amp; Suy Thận Nặng (eGFR &lt; 30)</span>
+            </h3>
+            <div class="grid-2">
+                <div>
+                    <div class="form-group">
+                        <label>Chọn chế phẩm ống tiêm pha Bơm tiêm điện (Tổng thể tích 50 mL NaCl 0.9%):</label>
+                        <select id="seDrugSelect" onchange="calcSyringeDriver()">
+                            <option value="fent_100">Fentanyl 0.1 mg / 2 mL (100 mcg / 2 mL) - Pha chuẩn 5 ống (500 mcg) / 50 mL &rarr; Nồng độ 10 mcg/mL</option>
+                            <option value="fent_500">Fentanyl 0.5 mg / 10 mL (500 mcg / 10 mL) - Pha chuẩn 2 ống (1000 mcg) / 50 mL &rarr; Nồng độ 20 mcg/mL</option>
+                            <option value="morph_10">Morphine 10 mg / 1 mL - Pha chuẩn 5 ống (50 mg) / 50 mL &rarr; Nồng độ 1 mg/mL</option>
+                            <option value="alfent_1000">Alfentanil 1 mg / 2 mL (1000 mcg / 2 mL) - Hàng 2 khi thể tích Fentanyl quá lớn (5 ống = 5 mg / 50 mL &rarr; 100 mcg/mL)</option>
+                        </select>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div class="form-group">
+                            <label>Số ống thuốc pha vào bơm 50 mL:</label>
+                            <input type="number" id="seAmpCount" value="5" min="1" max="25" oninput="calcSyringeDriver()">
+                        </div>
+                        <div class="form-group">
+                            <label>Liều đích cần truyền (mcg/giờ hoặc mg/giờ):</label>
+                            <input type="number" id="seTargetRate" value="25" min="1" step="5" oninput="calcSyringeDriver()">
+                        </div>
+                    </div>
+                    <div class="alert alert-warn" style="margin-top:4px; font-size:0.84rem;">
+                        <strong>Lưu ý lâm sàng (Bài 3 - Mục 2.2):</strong> Miếng dán Fentanyl (TD) mất 12-24h mới đạt nồng độ ổn định nên <strong>tuyệt đối không dùng để dò liều cấp cứu</strong>. Trên bệnh nhân suy thận nặng (eGFR &lt; 30 mL/phút), <strong>Fentanyl pha bơm tiêm điện (IV/SC)</strong> là lựa chọn số 1 để dò liều và kiểm soát đau cấp. Khi tổng liều Fentanyl quá lớn gây quá tải thể tích bơm tiêm điện &rarr; chuyển sang <strong>Alfentanil</strong>.
+                    </div>
+                </div>
+                <div>
+                    <div id="seResultBox" class="order-sheet-box" style="border-color: var(--blue-accent); min-height: 210px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= NHÁNH 2: CƠ CHẾ KIỂM SOÁT CHECKLIST GIẢM SAI SÓT THUỐC HƯỚNG THẦN - GÂY NGHIỆN ================= -->
+    <div id="tab2" class="tab-pane">
+        <div class="grid-2">
+            <div class="card">
+                <h3 class="card-title">
+                    <span>Cơ Chế "Khóa An Toàn 3 Lớp" Giảm Thiểu Sai Sót Thuốc Gây Nghiện & Hướng Thần</span>
+                    <button class="btn btn-outline" onclick="resetPsychChecklist()" style="font-size:0.78rem; padding:4px 9px;">Làm mới Khóa</button>
+                </h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0;">
+                    Hệ thống tự động khóa cảnh báo nếu chưa hoàn tất đủ <strong>10 bước kiểm soát kép (Double-Check)</strong> từ lúc kê y lệnh đến sau khi dùng thuốc:
+                </p>
+
+                <div class="progress-wrapper">
+                    <div id="safetyProgressBar" class="progress-fill"></div>
+                    <div id="safetyProgressLabel" class="progress-label">Tiến độ kiểm soát an toàn: 0 / 10 bước (0%) - CHƯA ĐẠT</div>
+                </div>
+
+                <div style="font-weight:700; color:var(--teal-accent); font-size:0.88rem; margin:12px 0 4px 0;">
+                    LỚP 1: KIỂM SOÁT TRƯỚC KHI KÊ Y LỆNH & RÀ SOÁT DƯỢC LÂM SÀNG (4 bước)
+                </div>
+                <label class="checklist-item"><input type="checkbox" class="psych-gate" onchange="updateSafetyGate()"> <span><strong>1. Xác minh eGFR/CrCl thực tế:</strong> Đã tính eGFR (không dựa vào Creatinine máu giả tạo). Nếu eGFR &lt; 30, đã loại bỏ Morphine liều cao, Pethidine, NSAIDs và giảm 50% liều Gabapentinoids.</span></label>
+                <label class="checklist-item"><input type="checkbox" class="psych-gate" onchange="updateSafetyGate()"> <span><strong>2. Kiểm tra "Y lệnh Kép" (ATC + PRN):</strong> Y lệnh đã tách biệt rõ ràng Liều nền theo giờ (ATC) và Liều cứu trợ (PRN = 10-15% TDD).</span></label>
+                <label class="checklist-item"><input type="checkbox" class="psych-gate" onchange="updateSafetyGate()"> <span><strong>3. Sàng lọc chống chỉ định dạng bào chế:</strong> Đảm bảo KHÔNG dùng viên phóng thích kéo dài (SR/ER) hoặc miếng dán Fentanyl TD để cắt cơn đau cấp (BTcP).</span></label>
+                <label class="checklist-item"><input type="checkbox" class="psych-gate" onchange="updateSafetyGate()"> <span><strong>4. Sàng lọc tương tác hướng thần nguy hiểm:</strong> Đã kiểm tra việc phối hợp Opioid + Gabapentinoids/TCAs/Haloperidol ở người cao tuổi để khởi đầu liều thấp buổi tối.</span></label>
+
+                <div style="font-weight:700; color:var(--warning); font-size:0.88rem; margin:12px 0 4px 0;">
+                    LỚP 2: ĐỐI CHIẾU ĐỘC LẬP 2 NGƯỜI (INDEPENDENT DOUBLE-CHECK) KHI PHA & CẤP PHÁT (3 bước)
+                </div>
+                <label class="checklist-item"><input type="checkbox" class="psych-gate" onchange="updateSafetyGate()"> <span><strong>5. Kiểm tra chéo tỷ lệ quy đổi đường dùng:</strong> 2 nhân viên y tế độc lập xác nhận tỷ lệ chuyển đổi (Morphine PO:IV/SC = 3:1; Morphine PO:Fentanyl TD = 100:1) và đã trừ 25-50% dung nạp chéo.</span></label>
+                <label class="checklist-item"><input type="checkbox" class="psych-gate" onchange="updateSafetyGate()"> <span><strong>6. Đối chiếu "5 Đúng" & Ghi số lượng bằng chữ:</strong> Xác nhận đúng hàm lượng ống tiêm/viên uống (tránh nhầm Morphine 10mg với 30mg, hoặc IR với SR) và bàn giao vỏ ống thuốc gây nghiện theo quy chế.</span></label>
+                <label class="checklist-item"><input type="checkbox" class="psych-gate" onchange="updateSafetyGate()"> <span><strong>7. Đánh giá POSS & Tiếng ngáy ngay trước khi cho liều kế tiếp:</strong> Bắt buộc kiểm tra bệnh nhân trước khi tiêm/uống cử tiếp theo. Nếu POSS &ge; 3 hoặc có ngáy &rarr; DỪNG CẤP THUỐC NGAY!</span></label>
+
+                <div style="font-weight:700; color:var(--blue-accent); font-size:0.88rem; margin:12px 0 4px 0;">
+                    LỚP 3: GIÁM SÁT ĐỈNH TÁC DỤNG & DỰ PHÒNG BIẾN CHỨNG SAU DÙNG THUỐC (3 bước)
+                </div>
+                <label class="checklist-item"><input type="checkbox" class="psych-gate" onchange="updateSafetyGate()"> <span><strong>8. Hẹn giờ kiểm tra tại "Đỉnh tác dụng" (Peak Effect):</strong> Đã hẹn giờ đánh giá lại hô hấp & POSS sau 15-30 phút (nếu tiêm IV), 30 phút (nếu tiêm SC), hoặc 60-90 phút (nếu uống PO IR).</span></label>
+                <label class="checklist-item"><input type="checkbox" class="psych-gate" onchange="updateSafetyGate()"> <span><strong>9. Kê đơn dự phòng Táo bón (OIC) & Nôn (OINV) bắt buộc:</strong> Đã kê Macrogol &plusmn; Bisacodyl ngay từ ngày đầu (không dùng Lactulose) và Metoclopramide/Haloperidol.</span></label>
+                <label class="checklist-item"><input type="checkbox" class="psych-gate" onchange="updateSafetyGate()"> <span><strong>10. Sẵn sàng hộp cấp cứu Naloxone tại giường/tủ trực:</strong> Đã kiểm tra ống Naloxone 0.4mg + bơm tiêm 10mL NaCl 0.9% kèm phác đồ tiêm 0.5mL (20mcg) mỗi 2 phút.</span></label>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Trạng Thái Phê Duyệt An Toàn & Cảnh Báo Lỗi Chí Mạng</h3>
+                <div id="safetyGateStatusBox" class="alert alert-danger"></div>
+
+                <h4 style="color:#f87171; margin:16px 0 8px 0; font-size:0.95rem;">6 Sai Sót Chí Mạng Thường Gặp Khi Dùng Thuốc Gây Nghiện / Hướng Thần & Cơ Chế Chặn</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sai sót lâm sàng phổ biến</th>
+                            <th>Hậu quả sinh lý bệnh</th>
+                            <th>Cơ chế khóa chặn trên Checklist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Dùng viên SR/ER hoặc dán Fentanyl để cắt cơn đau cấp (BTcP)</strong></td>
+                            <td>Thuốc khởi phát chậm &rarr; bệnh nhân tự uống dồn liều &rarr; quá liều gây ngưng thở muộn sau 12-24h</td>
+                            <td>Bắt buộc tách riêng thuốc nền (ATC) và thuốc cứu trợ (bắt buộc dạng IR) tại Bước 2 & 3</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Đổi Opioid mới theo tỷ lệ 1:1 lý thuyết mà không giảm liều</strong></td>
+                            <td>Hiện tượng "Dung nạp chéo không hoàn toàn" làm bệnh nhân nhạy cảm quá mức &rarr; Suy hô hấp cấp</td>
+                            <td>Công thức tự động trừ <strong>25% - 50%</strong> liều lý thuyết và kiểm tra độc lập 2 người tại Bước 5</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Nhìn Creatinine máu bình thường mà kê Morphine/Pregabalin liều cao</strong></td>
+                            <td>Bệnh nhân ung thư teo cơ nên Creatinine thấp giả tạo &rarr; Tích lũy M6G/M3G gây hôn mê, giật cơ</td>
+                            <td>Cưỡng bức nhập chỉ số <strong>eGFR / CrCl</strong> trước khi mở khóa phác đồ tại Bước 1</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. Xem tiếng ngáy (Snoring) là "bệnh nhân ngủ ngon do hết đau"</strong></td>
+                            <td>Ngáy do Opioid là tắc nghẽn đường thở cơ học kèm mất phản xạ tự thức tỉnh &rarr; Tử vong trên giường</td>
+                            <td>Tích hợp nút cảnh báo đỏ "Tiếng ngáy" vào thang điểm POSS tại Bước 7</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5. Tiêm bolus trực tiếp cả ống 0.4mg Naloxone khi quá liều</strong></td>
+                            <td>Đảo ngược Opioid đột ngột gây "cơn bão đau", tăng huyết áp kịch phát, phù phổi cấp & loạn nhịp</td>
+                            <td>Khóa quy trình pha loãng 0.4mg/10mL và đồng hồ bấm giờ tiêm 0.5mL (20mcg) mỗi 2 phút</td>
+                        </tr>
+                        <tr>
+                            <td><strong>6. Phối hợp Opioid + Gabapentinoids / TCA liều cao ngay từ đầu</strong></td>
+                            <td>Hiệp đồng ức chế thần kinh trung ương gây lơ mơ, té ngã và suy hô hấp ở người già</td>
+                            <td>Bắt buộc khởi đầu liều thấp buổi tối (Gabapentin 100mg, Pregabalin 25mg, TCA &le;75mg)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= NHÁNH 3: BẢNG LIỀU THUỐC & CƠ CHẾ TÁC DỤNG ================= -->
+    <div id="tab1" class="tab-pane">
+        <div class="grid-2">
+            <div class="card">
+                <h3 class="card-title">Tra Cứu Nhanh Liều Dùng, Dược Động Học & Cơ Chế Tác Dụng</h3>
+                <div class="form-group">
+                    <label>Chọn thuốc cần kiểm tra trước khi kê đơn / thực hiện y lệnh:</label>
+                    <select id="drugLookupSelect" onchange="lookupDrugDetail()">
+                        <option value="morphine">1. Morphine (IR uống / SR uống / Tiêm SC, IV) - Opioid Bậc 3</option>
+                        <option value="fentanyl">2. Fentanyl (Miếng dán qua da TD / Tiêm IV, SC) - Opioid Bậc 3</option>
+                        <option value="oxycodone">3. Oxycodone / Oxycodone-Naloxone PR - Opioid Bậc 3</option>
+                        <option value="tramadol_codeine">4. Codeine & Tramadol - Opioid Yếu Bậc 2</option>
+                        <option value="gabapentin">5. Gabapentin - Thuốc bổ trợ đau thần kinh</option>
+                        <option value="pregabalin">6. Pregabalin - Thuốc bổ trợ đau thần kinh</option>
+                        <option value="amitriptyline">7. Amitriptyline (TCA) & Duloxetine (SNRI)</option>
+                        <option value="dexamethasone">8. Dexamethasone & Thuốc chống hủy xương (Zoledronic / Denosumab)</option>
+                        <option value="para_nsaids">9. Paracetamol & NSAIDs - Thuốc giảm đau Bậc 1</option>
+                        <option value="naloxone_rescue">10. Naloxone & Thuốc xử trí tác dụng phụ (Macrogol, PAMORA, Haloperidol)</option>
+                    </select>
+                </div>
+                <div id="drugDetailOutput" class="alert alert-safe"></div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Chiến Lược "4 Đúng" (WHO/NCCN) & Phối Hợp Theo Cơ Chế Đau</h3>
+                <ul style="padding-left:18px; font-size:0.89rem; margin-top:4px;">
+                    <li><strong>1. Đúng đường dùng (By Mouth):</strong> Ưu tiên đường uống (PO). Chỉ bỏ PO khi nôn ói không kiểm soát, tắc ruột, khó nuốt, lú lẫn/hôn mê hoặc cần dò liều cấp cứu.</li>
+                    <li><strong>2. Đúng giờ (By the Clock - ATC):</strong> Duy trì nồng độ trên ngưỡng hiệu quả tối thiểu (MEC). Morphine IR dùng mỗi <strong>4 giờ/lần</strong> (do T1/2 &approx; 2-3 giờ) để tránh rơi vào "vùng đau tái phát".</li>
+                    <li><strong>3. Cá thể hóa ("Không có liều trần"):</strong> Opioid mạnh đồng vận thuần túy thụ thể Mu (Morphine, Fentanyl, Oxycodone) không có liều trần. Liều đúng là liều cân bằng giữa giảm đau và tác dụng phụ.</li>
+                    <li><strong>4. Phối hợp đa mô thức theo cơ chế (Mechanism-based):</strong>
+                        <ul>
+                            <li><strong>Đau thụ cảm (Somatic):</strong> Opioid + Paracetamol / NSAIDs (Hiệu ứng tiết kiệm Opioid).</li>
+                            <li><strong>Đau tạng (Visceral):</strong> Opioid + Thuốc kháng co thắt + Dexamethasone (giảm phù nề bao tạng).</li>
+                            <li><strong>Đau thần kinh (Neuropathic - DN4 &ge; 4):</strong> Opioid đơn độc kém nhạy; bắt buộc kết hợp Gabapentin / Pregabalin hoặc TCAs/SNRIs.</li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="alert alert-danger" style="margin-top:10px;">
+                    <strong>CẢNH BÁO PETHIDINE:</strong> Chống chỉ định tuyệt đối dùng giảm đau mạn tính do chất chuyển hóa <strong>Norpethidine</strong> có T1/2 dài, tích lũy gây rung giật cơ và <strong>co giật không thể đảo ngược bằng Naloxone</strong>!
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">Bảng Tổng Hợp Liều Lượng, Đỉnh Tác Dụng & Giới Hạn An Toàn Các Thuốc Trong Chuyên Đề</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:18%;">Nhóm / Hoạt chất</th>
+                        <th style="width:22%;">Cơ chế tác dụng chính</th>
+                        <th style="width:28%;">Liều dùng & Khoảng cách chuẩn</th>
+                        <th style="width:32%;">Ngưỡng chỉnh liều & Cảnh báo sai sót</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Morphine (PO / SC / IV)</strong></td>
+                        <td>Đồng vận thuần túy thụ thể Mu (&mu;); không có liều trần</td>
+                        <td>• Dò liều: Dạng IR mỗi <strong>4 giờ</strong> (ATC)<br>• Liều cứu trợ (BTcP): <strong>10-15% tổng liều 24h</strong><br>• Đỉnh tác dụng: PO (60-90p), SC (30p), IV (15-30p)</td>
+                        <td>• Quy đổi PO : SC/IV = <strong>2:1 đến 3:1</strong><br>• Suy thận (eGFR &lt; 30): Tránh dùng liều cao do tích lũy <strong>M6G</strong> (suy hô hấp) & <strong>M3G</strong> (giật cơ, sảng)<br>• Suy gan: Giảm 50% liều khởi đầu, giãn khoảng cách</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fentanyl (TD / IV / SC) &amp; Alfentanil</strong></td>
+                        <td>Đồng vận thụ thể Mu mạnh; không tạo chất chuyển hóa hoạt tính</td>
+                        <td>• Quy đổi: <strong>100:1</strong> (60mg Morphine PO &approx; 25mcg/h TD)<br>• Miếng dán TD mất <strong>12-24h</strong> để đạt nồng độ ổn định</td>
+                        <td>• <strong>An toàn số 1 khi eGFR &lt; 30 mL/phút</strong><br>• <strong>CẤM</strong> dùng miếng dán TD để dò liều nhanh/cắt cơn cấp, khi sốt cao (&gt;40&deg;C) hoặc suy kiệt mất mỡ dưới da</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Codeine &amp; Tramadol (Bậc 2)</strong></td>
+                        <td>Tiền chất (Prodrug) qua <strong>CYP2D6</strong>; Tramadol ức chế thêm tái hấp thu Serotonin/NE</td>
+                        <td>• Có <strong>hiệu ứng trần (Ceiling effect)</strong><br>• Không tăng liều vượt ngưỡng khuyến cáo</td>
+                        <td>• Đa hình CYP2D6: Chuyển hóa kém (~8%) &rarr; mất tác dụng; Chuyển hóa siêu nhanh &rarr; ngộ độc cấp/suy hô hấp<br>• Tăng liều quá trần gây co giật, hội chứng Serotonin</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gabapentin &amp; Pregabalin</strong></td>
+                        <td>Gắn tiểu đơn vị &alpha;2&delta; kênh Canxi phụ thuộc điện thế</td>
+                        <td>• <strong>Gabapentin:</strong> Khởi đầu 100-300mg (tối) &rarr; Đích 900-3600 mg/ngày<br>• <strong>Pregabalin:</strong> Khởi đầu 25-75mg (tối) &rarr; Đích 150-600 mg/ngày</td>
+                        <td>• Khi <strong>CrCl &lt; 60 mL/phút</strong>: Giảm 50% liều hoặc giãn cách<br>• <strong>Nguy cơ tử vong (EAPC):</strong> Hiệp đồng ức chế hô hấp và an thần sâu khi dùng chung Opioid liều cao</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Amitriptyline &amp; Duloxetine</strong></td>
+                        <td>Ức chế tái hấp thu Monoamine trung ương (TCA / SNRI)</td>
+                        <td>• <strong>Amitriptyline:</strong> Giới hạn <strong>&le; 75 mg/ngày</strong><br>• <strong>Duloxetine:</strong> Ưu tiên cho đau thần kinh do hóa trị (CIPN)</td>
+                        <td>• <strong>Amitriptyline:</strong> Độc tính kháng Cholinergic (bí tiểu, lú lẫn); cấm dùng khi rối loạn dẫn truyền tim, NMCT cấp, phì đại tiền liệt tuyến<br>• <strong>Duloxetine:</strong> Tránh dùng khi suy gan nặng</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Paracetamol &amp; NSAIDs (Bậc 1)</strong></td>
+                        <td>Ức chế COX / Prostaglandin ngoại biên & trung ương</td>
+                        <td>• Dùng làm nền tảng phối hợp (Opioid-sparing)<br>• Cấm đơn trị liệu cho đau trung bình - nặng</td>
+                        <td>• <strong>Paracetamol:</strong> Giảm còn <strong>&lt; 2g/24h</strong> khi suy gan/suy kiệt (thiếu Glutathione khử NAPQI)<br>• <strong>NSAIDs:</strong> Ngưng ngay khi <strong>eGFR &lt; 30</strong> hoặc <strong>Tiểu cầu &lt; 50.000/&micro;L</strong>. Bắt buộc kèm PPI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Naloxone &amp; Thuốc hỗ trợ tiêu hóa</strong></td>
+                        <td>Naloxone: Đối kháng cạnh tranh thụ thể Mu trung ương</td>
+                        <td>• <strong>Naloxone cấp cứu:</strong> Pha 0.4mg + 10mL NaCl 0.9% &rarr; Tiêm IV chậm <strong>0.5mL (20mcg) mỗi 2 phút</strong><br>• <strong>Chống nôn:</strong> Metoclopramide 10mg q6-8h; Haloperidol 0.5-1.5mg/ngày<br>• <strong>PAMORA:</strong> Naldemedine 0.2mg/ngày</td>
+                        <td>• <strong>CẤM tiêm bolus trực tiếp 0.4mg Naloxone</strong> (gây bão đau, phù phổi cấp)<br>• <strong>CẤM dùng Lactulose</strong> trị táo bón OIC (gây lên men, chướng bụng nặng); ưu tiên Macrogol + Bisacodyl</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ================= NHÁNH 4: CẤP CỨU POSS & NALOXONE ================= -->
+    <div id="tab3" class="tab-pane">
+        <div class="grid-2">
+            <div class="card">
+                <h3 class="card-title">Thang Điểm An Thần Pasero (POSS)</h3>
+                <div class="form-group">
+                    <label>Chọn trạng thái tri giác & hô hấp của bệnh nhân:</label>
+                    <select id="possLevel" onchange="evaluatePOSS()">
+                        <option value="S">Mức S: Ngủ, dễ đánh thức</option>
+                        <option value="1">Mức 1: Tỉnh táo và minh mẫn (Alert)</option>
+                        <option value="2">Mức 2: Ngủ gà nhẹ, dễ đánh thức</option>
+                        <option value="3">Mức 3: Ngủ gà thường xuyên, ngủ thiếp khi đang nói chuyện</option>
+                        <option value="4">Mức 4: Ngủ lịm, đáp ứng tối thiểu hoặc không đáp ứng</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:#fca5a5;">
+                        <input type="checkbox" id="snoringCheck" onchange="evaluatePOSS()" style="transform:scale(1.2);">
+                        Phát hiện bệnh nhân có tiếng thở NGÁY (Snoring)?
+                    </label>
+                </div>
+
+                <div id="possOutput" class="alert alert-safe"></div>
+
+                <div class="alert alert-warn" style="margin-top:14px;">
+                    <strong>Tam chứng ngộ độc Opioid cấp:</strong><br>
+                    1. Hôn mê hoặc suy giảm tri giác sâu (POSS mức 4).<br>
+                    2. Suy hô hấp lâm sàng (thở nông, chậm hoặc ngừng thở).<br>
+                    3. Đồng tử co nhỏ như đầu đinh ghim (Pinpoint pupils).
+                </div>
+            </div>
+
+            <div class="card" style="border-color: var(--danger);">
+                <h3 class="card-title" style="color: #f87171;">Nghị Thức Giải Độc Naloxone Chuẩn (Pasero)</h3>
+                <div class="alert alert-danger" style="margin-top:0;">
+                    <strong>CẢNH BÁO AN TOÀN:</strong> Tuyệt đối KHÔNG tiêm bolus trực tiếp 0.4mg Naloxone! Đảo ngược Opioid đột ngột sẽ gây "cơn bão đau" (pain crisis), bùng phát giao cảm, phù phổi cấp và loạn nhịp tim.
+                </div>
+                <ul style="padding-left:18px; font-size:0.9rem; margin-top:12px;">
+                    <li><strong>Bước 1 (Pha loãng chuẩn):</strong> Pha 1 ống <strong>0.4 mg Naloxone</strong> vào <strong>10 mL NaCl 0.9%</strong> &rarr; Đạt nồng độ <strong>0.04 mg/mL (40 mcg/mL)</strong>.</li>
+                    <li><strong>Bước 2 (Tiêm dò liều - Titration):</strong> Tiêm tĩnh mạch chậm <strong>0.5 mL (0.02 mg = 20 mcg) mỗi 2 phút</strong>.</li>
+                    <li><strong>Bước 3 (Điểm dừng):</strong> Ngừng tiêm ngay khi tần số thở phục hồi và bệnh nhân thức tỉnh giao tiếp được (giữ lại phần giảm đau nền).</li>
+                    <li><strong>Bước 4 (Hậu cấp cứu):</strong> Theo dõi nội trú tối thiểu <strong>24 giờ</strong> (do T1/2 của Naloxone chỉ 30-80 phút, ngắn hơn Opioid nên rất dễ tái ngộ độc / re-sedation).</li>
+                </ul>
+
+                <div style="background: var(--bg-input); padding:12px; border-radius:8px; border:1px solid var(--border); margin-top:12px;">
+                    <div style="text-align:center; font-size:0.85rem; color:var(--text-muted);">ĐỒNG HỒ CHU KỲ TIÊM DÒ LIỀU 2 PHÚT (0.5 mL = 20 mcg/lần)</div>
+                    <div id="naloxoneTimer" class="timer-display">02:00</div>
+                    <div style="display:flex; justify-content:center; gap:10px;">
+                        <button class="btn btn-danger" onclick="startNaloxoneTimer()">Bắt đầu chu kỳ 2 phút</button>
+                        <button class="btn btn-outline" onclick="resetNaloxoneTimer()">Đặt lại</button>
+                    </div>
+                    <div id="doseCounterText" style="text-align:center; font-size:0.85rem; margin-top:8px; color:var(--teal-accent);">
+                        Số lần đã tiêm: <strong id="naloxoneCount">0</strong> lần (Tổng liều: <strong id="naloxoneTotalMcg">0</strong> mcg)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">Chẩn Đoán Phân Biệt Mê Sảng & Độc Tính Thần Kinh Do Opioid (Tích lũy M3G / Normorphine)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nguyên nhân</th>
+                        <th>Đặc điểm lâm sàng</th>
+                        <th>Dấu hiệu đi kèm</th>
+                        <th>Đáp ứng với giảm liều / Xử trí</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Độc tính Opioid</strong></td>
+                        <td>Mê sảng, giật cơ (myoclonus), ảo giác</td>
+                        <td>Co đồng tử, tích lũy M3G / Normorphine</td>
+                        <td><span class="pill pill-green">Cải thiện rõ rệt</span> Bồi phụ nước, xoay vòng Opioid, Haloperidol 0.5-1mg</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Di căn não</strong></td>
+                        <td>Dấu hiệu thần kinh khu trú</td>
+                        <td>Nhức đầu, nôn vọt</td>
+                        <td><span class="pill pill-red">Không thay đổi</span> Cần hình ảnh học sọ não & Dexamethasone</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nhiễm trùng</strong></td>
+                        <td>Mê sảng cấp tính</td>
+                        <td>Sốt, tăng bạch cầu / CRP</td>
+                        <td><span class="pill pill-red">Không thay đổi</span> Tìm ổ nhiễm khuẩn và kháng sinh</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giảm oxy máu</strong></td>
+                        <td>Hốt hoảng, vã mồ hôi, kích thích</td>
+                        <td>Nhịp thở nhanh, SpO2 thấp</td>
+                        <td><span class="pill pill-red">Không thay đổi</span> Hỗ trợ hô hấp, oxy liệu pháp</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ================= NHÁNH 5: QUY ĐỔI & LIỀU CỨU TRỢ ================= -->
+    <div id="tab4" class="tab-pane">
+        <div class="grid-2">
+            <div class="card">
+                <h3 class="card-title">Tính Liều Cứu Trợ Đau Bùng Phát (BTcP Rescue Dose)</h3>
+                <div class="form-group">
+                    <label>Tổng liều Opioid nền 24 giờ (TDD - quy về mg Morphine uống):</label>
+                    <input type="number" id="tddInput" value="60" min="0" oninput="calcRescue()">
+                </div>
+                <div class="form-group">
+                    <label>Đường dùng liều cứu trợ (Chỉ dùng dạng phóng thích tức thời - IR):</label>
+                    <select id="rescueRoute" onchange="calcRescue()">
+                        <option value="PO">Đường uống (Morphine IR PO)</option>
+                        <option value="SC">Tiêm dưới da (Morphine SC - quy đổi 1/3 PO)</option>
+                        <option value="IV">Tiêm tĩnh mạch (Morphine IV - quy đổi 1/3 PO)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Số liều cứu trợ bệnh nhân đã phải dùng trong 24 giờ qua:</label>
+                    <input type="number" id="rescueCountInput" value="2" min="0" oninput="calcRescue()">
+                </div>
+
+                <div id="rescueOutput" class="alert alert-safe"></div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Quy Đổi & Luân Chuyển Opioid (Opioid Rotation)</h3>
+                <div class="form-group">
+                    <label>Tổng liều Morphine đường uống (PO) 24 giờ hiện tại (mg/ngày):</label>
+                    <input type="number" id="morphinePoInput" value="60" min="0" oninput="calcRotation()">
+                </div>
+                <div class="form-group">
+                    <label>Mức giảm liều dự phòng "Dung nạp chéo không hoàn toàn":</label>
+                    <select id="crossToleranceSelect" onchange="calcRotation()">
+                        <option value="0">0% (Chỉ đổi đường dùng cùng hoạt chất Morphine)</option>
+                        <option value="0.25" selected>Giảm 25% (Khuyến cáo chuẩn khi đổi sang Opioid mới)</option>
+                        <option value="0.50">Giảm 50% (Khi bệnh nhân cao tuổi, suy yếu hoặc liều cao)</option>
+                    </select>
+                </div>
+
+                <div id="rotationOutput" class="alert alert-warn"></div>
+
+                <div class="alert alert-danger" style="margin-top:12px;">
+                    <strong>Cảnh báo Miếng dán Fentanyl (TD) & Methadone:</strong>
+                    <ul style="margin:5px 0 0 0; padding-left:18px; font-size:0.86rem;">
+                        <li><strong>Fentanyl TD:</strong> Cần 12-24h mới đạt nồng độ đỉnh ổn định (steady state). Tuyệt đối KHÔNG dùng để dò liều nhanh. Chống chỉ định khi sốt cao (&gt;40&deg;C) hoặc suy kiệt mất lớp mỡ dưới da.</li>
+                        <li><strong>Methadone:</strong> T1/2 lên tới 190 giờ, đạt steady state sau 5-7 ngày &rarr; Nguy cơ "tử vong chậm" do tích lũy; chỉ luân chuyển nội trú bởi chuyên gia.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= NHÁNH 6: THANG ĐIỂM DN4 (10 CÂU HỎI TƯƠNG TÁC) ================= -->
+    <div id="tab5" class="tab-pane">
+        <div class="grid-2">
+            <div class="card">
+                <h3 class="card-title">
+                    <span>Thang Điểm DN4 Chẩn Đoán Đau Thần Kinh (Bouhassira 2005)</span>
+                    <button class="btn btn-outline" onclick="resetDN4()" style="font-size:0.78rem; padding:4px 9px;">Làm mới DN4</button>
+                </h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0;">
+                    Đánh dấu các triệu chứng hiện diện (Mỗi tiêu chí = 1 điểm; Ngưỡng xác nhận đau thần kinh: <strong>&ge; 4/10 điểm</strong>):
+                </p>
+
+                <div style="font-weight:700; color:var(--teal-accent); font-size:0.9rem; margin:8px 0 4px 0;">
+                    PHẦN A: PHỎNG VẤN BỆNH NHÂN (7 tiêu chí)
+                </div>
+                <div style="font-size:0.84rem; color:#cbd5e1; margin-bottom:4px;"><em>Câu hỏi 1: Cơn đau có một hoặc nhiều đặc điểm sau không?</em></div>
+                <label class="checklist-item"><input type="checkbox" class="dn4-item" onchange="calcDN4()"> <span>1. Cảm giác bỏng rát (Brûlure / Burning)</span></label>
+                <label class="checklist-item"><input type="checkbox" class="dn4-item" onchange="calcDN4()"> <span>2. Cảm giác lạnh buốt đau đớn (Froid douloureux / Painful cold)</span></label>
+                <label class="checklist-item"><input type="checkbox" class="dn4-item" onchange="calcDN4()"> <span>3. Cảm giác như điện giật (Décharges électriques / Electric shocks)</span></label>
+
+                <div style="font-size:0.84rem; color:#cbd5e1; margin:8px 0 4px 0;"><em>Câu hỏi 2: Vùng đau có kèm theo một hoặc nhiều triệu chứng sau không?</em></div>
+                <label class="checklist-item"><input type="checkbox" class="dn4-item" onchange="calcDN4()"> <span>4. Tê rần / Kiến bò (Fourmillements / Tingling)</span></label>
+                <label class="checklist-item"><input type="checkbox" class="dn4-item" onchange="calcDN4()"> <span>5. Châm chích như kim châm (Picotements / Pins and needles)</span></label>
+                <label class="checklist-item"><input type="checkbox" class="dn4-item" onchange="calcDN4()"> <span>6. Tê bì / Mất cảm giác (Engourdissements / Numbness)</span></label>
+                <label class="checklist-item"><input type="checkbox" class="dn4-item" onchange="calcDN4()"> <span>7. Ngứa (Démangeaisons / Itching)</span></label>
+
+                <div style="font-weight:700; color:var(--teal-accent); font-size:0.9rem; margin:12px 0 4px 0;">
+                    PHẦN B: KHÁM LÂM SÀNG CẢM GIÁC TẠI VÙNG ĐAU (3 tiêu chí)
+                </div>
+                <div style="font-size:0.84rem; color:#cbd5e1; margin-bottom:4px;"><em>Câu hỏi 3 & 4: Khám tại vùng đau có phát hiện dấu hiệu nào sau đây?</em></div>
+                <label class="checklist-item"><input type="checkbox" class="dn4-item" onchange="calcDN4()"> <span>8. Giảm cảm giác khi chạm nhẹ (Hypoesthésie au tact / Touch hypoesthesia)</span></label>
+                <label class="checklist-item"><input type="checkbox" class="dn4-item" onchange="calcDN4()"> <span>9. Giảm cảm giác với châm kim (Hypoesthésie à la piqûre / Pinprick hypoesthesia)</span></label>
+                <label class="checklist-item"><input type="checkbox" class="dn4-item" onchange="calcDN4()"> <span>10. Đau xuất hiện hoặc tăng lên khi cọ xát nhẹ (Loạn cảm đau cơ học - Allodynia)</span></label>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Kết Quả Điểm DN4 & Phác Đồ Thuốc Bổ Trợ Đau Thần Kinh</h3>
+                <div id="dn4Output" class="alert alert-safe"></div>
+
+                <h4 style="color:var(--blue-accent); margin:16px 0 8px 0; font-size:0.95rem;">Bảng Hướng Dẫn Chỉnh Liều Thuốc Đau Thần Kinh Đầu Tay</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hoạt chất</th>
+                            <th>Liều khởi đầu</th>
+                            <th>Liều đích</th>
+                            <th>Chỉnh liều khi CrCl &lt; 60 mL/phút / Lưu ý</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Gabapentin</strong></td>
+                            <td>100 - 300 mg (tối)</td>
+                            <td>900 - 3600 mg/ngày</td>
+                            <td>Giảm 50% liều hoặc kéo dài khoảng cách dùng</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pregabalin</strong></td>
+                            <td>25 - 75 mg (tối)</td>
+                            <td>150 - 600 mg/ngày</td>
+                            <td>Giảm liều dựa trên mức lọc cầu thận (eGFR/CrCl)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Amitriptyline (TCA)</strong></td>
+                            <td>10 - 25 mg (tối)</td>
+                            <td>&le; 75 mg/ngày</td>
+                            <td>Chống chỉ định: Rối loạn dẫn truyền tim, NMCT cấp, phì đại tiền liệt tuyến</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Duloxetine (SNRI)</strong></td>
+                            <td>30 mg/ngày</td>
+                            <td>60 mg/ngày</td>
+                            <td>Ưu tiên cho đau thần kinh do hóa trị (CIPN). Tránh dùng khi suy gan nặng</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= NHÁNH 7: AN TOÀN THẬN - GAN & COCKCROFT-GAULT ================= -->
+    <div id="tab6" class="tab-pane">
+        <div class="grid-2">
+            <div class="card">
+                <h3 class="card-title">Công Cụ Tính Nhanh CrCl (Cockcroft-Gault) & Nghịch Lý Creatinine</h3>
+                <div class="alert alert-warn" style="margin-top:0; margin-bottom:12px; font-size:0.85rem;">
+                    <strong>Nghịch lý Creatinine (King et al.):</strong> ~60% bệnh nhân ung thư có CrCl &lt; 90 mL/phút nhưng &lt;10% tăng Creatinine máu do teo cơ/suy kiệt (cachexia). Bắt buộc tính CrCl/eGFR!
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="form-group">
+                        <label>Tuổi (năm):</label>
+                        <input type="number" id="cgAge" value="65" min="18" max="110" oninput="calcCockcroftGault()">
+                    </div>
+                    <div class="form-group">
+                        <label>Cân nặng thực tế (kg):</label>
+                        <input type="number" id="cgWeight" value="48" min="20" max="150" oninput="calcCockcroftGault()">
+                    </div>
+                    <div class="form-group">
+                        <label>Giới tính:</label>
+                        <select id="cgSex" onchange="calcCockcroftGault()">
+                            <option value="1">Nam (Hệ số 1.0)</option>
+                            <option value="0.85">Nữ (Hệ số 0.85)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Creatinine máu (&micro;mol/L):</label>
+                        <input type="number" id="cgScr" value="95" min="20" max="1500" oninput="calcCockcroftGault()">
+                    </div>
+                </div>
+                <button class="btn" onclick="calcCockcroftGault()" style="width:100%; justify-content:center; margin-bottom:10px;">🔄 Áp dụng CrCl vừa tính vào Y lệnh &amp; Phân tầng Opioid</button>
+
+                <div class="form-group">
+                    <label>Chỉ số eGFR hoặc CrCl hiện tại của bệnh nhân (mL/phút):</label>
+                    <input type="number" id="egfrInput" value="45" min="1" max="150" oninput="evaluateOrganSafety(); generateMedicalOrder();">
+                </div>
+                <div class="form-group">
+                    <label>Tình trạng chức năng Gan (Child-Pugh) / Dinh dưỡng:</label>
+                    <select id="liverSelect" onchange="evaluateOrganSafety(); generateMedicalOrder();">
+                        <option value="normal">Chức năng gan bình thường</option>
+                        <option value="impaired">Suy gan (Child-Pugh B/C) hoặc suy kiệt nặng (Cachexia)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Khuyến Cáo Phân Tầng Opioid & Thuốc Phối Hợp Theo Cơ Quan Đích</h3>
+                <div id="organSafetyOutput" class="alert alert-warn" style="margin-top:0;"></div>
+
+                <div class="form-group" style="margin-top:14px;">
+                    <label>Tra cứu quy trình dự phòng độc tính cơ quan (Bậc 1, Corticosteroid & Xương):</label>
+                    <select id="adjuvantSelect" onchange="showAdjuvantInfo()">
+                        <option value="step1">1. Thuốc Bậc 1: Paracetamol & NSAIDs</option>
+                        <option value="steroid_bone">2. Corticosteroid (Dexamethasone) & Thuốc chống hủy xương</option>
+                        <option value="codeine_tramadol">3. Opioid Bậc 2 (Codeine / Tramadol) & Đa hình CYP2D6</option>
+                    </select>
+                </div>
+                <div id="adjuvantOutput" class="alert alert-safe"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= NHÁNH 8: ĐIỂM BFI, TIÊU HÓA & NÔN ================= -->
+    <div id="tab7" class="tab-pane">
+        <div class="grid-2">
+            <div class="card">
+                <h3 class="card-title">Chỉ Số Chức Năng Ruột BFI (Chẩn đoán Táo bón do Opioid - OIC)</h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0;">
+                    Đánh giá của bệnh nhân trong 7 ngày qua (Thang điểm từ 0 = Không bị đến 100 = Nặng nhất):
+                </p>
+                <div class="form-group">
+                    <label>Câu 1: Mức độ dễ dàng khi đi tiêu (0 = Rất dễ, 100 = Rất khó):</label>
+                    <input type="number" id="bfi1" value="40" min="0" max="100" oninput="calcBFI()">
+                </div>
+                <div class="form-group">
+                    <label>Câu 2: Cảm giác đi tiêu không hết phân (0 = Không hề, 100 = Rất nặng):</label>
+                    <input type="number" id="bfi2" value="35" min="0" max="100" oninput="calcBFI()">
+                </div>
+                <div class="form-group">
+                    <label>Câu 3: Đánh giá chung của bệnh nhân về táo bón (0 - 100):</label>
+                    <input type="number" id="bfi3" value="45" min="0" max="100" oninput="calcBFI()">
+                </div>
+                <div id="bfiOutput" class="alert alert-warn"></div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Phác Đồ Quản Lý Táo Bón (OIC) & Buồn Nôn (OINV)</h3>
+                <div class="alert alert-danger" style="margin-top:0;">
+                    <strong>MỆNH LỆNH LÂM SÀNG VỀ TÁO BÓN:</strong> Táo bón do Opioid KHÔNG có hiện tượng dung nạp. Bắt buộc kê thuốc nhuận tràng ngay từ ngày đầu dùng Opioid!
+                    <br><strong>CHỐNG CHỈ ĐỊNH LACTULOSE:</strong> Gây lên men, chướng bụng, đầy hơi và tăng áp lực ổ bụng cực kỳ khó chịu cho bệnh nhân ung thư.
+                </div>
+                <ul style="padding-left:18px; font-size:0.9rem;">
+                    <li><strong>Bước 1 (Nhuận tràng chuẩn):</strong> Ưu tiên <strong>Macrogol (Polyethylene Glycol)</strong> phối hợp <strong>Bisacodyl</strong> khi điểm BFI &gt; 30.</li>
+                    <li><strong>Bước 2 (Thuốc đích PAMORA):</strong> Đối vận thụ thể Mu ngoại biên tại ruột, không qua hàng rào máu não: <strong>Naldemedine (0.2 mg/ngày)</strong>, Naloxegol, hoặc Methylnaltrexone (SC). Hoặc dùng dạng phối hợp <strong>Oxycodone/Naloxone PR</strong>.</li>
+                    <li><strong>Dự phòng Buồn nôn & Nôn (OINV - thường tự giới hạn sau 5-7 ngày):</strong>
+                        <ul>
+                            <li>Rối loạn nhu động dạ dày: <strong>Metoclopramide 10 mg</strong> mỗi 6 - 8 giờ.</li>
+                            <li>Ức chế vùng nhận cảm hóa học (CTZ): <strong>Haloperidol 0.5 - 1.5 mg/ngày</strong>.</li>
+                            <li>Nguyên tắc: Dùng dự phòng cố định 5 - 7 ngày đầu, sau đó chuyển sang dùng khi cần (PRN).</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= KHUNG BIÊN BẢN IN A4 ================= -->
+<div id="a4PrintSection">
+    <table class="nd30-header">
+        <tr>
+            <td style="width: 44%;">
+                <div class="nd30-org">SỞ Y TẾ ĐỒNG NAI</div>
+                <div class="nd30-dept">BỆNH VIỆN ĐK THỐNG NHẤT</div>
+                <div style="font-size:10pt; margin-top:2px;">Khoa Ngoại Lồng Ngực - Mạch Máu</div>
+            </td>
+            <td style="width: 56%;">
+                <div class="nd30-nation">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                <div class="nd30-motto">Độc lập - Tự do - Hạnh phúc</div>
+                <div style="font-size:10pt; font-style:italic; margin-top:2px;" id="printDateLine">Đồng Nai, ngày ... tháng ... năm 2026</div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="report-title">PHIẾU Y LỆNH THUỐC GÂY NGHIỆN - HƯỚNG THẦN &amp; BẢNG KIỂM AN TOÀN</div>
+    <div class="report-subtitle">(Áp dụng theo Hướng dẫn WHO / ESMO / EAPC &amp; Quy trình Kiểm soát Kép Giường bệnh)</div>
+
+    <div class="print-box">
+        <div class="print-box-title">I. THÔNG TIN HÀNH CHÍNH &amp; CHẨN ĐOÁN</div>
+        <table style="width:100%; border:none;">
+            <tr>
+                <td style="border:none !important; padding:2px 0; width:55%;"><strong>Họ và tên bệnh nhân:</strong> <span id="p_name">................................................</span></td>
+                <td style="border:none !important; padding:2px 0; width:45%;"><strong>Năm sinh / Tuổi:</strong> <span id="p_age">........................</span></td>
+            </tr>
+            <tr>
+                <td style="border:none !important; padding:2px 0;"><strong>Mã HSBA / Giường:</strong> <span id="p_bed">................................................</span></td>
+                <td style="border:none !important; padding:2px 0;"><strong>Chức năng Gan:</strong> <span id="p_liver">........................</span></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="border:none !important; padding:2px 0;"><strong>Chẩn đoán:</strong> <span id="p_diag">................................................................................................................</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="print-box">
+        <div class="print-box-title">II. TỜ Y LỆNH ĐIỀU TRỊ ĐAU ĐA MÔ THỨC (THUỐC GÂY NGHIỆN, HƯỚNG THẦN &amp; DỰ PHÒNG)</div>
+        <div id="p_order_block" style="font-size:10pt; white-space:pre-wrap; line-height:1.35;"></div>
+    </div>
+
+    <div class="print-box">
+        <div class="print-box-title">III. TỔNG HỢP LƯỢNG GIÁ LÂM SÀNG &amp; CHỨC NĂNG CƠ QUAN ĐÍCH</div>
+        <table class="print-table">
+            <thead>
+                <tr>
+                    <th style="width:27%;">Chỉ số giám sát</th>
+                    <th style="width:23%;">Kết quả lượng giá</th>
+                    <th style="width:50%;">Quyết định xử trí &amp; Chỉnh liều bắt buộc</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. An thần &amp; Hô hấp (POSS)</strong></td>
+                    <td id="p_poss_val">Mức S</td>
+                    <td id="p_poss_act">Chấp nhận được</td>
+                </tr>
+                <tr>
+                    <td><strong>2. Đau thần kinh (DN4)</strong></td>
+                    <td id="p_dn4_val">0 / 10 điểm</td>
+                    <td id="p_dn4_act">Chưa ghi nhận thành phần đau thần kinh</td>
+                </tr>
+                <tr>
+                    <td><strong>3. Mức lọc cầu thận (CrCl/eGFR)</strong></td>
+                    <td id="p_egfr_val">45 mL/phút</td>
+                    <td id="p_egfr_act">Thận trọng giảm liều nhóm 2</td>
+                </tr>
+                <tr>
+                    <td><strong>4. Chức năng ruột (BFI)</strong></td>
+                    <td id="p_bfi_val">40.0 / 100 điểm</td>
+                    <td id="p_bfi_act">Táo bón do Opioid (OIC) - Phối hợp Macrogol + Bisacodyl</td>
+                </tr>
+                <tr>
+                    <td><strong>5. Khóa an toàn 3 lớp</strong></td>
+                    <td id="p_gate_val">0 / 10 bước</td>
+                    <td id="p_gate_act">Cần hoàn tất đối chiếu độc lập 2 người trước khi cấp thuốc</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="print-box">
+        <div class="print-box-title">IV. CƠ CHẾ KIỂM SOÁT SAI SÓT &amp; NGHỊ THỨC CẤP CỨU NALOXONE TẠI GIƯỜNG</div>
+        <div style="font-size:9.8pt;">
+            • <strong>Ngưỡng giữ cử thuốc bắt buộc:</strong> Điều dưỡng kiểm tra POSS và tiếng ngáy trước mỗi cử thuốc; nếu <strong>POSS &ge; 3 hoặc có tiếng ngáy (Snoring)</strong> &rarr; Tạm ngưng cấp cử thuốc và báo Bác sĩ giảm 25-50% liều.<br>
+            • <strong>Nghị thức Naloxone chuẩn (Khi POSS = 4):</strong> Pha 0.4 mg Naloxone + 10 mL NaCl 0.9% (40 mcg/mL). Tiêm IV chậm 0.5 mL (20 mcg) mỗi 2 phút đến khi thở lại, cấm tiêm bolus trực tiếp. Theo dõi nội trú tối thiểu 24 giờ hậu giải độc.
+        </div>
+    </div>
+
+    <table class="print-sign">
+        <tr>
+            <td>
+                <strong>ĐIỀU DƯỠNG THỰC HIỆN</strong><br>
+                <span style="font-size:9.5pt; font-style:italic;">(Ký xác nhận đối chiếu kép)</span>
+                <div style="height: 50px;"></div>
+                <div>.................................................</div>
+            </td>
+            <td>
+                <strong>NGƯỜI KIỂM TRA ĐỘC LẬP</strong><br>
+                <span style="font-size:9.5pt; font-style:italic;">(Ký xác nhận Double-Check)</span>
+                <div style="height: 50px;"></div>
+                <div>.................................................</div>
+            </td>
+            <td>
+                <strong>BÁC SĨ RA Y LỆNH</strong><br>
+                <span style="font-size:9.5pt; font-style:italic;">(Ký và ghi rõ họ tên)</span>
+                <div style="height: 50px;"></div>
+                <div><strong>BS. Nguyễn Văn Sang</strong></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    // Điều hướng giữa 8 nhánh (Tabs)
+    function openTab(tabId, btnElem) {
+        document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btnElem.classList.add('active');
+    }
+
+    // Đọc số thành chữ tiếng Việt (phục vụ quy chế kê đơn thuốc gây nghiện / hướng thần)
+    function numberToVietnameseWords(n) {
+        const num = Math.round(n);
+        const dict = {
+            0: "không", 1: "một", 2: "hai", 3: "ba", 4: "bốn", 5: "năm",
+            6: "sáu", 7: "bảy", 8: "tám", 9: "chín", 10: "mười",
+            12: "mười hai", 15: "mười lăm", 20: "hai mươi", 25: "hai mươi lăm",
+            30: "ba mươi", 40: "bốn mươi", 50: "năm mươi", 60: "sáu mươi",
+            75: "bảy mươi lăm", 80: "tám mươi", 90: "chín mươi", 100: "một trăm",
+            120: "một trăm hai mươi", 150: "một trăm năm mươi", 180: "một trăm tám mươi",
+            200: "hai trăm", 300: "ba trăm"
+        };
+        if (dict[num]) return dict[num];
+        return num.toString();
+    }
+
+    // NHÁNH 1 (MỚI): Bộ soạn thảo Y lệnh Thuốc Gây Nghiện & Hướng Thần tự động
+    function generateMedicalOrder() {
+        const atcType = document.getElementById('ordAtcDrug').value;
+        const tdd = parseFloat(document.getElementById('ordTdd').value) || 60;
+        const prnRoute = document.getElementById('ordPrnRoute').value;
+        const psychType = document.getElementById('ordPsychDrug').value;
+        const step1Type = document.getElementById('ordStep1Drug').value;
+        const giType = document.getElementById('ordGiDrug').value;
+        const egfr = parseFloat(document.getElementById('egfrInput').value) || 45;
+        const liver = document.getElementById('liverSelect').value;
+
+        // 1. Tạo dòng Y lệnh Opioid nền (ATC)
+        let atcLine = "";
+        if (atcType === "morphine_ir_po") {
+            const singleDose = (tdd / 6).toFixed(0);
+            const totalTabs = Math.max(1, Math.round(tdd / 10));
+            atcLine = `1. [THUỐC GÂY NGHIỆN - LIỀU NỀN ATC] Morphine sulfate 10mg (dạng phóng thích tức thời IR):
+   • Tổng số: ${String(totalTabs).padStart(2,'0')} (${numberToVietnameseWords(totalTabs)}) viên/24 giờ.
+   • Cách dùng: Uống ${singleDose} mg (${(singleDose/10).toFixed(1)} viên) mỗi 04 giờ đúng lịch (06h - 10h - 14h - 18h - 22h - 02h).`;
+        } else if (atcType === "morphine_sr_po") {
+            const dose12h = (tdd / 2).toFixed(0);
+            const totalTabs = Math.max(1, Math.round(tdd / 30));
+            atcLine = `1. [THUỐC GÂY NGHIỆN - LIỀU NỀN ATC] Morphine sulfate 30mg (viên phóng thích kéo dài SR):
+   • Tổng số: ${String(totalTabs).padStart(2,'0')} (${numberToVietnameseWords(totalTabs)}) viên/24 giờ.
+   • Cách dùng: Uống ${dose12h} mg mỗi 12 giờ (08h - 20h). Nuốt nguyên viên, tuyệt đối không bẻ/nghiền.`;
+        } else if (atcType === "morphine_sc") {
+            const scTdd = Math.round(tdd / 3);
+            const singleSc = (scTdd / 6).toFixed(1);
+            const amps = Math.max(1, Math.ceil(scTdd / 10));
+            atcLine = `1. [THUỐC GÂY NGHIỆN - LIỀU NỀN ATC] Morphine 10mg/1mL (Tiêm dưới da SC - Quy đổi 1/3 PO):
+   • Tổng số: ${String(amps).padStart(2,'0')} (${numberToVietnameseWords(amps)}) ống/24 giờ (Tổng liều: ${scTdd} mg/24h).
+   • Cách dùng: Tiêm dưới da (SC) ${singleSc} mg mỗi 04 giờ (06h - 10h - 14h - 18h - 22h - 02h).`;
+        } else if (atcType === "morphine_iv_pump") {
+            const ivTdd = Math.round(tdd / 3);
+            const rateMgHr = (ivTdd / 24).toFixed(2);
+            const amps = Math.max(1, Math.ceil(ivTdd / 10));
+            atcLine = `1. [THUỐC GÂY NGHIỆN - LIỀU NỀN ATC] Morphine 10mg/1mL (Truyền tĩnh mạch liên tục qua SE):
+   • Tổng số: ${String(amps).padStart(2,'0')} (${numberToVietnameseWords(amps)}) ống/24 giờ (Liều nền: ${ivTdd} mg/24h).
+   • Cách dùng: Pha ${ivTdd} mg Morphine với NaCl 0.9% vừa đủ 50 mL, truyền bơm tiêm điện tốc độ ~ ${rateMgHr} mg/giờ.`;
+        } else if (atcType === "fentanyl_iv_pump") {
+            const fentMcg24h = Math.round((tdd / 100) * 1000);
+            const fentMcgHr = (fentMcg24h / 24).toFixed(1);
+            const amps100 = Math.max(1, Math.ceil(fentMcg24h / 100));
+            const totalMcgInSyringe = amps100 * 100;
+            const concMcgMl = (totalMcgInSyringe / 50).toFixed(1);
+            const pumpMlHr = (fentMcgHr / concMcgMl).toFixed(2);
+            const mlDrug = amps100 * 2;
+            const mlSaline = Math.max(0, 50 - mlDrug);
+            atcLine = `1. [THUỐC GÂY NGHIỆN - PHA TRUYỀN BƠM TIÊM ĐIỆN FENTANYL (An toàn số 1 khi eGFR < 30)]:
+   • Tổng số: ${String(amps100).padStart(2,'0')} (${numberToVietnameseWords(amps100)}) ống Fentanyl 0.1mg/2mL (Tổng: ${totalMcgInSyringe} mcg / 24 giờ).
+   • Cách pha chuẩn: Rút ${String(amps100).padStart(2,'0')} ống Fentanyl 0.1mg/2mL (${mlDrug} mL) + ${mlSaline} mL NaCl 0.9% vừa đủ 50 mL trong bơm tiêm điện -> Đạt nồng độ: ${concMcgMl} mcg/mL.
+   • Tốc độ truyền liên tục (IV/SC): Duy trì ${fentMcgHr} mcg/giờ => Tốc độ máy bơm tiêm điện: ${pumpMlHr} mL/giờ.`;
+        } else if (atcType === "alfentanil_pump") {
+            const alfentMcg24h = Math.round((tdd / 30) * 1000);
+            const alfentMcgHr = (alfentMcg24h / 24).toFixed(0);
+            const ampsAlf = Math.max(1, Math.ceil(alfentMcg24h / 1000));
+            atcLine = `1. [THUỐC GÂY NGHIỆN - BƠM TIÊM ĐIỆN ALFENTANIL (Hàng 2 khi suy thận nặng & liều Fentanyl quá lớn)]:
+   • Tổng số: ${String(ampsAlf).padStart(2,'0')} (${numberToVietnameseWords(ampsAlf)}) ống Alfentanil 1mg/2mL.
+   • Cách pha & truyền: Pha trong NaCl 0.9% vừa đủ 50 mL, truyền bơm tiêm điện tốc độ ~ ${alfentMcgHr} mcg/giờ.`;
+        } else if (atcType === "fentanyl_td") {
+            const fentMcgHr = Math.round(((tdd / 100) * 1000) / 24);
+            atcLine = `1. [THUỐC GÂY NGHIỆN - LIỀU NỀN ATC] Miếng dán Fentanyl qua da (TD - Tỷ lệ quy đổi 100:1):
+   • Tổng số: 01 (một) miếng dán hàm lượng ~ ${fentMcgHr} mcg/giờ (60mg Morphine PO ≈ 25mcg/h).
+   • Cách dùng: Dán vùng da phẳng ngực/lưng không kích ứng, thay miếng dán mỗi 72 giờ. Lưu ý: Cần 12-24h mới đạt đỉnh ổn định, cấm chườm nóng vùng dán.`;
+        } else if (atcType === "oxycodone_pr") {
+            atcLine = `1. [THUỐC GÂY NGHIỆN - LIỀU NỀN ATC] Oxycodone/Naloxone PR 10mg/5mg (Viên giải phóng kéo dài):
+   • Tổng số: 02 (hai) đến 04 (bốn) viên/24 giờ.
+   • Cách dùng: Uống mỗi 12 giờ (08h - 20h). Naloxone đối kháng thụ thể Mu tại ruột giúp phòng ngừa táo bón OIC.`;
+        } else if (atcType === "tramadol_po") {
+            atcLine = `1. [THUỐC HƯỚNG THẦN / OPIOID BẬC 2] Tramadol HCl 50mg:
+   • Tổng số: 04 (bốn) đến 06 (sáu) viên/24 giờ.
+   • Cách dùng: Uống 01 viên mỗi 06 - 08 giờ. Lưu ý hiệu ứng trần: Không vượt quá 400mg/24h (hoặc 300mg/24h ở người >75 tuổi).`;
+        }
+
+        // 2. Tạo dòng Y lệnh Liều cứu trợ đau bùng phát (BTcP PRN = 10-15% TDD)
+        let prnLine = "";
+        if (prnRoute === "FENT_IV") {
+            const fentTddMcg = (tdd / 100) * 1000;
+            const fentPrn10 = Math.round(fentTddMcg * 0.10);
+            const fentPrn15 = Math.round(fentTddMcg * 0.15);
+            prnLine = `2. [Y LỆNH CỨU TRỢ ĐAU BÙNG PHÁT BẰNG FENTANYL BOLUS - PRN (10-15% TDD)]:
+   • Thuốc: Fentanyl tiêm tĩnh mạch chậm (IV) hoặc tiêm dưới da (SC) liều ${fentPrn10} mcg đến ${fentPrn15} mcg/lần (tương đương ${(fentPrn10/10).toFixed(1)} - ${(fentPrn15/10).toFixed(1)} mL dung dịch pha 10mcg/mL).
+   • Khoảng cách an toàn: Tối thiểu 15 - 30 phút giữa 2 liều cứu trợ. Đánh giá sát hô hấp & POSS sau 5 - 15 phút. Nếu cần > 04 liều/24h -> Tăng tốc độ bơm tiêm điện nền.`;
+        } else {
+            let prnFactor = prnRoute === "PO" ? 1 : (1/3);
+            const prn10 = (tdd * 0.10 * prnFactor).toFixed(1);
+            const prn15 = (tdd * 0.15 * prnFactor).toFixed(1);
+            let prnTiming = prnRoute === "PO"
+                ? "Đường uống (PO IR) - Khoảng cách tối thiểu giữa 2 liều: 60 - 120 phút (Đánh giá đỉnh tác dụng sau 60-90 phút)."
+                : (prnRoute === "SC"
+                    ? "Tiêm dưới da (SC) - Khoảng cách tối thiểu: 30 - 60 phút (Đánh giá đỉnh tác dụng sau 30 phút)."
+                    : "Tiêm tĩnh mạch chậm (IV) - Khoảng cách tối thiểu: 15 - 30 phút (Đánh giá đỉnh tác dụng sau 15-30 phút).");
+
+            prnLine = `2. [Y LỆNH CỨU TRỢ ĐAU BÙNG PHÁT - PRN (10-15% TDD)]:
+   • Thuốc: Morphine phóng thích tức thời (IR) liều ${prn10} mg đến ${prn15} mg/lần qua ${prnTiming}
+   • Mệnh lệnh: Nếu bệnh nhân cần > 03 - 04 liều cứu trợ/24h -> Báo bác sĩ cộng vào tổng liều nền ATC ngày hôm sau.`;
+        }
+
+        // 3. Tạo dòng Y lệnh Thuốc Hướng Thần / Hỗ trợ Đau thần kinh
+        let psychLine = "";
+        let doseAdjustNote = egfr < 60 ? " [ĐÃ CHỈNH LIỀU SUY THẬN CrCl < 60: Giảm 50% liều hoặc giãn cách]" : "";
+        if (psychType === "pregabalin") {
+            psychLine = `3. [Y LỆNH THUỐC HƯỚNG THẦN / ĐAU THẦN KINH] Pregabalin 75mg:${doseAdjustNote}
+   • Tổng số: 01 (một) đến 02 (hai) viên/24 giờ.
+   • Cách dùng: Khởi đầu uống 25mg - 75mg buổi tối (21h). Theo dõi sát an thần hiệp đồng với Opioid (Liều đích: 150-600mg/ngày).`;
+        } else if (psychType === "gabapentin") {
+            psychLine = `3. [Y LỆNH THUỐC HƯỚNG THẦN / ĐAU THẦN KINH] Gabapentin 300mg:${doseAdjustNote}
+   • Tổng số: 01 (một) đến 03 (ba) viên/24 giờ.
+   • Cách dùng: Khởi đầu uống 100mg - 300mg buổi tối (21h), dò tăng dần (Liều đích: 900-3600mg/ngày).`;
+        } else if (psychType === "amitriptyline") {
+            psychLine = `3. [Y LỆNH THUỐC HƯỚNG THẦN - TCA] Amitriptyline 25mg:
+   • Tổng số: 01 (một) viên/24 giờ.
+   • Cách dùng: Uống 10mg - 25mg buổi tối (21h). Giới hạn tối đa ≤ 75mg/ngày; theo dõi bí tiểu, khô miệng, rối loạn dẫn truyền tim.`;
+        } else if (psychType === "duloxetine") {
+            psychLine = `3. [Y LỆNH THUỐC HƯỚNG THẦN - SNRI] Duloxetine 30mg:
+   • Tổng số: 01 (một) đến 02 (hai) viên/24 giờ.
+   • Cách dùng: Uống 30mg buổi sáng sau ăn (ưu tiên cho đau thần kinh do hóa trị CIPN; tránh dùng khi suy gan nặng).`;
+        } else if (psychType === "haloperidol_delirium") {
+            psychLine = `3. [Y LỆNH THUỐC HƯỚNG THẦN KIỂM SOÁT SẢNG / CHỐNG NÔN CTZ] Haloperidol:
+   • Liều dùng: 0.5 mg - 1.5 mg/24 giờ (Uống hoặc tiêm dưới da/tĩnh mạch chậm buổi tối hoặc khi kích động/ảo giác do M3G).`;
+        } else {
+            psychLine = `3. [THUỐC HƯỚNG THẦN / BỔ TRỢ THẦN KINH]: Hiện không chỉ định phối hợp.`;
+        }
+
+        // 4. Thuốc Bậc 1 & Corticosteroid
+        let step1Line = "";
+        if (step1Type === "para_standard") {
+            step1Line = `4. [THUỐC BẬC 1 - OPIOID SPARING] Paracetamol 500mg: Uống 01 viên mỗi 06 giờ (Tổng liều ≤ 2-3g/24h).`;
+        } else if (step1Type === "para_cachexia") {
+            step1Line = `4. [THUỐC BẬC 1 - HIỆU CHỈNH SUY KIỆT/SUY GAN] Paracetamol 500mg: Uống 01 viên mỗi 08-12 giờ (Giới hạn nghiêm ngặt < 2g/24h do thiếu hụt Glutathione nội sinh).`;
+        } else if (step1Type === "dexa_ppi") {
+            step1Line = `4. [CORTICOSTEROID & BẢO VỆ DẠ DÀY] Dexamethasone 4mg - 8mg uống/tiêm 01 lần duy nhất buổi sáng (08h) + Esomeprazole 40mg x 01 viên/ngày (Theo dõi đường huyết & sảng ban đêm).`;
+        } else if (step1Type === "nsaid_ppi") {
+            step1Line = `4. [NSAIDs & BẢO VỆ DẠ DÀY] Celecoxib 200mg x 01 viên/ngày + Esomeprazole 40mg x 01 viên/ngày (Bắt buộc ngưng ngay nếu eGFR < 30 mL/phút hoặc Tiểu cầu < 50.000/µL).`;
+        } else {
+            step1Line = `4. [THUỐC BẬC 1 / CORTICOSTEROID]: Không phối hợp.`;
+        }
+
+        // 5. Dự phòng Tiêu hóa (OIC & OINV) + Lệnh giám sát Điều dưỡng
+        let giLine = "";
+        if (giType === "macrogol_meto") {
+            giLine = `5. [DỰ PHÒNG TÁO BÓN OIC & NÔN OINV BẮT BUỘC]:
+   • Macrogol (Forlax) 10g: Uống 01 - 02 gói/ngày + Bisacodyl 5mg x 01 viên tối (nếu điểm BFI > 30). TUYỆT ĐỐI KHÔNG DÙNG LACTULOSE.
+   • Metoclopramide 10mg: Uống/tiêm mỗi 06 - 08 giờ trong 5-7 ngày đầu.`;
+        } else {
+            giLine = `5. [ĐIỀU TRỊ ĐÍCH OIC (PAMORA) & CHỐNG NÔN CTZ]:
+   • Naldemedine 0.2mg: Uống 01 viên/ngày (Đối vận thụ thể Mu ngoại biên tại ruột).
+   • Haloperidol 0.5mg - 1mg/ngày trong 5-7 ngày đầu.`;
+        }
+
+        let nursingGuardLine = `6. [MỆNH LỆNH GIÁM SÁT AN TOÀN & GIỮ CỬ THUỐC CHO ĐIỀU DƯỠNG]:
+   • Đánh giá điểm an thần Pasero (POSS), nhịp thở và tiếng ngáy (Snoring) mỗi 1-2h trong 24h đầu và tại đỉnh tác dụng.
+   • NGƯỠNG GIỮ THUỐC: Nếu POSS = 3 hoặc có tiếng ngáy -> TẠM DỪNG CẤP CỬ TIẾP THEO, báo Bác sĩ giảm 25-50% liều.
+   • CẤP CỨU NGỘ ĐỘC (POSS = 4): Ngưng Opioid ngay; pha 01 ống Naloxone 0.4mg + 10mL NaCl 0.9%, tiêm TM chậm 0.5mL (20mcg) mỗi 02 phút.`;
+
+        const fullText = `${atcLine}
+
+${prnLine}
+
+${psychLine}
+
+${step1Line}
+
+${giLine}
+
+${nursingGuardLine}`;
+        document.getElementById('orderSheetPreview').textContent = fullText;
+        document.getElementById('p_order_block').textContent = fullText;
+
+        // Cảnh báo tự động nếu kê Morphine/NSAIDs trên bệnh nhân eGFR < 30
+        const banner = document.getElementById('orderSafetyBanner');
+        if (egfr < 30 && (atcType.includes("morphine") || step1Type === "nsaid_ppi")) {
+            banner.className = "alert alert-danger";
+            banner.innerHTML = `🚨 <strong>CẢNH BÁO ĐỎ TƯƠNG TÁC Y LỆNH - SUY THẬN NẶNG (eGFR = ${egfr} mL/phút &lt; 30):</strong><br>
+            Bệnh nhân có eGFR &lt; 30 mL/phút! Việc kê Morphine liều cao sẽ gây tích lũy chất chuyển hóa <strong>M6G (ngưng thở kéo dài) &amp; M3G (rung giật cơ/sảng)</strong>; NSAIDs gây suy thận cấp. <strong>Khuyến cáo đổi Y lệnh A sang Fentanyl (Nhóm 1 an toàn tuyệt đối) và ngưng NSAIDs!</strong>`;
+        } else if (liver === "impaired" && step1Type === "para_standard") {
+            banner.className = "alert alert-danger";
+            banner.innerHTML = `⚠️ <strong>CẢNH BÁO SUY GAN / SUY KIỆT:</strong> Bệnh nhân đang có suy gan hoặc suy kiệt dinh dưỡng, vui lòng chuyển Y lệnh D sang <strong>Paracetamol giới hạn &lt; 2g/24h</strong> và giảm 50% liều khởi đầu Opioid!`;
+        } else {
+            banner.className = "alert alert-safe";
+            banner.innerHTML = `✅ <strong>KIỂM TRA HỢP LỆ DƯỢC LÂM SÀNG (eGFR = ${egfr} mL/phút):</strong> Cấu trúc Y lệnh đã đảm bảo đủ 4 thành phần chuẩn ESMO/WHO: Thuốc nền ATC + Thuốc cứu trợ PRN (10-15%) + Thuốc hướng thần/bổ trợ + Dự phòng táo bón Macrogol &amp; Ngưỡng giữ thuốc POSS/Naloxone.`;
+        }
+    }
+
+
+    // Tính toán chi tiết Pha truyền Bơm tiêm điện 50mL (Fentanyl / Morphine / Alfentanil)
+    function calcSyringeDriver() {
+        const drug = document.getElementById('seDrugSelect').value;
+        const amps = parseFloat(document.getElementById('seAmpCount').value) || 5;
+        const target = parseFloat(document.getElementById('seTargetRate').value) || 25;
+        const box = document.getElementById('seResultBox');
+
+        let text = "";
+        if (drug === "fent_100") {
+            const totalMcg = amps * 100;
+            const drugVol = amps * 2;
+            const salineVol = Math.max(0, 50 - drugVol);
+            const conc = (totalMcg / 50).toFixed(1); // mcg/mL
+            const rateMlHr = (target / conc).toFixed(2);
+            const tddMcg = target * 24;
+            const rescue10 = Math.round(tddMcg * 0.10);
+            const rescue15 = Math.round(tddMcg * 0.15);
+            text = `[CÔNG THỨC PHA BƠM TIÊM ĐIỆN FENTANYL 0.1mg/2mL (100mcg/2mL) - TỔNG 50mL]
+• Số lượng ống: ${String(amps).padStart(2,'0')} (${numberToVietnameseWords(amps)}) ống Fentanyl 0.1mg/2mL = ${totalMcg} mcg (${drugVol} mL thuốc).
+• Dung môi pha: Kết hợp với ${salineVol} mL NaCl 0.9% vừa đủ 50 mL trong bơm tiêm điện.
+• Nồng độ dung dịch sau pha: ${conc} mcg/mL (1 mL = ${conc} mcg Fentanyl).
+------------------------------------------------------------
+• Liều truyền duy trì: ${target} mcg/giờ (Tổng liều 24h: ${tddMcg} mcg/24h ≈ ${Math.round(tddMcg/10)} mg Morphine PO).
+👉 TỐC ĐỘ CÀI ĐẶT BƠM TIÊM ĐIỆN: ${rateMlHr} mL/giờ (Thời gian hết 1 bơm 50mL: ~ ${(50/rateMlHr).toFixed(1)} giờ).
+• Liều Bolus cứu trợ BTcP (10-15% TDD): ${rescue10} - ${rescue15} mcg/lần (tương đương ${(rescue10/conc).toFixed(1)} - ${(rescue15/conc).toFixed(1)} mL bolus qua bơm tiêm điện mỗi 15-30 phút khi đau bùng phát).`;
+        } else if (drug === "fent_500") {
+            const totalMcg = amps * 500;
+            const drugVol = amps * 10;
+            const salineVol = Math.max(0, 50 - drugVol);
+            const conc = (totalMcg / 50).toFixed(1);
+            const rateMlHr = (target / conc).toFixed(2);
+            const tddMcg = target * 24;
+            text = `[CÔNG THỨC PHA BƠM TIÊM ĐIỆN FENTANYL 0.5mg/10mL (500mcg/10mL) - TỔNG 50mL]
+• Số lượng ống: ${String(amps).padStart(2,'0')} (${numberToVietnameseWords(amps)}) ống Fentanyl 0.5mg/10mL = ${totalMcg} mcg (${drugVol} mL thuốc).
+• Dung môi pha: + ${salineVol} mL NaCl 0.9% vừa đủ 50 mL -> Nồng độ: ${conc} mcg/mL.
+👉 TỐC ĐỘ CÀI ĐẶT BƠM TIÊM ĐIỆN (Liều ${target} mcg/h): ${rateMlHr} mL/giờ (Tổng 24h: ${tddMcg} mcg).`;
+        } else if (drug === "morph_10") {
+            const totalMg = amps * 10;
+            const drugVol = amps * 1;
+            const salineVol = Math.max(0, 50 - drugVol);
+            const conc = (totalMg / 50).toFixed(2); // mg/mL
+            const rateMlHr = (target / conc).toFixed(2);
+            const tddMg = target * 24;
+            text = `[CÔNG THỨC PHA BƠM TIÊM ĐIỆN MORPHINE 10mg/1mL - TỔNG 50mL]
+• Số lượng ống: ${String(amps).padStart(2,'0')} (${numberToVietnameseWords(amps)}) ống Morphine 10mg/1mL = ${totalMg} mg (${drugVol} mL thuốc).
+• Dung môi pha: + ${salineVol} mL NaCl 0.9% vừa đủ 50 mL -> Nồng độ: ${conc} mg/mL.
+👉 TỐC ĐỘ CÀI ĐẶT BƠM TIÊM ĐIỆN (Liều ${target} mg/h): ${rateMlHr} mL/giờ (Tổng 24h: ${tddMg} mg IV/SC ≈ ${tddMg*3} mg PO).
+⚠️ Cảnh báo: Không dùng Morphine truyền liên tục liều cao nếu eGFR < 30 mL/phút (Tích lũy M6G/M3G)!`;
+        } else if (drug === "alfent_1000") {
+            const totalMcg = amps * 1000;
+            const drugVol = amps * 2;
+            const salineVol = Math.max(0, 50 - drugVol);
+            const conc = (totalMcg / 50).toFixed(1); // mcg/mL
+            const rateMlHr = (target / conc).toFixed(2);
+            text = `[CÔNG THỨC PHA BƠM TIÊM ĐIỆN ALFENTANIL 1mg/2mL (1000mcg/2mL) - TỔNG 50mL]
+• Số lượng ống: ${String(amps).padStart(2,'0')} ống Alfentanil 1mg/2mL = ${totalMcg} mcg (${drugVol} mL thuốc) + ${salineVol} mL NaCl 0.9% vừa đủ 50 mL.
+• Nồng độ sau pha: ${conc} mcg/mL.
+👉 TỐC ĐỘ CÀI ĐẶT BƠM TIÊM ĐIỆN (Liều ${target} mcg/h): ${rateMlHr} mL/giờ.
+• Chỉ định (Bài 3 - Mục 2.2): Lựa chọn hàng 2 an toàn tuyệt đối cho suy thận nặng (eGFR < 30) khi tổng liều Fentanyl quá lớn gây quá tải thể tích bơm tiêm điện.`;
+        }
+        box.textContent = text;
+    }
+
+    function copyOrderText() {
+        const text = document.getElementById('orderSheetPreview').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Đã sao chép toàn bộ Tờ Y Lệnh vào bộ nhớ tạm! Bác sĩ có thể dán (Ctrl+V) trực tiếp vào phần mềm bệnh án điện tử HIS.");
+        });
+    }
+
+    // NHÁNH 3: Tra cứu chi tiết Liều thuốc & Cơ chế
+    function lookupDrugDetail() {
+        const drug = document.getElementById('drugLookupSelect').value;
+        const out = document.getElementById('drugDetailOutput');
+
+        const data = {
+            morphine: {
+                cls: "alert alert-safe",
+                html: `<strong>1. MORPHINE (Opioid Bậc 3 - Tiêu chuẩn vàng):</strong>
+                <ul style="margin:6px 0 0 0; padding-left:18px;">
+                    <li><strong>Cơ chế:</strong> Đồng vận thuần túy thụ thể Mu (&mu;) trung ương và ngoại biên; <strong>không có liều trần</strong>.</li>
+                    <li><strong>Liều dò (Titration) &amp; Duy trì:</strong> Dùng dạng giải phóng tức thời (IR) mỗi <strong>4 giờ/lần (ATC)</strong> dựa trên T1/2 &approx; 2-3 giờ. Khi ổn định sau 24-48h, cộng tổng liều 24h (TDD) chuyển sang dạng kéo dài (SR).</li>
+                    <li><strong>Liều cứu trợ (BTcP):</strong> <strong>10% - 15% tổng liều 24h</strong> (bắt buộc dùng dạng IR). Khoảng cách an toàn: PO (1-2 giờ), SC (30-60 phút), IV (15-30 phút).</li>
+                    <li><strong>Tỷ lệ quy đổi PO : SC/IV = 2:1 đến 3:1</strong> (do chuyển hóa bước một qua gan mạnh ở đường uống).</li>
+                    <li><strong>Cảnh báo Thận/Gan:</strong> Tránh dùng liều cao khi <strong>eGFR &lt; 30 mL/phút</strong> do tích lũy <strong>M6G</strong> (an thần sâu, suy hô hấp) và <strong>M3G</strong> (giật cơ myoclonus, mê sảng). Suy gan: Giảm 50% liều khởi đầu.</li>
+                </ul>`
+            },
+            fentanyl: {
+                cls: "alert alert-warn",
+                html: `<strong>2. FENTANYL &amp; ALFENTANIL (Opioid Bậc 3 ưu tiên trong Suy Thận Nặng):</strong>
+                <ul style="margin:6px 0 0 0; padding-left:18px;">
+                    <li><strong>Cơ chế:</strong> Đồng vận chọn lọc thụ thể Mu mạnh, tan mạnh trong mỡ; <strong>không tạo chất chuyển hóa có hoạt tính lâm sàng</strong> &rarr; Lựa chọn số 1 khi <strong>eGFR &lt; 30 mL/phút</strong>.</li>
+                    <li><strong>Liều quy đổi Miếng dán (TD):</strong> Tỷ lệ Morphine PO : Fentanyl TD = <strong>100:1</strong> (Ví dụ: 60 mg Morphine PO/24h &approx; Fentanyl 25 mcg/giờ).</li>
+                    <li><strong>Cơ chế kiểm soát sai sót miếng dán TD:</strong> Cần <strong>12 - 24 giờ</strong> mới đạt nồng độ ổn định (steady state). <strong>Tuyệt đối cấm dùng để dò liều nhanh hoặc cắt cơn đau cấp!</strong></li>
+                    <li><strong>Chống chỉ định miếng dán TD:</strong> Bệnh nhân đang sốt cao (<strong>&gt; 40&deg;C</strong> làm tăng hấp thu ồ ạt gây tử vong) hoặc suy kiệt mất lớp mỡ dưới da. Khi tổng liều Fentanyl bơm tiêm điện quá lớn gây quá tải thể tích &rarr; chuyển sang <strong>Alfentanil</strong>.</li>
+                </ul>`
+            },
+            oxycodone: {
+                cls: "alert alert-safe",
+                html: `<strong>3. OXYCODONE &amp; OXYCODONE/NALOXONE PR (Opioid Bậc 3):</strong>
+                <ul style="margin:6px 0 0 0; padding-left:18px;">
+                    <li><strong>Cơ chế:</strong> Đồng vận thụ thể Mu và Kappa; ít gây ngứa và ảo giác hơn Morphine.</li>
+                    <li><strong>Ưu điểm dạng phối hợp Oxycodone/Naloxone PR:</strong> Naloxone đường uống đối kháng trực tiếp thụ thể Mu tại đám rối thần kinh ruột giúp <strong>ngăn ngừa táo bón (OIC)</strong>, sau đó bị khử hoạt hoàn toàn qua gan lần đầu nên không vào não và không làm mất tác dụng giảm đau trung ương.</li>
+                    <li><strong>Thận trọng:</strong> Thuộc Nhóm 2b trong suy thận; cần giảm liều hoặc giãn khoảng cách khi eGFR &lt; 60 mL/phút.</li>
+                </ul>`
+            },
+            tramadol_codeine: {
+                cls: "alert alert-danger",
+                html: `<strong>4. CODEINE &amp; TRAMADOL (Opioid Yếu Bậc 2 - Cảnh báo Hiệu ứng trần):</strong>
+                <ul style="margin:6px 0 0 0; padding-left:18px;">
+                    <li><strong>Cơ chế:</strong> Cả hai đều là <strong>tiền chất (Prodrug)</strong> bắt buộc phải qua enzym gan <strong>CYP2D6</strong> để chuyển thành chất có hoạt tính (Morphine và O-desmethyltramadol M1). Tramadol còn ức chế tái hấp thu Serotonin và Noradrenaline.</li>
+                    <li><strong>Liều trần tác dụng (Ceiling effect):</strong> Tăng liều vượt giới hạn khuyến cáo <strong>không làm tăng giảm đau</strong> mà chỉ gây co giật, kích động và độc tính tiêu hóa.</li>
+                    <li><strong>Rủi ro đa hình di truyền CYP2D6:</strong> Người chuyển hóa kém (~8%) hoàn toàn không đáp ứng với Codeine; người chuyển hóa siêu nhanh có nguy cơ ngộ độc cấp và suy hô hấp ngay ở liều thông thường.</li>
+                </ul>`
+            },
+            gabapentin: {
+                cls: "alert alert-warn",
+                html: `<strong>5. GABAPENTIN (Thuốc hỗ trợ đau thần kinh đầu tay):</strong>
+                <ul style="margin:6px 0 0 0; padding-left:18px;">
+                    <li><strong>Cơ chế:</strong> Gắn vào tiểu đơn vị <strong>&alpha;2&delta; của kênh Canxi phụ thuộc điện thế</strong> tại sừng sau tủy sống, ức chế giải phóng chất dẫn truyền thần kinh kích thích, chặn nhạy cảm hóa trung ương.</li>
+                    <li><strong>Liều dùng chuẩn:</strong> Khởi đầu <strong>100 - 300 mg (uống buổi tối)</strong> &rarr; Dò tăng dần đến liều đích <strong>900 - 3600 mg/ngày</strong> (chia 3 lần).</li>
+                    <li><strong>Kiểm soát an toàn:</strong> Không chuyển hóa qua gan nhưng thải trừ hoàn toàn qua thận. Bắt buộc <strong>giảm 50% liều hoặc kéo dài khoảng cách khi CrCl &lt; 60 mL/phút</strong>. Cảnh giác nguy cơ hiệp đồng ức chế hô hấp khi dùng kèm Opioid!</li>
+                </ul>`
+            },
+            pregabalin: {
+                cls: "alert alert-warn",
+                html: `<strong>6. PREGABALIN (Thuốc hỗ trợ đau thần kinh đầu tay):</strong>
+                <ul style="margin:6px 0 0 0; padding-left:18px;">
+                    <li><strong>Cơ chế:</strong> Tác động lên tiểu đơn vị &alpha;2&delta; kênh Canxi phụ thuộc điện thế với sinh khả dụng tuyến tính và ổn định hơn Gabapentin.</li>
+                    <li><strong>Liều dùng chuẩn:</strong> Khởi đầu <strong>25 - 75 mg (uống buổi tối)</strong> &rarr; Liều đích <strong>150 - 600 mg/ngày</strong>.</li>
+                    <li><strong>Kiểm soát an toàn:</strong> Bắt buộc chỉnh liều dựa trên mức lọc cầu thận (CrCl &lt; 60 mL/phút). Theo dõi sát tình trạng ngủ gà, chóng mặt và ức chế hô hấp hiệp đồng khi phối hợp Opioid ở bệnh nhân cao tuổi.</li>
+                </ul>`
+            },
+            amitriptyline: {
+                cls: "alert alert-danger",
+                html: `<strong>7. AMITRIPTYLINE (TCA) &amp; DULOXETINE (SNRI) - Thuốc hướng thần hỗ trợ đau thần kinh:</strong>
+                <ul style="margin:6px 0 0 0; padding-left:18px;">
+                    <li><strong>Amitriptyline (TCA):</strong> Giới hạn liều nghiêm ngặt <strong>&le; 75 mg/ngày</strong> để tránh độc tính kháng Cholinergic (lú lẫn, khô miệng, bí tiểu, hạ huyết áp tư thế). <strong>Chống chỉ định tuyệt đối:</strong> Rối loạn dẫn truyền tim mạch, nhồi máu cơ tim cấp, phì đại tuyến tiền liệt nặng.</li>
+                    <li><strong>Duloxetine (SNRI):</strong> Liều 30 - 60 mg/ngày; ưu tiên hàng đầu cho <strong>bệnh lý thần kinh ngoại biên do hóa trị (CIPN)</strong>. <strong>Cảnh báo:</strong> Tránh sử dụng hoặc hiệu chỉnh cực kỳ thận trọng ở bệnh nhân suy gan nặng.</li>
+                </ul>`
+            },
+            dexamethasone: {
+                cls: "alert alert-warn",
+                html: `<strong>8. DEXAMETHASONE &amp; THUỐC NHẮM TRÚNG ĐÍCH XƯƠNG (Zoledronic Acid / Denosumab):</strong>
+                <ul style="margin:6px 0 0 0; padding-left:18px;">
+                    <li><strong>Dexamethasone:</strong> Giảm phù nề quanh u/bao tạng và chèn ép thần kinh; hoạt tính mineralocorticoid cực thấp (ít giữ nước) và T1/2 dài cho phép <strong>dùng 1 liều duy nhất mỗi ngày (buổi sáng)</strong>. Phải theo dõi đường huyết, sảng ban đêm và dùng kèm PPI.</li>
+                    <li><strong>Zoledronic Acid (IV):</strong> Truyền chậm <strong>ít nhất 15 phút</strong>. <strong>CẤM DÙNG nếu eGFR &lt; 30 mL/phút</strong>.</li>
+                    <li><strong>Denosumab (SC):</strong> Không cần chỉnh liều theo thận nhưng <strong>nguy cơ Hạ Calci máu rất cao</strong> (phải xét nghiệm Calci máu và bổ sung Calci + Vitamin D).</li>
+                    <li><strong>Dự phòng Hoại tử xương hàm (ONJ):</strong> Bắt buộc khám nha khoa và hoàn tất nhổ răng 2-4 tuần trước khi dùng thuốc xương.</li>
+                </ul>`
+            },
+            para_nsaids: {
+                cls: "alert alert-warn",
+                html: `<strong>9. PARACETAMOL &amp; NSAIDs (Thuốc giảm đau Bậc 1 - Nền tảng phối hợp):</strong>
+                <ul style="margin:6px 0 0 0; padding-left:18px;">
+                    <li><strong>Cơ chế &amp; Vai trò:</strong> Tạo "hiệu ứng tiết kiệm Opioid" (Opioid-sparing), đáp ứng thực tế 26-51%. Cấm đơn trị liệu cho đau trung bình - nặng.</li>
+                    <li><strong>Paracetamol:</strong> Ở bệnh nhân ung thư suy kiệt hoặc suy gan, dự trữ Glutathione thấp không trung hòa được chất độc <strong>NAPQI</strong> &rarr; Bắt buộc <strong>giảm liều tối đa &lt; 2g/24h</strong> hoặc tránh dùng.</li>
+                    <li><strong>NSAIDs:</strong> Ngưng thuốc ngay lập tức khi <strong>eGFR &lt; 30 mL/phút</strong> hoặc <strong>Tiểu cầu &lt; 50.000/&micro;L</strong>. Bắt buộc phối hợp <strong>PPI</strong> bảo vệ dạ dày.</li>
+                </ul>`
+            },
+            naloxone_rescue: {
+                cls: "alert alert-danger",
+                html: `<strong>10. NALOXONE &amp; PHÁC ĐỒ XỬ TRÍ TÁC DỤNG PHỤ (OIC, OINV):</strong>
+                <ul style="margin:6px 0 0 0; padding-left:18px;">
+                    <li><strong>Naloxone (Cấp cứu POSS = 4):</strong> Pha 0.4 mg vào 10 mL NaCl 0.9% (40 mcg/mL) &rarr; Tiêm IV chậm <strong>0.5 mL (20 mcg) mỗi 2 phút</strong>. Cấm tiêm bolus trực tiếp 0.4mg!</li>
+                    <li><strong>Táo bón do Opioid (OIC - BFI &gt; 30):</strong> Bước 1 dùng <strong>Macrogol + Bisacodyl</strong> (Cấm dùng Lactulose). Bước 2 dùng PAMORA: <strong>Naldemedine 0.2 mg/ngày</strong>, Naloxegol, hoặc Methylnaltrexone SC.</li>
+                    <li><strong>Buồn nôn &amp; Nôn (OINV):</strong> <strong>Metoclopramide 10 mg</strong> mỗi 6-8h (tăng nhu động dạ dày) hoặc <strong>Haloperidol 0.5 - 1.5 mg/ngày</strong> (ức chế CTZ) trong 5-7 ngày đầu.</li>
+                </ul>`
+            }
+        };
+
+        out.className = data[drug].cls;
+        out.innerHTML = data[drug].html;
+    }
+
+    // NHÁNH 2: Cơ chế Khóa An Toàn 10 bước
+    function updateSafetyGate() {
+        const checks = document.querySelectorAll('.psych-gate');
+        let checkedCount = 0;
+        checks.forEach(c => { if (c.checked) checkedCount++; });
+
+        const total = checks.length;
+        const pct = Math.round((checkedCount / total) * 100);
+        const bar = document.getElementById('safetyProgressBar');
+        const label = document.getElementById('safetyProgressLabel');
+        const box = document.getElementById('safetyGateStatusBox');
+
+        bar.style.width = pct + "%";
+
+        if (checkedCount === total) {
+            label.textContent = `Tiến độ kiểm soát an toàn: ${checkedCount} / ${total} bước (100%) - ĐÃ MỞ KHÓA AN TOÀN`;
+            box.className = "alert alert-safe";
+            box.innerHTML = `✅ <strong>ĐÃ ĐẠT CHUẨN AN TOÀN KÉP (10/10 BƯỚC):</strong><br>
+            Đã hoàn tất kiểm tra chức năng thận (eGFR), tách liều ATC/PRN, trừ dung nạp chéo, đối chiếu độc lập 2 người và chuẩn bị sẵn Naloxone tại giường. <strong>Cho phép thực hiện y lệnh thuốc gây nghiện / hướng thần!</strong>`;
+            document.getElementById('p_gate_val').textContent = `${checkedCount} / ${total} bước (Đạt 100%)`;
+            document.getElementById('p_gate_act').textContent = "Đã hoàn tất kiểm soát kép 3 lớp; đủ điều kiện an toàn thực hiện thuốc.";
+        } else {
+            label.textContent = `Tiến độ kiểm soát an toàn: ${checkedCount} / ${total} bước (${pct}%) - CHƯA ĐỦ ĐIỀU KIỆN`;
+            box.className = "alert alert-danger";
+            box.innerHTML = `🔒 <strong>CẢNH BÁO KHÓA AN TOÀN (Mới đạt ${checkedCount}/${total} bước):</strong><br>
+            Chưa hoàn tất đầy đủ quy trình kiểm soát rủi ro thuốc gây nghiện / hướng thần! Vui lòng rà soát các mục chưa tích chọn bên trái để ngăn ngừa sai sót liều lượng, tích lũy độc chất thận hoặc suy hô hấp cấp.`;
+            document.getElementById('p_gate_val').textContent = `${checkedCount} / ${total} bước (${pct}%)`;
+            document.getElementById('p_gate_act').textContent = `Chưa hoàn tất đủ 10 bước kiểm soát kép (Còn thiếu ${total - checkedCount} bước).`;
+        }
+    }
+
+    function resetPsychChecklist() {
+        document.querySelectorAll('.psych-gate').forEach(cb => cb.checked = false);
+        updateSafetyGate();
+    }
+
+    // NHÁNH 4: Đánh giá POSS & Cảnh báo tiếng ngáy
+    function evaluatePOSS() {
+        const level = document.getElementById('possLevel').value;
+        const snoring = document.getElementById('snoringCheck').checked;
+        const out = document.getElementById('possOutput');
+
+        let snoringBanner = "";
+        if (snoring) {
+            snoringBanner = `<div style="margin-bottom:8px; padding:8px; background:rgba(239,68,68,0.3); border:1px solid #ef4444; border-radius:6px; color:#fff;">
+                ⚠️ <strong>CẢNH BÁO TIẾNG NGÁY (SNORING):</strong> Dấu hiệu tắc nghẽn đường thở cơ học do giãn cơ hầu họng &amp; mất khả năng tự thức tỉnh (self-arouse). Phải đánh thức bệnh nhân và thay đổi tư thế NGAY LẬP TỨC!
+            </div>`;
+        }
+
+        let printAct = "";
+        if (level === "S" || level === "1" || level === "2") {
+            out.className = snoring ? "alert alert-danger" : "alert alert-safe";
+            out.innerHTML = snoringBanner + `<strong>Mức ${level} - Chấp nhận được:</strong> Không cần can thiệp giảm liều; có thể duy trì hoặc tăng liều Opioid nếu bệnh nhân còn đau.`;
+            printAct = (snoring ? "[CẢNH BÁO CÓ TIẾNG NGÁY] " : "") + "Chấp nhận được; duy trì hoặc tăng liều nếu cần.";
+        } else if (level === "3") {
+            out.className = "alert alert-warn";
+            out.innerHTML = snoringBanner + `<strong>Mức 3 - NGUY HIỂM (KHÔNG CHẤP NHẬN ĐƯỢC):</strong> Bệnh nhân ngủ thiếp đi giữa câu nói là dấu hiệu nồng độ thuốc vượt ngưỡng an toàn.<br>
+            👉 <strong>Xử trí bắt buộc:</strong> Giảm liều Opioid ngay <strong>25% - 50%</strong>; theo dõi sát hô hấp và tri giác cho đến khi POSS &lt; 3.`;
+            printAct = (snoring ? "[CÓ TIẾNG NGÁY] " : "") + "NGUY HIỂM: Bắt buộc giảm liều Opioid 25% - 50%, theo dõi sát.";
+        } else if (level === "4") {
+            out.className = "alert alert-danger";
+            out.innerHTML = snoringBanner + `<strong>Mức 4 - NGUY KỊCH (NGỘ ĐỘC OPIOID CẤP):</strong><br>
+            👉 <strong>Xử trí tối khẩn:</strong><br>
+            1. <strong>NGỪNG NGAY LẬP TỨC</strong> mọi đường dùng Opioid (tháo miếng dán Fentanyl nếu có).<br>
+            2. Kích hoạt <strong>Phác đồ Naloxone pha loãng</strong> (0.4mg/10mL NaCl 0.9%, tiêm IV chậm 0.5mL mỗi 2 phút).<br>
+            3. Hỗ trợ thông khí, gọi bác sĩ cấp cứu và theo dõi sát tối thiểu 24 giờ.`;
+            printAct = "NGUY KỊCH: NGỪNG Opioid ngay! Kích hoạt phác đồ giải độc Naloxone 20mcg mỗi 2 phút.";
+        }
+
+        document.getElementById('p_poss_val').textContent = `Mức ${level}` + (snoring ? " (Có ngáy)" : "");
+        document.getElementById('p_poss_act').textContent = printAct;
+    }
+
+    let timerInterval = null;
+    let secondsRemaining = 120;
+    let injectionCount = 0;
+
+    function updateTimerUI() {
+        const mins = String(Math.floor(secondsRemaining / 60)).padStart(2, '0');
+        const secs = String(secondsRemaining % 60).padStart(2, '0');
+        document.getElementById('naloxoneTimer').textContent = `${mins}:${secs}`;
+    }
+
+    function startNaloxoneTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        injectionCount++;
+        document.getElementById('naloxoneCount').textContent = injectionCount;
+        document.getElementById('naloxoneTotalMcg').textContent = injectionCount * 20;
+        secondsRemaining = 120;
+        updateTimerUI();
+
+        timerInterval = setInterval(() => {
+            secondsRemaining--;
+            updateTimerUI();
+            if (secondsRemaining <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('naloxoneTimer').textContent = "ĐÁNH GIÁ LẠI HÔ HẤP!";
+            }
+        }, 1000);
+    }
+
+    function resetNaloxoneTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        secondsRemaining = 120;
+        injectionCount = 0;
+        document.getElementById('naloxoneCount').textContent = "0";
+        document.getElementById('naloxoneTotalMcg').textContent = "0";
+        updateTimerUI();
+    }
+
+    // NHÁNH 5: Tính liều cứu trợ BTcP & Quy đổi Opioid
+    function calcRescue() {
+        const tdd = parseFloat(document.getElementById('tddInput').value) || 0;
+        const route = document.getElementById('rescueRoute').value;
+        const count = parseInt(document.getElementById('rescueCountInput').value) || 0;
+        const out = document.getElementById('rescueOutput');
+
+        let factor = 1;
+        let peakInfo = "Đỉnh tác dụng: 60 - 90 phút | Khoảng cách an toàn giữa 2 liều: 1 - 2 giờ (&ge; 60 phút).";
+        let unitLabel = "mg Morphine IR uống (PO)";
+
+        if (route === "SC") {
+            factor = 1 / 3;
+            peakInfo = "Đỉnh tác dụng: 30 phút | Khoảng cách an toàn giữa 2 liều: 30 - 60 phút (&ge; 30 phút).";
+            unitLabel = "mg Morphine tiêm dưới da (SC)";
+        } else if (route === "IV") {
+            factor = 1 / 3;
+            peakInfo = "Đỉnh tác dụng: 15 - 30 phút | Khoảng cách an toàn giữa 2 liều: 15 - 30 phút.";
+            unitLabel = "mg Morphine tiêm tĩnh mạch (IV)";
+        }
+
+        const dose10 = (tdd * 0.10 * factor).toFixed(1);
+        const dose15 = (tdd * 0.15 * factor).toFixed(1);
+
+        let countAlert = "";
+        if (count >= 4) {
+            out.className = "alert alert-danger";
+            countAlert = `<br><br>🚨 <strong>CHỈ DẤU LÂM SÀNG (&gt; 3-4 liều cứu trợ/ngày):</strong> Bệnh nhân đã dùng ${count} liều cứu trợ/24h! Liều nền ATC hiện tại KHÔNG ĐỦ. Bắt buộc cộng tổng liều cứu trợ vào liều nền 24h để tăng liều ATC hoặc luân chuyển Opioid.`;
+        } else {
+            out.className = "alert alert-safe";
+            countAlert = `<br><br>✅ Số lần cứu trợ (${count} lần/24h) nằm trong giới hạn kiểm soát. Tiếp tục duy trì phác đồ nền.`;
+        }
+
+        out.innerHTML = `<strong>Liều cứu trợ chuẩn (10% - 15% TDD):</strong> <strong>${dose10} mg đến ${dose15} ${unitLabel}</strong> / lần.<br>
+        ⏱️ <strong>Dược động học:</strong> ${peakInfo}<br>
+        <em>Lưu ý: Nghiêm cấm dùng viên phóng thích kéo dài (SR/ER) để cắt cơn đau bùng phát!</em>` + countAlert;
+    }
+
+    function calcRotation() {
+        const po = parseFloat(document.getElementById('morphinePoInput').value) || 0;
+        const reduction = parseFloat(document.getElementById('crossToleranceSelect').value) || 0;
+        const out = document.getElementById('rotationOutput');
+
+        const mult = 1 - reduction;
+        const ivSc3 = (po / 3 * mult).toFixed(1);
+        const ivSc2 = (po / 2 * mult).toFixed(1);
+        const fentanylMcgDay = (po / 100) * 1000 * mult;
+        const fentanylMcgHr = (fentanylMcgDay / 24).toFixed(1);
+
+        out.innerHTML = `<strong>Kết quả quy đổi (Đã áp dụng giảm ${reduction * 100}% do dung nạp chéo):</strong>
+        <ul style="margin:6px 0 0 0; padding-left:18px;">
+            <li><strong>Morphine Tiêm dưới da (SC) / Tĩnh mạch (IV) 24h:</strong> <strong>${ivSc3} mg/24h</strong> (tỷ lệ 3:1) đến <strong>${ivSc2} mg/24h</strong> (tỷ lệ 2:1).</li>
+            <li><strong>Miếng dán Fentanyl (TD - Tỷ lệ 100:1):</strong> <strong>~ ${fentanylMcgHr} mcg/giờ</strong> (Tham chiếu chuẩn: 60 mg Morphine PO &approx; 25 mcg/h Fentanyl TD).</li>
+        </ul>`;
+    }
+
+    // NHÁNH 6: Thang điểm DN4 (10 câu hỏi)
+    function calcDN4() {
+        let score = 0;
+        document.querySelectorAll('.dn4-item').forEach(cb => {
+            if (cb.checked) score++;
+        });
+        const out = document.getElementById('dn4Output');
+
+        if (score >= 4) {
+            out.className = "alert alert-danger";
+            out.innerHTML = `<strong>Tổng điểm DN4 = ${score} / 10 điểm (&ge; 4/10): XÁC NHẬN CÓ THÀNH PHẦN ĐAU THẦN KINH!</strong><br>
+            👉 <strong>Chỉ định lâm sàng:</strong> Opioid đơn trị liệu thường kém nhạy bén trên đau thần kinh. Bắt buộc phối hợp ngay <strong>Thuốc hỗ trợ thần kinh (Adjuvant analgesics)</strong> như <strong>Pregabalin</strong> (khởi đầu 25-75mg tối) hoặc <strong>Gabapentin</strong> (khởi đầu 100-300mg tối), hoặc Duloxetine / Amitriptyline (&le; 75mg/ngày).`;
+            document.getElementById('p_dn4_val').textContent = `${score} / 10 điểm (Dương tính)`;
+            document.getElementById('p_dn4_act').textContent = "Xác nhận đau thần kinh: Phối hợp Gabapentin / Pregabalin (chỉnh liều theo CrCl).";
+        } else {
+            out.className = "alert alert-safe";
+            out.innerHTML = `<strong>Tổng điểm DN4 = ${score} / 10 điểm (&lt; 4/10):</strong> Chưa đủ tiêu chuẩn xác nhận đau thần kinh.<br>
+            👉 <strong>Hướng dẫn:</strong> Tập trung tối ưu hóa phác đồ giảm đau thụ cảm (Opioid + Paracetamol/NSAIDs) và đánh giá lại khi tính chất đau thay đổi.`;
+            document.getElementById('p_dn4_val').textContent = `${score} / 10 điểm (Âm tính)`;
+            document.getElementById('p_dn4_act').textContent = "Đau thụ cảm ưu thế; chưa cần thuốc bổ trợ thần kinh.";
+        }
+    }
+
+    function resetDN4() {
+        document.querySelectorAll('.dn4-item').forEach(cb => cb.checked = false);
+        calcDN4();
+    }
+
+    // NHÁNH 7: Công thức Cockcroft-Gault & Đánh giá An toàn Thận - Gan
+    function calcCockcroftGault() {
+        const age = parseFloat(document.getElementById('cgAge').value) || 65;
+        const weight = parseFloat(document.getElementById('cgWeight').value) || 50;
+        const sexFactor = parseFloat(document.getElementById('cgSex').value) || 1.0;
+        const scrUmol = parseFloat(document.getElementById('cgScr').value) || 90;
+
+        const crcl = (((140 - age) * weight * sexFactor) / (0.814 * scrUmol)).toFixed(1);
+        document.getElementById('egfrInput').value = crcl;
+        evaluateOrganSafety();
+        generateMedicalOrder();
+    }
+
+    function evaluateOrganSafety() {
+        const egfr = parseFloat(document.getElementById('egfrInput').value) || 0;
+        const liver = document.getElementById('liverSelect').value;
+        const out = document.getElementById('organSafetyOutput');
+
+        let kidneyHtml = "";
+        let printEgfrAct = "";
+        if (egfr >= 60) {
+            out.className = liver === "impaired" ? "alert alert-warn" : "alert alert-safe";
+            kidneyHtml = `<strong>Thận (CrCl/eGFR = ${egfr} mL/phút &ge; 60):</strong> Chức năng lọc đảm bảo. Có thể dùng các Opioid bậc 3 chuẩn nhưng vẫn phải theo dõi sát nếu bệnh nhân suy kiệt.<br>
+            <em>Lưu ý tuyệt đối:</em> Kể cả khi thận bình thường, không dùng Pethidine kéo dài (tích lũy Norpethidine gây co giật kháng Naloxone).`;
+            printEgfrAct = "An toàn cho các Opioid chuẩn; tránh Pethidine.";
+        } else if (egfr >= 30) {
+            out.className = "alert alert-warn";
+            kidneyHtml = `<strong>Suy thận trung bình (CrCl/eGFR = ${egfr} mL/phút - Khoảng 30-59):</strong><br>
+            • <strong>Nhóm 2 (Morphine, Oxycodone, Hydromorphone, Tramadol):</strong> Phải <strong>giảm liều hoặc giãn khoảng cách đưa thuốc</strong> để tránh tích lũy M6G (an thần sâu, suy hô hấp) và M3G (giật cơ, mê sảng).<br>
+            • <strong>Gabapentin / Pregabalin (khi CrCl &lt; 60):</strong> Bắt buộc giảm 50% liều hoặc giãn khoảng cách do nguy cơ hiệp đồng ức chế hô hấp với Opioid!`;
+            printEgfrAct = "Suy thận trung bình: Giảm liều/giãn cách Morphine, Oxycodone & giảm 50% liều Gabapentinoids.";
+        } else {
+            out.className = "alert alert-danger";
+            kidneyHtml = `<strong>SUY THẬN NẶNG (CrCl/eGFR = ${egfr} mL/phút &lt; 30) - BÁO ĐỘNG ĐỎ:</strong><br>
+            • ✅ <strong>Nhóm 1 (An toàn tuyệt đối - Ưu tiên số 1):</strong> <strong>Fentanyl, Alfentanil</strong> (hoặc Methadone bởi chuyên gia). Không tạo chất chuyển hóa có hoạt tính qua thận.<br>
+            • ⚠️ <strong>Tránh Morphine liều cao:</strong> Nguy cơ tích lũy M6G gây suy hô hấp kéo dài cực lớn.<br>
+            • 🚫 <strong>CHỐNG CHỈ ĐỊNH TUYỆT ĐỐI:</strong> <strong>Pethidine</strong> (gây co giật), <strong>NSAIDs</strong> (gây suy thận cấp), <strong>Zoledronic Acid</strong> (độc thận khi eGFR &lt; 30, chuyển sang Denosumab nhưng phải canh sát Hạ Calci máu).`;
+            printEgfrAct = "SUY THẬN NẶNG (<30): Ưu tiên tuyệt đối Fentanyl/Alfentanil. Cấm NSAIDs, Pethidine, Zoledronic.";
+        }
+
+        let liverHtml = "";
+        if (liver === "impaired") {
+            liverHtml = `<hr style="border-color:var(--border); margin:10px 0;">
+            <strong>Cảnh báo Suy Gan / Suy Kiệt Dinh Dưỡng (Cachexia):</strong><br>
+            • <strong>Opioid:</strong> Giảm chuyển hóa qua gan lần đầu làm tăng sinh khả dụng &rarr; <strong>Giảm 50% liều khởi đầu và giãn khoảng cách liều</strong>.<br>
+            • <strong>Paracetamol:</strong> Thiếu hụt Glutathione nội sinh dễ gây hoại tử gan do NAPQI &rarr; <strong>Giới hạn tổng liều tối đa &lt; 2g/24h</strong> hoặc tránh dùng.<br>
+            • <strong>Duloxetine (SNRI):</strong> Tránh sử dụng trên bệnh nhân suy gan nặng.`;
+            document.getElementById('p_liver').textContent = "Suy gan / Suy kiệt (Giảm 50% liều khởi đầu, Paracetamol <2g/24h)";
+        } else {
+            document.getElementById('p_liver').textContent = "Bình thường";
+        }
+
+        out.innerHTML = kidneyHtml + liverHtml;
+        document.getElementById('p_egfr_val').textContent = `${egfr} mL/phút`;
+        document.getElementById('p_egfr_act').textContent = printEgfrAct;
+    }
+
+    function showAdjuvantInfo() {
+        const type = document.getElementById('adjuvantSelect').value;
+        const out = document.getElementById('adjuvantOutput');
+
+        if (type === "step1") {
+            out.className = "alert alert-warn";
+            out.innerHTML = `<strong>Thuốc Bậc 1 (Paracetamol &amp; NSAIDs) - Chiến lược "Opioid-sparing":</strong>
+            <ul style="margin:6px 0 0 0; padding-left:18px;">
+                <li><strong>Vai trò:</strong> Cấm đơn trị liệu cho đau trung bình - nặng; bắt buộc phối hợp làm "chất đệm" với Opioid.</li>
+                <li><strong>Paracetamol:</strong> Giảm liều <strong>&lt; 2g/24h</strong> ở bệnh nhân suy gan hoặc suy kiệt dinh dưỡng (thiếu Glutathione khử độc NAPQI).</li>
+                <li><strong>Ngưỡng bắt buộc NGƯNG NSAIDs:</strong> Khi <strong>eGFR &lt; 30 mL/phút</strong> hoặc <strong>Tiểu cầu &lt; 50.000/&micro;L</strong>.</li>
+                <li><strong>Bảo vệ dạ dày:</strong> Bắt buộc dùng <strong>PPI</strong> cho người cao tuổi, tiền sử loét, hoặc đang dùng kèm Corticosteroid.</li>
+            </ul>`;
+        } else if (type === "steroid_bone") {
+            out.className = "alert alert-warn";
+            out.innerHTML = `<strong>Corticosteroid (Dexamethasone) &amp; Thuốc Nhắm Trúng Đích Xương:</strong>
+            <ul style="margin:6px 0 0 0; padding-left:18px;">
+                <li><strong>Dexamethasone:</strong> Ưu tiên số 1 nhờ ít giữ nước và T1/2 dài (dùng 1 lần/ngày). Phải theo dõi: Đường huyết, sảng/kích động ban đêm, loét tiêu hóa (bắt buộc kèm PPI nếu dùng chung NSAIDs).</li>
+                <li><strong>Zoledronic Acid (IV):</strong> Truyền chậm &ge; 15 phút. <strong>CẤM DÙNG nếu eGFR &lt; 30 mL/phút</strong>.</li>
+                <li><strong>Denosumab (SC):</strong> Không cần chỉnh liều theo thận nhưng <strong>nguy cơ Hạ Calci máu rất cao</strong> (luôn kiểm tra Calci máu và bổ sung Calci + Vitamin D).</li>
+                <li><strong>Dự phòng Hoại tử xương hàm (ONJ):</strong> Bắt buộc khám nha khoa và hoàn tất nhổ răng ít nhất 2-4 tuần trước khi dùng thuốc xương.</li>
+            </ul>`;
+        } else if (type === "codeine_tramadol") {
+            out.className = "alert alert-danger";
+            out.innerHTML = `<strong>Opioid Bậc 2 (Codeine / Tramadol) - Hiệu ứng trần &amp; Rủi ro CYP2D6:</strong>
+            <ul style="margin:6px 0 0 0; padding-left:18px;">
+                <li><strong>Hiệu ứng trần (Ceiling effect):</strong> Tăng liều vượt khuyến cáo không tăng giảm đau mà chỉ gây độc thần kinh (co giật, kích động).</li>
+                <li><strong>Đa hình gen CYP2D6:</strong>
+                    <ul>
+                        <li><em>Chuyển hóa kém (Poor metabolizers ~8%):</em> Codeine hoàn toàn không tạo được Morphine &rarr; Thất bại giảm đau.</li>
+                        <li><em>Chuyển hóa siêu nhanh (Ultrarapid metabolizers):</em> Nồng độ Morphine/M1 tăng vọt đột ngột gây ngộ độc cấp và suy hô hấp ngay ở liều thường quy.</li>
+                    </ul>
+                </li>
+            </ul>`;
+        }
+    }
+
+    // NHÁNH 8: Tính điểm BFI (Táo bón do Opioid)
+    function calcBFI() {
+        const c1 = parseFloat(document.getElementById('bfi1').value) || 0;
+        const c2 = parseFloat(document.getElementById('bfi2').value) || 0;
+        const c3 = parseFloat(document.getElementById('bfi3').value) || 0;
+        const bfi = ((c1 + c2 + c3) / 3).toFixed(1);
+        const out = document.getElementById('bfiOutput');
+
+        if (bfi > 30) {
+            out.className = "alert alert-danger";
+            out.innerHTML = `<strong>Điểm BFI trung bình = ${bfi} điểm (&gt; 30 điểm): XÁC NHẬN TÁO BÓN DO OPIOID (OIC)!</strong><br>
+            👉 <strong>Hành động can thiệp:</strong><br>
+            1. Phối hợp ngay <strong>Macrogol (Polyethylene Glycol) + Bisacodyl</strong>.<br>
+            2. Nếu không đáp ứng, khởi trị thuốc đối vận thụ thể Mu ngoại biên (PAMORA) như <strong>Naldemedine 0.2 mg/ngày</strong> hoặc chuyển sang <strong>Oxycodone/Naloxone PR</strong>.<br>
+            3. Tuyệt đối tránh dùng Lactulose (gây đầy hơi, chướng bụng).`;
+            document.getElementById('p_bfi_val').textContent = `${bfi} / 100 điểm (>30)`;
+            document.getElementById('p_bfi_act').textContent = "Xác nhận OIC: Phối hợp Macrogol + Bisacodyl / PAMORA (Cấm Lactulose).";
+        } else {
+            out.className = "alert alert-safe";
+            out.innerHTML = `<strong>Điểm BFI trung bình = ${bfi} điểm (&le; 30 điểm):</strong> Chức năng ruột hiện đang được kiểm soát.<br>
+            👉 <strong>Lưu ý:</strong> Vẫn phải duy trì thuốc nhuận tràng dự phòng hàng ngày trong suốt thời gian dùng Opioid.`;
+            document.getElementById('p_bfi_val').textContent = `${bfi} / 100 điểm (≤30)`;
+            document.getElementById('p_bfi_act').textContent = "Đang kiểm soát tốt; tiếp tục duy trì nhuận tràng dự phòng.";
+        }
+    }
+
+    // XUẤT BIÊN BẢN IN A4
+    function printA4Report() {
+        const now = new Date();
+        document.getElementById('printDateLine').textContent = `Đồng Nai, ngày ${String(now.getDate()).padStart(2,'0')} tháng ${String(now.getMonth()+1).padStart(2,'0')} năm ${now.getFullYear()}`;
+        document.getElementById('p_name').textContent = document.getElementById('ptName').value || "................................................";
+        document.getElementById('p_age').textContent = document.getElementById('ptAge').value || "........................";
+        document.getElementById('p_bed').textContent = document.getElementById('ptBed').value || "................................................";
+        document.getElementById('p_diag').textContent = document.getElementById('ptDiag').value || "Ung thư phổi giai đoạn tiến xa";
+
+        generateMedicalOrder();
+        calcSyringeDriver();
+        lookupDrugDetail();
+        updateSafetyGate();
+        evaluatePOSS();
+        calcRescue();
+        calcRotation();
+        calcDN4();
+        evaluateOrganSafety();
+        calcBFI();
+
+        window.print();
+    }
+
+    window.onload = function() {
+        calcCockcroftGault();
+        generateMedicalOrder();
+        calcSyringeDriver();
+        lookupDrugDetail();
+        updateSafetyGate();
+        evaluatePOSS();
+        calcRescue();
+        calcRotation();
+        calcDN4();
+        showAdjuvantInfo();
+        calcBFI();
+    };
+</script>
+
+</body>
+</html>
