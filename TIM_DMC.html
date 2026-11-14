@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lưu đồ Xử trí Chấn thương Tim kín (BCI) & Động mạch chủ Ngực kín (BTAI) - WTA & SVS 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Light Theme (Default): Đỏ đô (Burgundy) & Xanh da trời dịu (Soft Sky Blue) */
+    --bg-body: #f4f8fb;
+    --bg-panel: #ffffff;
+    --bg-card: #f0f6fa;
+    --bg-card-hover: #e4eff7;
+    --text-main: #1e293b;
+    --text-muted: #52637a;
+    --border-color: #cbddec;
+    --line-color: #93b8d4;
+    
+    /* Tông màu chủ đạo Đỏ đô & Xanh da trời dịu */
+    --burgundy-primary: #801323;
+    --burgundy-dark: #5e0b16;
+    --burgundy-light: #fbe9ec;
+    
+    --sky-primary: #2b6cb0;
+    --sky-soft: #64a6cc;
+    --sky-light: #e0f0fa;
+    
+    --accent-amber: #b86e0c;
+    --accent-amber-bg: #fef3e2;
+    --accent-green: #137352;
+    --accent-green-bg: #e3f5ee;
+  }
+
+  [data-theme="dark"] {
+    /* Dark Theme: Đỏ đô trầm & Xanh da trời dịu trên nền tối */
+    --bg-body: #0f1722;
+    --bg-panel: #182334;
+    --bg-card: #213047;
+    --bg-card-hover: #293b56;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border-color: #334763;
+    --line-color: #4a678c;
+    
+    --burgundy-primary: #d9465f;
+    --burgundy-dark: #6b1120;
+    --burgundy-light: rgba(217, 70, 95, 0.18);
+    
+    --sky-primary: #63b3ed;
+    --sky-soft: #4299e1;
+    --sky-light: rgba(99, 179, 237, 0.16);
+    
+    --accent-amber: #f6ad55;
+    --accent-amber-bg: rgba(246, 173, 85, 0.16);
+    --accent-green: #4fd1c5;
+    --accent-green-bg: rgba(79, 209, 197, 0.16);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.5;
+    padding: 16px 20px;
+    transition: background-color 0.25s, color 0.25s;
+  }
+
+  .container {
+    max-width: 1560px;
+    margin: 0 auto;
+  }
+
+  /* Header với Khung Logo Trường Đại học */
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(135deg, #801323 0%, #5e0b16 55%, #1c4e6e 100%);
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 16px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 20px rgba(128, 19, 35, 0.16);
+    border-bottom: 4px solid var(--sky-soft);
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .logo-slot {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 3px solid #bae0f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .logo-slot:hover {
+    transform: scale(1.04);
+    border-color: #ffffff;
+  }
+
+  .logo-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 4px;
+    display: none;
+  }
+
+  .logo-placeholder {
+    text-align: center;
+    color: #801323;
+    font-size: 0.62rem;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 4px;
+  }
+
+  .logo-placeholder span {
+    display: block;
+    font-size: 1.15rem;
+    margin-bottom: 2px;
+  }
+
+  .header-info .uni-name {
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #bae0f5;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .header-info h1 {
+    font-size: 1.24rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+    color: #ffffff;
+  }
+
+  .header-info p {
+    font-size: 0.82rem;
+    color: #e2e8f0;
+  }
+
+  /* Thanh chuyển đổi Tab lớn (Tab Navigation Bar) */
+  .top-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+  }
+
+  .module-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tab-btn {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1.5px solid var(--border-color);
+    padding: 9px 18px;
+    border-radius: 9px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tab-btn:hover {
+    border-color: var(--sky-primary);
+    background: var(--bg-card-hover);
+  }
+
+  .tab-btn.active {
+    background: var(--burgundy-primary);
+    color: #ffffff;
+    border-color: var(--burgundy-primary);
+    box-shadow: 0 3px 10px rgba(128, 19, 35, 0.22);
+  }
+
+  .sub-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    align-items: center;
+  }
+
+  .filter-btn {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--sky-primary);
+  }
+
+  .filter-btn.active {
+    background: var(--sky-primary);
+    color: #ffffff;
+    border-color: var(--sky-primary);
+  }
+
+  .theme-btn {
+    background: var(--sky-light);
+    color: var(--sky-primary);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  /* Main Layout 68% Lưu đồ : 32% Chi tiết */
+  .workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 2.15fr) minmax(350px, 1fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  @media (max-width: 1180px) {
+    .workspace {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .module-view {
+    display: none;
+  }
+
+  .module-view.active {
+    display: block;
+  }
+
+  /* Flowchart Panel */
+  .flowchart-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-top: 4px solid var(--sky-primary);
+    border-radius: 12px;
+    padding: 20px 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .level-1-grid {
+    display: flex;
+    justify-content: center;
+  }
+
+  .level-1-grid .node {
+    width: 100%;
+    max-width: 640px;
+    text-align: center;
+  }
+
+  .level-2-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .level-3-grid,
+  .level-4-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  @media (max-width: 780px) {
+    .level-2-grid, .level-3-grid, .level-4-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .branch-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+    user-select: none;
+  }
+
+  .branch-pill {
+    background: var(--sky-light);
+    color: var(--sky-primary);
+    border: 1px solid var(--border-color);
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 3.5px 14px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+  }
+
+  .dual-branch-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 10px 0;
+    text-align: center;
+  }
+
+  .sub-branch-label {
+    background: var(--sky-light);
+    color: var(--sky-primary);
+    border: 1px solid var(--border-color);
+    font-size: 0.73rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+  }
+
+  /* Nút Lưu đồ (Node Card) */
+  .node {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px 13px;
+    min-width: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .node:hover {
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(43, 108, 176, 0.14);
+  }
+
+  .node.selected {
+    outline: 2.5px solid var(--burgundy-primary);
+    box-shadow: 0 0 0 4px rgba(128, 19, 35, 0.14);
+    background: var(--bg-panel);
+  }
+
+  .node.dimmed {
+    opacity: 0.25;
+    filter: grayscale(40%);
+  }
+
+  .node-badge {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 5px;
+    margin-bottom: 6px;
+    line-height: 1.25;
+  }
+
+  .level-1-grid .node-badge {
+    align-self: center;
+  }
+
+  .node-triage { border-top: 4px solid var(--sky-primary); }
+  .node-triage .node-badge { background: var(--sky-light); color: var(--sky-primary); }
+
+  .node-danger { border-top: 4px solid var(--burgundy-primary); }
+  .node-danger .node-badge { background: var(--burgundy-light); color: var(--burgundy-primary); }
+
+  .node-warning { border-top: 4px solid var(--accent-amber); }
+  .node-warning .node-badge { background: var(--accent-amber-bg); color: var(--accent-amber); }
+
+  .node-safe { border-top: 4px solid var(--accent-green); }
+  .node-safe .node-badge { background: var(--accent-green-bg); color: var(--accent-green); }
+
+  .node-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--text-main);
+    line-height: 1.35;
+  }
+
+  .node-desc {
+    font-size: 0.77rem;
+    color: var(--text-muted);
+    line-height: 1.42;
+  }
+
+  /* Inspector Side Panel */
+  .inspector-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-top: 4px solid var(--burgundy-primary);
+    border-radius: 12px;
+    padding: 20px;
+    position: sticky;
+    top: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .inspector-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 11px;
+    margin-bottom: 14px;
+  }
+
+  .inspector-step {
+    font-size: 0.73rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--burgundy-primary);
+    letter-spacing: 0.5px;
+  }
+
+  .inspector-title {
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin-top: 4px;
+    color: var(--text-main);
+    line-height: 1.35;
+  }
+
+  .detail-section {
+    margin-bottom: 14px;
+  }
+
+  .detail-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .detail-section h4 {
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    color: var(--sky-primary);
+    margin-bottom: 6px;
+    letter-spacing: 0.4px;
+    font-weight: 700;
+  }
+
+  .detail-box {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 11px 13px;
+    font-size: 0.83rem;
+    border-left: 4px solid var(--sky-primary);
+    line-height: 1.48;
+  }
+
+  .detail-box.burgundy-border {
+    border-left-color: var(--burgundy-primary);
+  }
+
+  .detail-list {
+    padding-left: 17px;
+    font-size: 0.83rem;
+    line-height: 1.48;
+  }
+
+  .detail-list li {
+    margin-bottom: 6px;
+  }
+
+  /* Bottom Reference Tables */
+  .ref-section {
+    margin-top: 20px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .ref-section h2 {
+    font-size: 1.08rem;
+    margin-bottom: 12px;
+    color: var(--burgundy-primary);
+    border-left: 4px solid var(--burgundy-primary);
+    padding-left: 10px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+  }
+
+  th, td {
+    border: 1px solid var(--border-color);
+    padding: 9px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--sky-light);
+    color: var(--text-main);
+    font-weight: 700;
+    border-bottom: 2px solid var(--sky-primary);
+  }
+
+  tr:nth-child(even) td {
+    background: rgba(224, 240, 250, 0.35);
+  }
+
+  [data-theme="dark"] tr:nth-child(even) td {
+    background: rgba(33, 48, 71, 0.45);
+  }
+
+  @media print {
+    body { background: #fff; color: #000; padding: 0; }
+    .top-bar { display: none; }
+    .module-view { display: block !important; margin-bottom: 24px; }
+    .workspace { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="container">
+  <header class="header">
+    <div class="header-brand">
+      <!-- Khung Logo Trường Đại học -->
+      <div class="logo-slot" onclick="document.getElementById('logo-input').click()" title="Nhấp vào đây để chọn ảnh Logo trường đại học từ máy tính">
+        <img id="uni-logo-img" src="" alt="Logo Trường Đại Học">
+        <div class="logo-placeholder" id="logo-placeholder-text">
+          <span>🏛️</span>
+          CHÈN LOGO<br>TRƯỜNG
+        </div>
+        <input type="file" id="logo-input" accept="image/*" style="display:none" onchange="loadUniversityLogo(event)">
+      </div>
+
+      <div class="header-info">
+        <div class="uni-name" contenteditable="true" title="Nhấp để sửa tên Trường / Bộ môn">BỘ MÔN NGOẠI LỒNG NGỰC - TIM MẠCH &amp; MẠCH MÁU | BÁO CÁO SAU ĐẠI HỌC</div>
+        <h1>LƯU ĐỒ CHẨN ĐOÁN &amp; XỬ TRÍ CHẤN THƯƠNG TIM KÍN (BCI) VÀ ĐỘNG MẠCH CHỦ NGỰC KÍN (BTAI)</h1>
+        <p>Tích hợp Khuyến cáo Western Trauma Association (WTA 2026), Phân độ AAST &amp; SVS Clinical Practice Guideline 2.0 (05/2026)</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Thanh điều hướng Tab giữa BCI (WTA 2026) và BTAI (SVS 2026) -->
+  <div class="top-bar">
+    <div class="module-tabs">
+      <button class="tab-btn active" id="tab-bci-btn" onclick="switchModule('bci')">
+        <span>🫀</span> PHẦN I: LƯU ĐỒ CHẤN THƯƠNG TIM KÍN (WTA 2026 &amp; AAST)
+      </button>
+      <button class="tab-btn" id="tab-btai-btn" onclick="switchModule('btai')">
+        <span>🩸</span> PHẦN II: LƯU ĐỒ CHẤN THƯƠNG ĐMC NGỰC KÍN (SVS CPG 2.0 - 2026)
+      </button>
+    </div>
+
+    <div class="sub-controls" id="bci-filters">
+      <button class="filter-btn active" onclick="filterPath('bci', 'all', this)">Tất cả nhánh BCI</button>
+      <button class="filter-btn" onclick="filterPath('bci', 'tamponade', this)">Sốc / Chèn ép tim</button>
+      <button class="filter-btn" onclick="filterPath('bci', 'structural', this)">Sốc tim / Hở van</button>
+      <button class="filter-btn" onclick="filterPath('bci', 'stable', this)">Huyết động Ổn định</button>
+      <button class="theme-btn" onclick="toggleTheme()">☀/🌙 Sáng / Tối</button>
+    </div>
+
+    <div class="sub-controls" id="btai-filters" style="display: none;">
+      <button class="filter-btn active" onclick="filterPath('btai', 'all', this)">Tất cả phân độ SVS</button>
+      <button class="filter-btn" onclick="filterPath('btai', 'mai', this)">Độ I–II (MAI / Bảo tồn)</button>
+      <button class="filter-btn" onclick="filterPath('btai', 'grade3', this)">Độ III (Giả phình / TEVAR)</button>
+      <button class="filter-btn" onclick="filterPath('btai', 'grade4', this)">Độ IV (Vỡ tự do / Tối khẩn)</button>
+      <button class="theme-btn" onclick="toggleTheme()">☀/🌙 Sáng / Tối</button>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <!-- CỘT TRÁI: LƯU ĐỒ TƯƠNG TÁC (CHỨA 2 TAB BCI & BTAI) -->
+    <div>
+      <!-- ==================== TAB 1: CHẤN THƯƠNG TIM KÍN (BCI - WTA 2026) ==================== -->
+      <div class="module-view active" id="view-bci">
+        <div class="flowchart-panel">
+          <!-- TẦNG 1 -->
+          <div class="level-1-grid">
+            <div class="node node-triage selected" id="node-1" data-module="bci" data-paths="all,tamponade,structural,stable" onclick="selectNode(1)">
+              <span class="node-badge">Bước 1 • Sàng lọc Cấp cứu Ban đầu (ATLS)</span>
+              <div class="node-title">Chấn thương Ngực kín Cơ chế Nguy cơ cao (TNGT tốc độ cao, ngã cao, ép ngực, gãy xương ức)</div>
+              <div class="node-desc">Thực hiện đồng thời: Đánh giá Huyết động + Siêu âm eFAST (cửa sổ màng tim) + ECG 12 chuyển đạo + Troponin I / hs-cTn</div>
+            </div>
+          </div>
+
+          <div class="branch-divider">
+            <span class="branch-pill">▼ Bước 2: Phân tầng theo Tình trạng Huyết động ▼</span>
+          </div>
+
+          <!-- TẦNG 2 -->
+          <div class="level-2-grid">
+            <div class="node node-danger" id="node-2" data-module="bci" data-paths="all,tamponade,structural" onclick="selectNode(2)">
+              <span class="node-badge">Nhánh A • Cấp cứu Huyết động</span>
+              <div class="node-title">Huyết động KHÔNG Ổn định (SBP &lt; 90 mmHg)</div>
+              <div class="node-desc">Kiểm tra ngay cửa sổ màng ngoài tim trên siêu âm eFAST tại giường. Lưu ý bẫy rách màng tim thoát máu vào khoang màng phổi trái.</div>
+            </div>
+
+            <div class="node node-triage" id="node-3" data-module="bci" data-paths="all,stable" onclick="selectNode(3)">
+              <span class="node-badge">Nhánh B • Sàng lọc Điện học - Sinh hóa</span>
+              <div class="node-title">Huyết động ỔN ĐỊNH (SBP ≥ 90 mmHg)</div>
+              <div class="node-desc">Phân tầng nguy cơ dựa trên kết quả ECG 12 chuyển đạo và Troponin lúc nhập viện (lặp lại sau 4–6h nếu vào viện quá sớm).</div>
+            </div>
+          </div>
+
+          <!-- Thanh phân nhánh đôi -->
+          <div class="dual-branch-row">
+            <div class="sub-branch-label">▼ Phân nhánh theo Kết quả Siêu âm eFAST ▼</div>
+            <div class="sub-branch-label">▼ Phân nhánh theo Kết quả ECG 12 chuyển đạo &amp; Troponin ▼</div>
+          </div>
+
+          <!-- TẦNG 3: 4 cột bằng nhau -->
+          <div class="level-3-grid">
+            <div class="node node-danger" id="node-4" data-module="bci" data-paths="all,tamponade" onclick="selectNode(4)">
+              <span class="node-badge">eFAST (+) • AAST Độ IV–VI</span>
+              <div class="node-title">Tràn máu Màng tim / Chèn ép Tim cấp</div>
+              <div class="node-desc">Mở xương ức đường giữa (Median Sternotomy) hoặc mở ngực trước-bên trái cấp cứu. Không chọc hút màng tim trì hoãn mổ.</div>
+            </div>
+
+            <div class="node node-warning" id="node-5" data-module="bci" data-paths="all,structural" onclick="selectNode(5)">
+              <span class="node-badge">eFAST (-) • AAST Độ III–V</span>
+              <div class="node-title">Nghi Sốc tim / Tổn thương Cấu trúc</div>
+              <div class="node-desc">Loại trừ mất máu ngoài tim → Siêu âm tim TTE/TEE cấp cứu đánh giá suy bơm, hở van ĐMC/2 lá/3 lá cấp, vỡ vách liên thất (VSD).</div>
+            </div>
+
+            <div class="node node-warning" id="node-6" data-module="bci" data-paths="all,stable" onclick="selectNode(6)">
+              <span class="node-badge">Bất thường • AAST Độ I–III</span>
+              <div class="node-title">ECG Bất thường HOẶC Troponin (+)</div>
+              <div class="node-desc">Nhập viện theo dõi Telemetry 24–48h. Nếu ST chênh lên (STEMI): Chụp mạch vành loại trừ bóc tách LAD. TTE nếu loạn nhịp/tụt HA.</div>
+            </div>
+
+            <div class="node node-safe" id="node-7" data-module="bci" data-paths="all,stable" onclick="selectNode(7)">
+              <span class="node-badge">Bình thường • NPV = 100%</span>
+              <div class="node-title">ECG Bình thường VÀ Troponin (-)</div>
+              <div class="node-desc">Loại trừ hoàn toàn SigBCI (NPV 100%). Không cần nhập ICU theo dõi Telemetry hay siêu âm tim thường quy.</div>
+            </div>
+          </div>
+
+          <div class="branch-divider">
+            <span class="branch-pill">▼ Bước 3: Chiến lược Xử trí Đích &amp; Phối hợp Tổn thương Cung ĐMC (WTA 2026 &amp; SVS 2026) ▼</span>
+          </div>
+
+          <!-- TẦNG 4: 4 cột xử trí đích -->
+          <div class="level-4-grid">
+            <div class="node node-danger" id="node-8" data-module="bci" data-paths="all,tamponade" onclick="selectNode(8)">
+              <span class="node-badge">Phẫu thuật Cứu mạng</span>
+              <div class="node-title">Giải ép Màng tim &amp; Khâu Pledget</div>
+              <div class="node-desc">Khâu cơ tim mũi chữ U nằm ngang có độn Teflon Pledget (luồn dưới nhánh mạch vành). Kèm BTAI Độ III–IV: Đặt TEVAR ngay sau khi ổn định.</div>
+            </div>
+
+            <div class="node node-warning" id="node-9" data-module="bci" data-paths="all,structural" onclick="selectNode(9)">
+              <span class="node-badge">Hồi sức Cơ học &amp; Mổ CPB</span>
+              <div class="node-title">Vận mạch, VA-ECMO hoặc Mổ Van/VSD</div>
+              <div class="node-desc">Dobutamine/Noradrenaline, IABP/VA-ECMO. Sửa van/vá VSD dưới CPB (ưu tiên đặt TEVAR che phủ giả phình ĐMC trước khi cho Heparin CPB).</div>
+            </div>
+
+            <div class="node node-triage" id="node-10" data-module="bci" data-paths="all,stable" onclick="selectNode(10)">
+              <span class="node-badge">Nội khoa &amp; Can thiệp Mạch vành</span>
+              <div class="node-title">Chống Loạn nhịp / PCI Nhánh LAD</div>
+              <div class="node-desc">Chẹn Beta (kiểm soát loạn nhịp + kháng xung lực nếu kèm BTAI Độ III), Amiodarone, tạo nhịp tạm thời (nếu AV block), hoặc PCI đặt Stent.</div>
+            </div>
+
+            <div class="node node-safe" id="node-11" data-module="bci" data-paths="all,stable" onclick="selectNode(11)">
+              <span class="node-badge">An toàn Tim mạch</span>
+              <div class="node-title">Xuất viện / Xử trí Đa chấn thương</div>
+              <div class="node-desc">Điều trị chấn thương sọ não, tạng đặc, xương sườn. Nếu kèm BTAI Độ I: NOM không cần CTA lại; Độ II: NOM + chụp CTA sau 1–3 tháng.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 2: CHẤN THƯƠNG ĐMC NGỰC KÍN (BTAI - SVS CPG 2.0 2026) ==================== -->
+      <div class="module-view" id="view-btai">
+        <div class="flowchart-panel">
+          <!-- TẦNG 1 BTAI -->
+          <div class="level-1-grid">
+            <div class="node node-triage" id="node-101" data-module="btai" data-paths="all,mai,grade3,grade4" onclick="selectNode(101)">
+              <span class="node-badge">Tiêu chuẩn Chẩn đoán Vàng • CTA Ngực Cản quang</span>
+              <div class="node-title">Chẩn đoán và Phân độ Chấn thương Động mạch chủ Ngực kín (BTAI Độ I – Độ IV) trên CTA</div>
+              <div class="node-desc">Độ nhạy 96,2% – Độ đặc hiệu 99,8%. Khảo sát vị trí eo ĐMC (Isthmus), vùng rìa neo cung ĐMC (Zone 0–3), động mạch đốt sống trái và tụ máu trung thất.</div>
+            </div>
+          </div>
+
+          <div class="branch-divider">
+            <span class="branch-pill">▼ Nhóm Tổn thương Tối thiểu (MAI: Độ I–II) vs Tổn thương Nặng (Độ III–IV) ▼</span>
+          </div>
+
+          <!-- TẦNG 2 BTAI: 2 Nhóm lớn -->
+          <div class="level-2-grid">
+            <div class="node node-safe" id="node-102" data-module="btai" data-paths="all,mai" onclick="selectNode(102)">
+              <span class="node-badge">Minimal Aortic Injury (MAI) • SVS Độ I &amp; Độ II</span>
+              <div class="node-title">Tổn thương Động mạch chủ Tối thiểu (Khuyến cáo 1C)</div>
+              <div class="node-desc">Điều trị bảo tồn không phẫu thuật (Definitive NOM) thay vì TEVAR hoặc mổ mở cho cả Độ I và Độ II. Tránh biến chứng mạch đùi-chậu.</div>
+            </div>
+
+            <div class="node node-danger" id="node-103" data-module="btai" data-paths="all,grade3,grade4" onclick="selectNode(103)">
+              <span class="node-badge">Significant Aortic Injury • SVS Độ III &amp; Độ IV</span>
+              <div class="node-title">Giả phình Động mạch chủ (Độ III) &amp; Vỡ Tự do (Độ IV)</div>
+              <div class="node-desc">Chỉ định can thiệp đặt Stent-graft nội mạch (TEVAR). Thời điểm can thiệp phụ thuộc vào ổn định huyết động và 5 yếu tố nguy cơ cao.</div>
+            </div>
+          </div>
+
+          <!-- Thanh phân nhánh đôi BTAI -->
+          <div class="dual-branch-row">
+            <div class="sub-branch-label">▼ Phân độ Giải phẫu SVS Độ I &amp; Độ II (Traffic Light Green) ▼</div>
+            <div class="sub-branch-label">▼ Phân độ Giải phẫu SVS Độ III (Amber) &amp; Độ IV (Red) ▼</div>
+          </div>
+
+          <!-- TẦNG 3 BTAI: 4 Cột Phân độ SVS I - IV -->
+          <div class="level-3-grid">
+            <div class="node node-safe" id="node-104" data-module="btai" data-paths="all,mai" onclick="selectNode(104)">
+              <span class="node-badge">SVS Độ I • Khuyến cáo 1C</span>
+              <div class="node-title">Rách Lớp Nội mạc (Intimal Tear)</div>
+              <div class="node-desc">Điều trị nội khoa bảo tồn (Definitive NOM). 93% tự khỏi/ổn định vào ngày thứ 11 (trung vị), thêm 6% khỏi vào ngày thứ 31.</div>
+            </div>
+
+            <div class="node node-safe" id="node-105" data-module="btai" data-paths="all,mai" onclick="selectNode(105)">
+              <span class="node-badge">SVS Độ II • Khuyến cáo 1C</span>
+              <div class="node-title">Tụ máu Trong thành (Intramural Hematoma)</div>
+              <div class="node-desc">Điều trị nội khoa bảo tồn (Definitive NOM). Đa số tự thoái triển hoàn toàn trong vòng 8 tuần mà không cần đặt Stent-graft.</div>
+            </div>
+
+            <div class="node node-warning" id="node-106" data-module="btai" data-paths="all,grade3" onclick="selectNode(106)">
+              <span class="node-badge">SVS Độ III • Giả phình (2C / 1B)</span>
+              <div class="node-title">Giả phình Động mạch chủ (Pseudoaneurysm)</div>
+              <div class="node-desc"><strong>Ổn định:</strong> TEVAR trì hoãn (&gt; 24h) giảm tử vong còn 4,3% vs 9,7% (2C).<br><strong>Tụt HA / Nguy cơ cao:</strong> TEVAR khẩn &lt; 24h (1B).</div>
+            </div>
+
+            <div class="node node-danger" id="node-107" data-module="btai" data-paths="all,grade4" onclick="selectNode(107)">
+              <span class="node-badge">SVS Độ IV • Khuyến cáo 1C</span>
+              <div class="node-title">Vỡ Động mạch chủ Tự do (Free Rupture)</div>
+              <div class="node-desc">Can thiệp TEVAR (hoặc mổ mở) tối khẩn cấp (Emergent) ngay lập tức bất kể có chấn thương sọ não (TBI) đi kèm hay không.</div>
+            </div>
+          </div>
+
+          <div class="branch-divider">
+            <span class="branch-pill">▼ Chiến lược Kiểm soát Huyết áp, Phối hợp TBI/SOI, Quản lý Zone 2 &amp; Theo dõi CTA (PICO 3–7) ▼</span>
+          </div>
+
+          <!-- TẦNG 4 BTAI: 4 Cột Chiến lược Theo dõi & Kỹ thuật TEVAR -->
+          <div class="level-4-grid">
+            <div class="node node-safe" id="node-108" data-module="btai" data-paths="all,mai" onclick="selectNode(108)">
+              <span class="node-badge">Theo dõi Độ I • Khuyến cáo 2C</span>
+              <div class="node-title">Không Chụp CTA Thường quy</div>
+              <div class="node-desc">Khuyến cáo không chụp CTA kiểm tra định kỳ cho Độ I (5a - 2C). Nếu kèm TBI: Cấm dùng hạ áp kháng xung lực, ưu tiên HA cho TBI (6a - 2C).</div>
+            </div>
+
+            <div class="node node-triage" id="node-109" data-module="btai" data-paths="all,mai" onclick="selectNode(109)">
+              <span class="node-badge">Theo dõi Độ II • Khuyến cáo 2C</span>
+              <div class="node-title">Chụp 1 Lần CTA lúc 1–3 Tháng</div>
+              <div class="node-desc">Chụp ít nhất 1 lần CTA kiểm tra sau 1 đến 3 tháng để xác nhận IMH thoái triển (5b - 2C). Nếu kèm TBI: Ưu tiên HA tưới máu não (6a - 2C).</div>
+            </div>
+
+            <div class="node node-warning" id="node-110" data-module="btai" data-paths="all,grade3" onclick="selectNode(110)">
+              <span class="node-badge">Cầu nối &amp; 5 Yếu tố Nguy cơ cao</span>
+              <div class="node-title">Kháng xung lực &amp; Chỉ định Mổ Sớm</div>
+              <div class="node-desc">Chẹn Beta giữ SBP &lt; 120 mmHg chờ TEVAR (7 - 2C). Mổ &lt; 24h nếu: Tràn máu màng phổi, tụ máu trung thất, giả hẹp eo, tỷ lệ ĐK &gt; 1,4, Lactate &gt; 4.</div>
+            </div>
+
+            <div class="node node-danger" id="node-111" data-module="btai" data-paths="all,grade3,grade4" onclick="selectNode(111)">
+              <span class="node-badge">Kỹ thuật TEVAR (Zone 2 &amp; Heparin)</span>
+              <div class="node-title">Quản lý ĐM Dưới đòn Trái (LSA)</div>
+              <div class="node-desc">Tái thông LSA (3 - 2C) khi: (1) Cầu nối LIMA-LAD còn thông, (2) ĐM đốt sống trái ưu thế, (3) ĐM đốt sống trái tách từ cung ĐMC. Heparin cá thể hóa (4 - 2C).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CỘT PHẢI: KHUNG CHI TIẾT HỌC THUẬT (INSPECTOR PANEL) -->
+    <aside class="inspector-panel" id="inspector">
+      <div class="inspector-header">
+        <div class="inspector-step" id="insp-badge">Bước 1 • Sàng lọc Cấp cứu (ATLS)</div>
+        <div class="inspector-title" id="insp-title">Chấn thương Ngực kín Cơ chế Nguy cơ cao</div>
+      </div>
+
+      <div class="detail-section">
+        <h4 id="insp-sec1-title">Tiêu chuẩn Lâm sàng &amp; Phân độ</h4>
+        <div class="detail-box" id="insp-aast">
+          Cơ chế nghi ngờ: Tai nạn giao thông tốc độ cao, va đập vô-lăng trực tiếp trước ngực, ngã cao, vùi lấp, gãy xương ức, mảng sườn di động.
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4 id="insp-sec2-title">Phác đồ Chẩn đoán &amp; Xử trí Chi tiết</h4>
+        <ul class="detail-list" id="insp-actions">
+          <li><strong>Siêu âm eFAST (Cửa sổ dưới mũi ức &amp; cạnh ức):</strong> Tìm dịch màng ngoài tim và đánh giá co bóp đại thể.</li>
+          <li><strong>ECG 12 chuyển đạo lúc nhập viện:</strong> Phát hiện sớm loạn nhịp thất/nhĩ và rối loạn dẫn truyền (đặc biệt RBBB do thất phải nằm ngay sau xương ức).</li>
+          <li><strong>Định lượng Troponin I hoặc hs-cTn:</strong> Kết hợp với ECG để đạt giá trị tiên đoán âm (NPV) 100%.</li>
+        </ul>
+      </div>
+
+      <div class="detail-section">
+        <h4 id="insp-sec3-title">Điểm nhấn Học thuật &amp; Phối hợp Đa chuyên khoa</h4>
+        <div class="detail-box burgundy-border" id="insp-pearl">
+          Luôn đặt đường truyền tĩnh mạch lớn và tránh truyền dịch quá tải nếu nghi ngờ dập cơ tim thất phải hoặc chèn ép tim. Khi huyết động cho phép, chụp CTA ngực tầm soát BTAI.
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- BẢNG THAM CHIẾU PHÍA DƯỚI (TỰ ĐỘNG CHUYỂN THEO TAB HOẶC HIỂN THỊ CẢ HAI KHI IN) -->
+  <section class="ref-section" id="table-bci">
+    <h2>Bảng Tham chiếu Phân độ Tổn thương Tim theo AAST (Độ I – Độ VI) &amp; Xử trí Chuẩn hóa (WTA 2026)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 10%;">Phân độ</th>
+          <th style="width: 48%;">Tổn thương Giải phẫu &amp; Biểu hiện Điện học / Huyết động</th>
+          <th style="width: 42%;">Thái độ Xử trí Lâm sàng Chuẩn hóa (WTA 2026)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Độ I</strong></td>
+          <td>BCI kèm biến đổi ECG nhẹ (ST-T không đặc hiệu, ngoại tâm thu thưa, nhịp nhanh xoang) HOẶC vết thương màng tim đơn thuần không chèn ép/thoát vị tim.</td>
+          <td>Theo dõi Telemetry 24 giờ; khâu màng ngoài tim nếu có nguy cơ thoát vị tim.</td>
+        </tr>
+        <tr>
+          <td><strong>Độ II</strong></td>
+          <td>BCI kèm block nhánh mới (RBBB hay gặp nhất, LBBB, LAFB) hoặc biến đổi ST-T thiếu máu cục bộ không suy tim; HOẶC vết thương cơ tim nông không vào buồng tim.</td>
+          <td>Theo dõi Telemetry 24–48 giờ tại HDU/ICU; siêu âm tim (TTE) đánh giá vận động vùng.</td>
+        </tr>
+        <tr>
+          <td><strong>Độ III</strong></td>
+          <td>Ngoại tâm thu thất đa ổ (&gt;6 nhịp/phút); HOẶC vỡ vách liên thất (VSD), hở van ba lá/phổi, rối loạn cơ nhú, tắc mạch vành xa <strong>không kèm suy tim</strong>; HOẶC thoát vị tim; HOẶC BCI có suy tim.</td>
+          <td>Mở ngực/xương ức đưa tim về ổ màng tim (nếu thoát vị); hồi sức nội khoa suy tim/loạn nhịp; hội chẩn phẫu thuật tim.</td>
+        </tr>
+        <tr>
+          <td><strong>Độ IV</strong></td>
+          <td>Tổn thương cấu trúc như Độ III nhưng <strong>CÓ suy tim lâm sàng</strong>; HOẶC <strong>hở van động mạch chủ / van hai lá cấp</strong>; HOẶC vỡ/xuyên thấu nhĩ phải hoặc thất phải.</td>
+          <td>Phẫu thuật tim cấp cứu (mở xương ức đường giữa, khâu phục hồi nhĩ/thất phải hoặc sửa/thay van, vá VSD dưới CPB).</td>
+        </tr>
+        <tr>
+          <td><strong>Độ V</strong></td>
+          <td><strong>Tắc/bóc tách động mạch vành đoạn gần (Proximal LAD/RCA)</strong>; HOẶC vỡ nhĩ trái / thất trái; HOẶC dập nát mất &lt; 50% mô nhĩ phải, thất phải hoặc nhĩ trái.</td>
+          <td>Can thiệp mạch vành (PCI) hoặc CABG cấp cứu; phẫu thuật khâu tái tạo buồng tim trái dưới hỗ trợ CPB / VA-ECMO.</td>
+        </tr>
+        <tr>
+          <td><strong>Độ VI</strong></td>
+          <td>Đứt rời tim khỏi cuống mạch máu lớn (Blunt avulsion) HOẶC vết thương phá hủy mất &gt; 50% mô của một buồng tim.</td>
+          <td>Tử vong hầu như 100% tại hiện trường; mở ngực hồi sức tối khẩn (Resuscitative Thoracotomy) nếu còn dấu hiệu sinh tồn.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="ref-section" id="table-btai">
+    <h2>Bảng Tóm tắt 7 Câu hỏi PICO trong Cập nhật SVS Guideline 2026 (Đối chiếu SVS 2011)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 18%;">Câu hỏi PICO</th>
+          <th style="width: 22%;">Quan điểm SVS 2011</th>
+          <th style="width: 34%;">Khuyến cáo Cập nhật SVS 2026 (Mức GRADE)</th>
+          <th style="width: 26%;">Luận điểm Giải trình Trước Hội đồng</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>PICO 1: Xử trí BTAI Độ I &amp; II (MAI)</strong></td>
+          <td>Chỉ NOM cho Độ I; Độ II thường đặt TEVAR.</td>
+          <td><strong>Khuyến cáo điều trị bảo tồn (NOM) cho cả Độ I và Độ II (1C).</strong></td>
+          <td>NOM không làm tăng tử vong liên quan ĐMC mà giúp tránh biến chứng mạch đùi-chậu và đột quỵ do TEVAR.</td>
+        </tr>
+        <tr>
+          <td><strong>PICO 2: Thời điểm TEVAR ở Độ III</strong></td>
+          <td>Can thiệp khẩn (&lt; 24 giờ) cho tất cả Độ III.</td>
+          <td><strong>Trì hoãn TEVAR (&gt; 24 giờ) nếu huyết động ổn định (2C).</strong> Can thiệp &lt; 24h nếu tụt HA hoặc có yếu tố nguy cơ cao (1B).</td>
+          <td>Trì hoãn &gt; 24h giúp hồi sức ổn định đa chấn thương trước, giảm hơn một nửa tử vong chung (<strong>4,3% so với 9,7%</strong>).</td>
+        </tr>
+        <tr>
+          <td><strong>PICO 3: Che phủ ĐM dưới đòn trái (Zone 2)</strong></td>
+          <td>Tái thông LSA chọn lọc tùy giải phẫu đốt sống.</td>
+          <td><strong>Tái thông LSA dựa trên tính khả thi và 3 chỉ định cốt lõi (2C):</strong> LIMA-LAD còn thông, ĐM đốt sống trái ưu thế, hoặc tách trực tiếp từ cung ĐMC.</td>
+          <td>Dữ liệu ATF Registry: Tái thông LSA ngay trong thì TEVAR (hoặc Branched Stent) giúp giảm đột quỵ và liệt tủy.</td>
+        </tr>
+        <tr>
+          <td><strong>PICO 4: Chống đông Heparin trong TEVAR</strong></td>
+          <td>Dùng Heparin thường quy liều thấp.</td>
+          <td><strong>Sử dụng Heparin tùy theo quyết định của phẫu thuật viên (2C)</strong> sau khi cân nhắc nguy cơ chảy máu và tắc mạch.</td>
+          <td>Dữ liệu VQI: Heparin toàn thân giảm tử vong và giảm thiếu máu chi dưới cấp ở Độ III mà không làm tăng xuất huyết nội sọ.</td>
+        </tr>
+        <tr>
+          <td><strong>PICO 5: Phác đồ Theo dõi CTA</strong></td>
+          <td>Chưa có phác đồ chuẩn hóa.</td>
+          <td><strong>Độ I (NOM):</strong> Không chụp lại (2C). <strong>Độ II (NOM):</strong> Chụp 1 lần lúc 1–3 tháng (2C). <strong>Sau TEVAR:</strong> Theo dõi CTA cá thể hóa (2C).</td>
+          <td>Giảm phơi nhiễm tia xạ tích lũy và độc tính thuốc cản quang cho quần thể bệnh nhân chấn thương trẻ tuổi.</td>
+        </tr>
+        <tr>
+          <td><strong>PICO 6: BTAI kèm Chấn thương sọ não (TBI) / Tạng đặc</strong></td>
+          <td>Chưa có hướng dẫn giải quyết xung đột huyết áp.</td>
+          <td><strong>Độ I–II kèm TBI:</strong> Không dùng hạ áp kháng xung lực; ưu tiên HA cho TBI (2C). <strong>Độ III kèm TBI/SOI:</strong> Hội chẩn đa chuyên khoa về thời điểm TEVAR &amp; Heparin (2C).</td>
+          <td>28–50% BTAI kèm TBI/SOI. Hạ áp làm tăng tử vong ở TBI; TEVAR sớm ở Độ III giúp bảo vệ ĐMC để nâng HA tưới máu não.</td>
+        </tr>
+        <tr>
+          <td><strong>PICO 7: Liệu pháp Kháng xung lực</strong></td>
+          <td>Áp dụng nghiêm ngặt cho mọi phân độ.</td>
+          <td><strong>Gợi ý dùng kháng xung lực làm cầu nối ở Độ III chờ TEVAR (2C)</strong> nếu chấn thương đi kèm không chống chỉ định.</td>
+          <td>Dùng chẹn Beta truyền tĩnh mạch (74,6% trong ATF Registry) giữ SBP &lt; 120 mmHg để giảm lực xé thành mạch.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<script>
+  function loadUniversityLogo(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.getElementById('uni-logo-img');
+      const placeholder = document.getElementById('logo-placeholder-text');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+      try {
+        localStorage.setItem('saved_uni_logo', e.target.result);
+      } catch (err) {}
+    };
+    reader.readAsDataURL(file);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    try {
+      const savedLogo = localStorage.getItem('saved_uni_logo');
+      if (savedLogo) {
+        const img = document.getElementById('uni-logo-img');
+        const placeholder = document.getElementById('logo-placeholder-text');
+        img.src = savedLogo;
+        img.style.display = 'block';
+        placeholder.style.display = 'none';
+      }
+    } catch (err) {}
+  });
+
+  const nodeData = {
+    // DỮ LIỆU PHẦN I: CHẤN THƯƠNG TIM KÍN (BCI - WTA 2026)
+    1: {
+      badge: "Bước 1 • Sàng lọc Cấp cứu Ban đầu (ATLS)",
+      title: "Chấn thương Ngực kín Cơ chế Nguy cơ cao",
+      aast: "Cơ chế nghi ngờ: Tai nạn giao thông tốc độ cao, va đập vô-lăng trực tiếp trước ngực, ngã cao, vùi lấp, gãy xương ức, mảng sườn di động.",
+      actions: [
+        "<strong>Siêu âm eFAST (Cửa sổ dưới mũi ức & cạnh ức):</strong> Tìm dịch màng ngoài tim và đánh giá co bóp đại thể.",
+        "<strong>ECG 12 chuyển đạo lúc nhập viện:</strong> Phát hiện sớm loạn nhịp thất/nhĩ và rối loạn dẫn truyền (đặc biệt RBBB do thất phải nằm ngay sau xương ức).",
+        "<strong>Định lượng Troponin I hoặc hs-cTn:</strong> Kết hợp với ECG để đạt giá trị tiên đoán âm (NPV) 100%."
+      ],
+      pearl: "Luôn đặt đường truyền tĩnh mạch lớn và tránh truyền dịch quá tải nếu nghi ngờ dập cơ tim thất phải hoặc chèn ép tim."
+    },
+    2: {
+      badge: "Nhánh A • Cấp cứu Huyết động",
+      title: "Huyết động KHÔNG Ổn định (SBP < 90 mmHg)",
+      aast: "Nghi ngờ tổn thương tim giải phẫu nặng (AAST Độ III – Độ VI) hoặc sốc mất máu phối hợp.",
+      actions: [
+        "Thực hiện ngay <strong>eFAST cửa sổ màng ngoài tim</strong> tại giường cấp cứu.",
+        "Lưu ý bẫy lâm sàng: Nếu có <strong>tràn máu màng phổi trái lượng lớn</strong>, máu từ buồng tim có thể thoát qua vết rách màng ngoài tim vào khoang màng phổi làm eFAST màng tim âm tính giả.",
+        "Song song kích hoạt quy trình truyền máu khối lượng lớn (MTP) và hội chẩn Phẫu thuật Tim mạch - Lồng ngực."
+      ],
+      pearl: "Nếu vừa có tụt HA vừa nghi ngờ BTAI trên X-quang (trung thất rộng > 6 cm, mất cung ĐMC), cần ưu tiên giải quyết chèn ép tim/chảy máu cấp trước."
+    },
+    3: {
+      badge: "Nhánh B • Sàng lọc Điện học - Sinh hóa",
+      title: "Huyết động ỔN ĐỊNH (SBP ≥ 90 mmHg)",
+      aast: "Tầm soát Chấn thương tim kín có ý nghĩa lâm sàng (Significant BCI - SigBCI, tương ứng AAST Độ I – Độ III).",
+      actions: [
+        "Đánh giá đồng thời kết quả <strong>ECG 12 chuyển đạo</strong> và <strong>Troponin</strong>.",
+        "Nếu bệnh nhân nhập viện quá sớm (< 4 giờ sau chấn thương) và kết quả ban đầu âm tính nhưng lâm sàng còn đau ngực nhiều, lặp lại Troponin và ECG sau 4–6 giờ.",
+        "Không chỉ định siêu âm tim (TTE/TEE) thường quy nếu bệnh nhân ổn định và chưa có kết quả sàng lọc ECG/Troponin."
+      ],
+      pearl: "Huyết động ổn định là thời điểm vàng để chụp CTA lồng ngực cản quang phân độ BTAI (SVS Độ I–IV)."
+    },
+    4: {
+      badge: "eFAST Dương tính (+) • AAST Độ IV–VI",
+      title: "Tràn máu Màng tim / Chèn ép Tim cấp",
+      aast: "AAST Độ IV (Vỡ nhĩ phải/thất phải) hoặc Độ V (Vỡ nhĩ trái/thất trái) hoặc Độ VI (Đứt cuống mạch lớn).",
+      actions: [
+        "<strong>Ngừng tuần hoàn / Sốc hấp hối:</strong> Mở ngực cấp cứu tại phòng hồi sức (Resuscitative Thoracotomy) đường trước-bên trái liên sườn 4–5 (có thể mở rộng Clamshell sang phải).",
+        "<strong>Còn mạch nhưng tụt HA:</strong> Chuyển thẳng phòng mổ thực hiện <strong>Mở xương ức đường giữa (Median Sternotomy)</strong> để bộc lộ toàn diện các buồng tim và mạch máu lớn.",
+        "Nếu nghi ngờ kèm tràn máu màng phổi chưa rõ nguồn: Mở cửa sổ màng tim dưới mũi ức (Subxiphoid window) hoặc VATS thám sát."
+      ],
+      pearl: "Không chọc hút dịch màng tim (Pericardiocentesis) trì hoãn phẫu thuật vì máu trong chấn thương thường đông cục, chọc hút dễ thất bại và làm mất thời gian mổ."
+    },
+    5: {
+      badge: "eFAST Âm tính (-) • AAST Độ III–V",
+      title: "Nghi Sốc tim / Tổn thương Cấu trúc Tim",
+      aast: "AAST Độ III–IV (Suy bơm cơ tim, vỡ vách liên thất VSD, đứt cơ nhú/dây chằng gây hở van ĐMC, van hai lá, van ba lá cấp).",
+      actions: [
+        "Bước đầu: Loại trừ các nguyên nhân sốc ngoài tim (tràn khí màng phổi áp lực, chảy máu ổ bụng/khung chậu).",
+        "Chỉ định <strong>Siêu âm tim cấp cứu ngay lập tức</strong>: Ưu tiên <strong>Siêu âm tim qua thực quản (TEE)</strong> nếu bệnh nhân đang thở máy hoặc thành ngực dập nát, tràn khí dưới da làm mờ cửa sổ TTE.",
+        "Đánh giá phân suất tống máu thất trái/phải, áp lực động mạch phổi và luồng thông bất thường."
+      ],
+      pearl: "TEE tại giường cấp cứu/phòng mổ vừa giúp chẩn đoán đứt van tim/VSD, vừa quan sát trực tiếp được tổn thương vùng cung và ĐMC ngực xuống."
+    },
+    6: {
+      badge: "Bất thường • AAST Độ I–III",
+      title: "ECG Bất thường HOẶC Troponin Tăng",
+      aast: "AAST Độ I (Ngoại tâm thu/nhịp nhanh xoang), Độ II (Block nhánh mới RBBB/LBBB, ST-T thiếu máu), hoặc Độ III (Ngoại tâm thu thất đa ổ).",
+      actions: [
+        "Nhập viện theo dõi <strong>Telemetry liên tục 24–48 giờ</strong>.",
+        "Nếu Troponin tăng đơn độc + ECG bình thường: Theo dõi 24h; nếu không xuất hiện loạn nhịp hay tụt HA thì xuất viện an toàn.",
+        "Nếu <strong>ECG có ST chênh lên (STEMI)</strong>: Hội chẩn chụp mạch vành (hoặc MSCT mạch vành) cấp cứu để loại trừ <strong>bóc tách động mạch vành (hay gặp nhất ở LAD)</strong>.",
+        "Chỉ định siêu âm tim (TTE) nếu xuất hiện loạn nhịp bền bỉ, suy tim hoặc tụt huyết áp trong quá trình theo dõi."
+      ],
+      pearl: "Block nhánh phải hoàn toàn (RBBB) là rối loạn dẫn truyền phổ biến nhất trong BCI do vị trí giải phẫu của thất phải nằm sát mặt sau xương ức."
+    },
+    7: {
+      badge: "Bình thường • NPV = 100%",
+      title: "ECG Bình thường VÀ Troponin Bình thường",
+      aast: "Loại trừ hoàn toàn Chấn thương tim kín có ý nghĩa lâm sàng (SigBCI).",
+      actions: [
+        "Giá trị tiên đoán âm (Negative Predictive Value) đạt <strong>100%</strong> theo khuyến cáo của WTA 2026.",
+        "<strong>Không cần</strong> nhập viện theo dõi Telemetry tim mạch.",
+        "<strong>Không cần</strong> siêu âm tim (TTE) thường quy hay xét nghiệm Troponin lặp lại.",
+        "Cho phép xuất viện hoặc chuyển chuyên khoa khác điều trị các chấn thương phối hợp."
+      ],
+      pearl: "Giúp tiết kiệm nguồn lực giường ICU/Telemetry và tránh các thăm dò hình ảnh tim mạch không cần thiết."
+    },
+    8: {
+      badge: "Phẫu thuật Cứu mạng • AAST Độ IV–VI",
+      title: "Giải ép Màng tim & Khâu Cơ tim có Độn Pledget",
+      aast: "Kỹ thuật kiểm soát tổn thương (Damage Control Surgery) trong vỡ buồng tim do chấn thương kín.",
+      actions: [
+        "Mở dọc màng ngoài tim phía trước dây thần kinh hoành (cách tối thiểu 1–2 cm) để giải phóng máu cục.",
+        "Dùng ngón tay bịt tạm thời lỗ vỡ thất hoặc dùng kẹp Satinsky kẹp thành nhĩ phải.",
+        "Khâu phục hồi cơ tim thất bằng chỉ Prolene 3-0 hoặc 4-0 <strong>mũi chữ U nằm ngang (Horizontal mattress) có độn mảnh Teflon Pledget</strong> để tránh xé rách cơ tim đang phù nề.",
+        "<strong>Tránh động mạch vành:</strong> Khi vết thương sát nhánh LAD, luồn mũi chỉ chữ U đi sâu dưới nền động mạch vành, tuyệt đối không buộc chèn trực tiếp lên mạch vành."
+      ],
+      pearl: "Nếu bệnh nhân có kèm BTAI Độ III–IV: Sau khi khâu cầm máu buồng tim và ổn định huyết động, chuyển tiếp đặt Stent-graft (TEVAR) ngay trong phòng mổ Hybrid."
+    },
+    9: {
+      badge: "Hồi sức Cơ học & Mổ Tim • AAST Độ III–V",
+      title: "Vận mạch, IABP / VA-ECMO hoặc Phẫu thuật CPB",
+      aast: "Xử trí sốc tim do dập cơ tim lan tỏa hoặc tổn thương van tim / vách liên thất.",
+      actions: [
+        "<strong>Dập cơ tim suy bơm (Pump failure):</strong> Truyền Dobutamine, Noradrenaline hoặc Milrinone dẫn đường bằng siêu âm tim/PiCCO. Nếu kháng trị: Đặt <strong>IABP hoặc VA-ECMO</strong> làm cầu nối chờ cơ tim hồi phục sau 3–5 ngày.",
+        "<strong>Tổn thương Van tim:</strong> Hở van ĐMC cấp thường cần phẫu thuật thay/sửa van sớm nhất do thất trái không kịp thích nghi; hở van ba lá có thể điều trị nội khoa và mổ trì hoãn.",
+        "<strong>Vỡ vách liên thất (VSD):</strong> Nếu suy tim nặng không đáp ứng nội khoa cần vá VSD cấp cứu dưới CPB; nếu huyết động dung nạp được, trì hoãn 2–3 tuần để mô sẹo rìa VSD chắc hơn."
+      ],
+      pearl: "Nếu phải chạy Tuần hoàn ngoài cơ thể (CPB) ở bệnh nhân có kèm BTAI Độ III: Bắt buộc đặt TEVAR che phủ giả phình ĐMC trước khi cho Heparin liều toàn thân (ACT > 480s) của CPB."
+    },
+    10: {
+      badge: "Xử trí Đích theo Biến chứng • AAST Độ I–III",
+      title: "Kiểm soát Loạn nhịp & Can thiệp Mạch vành",
+      aast: "Điều trị nội khoa đích và can thiệp nội mạch vành theo WTA 2026.",
+      actions: [
+        "<strong>Loạn nhịp trên thất (Rung nhĩ mới khởi phát) / Ngoại tâm thu:</strong> Bù đủ Kali (> 4,0 mmol/L) và Magie (> 2,0 mg/dL); dùng thuốc chẹn Beta hoặc Amiodarone.",
+        "<strong>Rối loạn dẫn truyền (AV Block độ cao / Block hoàn toàn):</strong> Đặt máy tạo nhịp tạm thời qua đường tĩnh mạch; nếu không hồi phục sau 7–10 ngày mới xét đặt máy tạo nhịp vĩnh viễn.",
+        "<strong>Bóc tách / Huyết khối động mạch vành (AAST Độ V):</strong> Ưu tiên can thiệp đặt Stent mạch vành (PCI) thay vì tiêu sợi huyết (chống chỉ định tuyệt đối trong đa chấn thương) hoặc mổ bắc cầu CABG."
+      ],
+      pearl: "Sử dụng thuốc chẹn Beta truyền tĩnh mạch (Esmolol/Labetalol) ở bệnh nhân ổn định mang lại lợi ích kép: vừa kiểm soát loạn nhịp do BCI, vừa đạt mục tiêu kháng xung lực (SBP < 120 mmHg) cho BTAI Độ III chờ TEVAR."
+    },
+    11: {
+      badge: "An toàn Tim mạch • NPV = 100%",
+      title: "Xuất viện / Xử trí Tổn thương Phối hợp",
+      aast: "Không có tổn thương cơ tim hay rối loạn dẫn truyền có ý nghĩa lâm sàng (Loại trừ SigBCI).",
+      actions: [
+        "Ngưng theo dõi tim mạch chuyên sâu; chuyển bệnh nhân về khoa lâm sàng tương ứng để điều trị gãy xương sườn, chấn thương sọ não hoặc chấn thương tạng đặc.",
+        "Nếu bệnh nhân đồng thời có <strong>BTAI Độ I (Rách nội mạc)</strong>: Điều trị nội khoa (NOM), không cần chụp lại CTA định kỳ (SVS 2026 - 2C).",
+        "Nếu bệnh nhân đồng thời có <strong>BTAI Độ II (Tụ máu trong thành ĐMC)</strong>: Điều trị nội khoa (NOM) và hẹn chụp lại <strong>1 lần CTA ngực sau 1–3 tháng</strong> để xác nhận tổn thương thoái triển (SVS 2026 - 2C)."
+      ],
+      pearl: "Nếu bệnh nhân có kèm chấn thương sọ não (TBI) và BTAI Độ I–II: Khuyến cáo SVS 2026 (6a) nêu rõ KHÔNG dùng thuốc hạ áp kháng xung lực mà phải ưu tiên duy trì huyết áp tưới máu não cho TBI."
+    },
+
+    // DỮ LIỆU PHẦN II: CHẤN THƯƠNG ĐỘNG MẠCH CHỦ NGỰC KÍN (BTAI - SVS CPG 2.0 2026)
+    101: {
+      badge: "Tiêu chuẩn Vàng • CTA Ngực Cản quang",
+      title: "Chẩn đoán & Phân độ BTAI trên CTA (SVS 2026)",
+      aast: "Cơ chế giảm tốc đột ngột gây giằng xé tại điểm cố định giải phẫu: <strong>Eo động mạch chủ (Aortic Isthmus)</strong> ngay dưới chỗ chia động mạch dưới đòn trái (dây chằng động mạch).",
+      actions: [
+        "<strong>CTA ngực cản quang:</strong> Độ nhạy 96,2% và độ đặc hiệu 99,8% — chỉ định cho mọi bệnh nhân nghi ngờ có huyết động cho phép.",
+        "Đánh giá chính xác 4 phân độ giải phẫu của SVS: <strong>Độ I (Rách nội mạc), Độ II (Tụ máu trong thành - IMH), Độ III (Giả phình), Độ IV (Vỡ tự do)</strong>.",
+        "Đo đạc đường kính ĐMC lành đầu gần/đầu xa, khoảng cách từ tổn thương đến động mạch dưới đòn trái (Zone 2) và khảo sát sự toàn vẹn của đa giác Willis / động mạch đốt sống hai bên."
+      ],
+      pearl: "Trên X-quang ngực thẳng sàng lọc ban đầu, dấu hiệu gợi ý đáng tin cậy nhất là mất đường cong quai động mạch chủ và trung thất mở rộng > 6 cm."
+    },
+    102: {
+      badge: "Minimal Aortic Injury (MAI) • PICO 1",
+      title: "Tổn thương Động mạch chủ Tối thiểu (SVS Độ I & II)",
+      aast: "Bao gồm SVS Độ I (Rách lớp nội mạc đơn thuần) và SVS Độ II (Tụ máu trong thành ĐMC - IMH). Chiếm khoảng 25–30% tổng số ca BTAI phát hiện trên CTA đa dãy.",
+      actions: [
+        "<strong>Khuyến cáo số 1 (Mức 1C - Mạnh):</strong> Điều trị bảo tồn không phẫu thuật (Definitive NOM) thay vì đặt TEVAR hoặc mổ mở cho cả Độ I và Độ II.",
+        "Tổng quan hệ thống của SVS 2026 chứng minh NOM không làm tăng tử vong liên quan ĐMC, trong khi TEVAR ở nhóm MAI làm tăng nguy cơ biến chứng mạch đùi-chậu và đột quỵ.",
+        "Kiểm soát huyết áp bằng thuốc chẹn Beta nếu bệnh nhân không có chấn thương sọ não (TBI) đi kèm."
+      ],
+      pearl: "Sự thay đổi lớn nhất từ SVS 2011 sang SVS 2026 ở PICO 1 là chính thức đưa BTAI Độ II (IMH) vào nhóm điều trị bảo tồn (NOM) với mức khuyến cáo mạnh (1C)."
+    },
+    103: {
+      badge: "Significant BTAI • PICO 2 & PICO 6",
+      title: "Tổn thương Động mạch chủ Nặng (SVS Độ III & IV)",
+      aast: "Bao gồm SVS Độ III (Giả phình ĐMC - Pseudoaneurysm) và SVS Độ IV (Vỡ thành ĐMC hoàn toàn gây thoát thuốc cản quang tự do).",
+      actions: [
+        "<strong>Phương pháp điều trị chuẩn:</strong> Đặt giá đỡ nội mạch ngực (TEVAR) ưu thế vượt trội so với mổ mở kinh điển (giảm một nửa tỷ lệ tử vong và liệt tủy).",
+        "Cần phân tầng ngay xem bệnh nhân Độ III thuộc nhóm <strong>Huyết động ổn định</strong> (ưu tiên trì hoãn > 24h) hay nhóm <strong>Không ổn định / Có yếu tố nguy cơ vỡ cao</strong> (can thiệp khẩn < 24h).",
+        "Hội chẩn đa chuyên khoa (Mạch máu – Chấn thương – Ngoại thần kinh) nếu đi kèm TBI hoặc chấn thương tạng đặc (SOI)."
+      ],
+      pearl: "Kích thước Stent-graft ở người trẻ chấn thương cần tránh oversizing quá mức (chỉ nên oversizing 10–15%) vì ĐMC người trẻ co nhỏ mạnh khi đang sốc giảm thể tích."
+    },
+    104: {
+      badge: "SVS Độ I • Khuyến cáo 1C",
+      title: "Rách Lớp Nội mạc Đơn thuần (Intimal Tear)",
+      aast: "Tổn thương khu trú ở lớp nội mạc (Intima), đường bờ ngoài thành động mạch chủ hoàn toàn bình thường, không có máu tụ trong thành.",
+      actions: [
+        "<strong>Điều trị đích:</strong> Điều trị nội khoa bảo tồn (Definitive NOM) (Khuyến cáo 1C).",
+        "Nghiên cứu của Jinadasa et al. (2022) trên bệnh nhân Độ I cho thấy <strong>93% tự khỏi hoặc ổn định vào ngày thứ 11 (trung vị)</strong>, và thêm 6% tự khỏi vào ngày thứ 31.",
+        "Sandhu et al. ghi nhận thời gian lành trung vị của Độ I là 39 ngày mà không cần can thiệp ngoại khoa."
+      ],
+      pearl: "Do tỷ lệ tự lành nội mạc rất cao, SVS 2026 khuyến cáo không cần chụp CTA theo dõi định kỳ cho bệnh nhân Độ I (Khuyến cáo 5a - 2C)."
+    },
+    105: {
+      badge: "SVS Độ II • Khuyến cáo 1C",
+      title: "Tụ máu Trong thành Động mạch chủ (Intramural Hematoma - IMH)",
+      aast: "Máu tụ khu trú bên trong lớp áo giữa (Media) nhưng chưa phá vỡ lớp áo ngoài để tạo túi giả phình, đường bờ ngoài ĐMC còn giữ nguyên.",
+      actions: [
+        "<strong>Điều trị đích:</strong> Điều trị bảo tồn không phẫu thuật (Definitive NOM) thay vì TEVAR (Khuyến cáo 1C).",
+        "Các nghiên cứu theo dõi bằng CTA cho thấy phần lớn tổn thương Độ II tự thoái triển hoàn toàn trong vòng <strong>8 tuần</strong>.",
+        "Cần hẹn chụp lại <strong>ít nhất 1 lần CTA ngực kiểm tra sau 1 đến 3 tháng</strong> để xác nhận máu tụ đã tiêu biến và không tiến triển thành giả phình (Khuyến cáo 5b - 2C)."
+      ],
+      pearl: "Chiến lược NOM kết hợp hẹn chụp CTA sau 1–3 tháng giúp bảo tồn an toàn động mạch chủ ở người trẻ mà không bỏ sót nguy cơ tiến triển muộn."
+    },
+    106: {
+      badge: "SVS Độ III • PICO 2 (Khuyến cáo 2C & 1B)",
+      title: "Giả phình Động mạch chủ (Pseudoaneurysm)",
+      aast: "Rách lớp nội mạc và lớp áo giữa, máu được giữ lại bởi lớp áo ngoài (Adventitia) và mô lỏng lẻo trung thất tạo thành túi giả phình lồi ra khỏi bờ ĐMC.",
+      actions: [
+        "<strong>Nếu huyết động ổn định (Khuyến cáo 2 - 2C):</strong> Trì hoãn TEVAR (<strong>> 24 giờ</strong>) để ưu tiên hồi sức và xử trí các chấn thương phối hợp đe dọa tính mạng trước. Tỷ lệ tử vong giảm từ <strong>9,7% (mổ sớm < 24h) xuống còn 4,3% (mổ muộn > 24h)</strong>.",
+        "<strong>Nếu huyết động không ổn định do BTAI HOẶC có yếu tố nguy cơ cao (Khuyến cáo 2 - 1B):</strong> Thực hiện TEVAR khẩn cấp (<strong>< 24 giờ</strong>) hoặc tối khẩn.",
+        "Trong thời gian chờ TEVAR trì hoãn: Duy trì liệu pháp kháng xung lực (Anti-impulse therapy) bằng chẹn Beta tĩnh mạch giữ SBP < 120 mmHg."
+      ],
+      pearl: "Đây là câu hỏi trọng tâm khi thi vấn đáp sau đại học: Không phải mọi ca Giả phình ĐMC (Độ III) đều đẩy đi làm TEVAR ngay lập tức trong đêm nếu bệnh nhân ổn định và đang có đa chấn thương khác cần hồi sức."
+    },
+    107: {
+      badge: "SVS Độ IV • Khuyến cáo 1C & 6d",
+      title: "Vỡ Động mạch chủ Tự do (Free Rupture)",
+      aast: "Rách toàn bộ 3 lớp thành động mạch chủ, thuốc cản quang thoát tự do ra trung thất hoặc khoang màng phổi trái kèm sốc mất máu tối cấp.",
+      actions: [
+        "<strong>Khuyến cáo 2 & 6d (Mức 1C - Mạnh):</strong> Can thiệp TEVAR (hoặc mổ mở qua đường mở ngực sau-bên trái liên sườn 4 nếu không có sẵn Stent-graft) <strong>tối khẩn cấp (Emergent repair)</strong> ngay lập tức.",
+        "Thực hiện can thiệp tối khẩn ngay cả khi bệnh nhân có kèm chấn thương sọ não (TBI) nặng.",
+        "Có thể đặt bóng chèn động mạch chủ (REBOA Zone 1 thận trọng hoặc bóng chèn đầu gần dưới màn tăng sáng) trong lúc chuẩn bị bung Stent-graft."
+      ],
+      pearl: "Ở Độ IV, mọi sự trì hoãn đều dẫn đến tử vong tức thì do xuất huyết ồ ạt vào khoang màng phổi trái."
+    },
+    108: {
+      badge: "PICO 5a & 6a • Khuyến cáo 2C",
+      title: "Phác đồ Theo dõi Độ I & Xử trí khi Kèm TBI",
+      aast: "Quản lý dài hạn và giải quyết xung đột mục tiêu huyết áp ở bệnh nhân BTAI Độ I.",
+      actions: [
+        "<strong>Khuyến cáo 5a (2C):</strong> Không chụp CTA kiểm tra định kỳ thường quy cho mọi bệnh nhân BTAI Độ I điều trị bảo tồn (giảm phơi nhiễm tia xạ và chi phí cho người trẻ).",
+        "<strong>Khuyến cáo 6a (2C):</strong> Nếu bệnh nhân BTAI Độ I (hoặc Độ II) có kèm <strong>Chấn thương sọ não (TBI)</strong>: Khuyến cáo <strong>KHÔNG dùng liệu pháp hạ áp kháng xung lực</strong>. Mục tiêu huyết áp phải ưu tiên tuyệt đối cho TBI (duy trì áp lực tưới máu não CPP).",
+        "Theo dõi lâm sàng định kỳ và hướng dẫn bệnh nhân kiểm soát huyết áp nền nếu có tiền sử tăng huyết áp."
+      ],
+      pearl: "Hạ huyết áp bằng thuốc ở bệnh nhân chấn thương sọ não làm tăng đáng kể tỷ lệ tử vong nội viện (Rice et al., 2023); trong khi nguy cơ vỡ của BTAI Độ I–II là cực kỳ thấp."
+    },
+    109: {
+      badge: "PICO 5b & 6a • Khuyến cáo 2C",
+      title: "Phác đồ Theo dõi Độ II & Xử trí khi Kèm TBI",
+      aast: "Theo dõi hình ảnh học xác nhận thoái triển máu tụ thành mạch (IMH) ở bệnh nhân BTAI Độ II.",
+      actions: [
+        "<strong>Khuyến cáo 5b (2C):</strong> Bệnh nhân BTAI Độ II điều trị bảo tồn cần được chụp <strong>ít nhất 1 lần CTA ngực kiểm tra tại thời điểm 1 đến 3 tháng</strong> sau chấn thương.",
+        "Nghiên cứu của Gharai et al. (2022) cho thấy 64% tổn thương khỏi hoàn toàn ở ngày trung vị 28, và 80% khỏi hoặc cải thiện rõ rệt ở lần chụp cuối.",
+        "<strong>Khi kèm TBI (Khuyến cáo 6a - 2C):</strong> Tương tự Độ I, ưu tiên giữ huyết áp tưới máu não cho TBI, không dùng thuốc hạ áp kháng xung lực."
+      ],
+      pearl: "Nếu trên phim CTA chụp lại lúc 1–3 tháng phát hiện IMH tiến triển thành túi giả phình (chuyển sang Độ III), lúc đó mới chỉ định đặt TEVAR chương trình."
+    },
+    110: {
+      badge: "PICO 2, 6b, 6c & 7 • Khuyến cáo 2C / 1B",
+      title: "Liệu pháp Kháng xung lực & 5 Dấu hiệu Nguy cơ Vỡ Cao",
+      aast: "Chiến lược cầu nối nội khoa và tiêu chuẩn nhận diện các trường hợp BTAI Độ III bắt buộc phải can thiệp sớm (< 24 giờ).",
+      actions: [
+        "<strong>Khuyến cáo 7 (2C):</strong> Dùng liệu pháp kháng xung lực (Anti-impulse therapy) làm biện pháp ổn định cầu nối ở bệnh nhân Độ III chờ TEVAR (74,6% dùng chẹn Beta truyền tĩnh mạch như Esmolol/Labetalol, mục tiêu <strong>SBP < 120 mmHg</strong>).",
+        "<strong>5 Dấu hiệu Nguy cơ cao bắt buộc TEVAR khẩn < 24 giờ (Rabin & Harris et al.):</strong> (1) Tràn máu màng phổi trái, (2) Tụ máu trung thất lớn gây hiệu ứng choán chỗ, (3) Hẹp eo ĐMC giả do chèn ép lòng mạch (Pseudocoarctation), (4) Tỷ lệ đường kính vùng tổn thương / ĐMC lành <strong>> 1,4</strong>, (5) Lactate lúc nhập viện <strong>> 4 mmol/L</strong>.",
+        "<strong>Khi Độ III kèm TBI (Khuyến cáo 6b, 6c - 2C):</strong> Hội chẩn Ngoại thần kinh – Mạch máu. Thực hiện TEVAR sớm giúp bảo vệ thành ĐMC, từ đó cho phép ngưng thuốc hạ áp và nâng huyết áp an toàn để hồi sức sọ não."
+      ],
+      pearl: "Nhớ kỹ 5 tiêu chuẩn nguy cơ cao của Độ III (Hemothorax, Mediastinal hematoma, Pseudocoarctation, Ratio > 1.4, Lactate > 4 mM) — đây là chìa khóa phân biệt giữa mổ < 24h và mổ > 24h."
+    },
+    111: {
+      badge: "PICO 3, 4, 5c & 6e • Kỹ thuật TEVAR",
+      title: "Che phủ ĐM Dưới đòn Trái (Zone 2), Chống đông Heparin & Theo dõi",
+      aast: "Khoảng 26–40% ca TEVAR trong chấn thương eo ĐMC cần che phủ gốc động mạch dưới đòn trái (LSA - Ishimaru Zone 2) để đạt đủ chiều dài vùng rìa neo đầu gần (proximal landing zone ≥ 2 cm).",
+      actions: [
+        "<strong>Khuyến cáo 3 (Tái thông LSA - 2C):</strong> Chỉ định tái thông LSA (bắc cầu cảnh-dưới đòn, chuyển vị hoặc dùng Stent-graft có nhánh bên TBE) dựa trên tính khả thi và <strong>3 yếu tố bắt buộc</strong>: (1) Có cầu nối mạch vành LIMA-LAD còn thông, (2) Động mạch đốt sống trái ưu thế (hoặc ĐM đốt sống phải teo nhỏ/tắc, kết thúc ở PICA), (3) Động mạch đốt sống trái xuất phát trực tiếp từ cung ĐMC.",
+        "<strong>Khuyến cáo 4 & 6e (Heparin trong mổ - 2C / Best Practice):</strong> Sử dụng Heparin toàn thân tùy theo quyết định của phẫu thuật viên và hội chẩn đa chuyên khoa. Dữ liệu VQI (Ho et al.) và Zambetti et al. cho thấy Heparin giúp giảm thiếu máu chi dưới cấp (do sheath lớn) và giảm tử vong mà không làm nặng thêm xuất huyết nội sọ ở bệnh nhân TBI.",
+        "<strong>Khuyến cáo 5c (Theo dõi sau TEVAR - 2C):</strong> Chụp CTA theo dõi sau mổ cá thể hóa (thường ở mốc 1, 6, 12 tháng, sau đó giãn cách hoặc dùng CT liều thấp sau 2 năm để giảm tia xạ cho người trẻ)."
+      ],
+      pearl: "Dữ liệu ATF Registry (Romagnoli et al., 2023) chỉ ra rằng tái thông LSA ngay trong thì TEVAR giúp giảm tỷ lệ đột quỵ hố sau và liệt tủy sống xuống 0% so với nhóm che phủ LSA không tái thông."
+    }
+  };
+
+  function switchModule(mod) {
+    document.getElementById('tab-bci-btn').classList.toggle('active', mod === 'bci');
+    document.getElementById('tab-btai-btn').classList.toggle('active', mod === 'btai');
+
+    document.getElementById('view-bci').classList.toggle('active', mod === 'bci');
+    document.getElementById('view-btai').classList.toggle('active', mod === 'btai');
+
+    document.getElementById('bci-filters').style.display = (mod === 'bci') ? 'flex' : 'none';
+    document.getElementById('btai-filters').style.display = (mod === 'btai') ? 'flex' : 'none';
+
+    if (mod === 'bci') {
+      selectNode(1);
+    } else {
+      selectNode(101);
+    }
+  }
+
+  function selectNode(id) {
+    document.querySelectorAll('.node').forEach(n => n.classList.remove('selected'));
+    const target = document.getElementById('node-' + id);
+    if (target) target.classList.add('selected');
+
+    const data = nodeData[id];
+    if (!data) return;
+
+    document.getElementById('insp-badge').innerHTML = data.badge;
+    document.getElementById('insp-title').innerHTML = data.title;
+    document.getElementById('insp-aast').innerHTML = data.aast;
+    document.getElementById('insp-actions').innerHTML = data.actions.map(item => `<li>${item}</li>`).join('');
+    document.getElementById('insp-pearl').innerHTML = data.pearl;
+  }
+
+  function filterPath(mod, pathName, btnEl) {
+    const containerId = (mod === 'bci') ? '#bci-filters' : '#btai-filters';
+    document.querySelectorAll(containerId + ' .filter-btn').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    document.querySelectorAll(`.node[data-module="${mod}"]`).forEach(node => {
+      const paths = node.getAttribute('data-paths').split(',');
+      if (paths.includes(pathName)) {
+        node.classList.remove('dimmed');
+      } else {
+        node.classList.add('dimmed');
+      }
+    });
+
+    if (mod === 'bci') {
+      if (pathName === 'tamponade') selectNode(4);
+      else if (pathName === 'structural') selectNode(5);
+      else if (pathName === 'stable') selectNode(6);
+      else selectNode(1);
+    } else {
+      if (pathName === 'mai') selectNode(102);
+      else if (pathName === 'grade3') selectNode(106);
+      else if (pathName === 'grade4') selectNode(107);
+      else selectNode(101);
+    }
+  }
+
+  function toggleTheme() {
+    const body = document.body;
+    const current = body.getAttribute('data-theme');
+    body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  }
+</script>
+
+</body>
+</html>
