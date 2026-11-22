@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESC/EACTS 2025: Công cụ Chẩn đoán &amp; Xử trí Hở Van Động Mạch Chủ (Aortic Regurgitation)</title>
+    <style>
+        :root {
+            --primary-burgundy: #7a1c31;
+            --primary-dark: #4a0e1c;
+            --sky-blue-bg: #eef7fc;
+            --sky-blue-border: #b8dcf0;
+            --sky-blue-accent: #0284c7;
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --bg-body: #f1f5f9;
+            --card-bg: #ffffff;
+            --green-bg: #ecfdf5;
+            --green-border: #10b981;
+            --green-text: #065f46;
+            --amber-bg: #fffbeb;
+            --amber-border: #f59e0b;
+            --amber-text: #92400e;
+            --red-bg: #fef2f2;
+            --red-border: #ef4444;
+            --red-text: #991b1b;
+            --border-radius: 12px;
+            --shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.55;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-burgundy) 100%);
+            color: #ffffff;
+            padding: 22px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(122, 28, 49, 0.22);
+        }
+
+        header h1 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        .badge-source {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            margin-top: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .container {
+            max-width: 1020px;
+            margin: 22px auto;
+            padding: 0 16px;
+        }
+
+        /* Main Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #e2e8f0;
+            padding: 6px;
+            border-radius: var(--border-radius);
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 210px;
+            padding: 12px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-burgundy);
+            background: rgba(255, 255, 255, 0.55);
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-burgundy);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Step Wizard Cards */
+        .wizard-step {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 18px;
+            border-left: 5px solid var(--primary-burgundy);
+            animation: slideDown 0.25s ease-out;
+        }
+
+        .wizard-step.hidden {
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .step-badge {
+            background: var(--primary-burgundy);
+            color: white;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .step-title {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-top: 4px;
+        }
+
+        .connector {
+            text-align: center;
+            color: var(--primary-burgundy);
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin: -8px 0 10px 0;
+        }
+
+        /* Echo Parameter Input Grid */
+        .echo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            padding: 14px;
+            border-radius: 10px;
+        }
+
+        .param-box {
+            background: #ffffff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .param-box label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .param-box input, .param-box select {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid #94a3b8;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .param-hint {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Choice Cards */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .choice-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: #ffffff;
+        }
+
+        .choice-card:hover {
+            border-color: var(--sky-blue-accent);
+            background: var(--sky-blue-bg);
+        }
+
+        .choice-card.selected {
+            border-color: var(--primary-burgundy);
+            background: #fdf2f4;
+            box-shadow: 0 0 0 1px var(--primary-burgundy);
+        }
+
+        .choice-card input[type="radio"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-burgundy);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .choice-text strong {
+            display: block;
+            font-size: 0.94rem;
+            color: var(--text-main);
+        }
+
+        .choice-text span {
+            display: block;
+            font-size: 0.81rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Checklist Group */
+        .checklist-group {
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 10px;
+        }
+
+        .check-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.91rem;
+            border-bottom: 1px solid rgba(184, 220, 240, 0.5);
+        }
+
+        .check-row:last-child {
+            border-bottom: none;
+        }
+
+        .check-row:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .check-row input[type="checkbox"] {
+            margin-top: 3px;
+            width: 17px;
+            height: 17px;
+            accent-color: var(--primary-burgundy);
+            flex-shrink: 0;
+        }
+
+        /* Action / Result Banners */
+        .action-result {
+            border-radius: var(--border-radius);
+            padding: 16px 18px;
+            margin-top: 14px;
+            border-width: 2px;
+            border-style: solid;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .action-result.green {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+            color: var(--green-text);
+        }
+
+        .action-result.amber {
+            background: var(--amber-bg);
+            border-color: var(--amber-border);
+            color: var(--amber-text);
+        }
+
+        .action-result.red {
+            background: var(--red-bg);
+            border-color: var(--red-border);
+            color: var(--red-text);
+        }
+
+        .action-result.blue {
+            background: var(--sky-blue-bg);
+            border-color: var(--sky-blue-accent);
+            color: var(--primary-dark);
+        }
+
+        .action-result h4 {
+            font-size: 1.02rem;
+            margin-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-result ul {
+            margin-left: 20px;
+            font-size: 0.91rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .class-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .class-1 { background: #10b981; color: white; }
+        .class-2a { background: #f59e0b; color: white; }
+        .class-2b { background: #f97316; color: white; }
+        .class-3 { background: #ef4444; color: white; }
+
+        .btn-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-reset {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-reset:hover { background: #e2e8f0; }
+
+        /* Reference Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        th {
+            background: var(--primary-burgundy);
+            color: white;
+            text-align: left;
+            padding: 11px 14px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td { background: #f8fafc; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            border-top: 4px solid var(--sky-blue-accent);
+        }
+
+        .info-card.burgundy { border-top-color: var(--primary-burgundy); }
+
+        .info-card h3 {
+            color: var(--primary-burgundy);
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+
+        .info-card ul {
+            margin-left: 18px;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        @media (max-width: 600px) {
+            .option-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Đánh giá &amp; Xử trí Hở Van Động Mạch Chủ (Aortic Regurgitation) — ESC/EACTS 2025</h1>
+    <p>Nhập thông số siêu âm, CMR, đường kính gốc/ĐMC lên &amp; tick chọn đặc điểm lâm sàng để rẽ nhánh VSARR / Bentall / AV Repair / SAVR / TAVI</p>
+    <span class="badge-source">2025 ESC/EACTS Guidelines for the Management of Valvular Heart Disease • Section 7 &amp; Figures 4–5</span>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-imaging', this)">1. Đánh giá Hình ảnh &amp; Mức độ Nặng (Fig. 4)</button>
+        <button class="tab-btn" onclick="switchTab('tab-pathway', this)">2. Lưu đồ Xử trí &amp; Chọn Phẫu thuật / TAVI (Fig. 5)</button>
+        <button class="tab-btn" onclick="switchTab('tab-med-spec', this)">3. Hở Chủ Cấp, Nội khoa, Theo dõi &amp; BAV</button>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 1: IMAGING ASSESSMENT OF AR (FIGURE 4)                            -->
+    <!-- ===================================================================== -->
+    <div id="tab-imaging" class="tab-content active">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Nhập thông số siêu âm Doppler, CMR &amp; kích thước gốc / ĐMC lên (Figure 4):</span>
+            <button class="btn-reset" onclick="resetArImg()">↻ Xóa số liệu nhập lại</button>
+        </div>
+
+        <div class="wizard-step">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1 • Figure 4 (Imaging Assessment of AR)</span>
+                    <div class="step-title">Thông số Siêu âm Định lượng, CMR &amp; Tổn thương Thất trái / Động mạch chủ</div>
+                </div>
+            </div>
+
+            <div class="echo-grid">
+                <div class="param-box">
+                    <label for="ar-eroa">EROA (mm²)</label>
+                    <input type="number" id="ar-eroa" step="1" min="1" max="150" placeholder="VD: 35" oninput="evalArImg()">
+                    <span class="param-hint">Hở chủ nặng: <strong>EROA ≥ 30 mm²</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-rvol">Thể tích hở - RVol (mL/nhát)</label>
+                    <input type="number" id="ar-rvol" step="1" min="5" max="200" placeholder="VD: 65" oninput="evalArImg()">
+                    <span class="param-hint">Hở chủ nặng: <strong>RVol ≥ 60 mL/nhát</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-rf-echo">Phân suất hở trên Echo - RF (%)</label>
+                    <input type="number" id="ar-rf-echo" step="1" min="5" max="95" placeholder="VD: 52" oninput="evalArImg()">
+                    <span class="param-hint">Hở chủ nặng trên Echo: <strong>RF &gt; 50%</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-rf-cmr">Phân suất hở trên CMR - RF (%)</label>
+                    <input type="number" id="ar-rf-cmr" step="1" min="5" max="95" placeholder="VD: 44" oninput="evalArImg()">
+                    <span class="param-hint">Hở chủ nặng trên CMR: <strong>RF &gt; 40%</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-vc">Vena Contracta (mm)</label>
+                    <input type="number" id="ar-vc" step="0.5" min="1" max="20" placeholder="VD: 6.5" oninput="evalArImg()">
+                    <span class="param-hint">Hở chủ nặng: <strong>Vena contracta &gt; 6 mm</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-pht">Thời gian bán giảm áp - PHT (ms)</label>
+                    <input type="number" id="ar-pht" step="10" min="50" max="800" placeholder="VD: 180" oninput="evalArImg()">
+                    <span class="param-hint">Hở chủ nặng: <strong>PHT &lt; 200 ms</strong> (kém tin cậy nếu có AS/MR hoặc giảm giãn nở LV).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-edv">Vận tốc cuối tâm trương ĐMC xuống - EDV (cm/s)</label>
+                    <input type="number" id="ar-edv" step="1" min="0" max="80" placeholder="VD: 22" oninput="evalArImg()">
+                    <span class="param-hint">Đảo ngược dòng toàn tâm trương ĐMC xuống: <strong>EDV ≥ 20 cm/s</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-ao-diam">ĐK tối đa Gốc / ĐMC lên (mm)</label>
+                    <input type="number" id="ar-ao-diam" step="1" min="25" max="90" placeholder="VD: 48" oninput="evalArImg()">
+                    <span class="param-hint">Phình ĐMC đơn độc mổ: <strong>≥ 55 mm</strong> (hoặc ≥ 50 mm nếu có YTNC) | Mổ kèm van ĐMC: <strong>≥ 45 mm</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-lvef">Phân suất tống máu - LVEF (%)</label>
+                    <input type="number" id="ar-lvef" step="1" min="15" max="85" placeholder="VD: 52" oninput="evalArImg()">
+                    <span class="param-hint">Mốc Class I: <strong>≤ 50%</strong> | Mốc Class IIb (nguy cơ thấp): <strong>≤ 55%</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-lvesd">ĐK cuối tâm thu - LVESD (mm)</label>
+                    <input type="number" id="ar-lvesd" step="1" min="20" max="90" placeholder="VD: 51" oninput="evalArImg()">
+                    <span class="param-hint">Mốc Class I: <strong>&gt; 50 mm</strong> (hoặc LVEDD &gt; 65 mm nếu giãn tiến triển).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-lvesdi">Chỉ số LVESDi (mm/m² BSA)</label>
+                    <input type="number" id="ar-lvesdi" step="0.5" min="10" max="45" placeholder="VD: 23" oninput="evalArImg()">
+                    <span class="param-hint">Mốc Class I: <strong>&gt; 25 mm/m²</strong> | Mốc Class IIb: <strong>&gt; 22 mm/m²</strong> (đặc biệt khi BSA &lt; 1.68 m²).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ar-lvesvi">Chỉ số thể tích LVESVi (mL/m²)</label>
+                    <input type="number" id="ar-lvesvi" step="1" min="15" max="120" placeholder="VD: 48" oninput="evalArImg()">
+                    <span class="param-hint">Mốc Class IIb (Echo/CMR): <strong>&gt; 45 mL/m²</strong> (CMR đề xuất ngưỡng ≥ 43 mL/m²).</span>
+                </div>
+            </div>
+
+            <!-- Qualitative & Mechanism Checkboxes -->
+            <div style="margin-top: 14px;">
+                <strong style="font-size: 0.92rem; color: var(--primary-dark);">Tick chọn Đặc điểm Định tính &amp; Cơ chế Giải phẫu (Figure 4):</strong>
+                <div class="checklist-group" id="ar-qual-checks">
+                    <label class="check-row"><input type="checkbox" onchange="evalArImg()"> <strong>Dấu hiệu định tính/bán định lượng nặng:</strong> Lá van đập tự do (flail cusp), khuyết áp lớn, hoặc dòng hở trung tâm chiếm <strong>≥ 65% đường kính LVOT</strong>.</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalArImg()"> <strong>Bệnh lý lá van (Cusp pathology):</strong> Sa lá van (cusp prolapse), co rút lá van (retraction) hoặc thủng lá van (perforation).</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalArImg()"> <strong>Giãn gốc ĐMC / ĐMC lên gây mất áp lá van (Aortic dilatation with cusp malcoaptation)</strong> hoặc bệnh lý mô liên kết (Marfan, Loeys-Dietz...) / Van ĐMC hai mảnh (BAV).</label>
+                </div>
+            </div>
+
+            <div id="ar-img-outcome"></div>
+        </div>
+
+        <!-- Reference Table of Severe AR Criteria (Figure 4) -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nhóm Tiêu chuẩn (Figure 4)</th>
+                        <th>Thông số Chẩn đoán Hở Van ĐMC Nặng (Severe AR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Định tính (Qualitative)</strong></td>
+                        <td>Hình thái van bất thường rõ; lá van đập tự do (flail cusp); khuyết áp lá van lớn (large coaptation defect).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bán định lượng (Semi-quantitative)</strong></td>
+                        <td>Vena contracta <strong>&gt; 6 mm</strong>; PHT <strong>&lt; 200 ms</strong>; dòng hở trung tâm lớn <strong>≥ 65% đường kính LVOT</strong>; đảo ngược dòng chảy toàn tâm trương ở ĐMC xuống (<strong>EDV ≥ 20 cm/s</strong>).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Định lượng (Quantitative)</strong></td>
+                        <td><strong>EROA ≥ 30 mm²</strong>; <strong>RVol ≥ 60 mL/nhát</strong>; <strong>RF &gt; 50%</strong> (trên siêu âm tim) hoặc <strong>RF &gt; 40%</strong> (trên cộng hưởng từ tim CMR).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 2: MANAGEMENT ALGORITHM OF AR (FIGURE 5)                          -->
+    <!-- ===================================================================== -->
+    <div id="tab-pathway" class="tab-content">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Lưu đồ quyết định điều trị Hở Van ĐMC &amp; Giãn Gốc ĐMC (Figure 5):</span>
+            <button class="btn-reset" onclick="resetArPath()">↻ Làm lại từ đầu (Ca bệnh mới)</button>
+        </div>
+
+        <!-- STEP P1: SIGNIFICANT AORTIC ROOT ENLARGEMENT -->
+        <div class="wizard-step" id="ar-step-1">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1 • Figure 5 (Điểm khởi đầu bắt buộc)</span>
+                    <div class="step-title">Bệnh nhân có Giãn Gốc ĐMC / ĐMC Lên Đáng kể (Significant Aortic Root Enlargement) không?</div>
+                </div>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted);">
+                <em>Ngưỡng chỉ định phẫu thuật ĐMC: Đường kính tối đa <strong>≥ 55 mm</strong> (hoặc <strong>≥ 50 mm</strong> nếu có yếu tố nguy cơ / bệnh lý mô liên kết như Marfan, van 2 mảnh BAV có yếu tố nguy cơ; <strong>≥ 45 mm</strong> nếu đã có chỉ định mổ van ĐMC đi kèm).</em>
+            </p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectArRoot('yes', this)">
+                    <input type="radio" name="ar_root" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ — Giãn gốc ĐMC / ĐMC lên đạt ngưỡng phẫu thuật</strong>
+                        <span>Chỉ định phẫu thuật ĐMC được đặt ra bất kể mức độ hở van ĐMC!</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectArRoot('no', this)">
+                    <input type="radio" name="ar_root" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG — Kích thước gốc &amp; ĐMC lên chưa đạt ngưỡng mổ</strong>
+                        <span>Quyết định can thiệp phụ thuộc vào mức độ nặng của hở van ĐMC, triệu chứng và chức năng thất trái.</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- ==================== ROOT ENLARGEMENT ARM (RIGHT SIDE OF FIG 5) ==================== -->
+        <div class="wizard-step hidden" id="ar-root-arm">
+            <div class="connector">▼ Nhánh Có Giãn Gốc ĐMC Đáng kể → Đánh giá Mức độ Hở Van &amp; Chất lượng Mô lá van</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2A</span>
+                    <div class="step-title">Bệnh nhân có Hở Van ĐMC Đáng kể (Significant AR) đi kèm không?</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectRootSigAr('no', this)">
+                    <input type="radio" name="root_sig_ar" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG có Hở van ĐMC đáng kể</strong>
+                        <span>Lá van ĐMC bình thường/hở nhẹ, nguyên nhân mổ chủ yếu do phình gốc ĐMC.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectRootSigAr('yes', this)">
+                    <input type="radio" name="root_sig_ar" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ Hở van ĐMC đáng kể đi kèm</strong>
+                        <span>Cần xử lý đồng thời cả gốc ĐMC giãn và tình trạng hở van ĐMC.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="root-sig-outcome"></div>
+        </div>
+
+        <!-- ==================== NO ROOT ENLARGEMENT ARM (LEFT SIDE OF FIG 5) ==================== -->
+        <div class="wizard-step hidden" id="ar-noroot-sev">
+            <div class="connector">▼ Nhánh Không Giãn Gốc ĐMC Đáng kể → Đánh giá Mức độ Nặng của Hở Van ĐMC</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2B</span>
+                    <div class="step-title">Bệnh nhân có Hở Van ĐMC Nặng (Severe AR) không?</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectNoRootSev('no', this)">
+                    <input type="radio" name="noroot_sev" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG — Hở chủ Nhẹ hoặc Vừa (Non-severe AR)</strong>
+                        <span>Chưa đạt tiêu chuẩn hở van ĐMC nặng trên siêu âm / CMR.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectNoRootSev('yes', this)">
+                    <input type="radio" name="noroot_sev" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ — Hở van ĐMC Nặng (Severe AR)</strong>
+                        <span>Đạt tiêu chuẩn hở chủ nặng (EROA ≥ 30 mm², RVol ≥ 60 mL, RF &gt; 50% Echo / &gt; 40% CMR...).</span>
+                    </div>
+                </label>
+            </div>
+            <div id="noroot-sev-outcome"></div>
+        </div>
+
+        <!-- STEP P3: SYMPTOMS IN SEVERE AR -->
+        <div class="wizard-step hidden" id="ar-noroot-symp">
+            <div class="connector">▼ Hở Van ĐMC Nặng → Đánh giá Triệu chứng Cơ năng</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 3B</span>
+                    <div class="step-title">Bệnh nhân Hở Van ĐMC Nặng có Triệu chứng không?</div>
+                </div>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted);"><em>Nếu bệnh nhân khai không triệu chứng và chưa đạt mốc giãn/giảm chức năng thất trái, nên thực hiện <strong>nghiệm pháp gắng sức (Exercise testing)</strong> để bộc lộ triệu chứng tiềm ẩn.</em></p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectArSymp('yes', this)">
+                    <input type="radio" name="ar_symp" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ TRIỆU CHỨNG</strong>
+                        <span>Khó thở khi gắng sức, khó thở khi nằm, đau ngực hoặc suy tim.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectArSymp('no', this)">
+                    <input type="radio" name="ar_symp" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG CÓ TRIỆU CHỨNG</strong>
+                        <span>Hoàn toàn không có triệu chứng cơ năng.</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- STEP P4-ASYMP: LV DYSFUNCTION / DILATATION THRESHOLDS -->
+        <div class="wizard-step hidden" id="ar-asymp-lv">
+            <div class="connector">▼ Không Triệu Chứng → Đánh giá Kích thước &amp; Chức năng Thất trái (Class I vs. Class IIb)</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 4B • Ngưỡng Phẫu thuật Thất trái</span>
+                    <div class="step-title">Chọn Mức độ Giãn / Suy giảm Chức năng Thất trái Hiện tại</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectArLvTier('class1', this)">
+                    <input type="radio" name="ar_lv_tier" value="class1">
+                    <div class="choice-text">
+                        <strong style="color: var(--red-text);">Mức 1 (Class I): LVEF ≤ 50% hoặc LVESD &gt; 50 mm hoặc LVESDi &gt; 25 mm/m²</strong>
+                        <span>Đặc biệt lưu ý ngưỡng chỉ số LVESDi &gt; 25 mm/m² ở người có diện tích da nhỏ (BSA &lt; 1.68 m²) và người cao tuổi.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectArLvTier('class2b', this)">
+                    <input type="radio" name="ar_lv_tier" value="class2b">
+                    <div class="choice-text">
+                        <strong style="color: var(--amber-text);">Mức 2 (Class IIb — Cập nhật 2025): LVEF ≤ 55% hoặc LVESDi &gt; 22 mm/m² hoặc LVESVi &gt; 45 mL/m²</strong>
+                        <span>Có thể cân nhắc phẫu thuật sớm nếu <strong>nguy cơ phẫu thuật thấp</strong> (CMR đề xuất ngưỡng LVESVi ≥ 43 mL/m²; hoặc LVEDD &gt; 65 mm giãn tiến triển).</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectArLvTier('none', this)">
+                    <input type="radio" name="ar_lv_tier" value="none">
+                    <div class="choice-text">
+                        <strong style="color: var(--green-text);">Chưa đạt các ngưỡng trên (LVEF &gt; 55%, LVESDi ≤ 22 mm/m², LVESVi ≤ 45 mL/m²)</strong>
+                        <span>Chức năng và kích thước thất trái còn trong giới hạn an toàn.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="ar-lvtier-outcome"></div>
+        </div>
+
+        <!-- STEP P5: SURGICAL ELIGIBILITY & REPAIRABILITY (BOTTOM OF FIG 5) -->
+        <div class="wizard-step hidden" id="ar-surg-modality">
+            <div class="connector">▼ Lựa chọn Kỹ thuật Can thiệp (AV Repair vs. SAVR vs. TAVI)</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước Cuối • Quyết định Kỹ thuật Mổ / Can thiệp</span>
+                    <div class="step-title">Đánh giá Khả năng Phẫu thuật &amp; Bảo tồn / Sửa Van ĐMC</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectArModality('repair', this)">
+                    <input type="radio" name="ar_mod" value="repair">
+                    <div class="choice-text">
+                        <strong>1. Mổ được + Mô lá van tốt + Bệnh nhân trẻ + Trung tâm kinh nghiệm</strong>
+                        <span>Lá van mềm mại, vận động tốt, không vôi hóa nặng (hình thái BAV đối xứng nếu có).</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectArModality('savr', this)">
+                    <input type="radio" name="ar_mod" value="savr">
+                    <div class="choice-text">
+                        <strong>2. Mổ được + Lá van xơ dày/vôi hóa/co rút (Không phù hợp sửa van)</strong>
+                        <span>Cần thay van động mạch chủ nhân tạo (SAVR) hoặc phẫu thuật Ross ở người trẻ.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectArModality('tavi', this)">
+                    <input type="radio" name="ar_mod" value="tavi">
+                    <div class="choice-text">
+                        <strong>3. Không thể phẫu thuật (Ineligible for surgery) theo Heart Team</strong>
+                        <span>Bệnh nhân có triệu chứng, nguy cơ phẫu thuật quá cao nhưng giải phẫu phù hợp TAVI.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="ar-modality-outcome"></div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: ACUTE AR, MEDICAL THERAPY, FOLLOW-UP & SPECIAL POPULATIONS     -->
+    <!-- ===================================================================== -->
+    <div id="tab-med-spec" class="tab-content">
+        <div class="grid-2">
+            <div class="info-card burgundy">
+                <h3>1. Hở Van ĐMC Cấp Nặng &amp; Điều trị Nội khoa (Section 6.5 &amp; 7.3)</h3>
+                <ul>
+                    <li><strong>Hở van ĐMC cấp nặng (Acute severe AR):</strong> Thường do <strong>viêm nội tâm mạc nhiễm khuẩn</strong> hoặc <strong>bóc tách động mạch chủ</strong> lan vào gốc ĐMC (hoặc chấn thương / biến chứng thủ thuật). Đây là cấp cứu ngoại khoa tim mạch, <strong>cần phẫu thuật khẩn cấp</strong>. Trong lúc chờ mổ, có thể đặt máy tạo nhịp tạm thời tần số nhanh (fast pacing) để rút ngắn thời gian tâm trương và giảm lượng máu trào ngược.</li>
+                    <li><strong>Điều trị nội khoa trong Hở chủ mạn tính:</strong>
+                        <br>• Thuốc <strong>ức chế men chuyển (ACE-I)</strong> hoặc <strong>chẹn kênh canxi nhóm dihydropyridine</strong> giúp cải thiện triệu chứng ở bệnh nhân hở chủ mạn tính nặng không thể phẫu thuật.
+                        <br>• <strong>Không khuyến cáo</strong> dùng thuốc giãn mạch để trì hoãn phẫu thuật ở bệnh nhân hở chủ vừa/nặng không triệu chứng.
+                        <br>• <strong>Thận trọng với Chẹn beta (Beta-blockers):</strong> Làm chậm nhịp tim nên kéo dài thời gian tâm trương và <em>làm tăng thể tích trào ngược (RVol)</em>; chỉ dùng khi có chỉ định bắt buộc khác (như bệnh lý ĐMC kèm theo hoặc suy tim sau mổ).
+                    </li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>2. Phẫu thuật Phối hợp, BAV &amp; Lịch Theo dõi (Section 7.4–7.6)</h3>
+                <ul>
+                    <li><strong>Phẫu thuật tim phối hợp:</strong> Khuyến cáo can thiệp van ĐMC <span class="class-badge class-1">Class I</span> ở bệnh nhân hở chủ nặng (có hoặc không triệu chứng) đang phẫu thuật <strong>CABG, ĐMC lên hoặc van tim khác</strong>. Với hở chủ mức độ vừa, Heart Team cân nhắc cá thể hóa vì tiến triển của hở chủ vừa thường khá chậm.</li>
+                    <li><strong>Giãn ĐMC lên đi kèm chỉ định mổ van ĐMC:</strong> Nên cân nhắc thay gốc ĐMC hoặc ĐMC lên đồng thời khi đường kính tối đa <strong>≥ 45 mm</strong> <span class="class-badge class-2a">Class IIa</span> nếu nguy cơ phẫu thuật thấp (đặc biệt ở bệnh nhân BAV).</li>
+                    <li><strong>Tầm soát gia đình:</strong> Khuyến cáo siêu âm tim tầm soát cho người thân trực hệ (first-degree relatives) của bệnh nhân có <strong>van ĐMC hai mảnh (BAV)</strong> (~10% có giãn ĐMC đi kèm) hoặc bệnh lý mô liên kết.</li>
+                    <li><strong>Lịch theo dõi định kỳ (Follow-up):</strong>
+                        <br>• <em>Hở chủ nặng không triệu chứng:</em> Khám và siêu âm tim <strong>mỗi năm 1 lần</strong>; rút ngắn còn <strong>3–6 tháng</strong> nếu thông số thất trái tiến gần ngưỡng mổ (nên chụp CMR đánh giá thể tích thất trái).
+                        <br>• <em>Hở chủ mức độ vừa:</em> Khám lâm sàng hằng năm, siêu âm tim <strong>mỗi 2 năm</strong>.
+                        <br>• <em>ĐMC lên giãn &gt; 45 mm:</em> Siêu âm kiểm tra lại sau <strong>6 tháng</strong>, sau đó hằng năm (chụp CCT/CMR đối chiếu nếu tăng &gt; 3 mm).
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function clearSelection(containerId) {
+        document.querySelectorAll(`#${containerId} .choice-card`).forEach(c => c.classList.remove('selected'));
+    }
+
+    /* ================= TAB 1: IMAGING ASSESSMENT (FIGURE 4) ================= */
+    function resetArImg() {
+        ['ar-eroa', 'ar-rvol', 'ar-rf-echo', 'ar-rf-cmr', 'ar-vc', 'ar-pht', 'ar-edv', 'ar-ao-diam', 'ar-lvef', 'ar-lvesd', 'ar-lvesdi', 'ar-lvesvi'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.querySelectorAll('#ar-qual-checks input[type="checkbox"]').forEach(c => c.checked = false);
+        document.getElementById('ar-img-outcome').innerHTML = '';
+    }
+
+    function evalArImg() {
+        const eroa = parseFloat(document.getElementById('ar-eroa').value);
+        const rvol = parseFloat(document.getElementById('ar-rvol').value);
+        const rfEcho = parseFloat(document.getElementById('ar-rf-echo').value);
+        const rfCmr = parseFloat(document.getElementById('ar-rf-cmr').value);
+        const vc = parseFloat(document.getElementById('ar-vc').value);
+        const pht = parseFloat(document.getElementById('ar-pht').value);
+        const edv = parseFloat(document.getElementById('ar-edv').value);
+        const aoDiam = parseFloat(document.getElementById('ar-ao-diam').value);
+        const lvef = parseFloat(document.getElementById('ar-lvef').value);
+        const lvesd = parseFloat(document.getElementById('ar-lvesd').value);
+        const lvesdi = parseFloat(document.getElementById('ar-lvesdi').value);
+        const lvesvi = parseFloat(document.getElementById('ar-lvesvi').value);
+
+        const qualChecks = document.querySelectorAll('#ar-qual-checks input[type="checkbox"]');
+        const hasQualSev = qualChecks[0].checked;
+        const hasCuspPath = qualChecks[1].checked;
+        const hasAoDil = qualChecks[2].checked;
+
+        const out = document.getElementById('ar-img-outcome');
+        if ([eroa, rvol, rfEcho, rfCmr, vc, pht, edv, aoDiam, lvef, lvesd, lvesdi, lvesvi].every(isNaN) && !hasQualSev && !hasCuspPath && !hasAoDil) {
+            out.innerHTML = '';
+            return;
+        }
+
+        let sevReasons = [];
+        if (!isNaN(eroa) && eroa >= 30) sevReasons.push(`EROA = ${eroa} mm² (≥ 30 mm²)`);
+        if (!isNaN(rvol) && rvol >= 60) sevReasons.push(`RVol = ${rvol} mL (≥ 60 mL)`);
+        if (!isNaN(rfEcho) && rfEcho > 50) sevReasons.push(`RF Echo = ${rfEcho}% (> 50%)`);
+        if (!isNaN(rfCmr) && rfCmr > 40) sevReasons.push(`RF CMR = ${rfCmr}% (> 40%)`);
+        if (!isNaN(vc) && vc > 6) sevReasons.push(`Vena contracta = ${vc} mm (> 6 mm)`);
+        if (!isNaN(pht) && pht < 200) sevReasons.push(`PHT = ${pht} ms (< 200 ms)`);
+        if (!isNaN(edv) && edv >= 20) sevReasons.push(`EDV ĐMC xuống = ${edv} cm/s (≥ 20 cm/s)`);
+        if (hasQualSev) sevReasons.push(`Lá van đập tự do / khuyết áp lớn / dòng hở ≥ 65% LVOT`);
+
+        let bannerHtml = '';
+        if (sevReasons.length > 0) {
+            bannerHtml = `
+                <div class="action-result red">
+                    <h4>🩺 KẾT LUẬN HÌNH ẢNH: HỞ VAN ĐỘNG MẠCH CHỦ NẶNG (SEVERE AR)</h4>
+                    <ul>
+                        <li><strong>Tiêu chuẩn đạt được:</strong> ${sevReasons.join('; ')}.</li>
+                        <li>Chuyển sang <strong>Thẻ 2 (Lưu đồ Xử trí - Figure 5)</strong> để đối chiếu kích thước gốc ĐMC, triệu chứng và ngưỡng thất trái.</li>
+                    </ul>
+                </div>`;
+        } else {
+            bannerHtml = `
+                <div class="action-result green">
+                    <h4>✓ CHƯA ĐẠT TIÊU CHUẨN HỞ VAN ĐMC NẶNG (NON-SEVERE AR)</h4>
+                    <ul>
+                        <li>Nếu các thông số siêu âm 2D còn lưỡng lự (borderline), nên chỉ định <strong>Siêu âm 3D hoặc Cộng hưởng từ tim (CMR)</strong> để đo chính xác phân suất hở (RF &gt; 40%) và thể tích thất trái (LVESVi).</li>
+                    </ul>
+                </div>`;
+        }
+
+        let alerts = [];
+        if (!isNaN(aoDiam)) {
+            if (aoDiam >= 55) {
+                alerts.push(`<strong>Phình ĐMC lớn (ĐK = ${aoDiam} mm ≥ 55 mm):</strong> Đạt chỉ định phẫu thuật thay gốc ĐMC / ĐMC lên <span class="class-badge class-1">Class I</span> bất kể mức độ hở van ĐMC!`);
+            } else if (aoDiam >= 50) {
+                alerts.push(`<strong>Giãn ĐMC (ĐK = ${aoDiam} mm ≥ 50 mm):</strong> Đạt ngưỡng cân nhắc phẫu thuật nếu có bệnh lý mô liên kết (Marfan) hoặc BAV kèm yếu tố nguy cơ.`);
+            } else if (aoDiam >= 45) {
+                alerts.push(`<strong>Giãn ĐMC (ĐK = ${aoDiam} mm ≥ 45 mm):</strong> Nếu bệnh nhân có chỉ định phẫu thuật van ĐMC đi kèm, nên cân nhắc thay đồng thời gốc/ĐMC lên <span class="class-badge class-2a">Class IIa</span>.`);
+            }
+        }
+
+        const isClass1Lv = (!isNaN(lvef) && lvef <= 50) || (!isNaN(lvesd) && lvesd > 50) || (!isNaN(lvesdi) && lvesdi > 25);
+        const isClass2bLv = (!isNaN(lvef) && lvef <= 55) || (!isNaN(lvesdi) && lvesdi > 22) || (!isNaN(lvesvi) && lvesvi > 45);
+
+        if (isClass1Lv) {
+            alerts.push(`<strong>Tổn thương thất trái đạt ngưỡng Class I:</strong> ${!isNaN(lvef) && lvef <= 50 ? `LVEF = ${lvef}% (≤ 50%); ` : ''}${!isNaN(lvesd) && lvesd > 50 ? `LVESD = ${lvesd} mm (> 50 mm); ` : ''}${!isNaN(lvesdi) && lvesdi > 25 ? `LVESDi = ${lvesdi} mm/m² (> 25 mm/m²)` : ''} → <strong>Chỉ định phẫu thuật bắt buộc <span class="class-badge class-1">Class I</span></strong> ngay cả khi không triệu chứng!`);
+        } else if (isClass2bLv) {
+            alerts.push(`<strong>Tổn thương thất trái sớm đạt ngưỡng Class IIb (Cập nhật 2025):</strong> ${!isNaN(lvef) && lvef <= 55 ? `LVEF = ${lvef}% (≤ 55%); ` : ''}${!isNaN(lvesdi) && lvesdi > 22 ? `LVESDi = ${lvesdi} mm/m² (> 22 mm/m²); ` : ''}${!isNaN(lvesvi) && lvesvi > 45 ? `LVESVi = ${lvesvi} mL/m² (> 45 mL/m²)` : ''} → Có thể cân nhắc phẫu thuật sớm <span class="class-badge class-2b">Class IIb</span> nếu nguy cơ mổ thấp.`);
+        }
+
+        if (hasAoDil) {
+            alerts.push(`<strong>Cơ chế giãn gốc ĐMC:</strong> Cần đo đủ 4 tầng trên CCT/CMR (vòng van, xoang Valsalva, chỗ nối xoang-ống STJ, ĐMC lên) để lập kế hoạch phẫu thuật bảo tồn van (VSARR - David/Yacoub) hay Bentall.`);
+        }
+
+        let alertsHtml = '';
+        if (alerts.length > 0) {
+            alertsHtml = `
+                <div class="action-result blue">
+                    <h4>📋 Phân tích Ngưỡng Thất trái &amp; Động mạch chủ</h4>
+                    <ul>${alerts.map(a => `<li>${a}</li>`).join('')}</ul>
+                </div>`;
+        }
+
+        out.innerHTML = bannerHtml + alertsHtml;
+    }
+
+    /* ================= TAB 2: MANAGEMENT PATHWAY (FIGURE 5) ================= */
+    function resetArPath() {
+        document.querySelectorAll('#tab-pathway input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('#tab-pathway .choice-card').forEach(c => c.classList.remove('selected'));
+
+        ['ar-root-arm', 'ar-noroot-sev', 'ar-noroot-symp', 'ar-asymp-lv', 'ar-surg-modality'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        ['root-sig-outcome', 'noroot-sev-outcome', 'ar-lvtier-outcome', 'ar-modality-outcome'].forEach(id => {
+            document.getElementById(id).innerHTML = '';
+        });
+    }
+
+    function selectArRoot(hasRoot, card) {
+        clearSelection('ar-step-1');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        ['ar-root-arm', 'ar-noroot-sev', 'ar-noroot-symp', 'ar-asymp-lv', 'ar-surg-modality'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+
+        if (hasRoot === 'yes') {
+            document.getElementById('ar-root-arm').classList.remove('hidden');
+        } else {
+            document.getElementById('ar-noroot-sev').classList.remove('hidden');
+        }
+    }
+
+    /* --- ROOT ENLARGEMENT ARM --- */
+    function selectRootSigAr(hasSigAr, card) {
+        clearSelection('ar-root-arm');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('root-sig-outcome');
+        if (hasSigAr === 'no') {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🛡️ PHẪU THUẬT BẢO TỒN VAN &amp; THAY GỐC ĐMC (VSARR - David / Yacoub) <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Do không có hở van ĐMC đáng kể (lá van còn tốt), phẫu thuật <strong>thay gốc ĐMC bảo tồn van (Valve-Sparing Aortic Root Replacement - VSARR)</strong> được khuyến cáo ở bệnh nhân trẻ tại trung tâm có kinh nghiệm, tránh phải dùng chống đông suốt đời.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>⚖️ CHỌN KỸ THUẬT MỔ GỐC ĐMC + VAN ĐMC DỰA TRÊN CHẤT LƯỢNG LÁ VAN</h4>
+                    <ul>
+                        <li><strong>Nếu mô lá van tốt + Bệnh nhân trẻ + Trung tâm có kinh nghiệm:</strong> Thực hiện <strong>VSARR kết hợp Sửa van ĐMC (VSARR and AV repair)</strong> <span class="class-badge class-1">Class I</span> / <span class="class-badge class-2a">Class IIa</span> (cho thấy tỷ lệ tử vong và biến chứng thuyên tắc/viêm nội tâm mạc dài hạn thấp hơn Bentall).</li>
+                        <li><strong>Nếu lá van vôi hóa / co rút / không thể sửa bền vững:</strong> Thực hiện <strong>Phẫu thuật Bentall</strong> (thay gốc ĐMC và van ĐMC bằng ống mạch mang van cơ học hoặc sinh học).</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    /* --- NO ROOT ENLARGEMENT ARM --- */
+    function selectNoRootSev(isSev, card) {
+        clearSelection('ar-noroot-sev');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('noroot-sev-outcome');
+        const sympStep = document.getElementById('ar-noroot-symp');
+
+        if (isSev === 'no') {
+            sympStep.classList.add('hidden');
+            document.getElementById('ar-asymp-lv').classList.add('hidden');
+            document.getElementById('ar-surg-modality').classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>📅 QUYẾT ĐỊNH: THEO DÕI ĐỊNH KỲ (FOLLOW-UP)</h4>
+                    <ul>
+                        <li>Khám lâm sàng hằng năm và siêu âm tim (TTE) mỗi <strong>2 năm</strong> đối với hở van ĐMC mức độ vừa.</li>
+                        <li>Không dùng thuốc giãn mạch để trì hoãn phẫu thuật ở bệnh nhân không triệu chứng.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = '';
+            sympStep.classList.remove('hidden');
+        }
+    }
+
+    function selectArSymp(hasSymp, card) {
+        clearSelection('ar-noroot-symp');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const lvStep = document.getElementById('ar-asymp-lv');
+        const modStep = document.getElementById('ar-surg-modality');
+
+        if (hasSymp === 'yes') {
+            lvStep.classList.add('hidden');
+            modStep.classList.remove('hidden');
+            document.getElementById('ar-modality-outcome').innerHTML = `
+                <div class="action-result red" style="margin-bottom: 12px;">
+                    <h4>🚨 CHỈ ĐỊNH CAN THIỆP BẮT BUỘC: HỞ VAN ĐMC NẶNG CÓ TRIỆU CHỨNG <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Khuyến cáo phẫu thuật van ĐMC cho mọi bệnh nhân hở chủ nặng có triệu chứng bất kể chức năng thất trái (LVEF), trừ khi chống chỉ định phẫu thuật. Chọn kỹ thuật can thiệp bên dưới:</li>
+                    </ul>
+                </div>`;
+        } else {
+            modStep.classList.add('hidden');
+            lvStep.classList.remove('hidden');
+        }
+    }
+
+    function selectArLvTier(tier, card) {
+        clearSelection('ar-asymp-lv');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('ar-lvtier-outcome');
+        const modStep = document.getElementById('ar-surg-modality');
+
+        if (tier === 'class1') {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🚨 CHỈ ĐỊNH PHẪU THUẬT BẮT BUỘC <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Bệnh nhân không triệu chứng nhưng đã có LVEF ≤ 50%, LVESD &gt; 50 mm hoặc LVESDi &gt; 25 mm/m² → Chỉ định phẫu thuật van ĐMC ngay. Chọn kỹ thuật mổ ở bước dưới:</li>
+                    </ul>
+                </div>`;
+            modStep.classList.remove('hidden');
+            document.getElementById('ar-modality-outcome').innerHTML = '';
+        } else if (tier === 'class2b') {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>⚖️ CÓ THỂ CÂN NHẮC PHẪU THUẬT SỚM (NẾU NGUY CƠ MỔ THẤP) <span class="class-badge class-2b">Class IIb</span></h4>
+                    <ul>
+                        <li>Áp dụng cho bệnh nhân nguy cơ phẫu thuật thấp có LVEF ≤ 55%, LVESDi &gt; 22 mm/m², hoặc LVESVi &gt; 45 mL/m² (CMR ≥ 43 mL/m²). Chọn kỹ thuật mổ ở bước dưới:</li>
+                    </ul>
+                </div>`;
+            modStep.classList.remove('hidden');
+            document.getElementById('ar-modality-outcome').innerHTML = '';
+        } else {
+            modStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>👁️ THEO DÕI ĐỊNH KỲ SÁT SAO (FOLLOW-UP)</h4>
+                    <ul>
+                        <li>Khám lâm sàng và siêu âm tim (TTE) <strong>mỗi năm 1 lần</strong> (hoặc mỗi <strong>3–6 tháng</strong> nếu thông số thất trái có xu hướng giãn dần).</li>
+                        <li>Nên thực hiện <strong>nghiệm pháp gắng sức (Exercise testing)</strong> để đảm bảo bệnh nhân thực sự không có triệu chứng.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    function selectArModality(mod, card) {
+        clearSelection('ar-surg-modality');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('ar-modality-outcome');
+        if (mod === 'repair') {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🛠️ NÊN CÂN NHẮC: PHẪU THUẬT SỬA VAN ĐỘNG MẠCH CHỦ (AV REPAIR) <span class="class-badge class-2a">Class IIa</span></h4>
+                    <ul>
+                        <li>Nâng hạng từ Class IIb lên <strong>Class IIa</strong> trong khuyến cáo 2025: Nên cân nhắc sửa van ĐMC tại trung tâm có kinh nghiệm khi tiên lượng sửa bền vững (lá van mềm mại, BAV đối xứng).</li>
+                        <li>Nếu ĐMC lên / gốc ĐMC giãn <strong>≥ 45 mm</strong> → Kết hợp thay ĐMC lên / VSARR <span class="class-badge class-2a">Class IIa</span>.</li>
+                    </ul>
+                </div>`;
+        } else if (mod === 'savr') {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🔪 PHẪU THUẬT THAY VAN ĐỘNG MẠCH CHỦ (SAVR) <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Phương pháp phẫu thuật tiêu chuẩn khi lá van không phù hợp sửa chữa.</li>
+                        <li><strong>Lựa chọn loại van:</strong> Van cơ học ưu tiên ở người &lt; 60 tuổi; van sinh học ưu tiên ở người &gt; 65 tuổi; hoặc <strong>Phẫu thuật Ross</strong> (ghép tự thân van ĐM phổi) ở bệnh nhân trẻ chọn lọc tại trung tâm chuyên sâu.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>🩺 KHUYẾN CÁO MỚI 2025: CÓ THỂ CÂN NHẮC TAVI CHO HỞ CHỦ NẶNG <span class="class-badge class-2b">Class IIb</span></h4>
+                    <ul>
+                        <li>Áp dụng cho bệnh nhân hở van ĐMC nặng <strong>có triệu chứng</strong> nhưng <strong>không thể phẫu thuật</strong> theo đánh giá của Heart Team và có giải phẫu phù hợp trên CT.</li>
+                        <li><strong>Lưu ý kỹ thuật:</strong> Dùng van TAVI thông thường (off-label) dễ bị di lệch van và rò cạnh van (~10% cần đặt van thứ hai); nên ưu tiên <strong>van TAVI chuyên biệt cho hở chủ (dedicated AR devices)</strong> tại trung tâm kinh nghiệm (lưu ý tỷ lệ cần đặt máy tạo nhịp vĩnh viễn ~24%).</li>
+                    </ul>
+                </div>`;
+        }
+    }
+</script>
+
+</body>
+</html>

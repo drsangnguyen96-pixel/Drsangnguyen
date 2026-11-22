@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESC/EACTS 2025: Công cụ Chẩn đoán &amp; Xử trí Hở Van Ba Lá (Tricuspid Regurgitation)</title>
+    <style>
+        :root {
+            --primary-burgundy: #7a1c31;
+            --primary-dark: #4a0e1c;
+            --sky-blue-bg: #eef7fc;
+            --sky-blue-border: #b8dcf0;
+            --sky-blue-accent: #0284c7;
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --bg-body: #f1f5f9;
+            --card-bg: #ffffff;
+            --green-bg: #ecfdf5;
+            --green-border: #10b981;
+            --green-text: #065f46;
+            --amber-bg: #fffbeb;
+            --amber-border: #f59e0b;
+            --amber-text: #92400e;
+            --red-bg: #fef2f2;
+            --red-border: #ef4444;
+            --red-text: #991b1b;
+            --border-radius: 12px;
+            --shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.55;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-burgundy) 100%);
+            color: #ffffff;
+            padding: 22px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(122, 28, 49, 0.22);
+        }
+
+        header h1 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        .badge-source {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            margin-top: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .container {
+            max-width: 1020px;
+            margin: 22px auto;
+            padding: 0 16px;
+        }
+
+        /* Main Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #e2e8f0;
+            padding: 6px;
+            border-radius: var(--border-radius);
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 210px;
+            padding: 12px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-burgundy);
+            background: rgba(255, 255, 255, 0.55);
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-burgundy);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Step Wizard Cards */
+        .wizard-step {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 18px;
+            border-left: 5px solid var(--primary-burgundy);
+            animation: slideDown 0.25s ease-out;
+        }
+
+        .wizard-step.hidden {
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .step-badge {
+            background: var(--primary-burgundy);
+            color: white;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .step-title {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-top: 4px;
+        }
+
+        .connector {
+            text-align: center;
+            color: var(--primary-burgundy);
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin: -8px 0 10px 0;
+        }
+
+        /* Echo Parameter Input Grid */
+        .echo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            padding: 14px;
+            border-radius: 10px;
+        }
+
+        .param-box {
+            background: #ffffff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .param-box label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .param-box input, .param-box select {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid #94a3b8;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .param-hint {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Choice Cards */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .choice-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: #ffffff;
+        }
+
+        .choice-card:hover {
+            border-color: var(--sky-blue-accent);
+            background: var(--sky-blue-bg);
+        }
+
+        .choice-card.selected {
+            border-color: var(--primary-burgundy);
+            background: #fdf2f4;
+            box-shadow: 0 0 0 1px var(--primary-burgundy);
+        }
+
+        .choice-card input[type="radio"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-burgundy);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .choice-text strong {
+            display: block;
+            font-size: 0.94rem;
+            color: var(--text-main);
+        }
+
+        .choice-text span {
+            display: block;
+            font-size: 0.81rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Checklist Group */
+        .checklist-group {
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 10px;
+        }
+
+        .check-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 8px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.91rem;
+            border-bottom: 1px solid rgba(184, 220, 240, 0.5);
+        }
+
+        .check-row:last-child {
+            border-bottom: none;
+        }
+
+        .check-row:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .check-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .check-row input[type="checkbox"] {
+            margin-top: 3px;
+            width: 17px;
+            height: 17px;
+            accent-color: var(--primary-burgundy);
+            flex-shrink: 0;
+        }
+
+        .pts-badge {
+            background: #ffffff;
+            color: var(--primary-burgundy);
+            border: 1px solid var(--sky-blue-border);
+            font-weight: 700;
+            font-size: 0.78rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        /* Action / Result Banners */
+        .action-result {
+            border-radius: var(--border-radius);
+            padding: 16px 18px;
+            margin-top: 14px;
+            border-width: 2px;
+            border-style: solid;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .action-result.green {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+            color: var(--green-text);
+        }
+
+        .action-result.amber {
+            background: var(--amber-bg);
+            border-color: var(--amber-border);
+            color: var(--amber-text);
+        }
+
+        .action-result.red {
+            background: var(--red-bg);
+            border-color: var(--red-border);
+            color: var(--red-text);
+        }
+
+        .action-result.blue {
+            background: var(--sky-blue-bg);
+            border-color: var(--sky-blue-accent);
+            color: var(--primary-dark);
+        }
+
+        .action-result h4 {
+            font-size: 1.02rem;
+            margin-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-result ul {
+            margin-left: 20px;
+            font-size: 0.91rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .class-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .class-1 { background: #10b981; color: white; }
+        .class-2a { background: #f59e0b; color: white; }
+        .class-2b { background: #f97316; color: white; }
+        .class-3 { background: #ef4444; color: white; }
+
+        .btn-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-reset {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-reset:hover { background: #e2e8f0; }
+
+        /* Reference Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        th {
+            background: var(--primary-burgundy);
+            color: white;
+            text-align: left;
+            padding: 11px 14px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td { background: #f8fafc; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            border-top: 4px solid var(--sky-blue-accent);
+        }
+
+        .info-card.burgundy { border-top-color: var(--primary-burgundy); }
+
+        .info-card h3 {
+            color: var(--primary-burgundy);
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+
+        .info-card ul {
+            margin-left: 18px;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        @media (max-width: 600px) {
+            .option-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Đánh giá &amp; Xử trí Hở Van Ba Lá (Tricuspid Regurgitation) — ESC/EACTS 2025</h1>
+    <p>Nhập thông số siêu âm thất phải, thông tim phải (RHC), tính điểm TRI-SCORE &amp; rẽ nhánh Phẫu thuật / T-TEER / Thay van qua ống thông</p>
+    <span class="badge-source">2025 ESC/EACTS Guidelines for the Management of Valvular Heart Disease • Section 11 &amp; Figures 15–17</span>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-echo', this)">1. Siêu âm, Chức năng RV &amp; Thông tim Phải (Fig. 15)</button>
+        <button class="tab-btn" onclick="switchTab('tab-triscore', this)">2. Tính điểm TRI-SCORE &amp; Đánh giá Từng bước (Fig. 16)</button>
+        <button class="tab-btn" onclick="switchTab('tab-pathway', this)">3. Lưu đồ Xử trí Phẫu thuật &amp; Can thiệp (Fig. 17)</button>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 1: ECHOCARDIOGRAPHY, RV FUNCTION & RHC ASSESSMENT (FIGURE 15)     -->
+    <!-- ===================================================================== -->
+    <div id="tab-echo" class="tab-content active">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Nhập thông số siêu âm lượng giá TR, kích thước/chức năng thất phải &amp; thông tim phải (Figure 15):</span>
+            <button class="btn-reset" onclick="resetTrEcho()">↻ Xóa số liệu nhập lại</button>
+        </div>
+
+        <div class="wizard-step">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1 • Figure 15 (Echocardiographic &amp; Invasive Assessment)</span>
+                    <div class="step-title">A. Thông số Siêu âm Định lượng Hở Van Ba Lá (Severe / Massive / Torrential TR)</div>
+                </div>
+            </div>
+
+            <div class="echo-grid">
+                <div class="param-box">
+                    <label for="tr-eroa">EROA (mm²)</label>
+                    <input type="number" id="tr-eroa" step="1" min="5" max="200" placeholder="VD: 45" oninput="evalTrEcho()">
+                    <span class="param-hint">Nặng (Severe): <strong>≥ 40 mm²</strong> | Rất nặng (Massive): 60–79 | Khổng lồ (Torrential): ≥ 80.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-rvol">Thể tích hở - RVol (mL/nhát)</label>
+                    <input type="number" id="tr-rvol" step="1" min="5" max="200" placeholder="VD: 50" oninput="evalTrEcho()">
+                    <span class="param-hint">Hở ba lá nặng: <strong>RVol ≥ 45 mL/nhát</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-vc">Bề rộng Vena Contracta (mm)</label>
+                    <input type="number" id="tr-vc" step="0.5" min="1" max="30" placeholder="VD: 8.5" oninput="evalTrEcho()">
+                    <span class="param-hint">Nặng: <strong>≥ 7 mm</strong> | Massive: 14–20 mm | Torrential: ≥ 21 mm.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-3dvca">Diện tích Vena Contracta 3D - 3D VCA (mm²)</label>
+                    <input type="number" id="tr-3dvca" step="5" min="10" max="250" placeholder="VD: 80" oninput="evalTrEcho()">
+                    <span class="param-hint">Hở ba lá nặng: <strong>3D VCA ≥ 75 mm²</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-pisa">Bán kính PISA (mm - Nyquist 20–30 cm/s)</label>
+                    <input type="number" id="tr-pisa" step="0.5" min="1" max="25" placeholder="VD: 9.5" oninput="evalTrEcho()">
+                    <span class="param-hint">Hở ba lá nặng: <strong>PISA radius ≥ 9 mm</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-ta">Đường kính vòng van 3 lá - TA (mm hoặc mm/m²)</label>
+                    <input type="number" id="tr-ta" step="1" min="20" max="70" placeholder="VD: 42" oninput="evalTrEcho()">
+                    <span class="param-hint">Giãn vòng van 3 lá: <strong>≥ 40 mm</strong> (hoặc chỉ số <strong>&gt; 21 mm/m²</strong>).</span>
+                </div>
+            </div>
+
+            <div class="step-header" style="margin-top: 18px;">
+                <div>
+                    <span class="step-badge">Bước 2 • Figure 15 (Cardiovascular Changes)</span>
+                    <div class="step-title">B. Đánh giá Chức năng Thất phải (RV) &amp; Áp lực Động mạch Phổi (RHC)</div>
+                </div>
+            </div>
+
+            <div class="echo-grid">
+                <div class="param-box">
+                    <label for="tr-tapse">TAPSE (mm)</label>
+                    <input type="number" id="tr-tapse" step="1" min="4" max="35" placeholder="VD: 15" oninput="evalTrEcho()">
+                    <span class="param-hint">Rối loạn CN RV: <strong>&lt; 17 mm</strong> | Rối loạn CN RV <strong>NẶNG: &lt; 10 mm</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-tdi">Sóng tâm thu vòng van - RV TDI s' (cm/s)</label>
+                    <input type="number" id="tr-tdi" step="0.5" min="2" max="25" placeholder="VD: 9.0" oninput="evalTrEcho()">
+                    <span class="param-hint">Rối loạn CN RV: <strong>&lt; 10 cm/s</strong> | Rối loạn CN RV <strong>NẶNG: &lt; 6 cm/s</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-fac">Phân suất thay đổi diện tích - FAC (%)</label>
+                    <input type="number" id="tr-fac" step="1" min="10" max="65" placeholder="VD: 32" oninput="evalTrEcho()">
+                    <span class="param-hint">Rối loạn CN RV: <strong>≤ 35%</strong> | Rối loạn CN RV <strong>NẶNG: ≤ 22%</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-rvef">Phân suất tống máu 3D RV / CMR - RVEF (%)</label>
+                    <input type="number" id="tr-rvef" step="1" min="15" max="75" placeholder="VD: 45" oninput="evalTrEcho()">
+                    <span class="param-hint">Rối loạn CN RV: <strong>&lt; 50%</strong> | Rối loạn CN RV <strong>NẶNG: &lt; 35%</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-mpap">Áp lực ĐM phổi TB trên RHC - mPAP (mmHg)</label>
+                    <input type="number" id="tr-mpap" step="1" min="10" max="90" placeholder="VD: 28" oninput="evalTrEcho()">
+                    <span class="param-hint">Tăng áp phổi: <strong>mPAP &gt; 20 mmHg</strong> | Tăng áp phổi nặng: <strong>&gt; 35 mmHg</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-pawp">Áp lực ĐM phổi bít - PAWP (mmHg)</label>
+                    <input type="number" id="tr-pawp" step="1" min="4" max="45" placeholder="VD: 12" oninput="evalTrEcho()">
+                    <span class="param-hint">Tiền mao mạch: <strong>PAWP ≤ 15 mmHg</strong> | Sau mao mạch: <strong>&gt; 15 mmHg</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-pvr">Sức cản mạch phổi - PVR (Wood Units)</label>
+                    <input type="number" id="tr-pvr" step="0.5" min="0.5" max="15" placeholder="VD: 3.5" oninput="evalTrEcho()">
+                    <span class="param-hint">Tiền mao mạch: <strong>PVR &gt; 2 WU</strong> | Tăng áp phổi nặng: <strong>&gt; 5 WU</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="tr-aetiol">Cơ chế Bệnh sinh TR (Mechanism)</label>
+                    <select id="tr-aetiol" onchange="evalTrEcho()">
+                        <option value="secondary_vent">Secondary TR - Do Thất (Ventricular secondary TR)</option>
+                        <option value="secondary_atrial">Secondary TR - Do Nhĩ (Atrial secondary TR - Rung nhĩ/HFpEF)</option>
+                        <option value="primary">Primary TR (Tổn thương thực thể lá van: VNTM, thấp tim, Ebstein, sa van...)</option>
+                        <option value="cied">CIED-related TR (Do dây điện cực máy tạo nhịp/ICD chèn ép/kẹt lá van)</option>
+                    </select>
+                    <span class="param-hint">~90% TR nặng là thứ phát; cần phân biệt CIED-related và CIED-associated.</span>
+                </div>
+            </div>
+
+            <div class="checklist-group" id="tr-qual-checks" style="margin-top: 12px;">
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalTrEcho()"> <strong>Dấu hiệu định tính/bán định lượng nặng:</strong> Lá van đập tự do (flail leaflet), khuyết áp lớn, phổ Doppler liên tục dạng tam giác đặc đỉnh sớm, hoặc <strong>đảo ngược dòng tâm thu tĩnh mạch gan</strong> (Hepatic vein systolic flow reversal).</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalTrEcho()"> <strong>Giãn thất phải (RV dilatation) trên mặt cắt 4 buồng tập trung RV:</strong> ĐK đáy RV &gt; 24 mm/m², ĐK giữa RV &gt; 21 mm/m², RVEDVi &gt; 95 mL/m² hoặc RVESVi &gt; 37 mL/m².</div></label>
+            </div>
+
+            <div id="tr-echo-outcome"></div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 2: TRI-SCORE CALCULATOR & STEPWISE EVALUATION (FIGURE 16)         -->
+    <!-- ===================================================================== -->
+    <div id="tab-triscore" class="tab-content">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Đánh giá nguy cơ phẫu thuật van ba lá đơn độc bằng thang điểm TRI-SCORE (Section 11.2 &amp; Figure 16):</span>
+            <button class="btn-reset" onclick="resetTriScore()">↻ Đặt lại thang điểm</button>
+        </div>
+
+        <div class="wizard-step">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Công cụ Phân tầng Nguy cơ • TRI-SCORE (0–12 điểm)</span>
+                    <div class="step-title">Tick chọn các Yếu tố Lâm sàng, Cận lâm sàng &amp; Siêu âm của Bệnh nhân</div>
+                </div>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted);">Khuyến cáo ESC/EACTS 2025 nhấn mạnh sử dụng <strong>TRI-SCORE</strong> trước khi can thiệp TR nặng đơn độc để dự báo tử vong nội viện và chọn bệnh nhân hưởng lợi thực sự từ phẫu thuật / can thiệp qua ống thông:</p>
+
+            <div class="checklist-group" id="triscore-checks">
+                <label class="check-row">
+                    <div class="check-left"><input type="checkbox" data-pts="1" onchange="calcTriScore()"> <strong>1. Tuổi ≥ 70 năm</strong></div>
+                    <span class="pts-badge">+1 điểm</span>
+                </label>
+                <label class="check-row">
+                    <div class="check-left"><input type="checkbox" data-pts="1" onchange="calcTriScore()"> <strong>2. Triệu chứng suy tim NYHA độ III hoặc IV</strong></div>
+                    <span class="pts-badge">+1 điểm</span>
+                </label>
+                <label class="check-row">
+                    <div class="check-left"><input type="checkbox" data-pts="2" onchange="calcTriScore()"> <strong>3. Dấu hiệu suy tim phải rõ trên lâm sàng</strong> (ứ trệ tĩnh mạch cổ nặng, cổ trướng và/hoặc phù chi dưới rõ)</div>
+                    <span class="pts-badge">+2 điểm</span>
+                </label>
+                <label class="check-row">
+                    <div class="check-left"><input type="checkbox" data-pts="2" onchange="calcTriScore()"> <strong>4. Liều thuốc lợi tiểu quai hàng ngày ≥ 125 mg Furosemide</strong> (hoặc liều tương đương)</div>
+                    <span class="pts-badge">+2 điểm</span>
+                </label>
+                <label class="check-row">
+                    <div class="check-left"><input type="checkbox" data-pts="2" onchange="calcTriScore()"> <strong>5. Suy giảm chức năng thận: Mức lọc cầu thận eGFR &lt; 30 mL/phút</strong></div>
+                    <span class="pts-badge">+2 điểm</span>
+                </label>
+                <label class="check-row">
+                    <div class="check-left"><input type="checkbox" data-pts="2" onchange="calcTriScore()"> <strong>6. Tăng Bilirubin toàn phần trong máu</strong> (dấu hiệu sung huyết / tổn thương gan thứ phát)</div>
+                    <span class="pts-badge">+2 điểm</span>
+                </label>
+                <label class="check-row">
+                    <div class="check-left"><input type="checkbox" data-pts="1" onchange="calcTriScore()"> <strong>7. Rối loạn chức năng thất trái: LVEF &lt; 60%</strong></div>
+                    <span class="pts-badge">+1 điểm</span>
+                </label>
+                <label class="check-row">
+                    <div class="check-left"><input type="checkbox" data-pts="1" onchange="calcTriScore()"> <strong>8. Rối loạn chức năng thất phải mức độ vừa – nặng</strong> (TAPSE &lt; 17 mm và/hoặc RV TDI s' &lt; 9.5 cm/s)</div>
+                    <span class="pts-badge">+1 điểm</span>
+                </label>
+            </div>
+
+            <div id="triscore-outcome"></div>
+        </div>
+
+        <div class="info-card">
+            <h3>Quy trình 7 Bước Đánh giá Chuẩn Trước Can thiệp TR Nặng (Figure 16)</h3>
+            <ul>
+                <li><strong>Bước 1:</strong> Khai thác bệnh sử và triệu chứng suy tim phải (mệt mỏi, phù, báng bụng, khó thở).</li>
+                <li><strong>Bước 2:</strong> Xác nhận mức độ nặng của TR bằng siêu âm đa thông số ở trạng thái <strong>đẳng thể tích (euvolaemic status)</strong>.</li>
+                <li><strong>Bước 3:</strong> Xác định căn nguyên và cơ chế (Primary TR, CIED-related TR, Atrial secondary TR, hay Ventricular secondary TR).</li>
+                <li><strong>Bước 4:</strong> Đánh giá kích thước và chức năng thất phải (TTE, 3D Echo, và ưu tiên <strong>CMR</strong> khi cần đo chính xác thể tích và RVEF).</li>
+                <li><strong>Bước 5:</strong> Thực hiện <strong>Thông tim phải (Right Heart Catheterization - RHC)</strong> <span class="class-badge class-1">Class I</span> ở mọi ứng viên can thiệp để đo chính xác áp lực ĐM phổi và tính sức cản mạch phổi (PVR), loại trừ tăng áp phổi tiền mao mạch nặng bị che lấp trên siêu âm.</li>
+                <li><strong>Bước 6:</strong> Đánh giá tính phù hợp giải phẫu trên 3D TOE và ECG-gated CCT (vị trí dòng hở, khoảng hở coaptation gap, mức độ co kéo lá van, tương tác dây điện cực, vị trí động mạch vành phải).</li>
+                <li><strong>Bước 7:</strong> Đánh giá bệnh đồng mắc và tính điểm <strong>TRI-SCORE</strong> → Hội chẩn <strong>Heart Team (Class I)</strong> ra quyết định điều trị.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: MANAGEMENT ALGORITHM OF TR (FIGURE 17)                         -->
+    <!-- ===================================================================== -->
+    <div id="tab-pathway" class="tab-content">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Lưu đồ quyết định điều trị Hở Van Ba Lá (Figure 17 &amp; Rec Table 9):</span>
+            <button class="btn-reset" onclick="resetTrPath()">↻ Làm lại từ đầu (Ca bệnh mới)</button>
+        </div>
+
+        <!-- STEP P1: NEED FOR LEFT-SIDED VALVE SURGERY -->
+        <div class="wizard-step" id="tr-step-1">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1 • Figure 17 (Điểm phân nhánh chính)</span>
+                    <div class="step-title">Bệnh nhân có Chỉ định Phẫu thuật Van Tim Bên Trái (Van Hai Lá / Van ĐMC) đi kèm không?</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectTrLeftNeed('yes', this)">
+                    <input type="radio" name="tr_left_need" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ — Đang chuẩn bị Phẫu thuật Van Tim Bên Trái</strong>
+                        <span>Xử trí van ba lá đồng thời trong cùng cuộc mổ tim hở.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectTrLeftNeed('no', this)">
+                    <input type="radio" name="tr_left_need" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG — Không có chỉ định phẫu thuật van tim bên trái</strong>
+                        <span>Hở van ba lá nặng đơn độc (hoặc đã từng mổ van tim bên trái trước đây).</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- ==================== ARM 1: CONCOMITANT LEFT-SIDED SURGERY (RIGHT OF FIG 17) ==================== -->
+        <div class="wizard-step hidden" id="tr-left-arm">
+            <div class="connector">▼ Nhánh Có Chỉ định Phẫu thuật Van Tim Bên Trái → Phân loại Mức độ Nặng của TR</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2A • Recommendation Table 9</span>
+                    <div class="step-title">Chọn Mức độ Hở Van Ba Lá &amp; Kích thước Vòng van Ba Lá (TA)</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectLeftTrGrade('severe', this)">
+                    <input type="radio" name="left_tr_grade" value="severe">
+                    <div class="choice-text">
+                        <strong>1. TR Nặng (Nguyên phát hoặc Thứ phát)</strong>
+                        <span>Hở van ba lá mức độ nặng đi kèm bệnh van hai lá / ĐMC.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectLeftTrGrade('moderate', this)">
+                    <input type="radio" name="left_tr_grade" value="moderate">
+                    <div class="choice-text">
+                        <strong>2. TR Mức độ Vừa (Nguyên phát hoặc Thứ phát)</strong>
+                        <span>Hở van ba lá mức độ vừa đi kèm phẫu thuật van bên trái.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectLeftTrGrade('mild_dilated', this)">
+                    <input type="radio" name="left_tr_grade" value="mild_dilated">
+                    <div class="choice-text">
+                        <strong>3. TR Nhẹ thứ phát KÈM Giãn Vòng van Ba Lá (TA ≥ 40 mm hoặc &gt; 21 mm/m²)</strong>
+                        <span>Đo đường kính vòng van ba lá trên siêu âm 2D mặt cắt 4 buồng.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectLeftTrGrade('mild_nodil', this)">
+                    <input type="radio" name="left_tr_grade" value="mild_nodil">
+                    <div class="choice-text">
+                        <strong>4. TR Nhẹ KHÔNG giãn vòng van (TA &lt; 40 mm và ≤ 21 mm/m²)</strong>
+                        <span>Vòng van ba lá kích thước bình thường.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="left-tr-outcome"></div>
+        </div>
+
+        <!-- ==================== ARM 2: ISOLATED SEVERE TR (LEFT OF FIG 17) ==================== -->
+        <div class="wizard-step hidden" id="tr-isol-contra">
+            <div class="connector">▼ Nhánh Hở Ba Lá Nặng Đơn độc → Đánh giá Chống chỉ định Can thiệp</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2B</span>
+                    <div class="step-title">Bệnh nhân có Rối loạn Chức năng RV/LV Nặng hoặc Tăng áp Phổi Tiền mao mạch Nặng không?</div>
+                </div>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted);">Tiêu chuẩn loại trừ can thiệp (nguy cơ tử vong rất cao / không hồi phục): Rối loạn chức năng RV nặng (TAPSE &lt; 10 mm, FAC ≤ 22%, RVEF &lt; 35%), rối loạn chức năng LV nặng, hoặc tăng áp phổi nặng (PVR &gt; 5 WU, mPAP &gt; 35 mmHg).</p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectIsolContra('yes', this)">
+                    <input type="radio" name="isol_contra" value="yes">
+                    <div class="choice-text">
+                        <strong style="color: var(--red-text);">CÓ — Suy RV/LV nặng hoặc Tăng áp phổi tiền mao mạch nặng (hoặc TRI-SCORE ≥ 6)</strong>
+                        <span>Can thiệp phẫu thuật/thủ thuật nguy cơ quá cao hoặc vô ích.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectIsolContra('no', this)">
+                    <input type="radio" name="isol_contra" value="no">
+                    <div class="choice-text">
+                        <strong style="color: var(--green-text);">KHÔNG — Chức năng RV/LV còn bảo tồn hoặc chỉ suy nhẹ–vừa, không PH tiền mao mạch nặng</strong>
+                        <span>Đủ điều kiện xem xét phẫu thuật hoặc can thiệp qua ống thông.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="isol-contra-outcome"></div>
+        </div>
+
+        <!-- STEP P3-ISOL: SYMPTOMS OR RV DILATATION/DYSFUNCTION -->
+        <div class="wizard-step hidden" id="tr-isol-ind">
+            <div class="connector">▼ Đánh giá Chỉ định Can thiệp Dựa trên Triệu chứng &amp; Thất phải</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 3B</span>
+                    <div class="step-title">Tình trạng Triệu chứng &amp; Biến đổi Thất phải của Bệnh nhân</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectIsolInd('symp_prim', this)">
+                    <input type="radio" name="isol_ind" value="symp_prim">
+                    <div class="choice-text">
+                        <strong>1. Có Triệu chứng + TR Nguyên phát nặng (Primary TR)</strong>
+                        <span>Tổn thương thực thể lá van gây triệu chứng suy tim phải.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectIsolInd('symp_sec', this)">
+                    <input type="radio" name="isol_ind" value="symp_sec">
+                    <div class="choice-text">
+                        <strong>2. Có Triệu chứng + TR Thứ phát nặng (Secondary TR)</strong>
+                        <span>Còn triệu chứng suy tim phải dù đã điều trị lợi tiểu và bệnh nền tối ưu.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectIsolInd('asymp_rv', this)">
+                    <input type="radio" name="isol_ind" value="asymp_rv">
+                    <div class="choice-text">
+                        <strong>3. Không Triệu chứng NHƯNG có Giãn RV hoặc Suy giảm chức năng RV tiến triển</strong>
+                        <span>TAPSE &lt; 17 mm, TDI s' &lt; 10 cm/s, FAC ≤ 35%, RVEF &lt; 50% hoặc giãn buồng RV.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectIsolInd('asymp_norv', this)">
+                    <input type="radio" name="isol_ind" value="asymp_norv">
+                    <div class="choice-text">
+                        <strong>4. Không Triệu chứng &amp; Thất phải hoàn toàn bình thường</strong>
+                        <span>Chưa có dấu hiệu quá tải hay suy giảm chức năng thất phải.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="isol-ind-outcome"></div>
+        </div>
+
+        <!-- STEP P4-ISOL: SURGERY vs TRANSCATHETER THERAPY -->
+        <div class="wizard-step hidden" id="tr-isol-mode">
+            <div class="connector">▼ Hội chẩn Heart Team: Chọn Phẫu thuật Van Ba Lá vs. Can thiệp Qua Ống thông</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 4B • Cập nhật Lớn ESC/EACTS 2025 (Class IIa)</span>
+                    <div class="step-title">Bệnh nhân có Phù hợp Phẫu thuật (Nguy cơ Thấp / TRI-SCORE ≤ 3–5) theo Heart Team không?</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectIsolMode('surg_ok', this)">
+                    <input type="radio" name="isol_mode" value="surg_ok">
+                    <div class="choice-text">
+                        <strong>CÓ — Đủ điều kiện Phẫu thuật (Nguy cơ thấp, TRI-SCORE thấp)</strong>
+                        <span>Bệnh nhân trẻ/nguy cơ thấp, chức năng gan thận còn tốt.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectIsolMode('surg_high', this)">
+                    <input type="radio" name="isol_mode" value="surg_high">
+                    <div class="choice-text">
+                        <strong>KHÔNG — Nguy cơ Phẫu thuật Cao / Không mổ được (Có triệu chứng)</strong>
+                        <span>Tuổi cao, từng mổ tim trước đó, bệnh đồng mắc nhiều nhưng giải phẫu phù hợp can thiệp qua ống thông.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="isol-mode-outcome"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function clearSelection(containerId) {
+        document.querySelectorAll(`#${containerId} .choice-card`).forEach(c => c.classList.remove('selected'));
+    }
+
+    /* ================= TAB 1: ECHO & RHC EVALUATION ================= */
+    function resetTrEcho() {
+        ['tr-eroa', 'tr-rvol', 'tr-vc', 'tr-3dvca', 'tr-pisa', 'tr-ta', 'tr-tapse', 'tr-tdi', 'tr-fac', 'tr-rvef', 'tr-mpap', 'tr-pawp', 'tr-pvr'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('tr-aetiol').value = 'secondary_vent';
+        document.querySelectorAll('#tr-qual-checks input[type="checkbox"]').forEach(c => c.checked = false);
+        document.getElementById('tr-echo-outcome').innerHTML = '';
+    }
+
+    function evalTrEcho() {
+        const eroa = parseFloat(document.getElementById('tr-eroa').value);
+        const rvol = parseFloat(document.getElementById('tr-rvol').value);
+        const vc = parseFloat(document.getElementById('tr-vc').value);
+        const vca3d = parseFloat(document.getElementById('tr-3dvca').value);
+        const pisa = parseFloat(document.getElementById('tr-pisa').value);
+        const ta = parseFloat(document.getElementById('tr-ta').value);
+
+        const tapse = parseFloat(document.getElementById('tr-tapse').value);
+        const tdi = parseFloat(document.getElementById('tr-tdi').value);
+        const fac = parseFloat(document.getElementById('tr-fac').value);
+        const rvef = parseFloat(document.getElementById('tr-rvef').value);
+
+        const mpap = parseFloat(document.getElementById('tr-mpap').value);
+        const pawp = parseFloat(document.getElementById('tr-pawp').value);
+        const pvr = parseFloat(document.getElementById('tr-pvr').value);
+        const aetiol = document.getElementById('tr-aetiol').value;
+
+        const qualChecks = document.querySelectorAll('#tr-qual-checks input[type="checkbox"]');
+        const hasQualSev = qualChecks[0].checked;
+        const hasRvDil = qualChecks[1].checked;
+
+        const out = document.getElementById('tr-echo-outcome');
+        if ([eroa, rvol, vc, vca3d, pisa, ta, tapse, tdi, fac, rvef, mpap, pawp, pvr].every(isNaN) && !hasQualSev && !hasRvDil) {
+            out.innerHTML = '';
+            return;
+        }
+
+        // 1. TR Severity Grading (Severe, Massive, Torrential)
+        let grade = 'non_severe';
+        let reasons = [];
+
+        if ((!isNaN(eroa) && eroa >= 80) || (!isNaN(vc) && vc >= 21)) {
+            grade = 'torrential';
+        } else if ((!isNaN(eroa) && eroa >= 60) || (!isNaN(vc) && vc >= 14)) {
+            grade = 'massive';
+        } else if ((!isNaN(eroa) && eroa >= 40) || (!isNaN(rvol) && rvol >= 45) || (!isNaN(vc) && vc >= 7) || (!isNaN(vca3d) && vca3d >= 75) || (!isNaN(pisa) && pisa >= 9) || hasQualSev) {
+            grade = 'severe';
+        }
+
+        if (!isNaN(eroa) && eroa >= 40) reasons.push(`EROA = ${eroa} mm²`);
+        if (!isNaN(rvol) && rvol >= 45) reasons.push(`RVol = ${rvol} mL`);
+        if (!isNaN(vc) && vc >= 7) reasons.push(`Vena contracta = ${vc} mm`);
+        if (!isNaN(vca3d) && vca3d >= 75) reasons.push(`3D VCA = ${vca3d} mm²`);
+        if (!isNaN(pisa) && pisa >= 9) reasons.push(`PISA = ${pisa} mm`);
+        if (hasQualSev) reasons.push(`Đảo ngược dòng tâm thu tĩnh mạch gan / phổ tam giác đặc / flail leaflet`);
+
+        let bannerHtml = '';
+        if (grade !== 'non_severe') {
+            const gradeLabel = grade === 'torrential' ? 'MỨC ĐỘ KHỔNG LỒ (TORRENTIAL TR — Bậc 5/5)'
+                             : grade === 'massive' ? 'MỨC ĐỘ RẤT NẶNG (MASSIVE TR — Bậc 4/5)'
+                             : 'MỨC ĐỘ NẶNG (SEVERE TR — Bậc 3/5)';
+            bannerHtml = `
+                <div class="action-result red">
+                    <h4>🩺 KẾT LUẬN SIÊU ÂM: HỞ VAN BA LÁ ${gradeLabel}</h4>
+                    <ul>
+                        <li><strong>Tiêu chuẩn đạt được:</strong> ${reasons.join('; ')}.</li>
+                        <li><strong>Khuyến cáo 2025:</strong> Không trì hoãn đánh giá can thiệp khi đã đạt mức <strong>Severe TR</strong> (mục tiêu can thiệp là giảm TR xuống còn ≤ mức độ vừa). Hãy tính điểm <strong>TRI-SCORE (Thẻ 2)</strong> và xem <strong>Lưu đồ Xử trí (Thẻ 3)</strong>.</li>
+                    </ul>
+                </div>`;
+        } else {
+            bannerHtml = `
+                <div class="action-result green">
+                    <h4>✓ CHƯA ĐẠT TIÊU CHUẨN HỞ VAN BA LÁ NẶNG (NON-SEVERE TR)</h4>
+                    <ul>
+                        ${!isNaN(ta) && ta >= 40 ? `<li><strong>Lưu ý giãn vòng van ba lá (TA = ${ta} mm ≥ 40 mm):</strong> Nếu bệnh nhân có chỉ định phẫu thuật van tim bên trái (van hai lá / ĐMC), cân nhắc <strong>sửa vòng van ba lá đồng thời</strong> <span class="class-badge class-2a">Class IIa</span> (nếu TR vừa) hoặc <span class="class-badge class-2b">Class IIb</span> (nếu TR nhẹ kèm TA ≥ 40 mm).</li>` : '<li>Theo dõi lâm sàng và siêu âm tim định kỳ.</li>'}
+                    </ul>
+                </div>`;
+        }
+
+        // 2. RV Function & Pulmonary Hypertension Analysis
+        let alerts = [];
+        const isSevereRvDys = (!isNaN(tapse) && tapse < 10) || (!isNaN(tdi) && tdi < 6) || (!isNaN(fac) && fac <= 22) || (!isNaN(rvef) && rvef < 35);
+        const isModRvDys = (!isNaN(tapse) && tapse < 17) || (!isNaN(tdi) && tdi < 10) || (!isNaN(fac) && fac <= 35) || (!isNaN(rvef) && rvef < 50);
+
+        if (isSevereRvDys) {
+            alerts.push(`<strong style="color: var(--red-text);">⚠️ RỐI LOẠN CHỨC NĂNG THẤT PHẢI NẶNG (Severe RV Dysfunction):</strong> ${!isNaN(tapse) && tapse < 10 ? `TAPSE = ${tapse} mm (< 10); ` : ''}${!isNaN(tdi) && tdi < 6 ? `TDI s' = ${tdi} cm/s (< 6); ` : ''}${!isNaN(fac) && fac <= 22 ? `FAC = ${fac}% (≤ 22%); ` : ''}${!isNaN(rvef) && rvef < 35 ? `RVEF = ${rvef}% (< 35%)` : ''} → Nguy cơ tử vong chu phẫu rất cao / can thiệp có thể vô ích (Figure 17).`);
+        } else if (isModRvDys || hasRvDil) {
+            alerts.push(`<strong>Dấu hiệu Giãn hoặc Suy giảm chức năng Thất phải giai đoạn sớm:</strong> ${!isNaN(tapse) && tapse < 17 ? `TAPSE = ${tapse} mm (< 17); ` : ''}${!isNaN(tdi) && tdi < 10 ? `TDI s' = ${tdi} cm/s (< 10); ` : ''}${!isNaN(fac) && fac <= 35 ? `FAC = ${fac}% (≤ 35%); ` : ''}${!isNaN(rvef) && rvef < 50 ? `RVEF = ${rvef}% (< 50%); ` : ''}${hasRvDil ? 'Giãn buồng RV' : ''} → Đây là <strong>mốc chỉ định can thiệp sớm <span class="class-badge class-2a">Class IIa</span></strong> trước khi thất phải suy không hồi phục!`);
+        }
+
+        if (!isNaN(mpap) && mpap > 20) {
+            if (!isNaN(pvr) && pvr > 5 || mpap > 35) {
+                alerts.push(`<strong style="color: var(--red-text);">⚠️ TĂNG ÁP ĐỘNG MẠCH PHỔI NẶNG (Severe PH: mPAP = ${mpap} mmHg, PVR = ${isNaN(pvr) ? '?' : pvr} WU):</strong> Chống chỉ định phẫu thuật hoặc can thiệp van ba lá đơn độc (nguy cơ suy thất phải cấp sau mổ khi mất van trào ngược giải áp).`);
+            } else if (!isNaN(pawp) && pawp <= 15 && !isNaN(pvr) && pvr > 2) {
+                alerts.push(`<strong style="color: var(--amber-text);">Tăng áp động mạch phổi Tiền mao mạch (Pre-capillary PH: mPAP &gt; 20, PAWP ≤ 15, PVR &gt; 2 WU):</strong> Cần điều trị thuốc giãn mạch phổi tối ưu; lưu ý T-TEER / thay van qua ống thông không khuyến cáo khi có PH tiền mao mạch nặng.`);
+            } else if (!isNaN(pawp) && pawp > 15) {
+                alerts.push(`<strong>Tăng áp động mạch phổi Sau mao mạch (Post-capillary PH: PAWP = ${pawp} mmHg &gt; 15 mmHg):</strong> Phản ánh ứ huyết từ tim trái (bệnh van hai lá / ĐMC hoặc suy tim trái). Cần giải quyết tổn thương tim trái.`);
+            }
+        }
+
+        if (aetiol === 'cied') {
+            alerts.push(`<strong>CIED-related TR (Liên quan dây điện cực):</strong> Cần đánh giá trên 3D TOE xem dây điện cực có đè ép/xuyên qua lá van hay không. Nếu phẫu thuật, giải phóng lá van kẹt và cân nhắc rút điện cực chuyển sang tạo nhịp thượng tâm mạc; nếu làm T-TEER cần đánh giá nguy cơ kẹt điện cực (lead jailing).`);
+        }
+
+        let alertsHtml = '';
+        if (alerts.length > 0) {
+            alertsHtml = `
+                <div class="action-result blue">
+                    <h4>📋 Phân tích Huyết động Thất phải &amp; Tuần hoàn Phổi</h4>
+                    <ul>${alerts.map(a => `<li>${a}</li>`).join('')}</ul>
+                </div>`;
+        }
+
+        out.innerHTML = bannerHtml + alertsHtml;
+    }
+
+    /* ================= TAB 2: TRI-SCORE CALCULATOR ================= */
+    function resetTriScore() {
+        document.querySelectorAll('#triscore-checks input[type="checkbox"]').forEach(c => c.checked = false);
+        calcTriScore();
+    }
+
+    function calcTriScore() {
+        const checks = document.querySelectorAll('#triscore-checks input[type="checkbox"]');
+        let score = 0;
+        checks.forEach(c => {
+            if (c.checked) score += parseInt(c.getAttribute('data-pts'));
+        });
+
+        const out = document.getElementById('triscore-outcome');
+        if (score <= 3) {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🎯 TỔNG ĐIỂM TRI-SCORE: ${score} / 12 ĐIỂM — NGUY CƠ THẤP (Low Risk: 0–3 điểm)</h4>
+                    <ul>
+                        <li><strong>Tiên lượng &amp; Khuyến cáo (Section 11.2):</strong> Tỷ lệ tử vong nội viện thấp. Phẫu thuật van ba lá đơn độc (<strong>ưu tiên sửa van đặt vòng van</strong>) mang lại lợi ích cải thiện rõ rệt tỷ lệ sống còn dài hạn (10 năm) so với điều trị nội khoa.</li>
+                    </ul>
+                </div>`;
+        } else if (score <= 5) {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>⚖️ TỔNG ĐIỂM TRI-SCORE: ${score} / 12 ĐIỂM — NGUY CƠ TRUNG BÌNH (Intermediate Risk: 4–5 điểm)</h4>
+                    <ul>
+                        <li><strong>Tiên lượng &amp; Khuyến cáo (Section 11.2):</strong> Can thiệp sớm (<strong>phẫu thuật sửa van thành công</strong> hoặc <strong>can thiệp sửa van qua ống thông T-TEER</strong>) giúp cải thiện tiên lượng sống trung hạn và chất lượng sống; cần hội chẩn kỹ trong Heart Team.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>⚠️ TỔNG ĐIỂM TRI-SCORE: ${score} / 12 ĐIỂM — NGUY CƠ CAO (High Risk: ≥ 6 điểm)</h4>
+                    <ul>
+                        <li><strong>Tiên lượng &amp; Khuyến cáo (Section 11.2):</strong> Tổn thương gan, thận và thất phải đã tiến triển nặng. Dữ liệu sổ bộ lớn (n = 2413) cho thấy ở nhóm <strong>TRI-SCORE ≥ 6 điểm</strong>, can thiệp van ba lá (cả phẫu thuật lẫn qua ống thông) <strong>không cải thiện tỷ lệ sống còn</strong> so với điều trị nội khoa bảo tồn. Cần cân nhắc kỹ lưỡng để tránh can thiệp vô ích (futility).</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    /* ================= TAB 3: MANAGEMENT PATHWAY (FIGURE 17) ================= */
+    function resetTrPath() {
+        document.querySelectorAll('#tab-pathway input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('#tab-pathway .choice-card').forEach(c => c.classList.remove('selected'));
+
+        ['tr-left-arm', 'tr-isol-contra', 'tr-isol-ind', 'tr-isol-mode'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        ['left-tr-outcome', 'isol-contra-outcome', 'isol-ind-outcome', 'isol-mode-outcome'].forEach(id => {
+            document.getElementById(id).innerHTML = '';
+        });
+    }
+
+    function selectTrLeftNeed(hasLeft, card) {
+        clearSelection('tr-step-1');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        ['tr-left-arm', 'tr-isol-contra', 'tr-isol-ind', 'tr-isol-mode'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+
+        if (hasLeft === 'yes') {
+            document.getElementById('tr-left-arm').classList.remove('hidden');
+        } else {
+            document.getElementById('tr-isol-contra').classList.remove('hidden');
+        }
+    }
+
+    /* --- ARM 1: CONCOMITANT LEFT-SIDED SURGERY --- */
+    function selectLeftTrGrade(grade, card) {
+        clearSelection('tr-left-arm');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('left-tr-outcome');
+        if (grade === 'severe') {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🔪 CHỈ ĐỊNH BẮT BUỘC: PHẪU THUẬT VAN BA LÁ ĐỒNG THỜI <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Khuyến cáo phẫu thuật van ba lá đồng thời (ưu tiên <strong>sửa van đặt vòng van annuloplasty</strong>; thay van bằng van sinh học nếu vòng van giãn quá lớn và co kéo lá van nặng).</li>
+                        <li>Không nên trì hoãn vì TR nặng hầu như không tự khỏi sau mổ van tim trái đơn thuần, và mổ lại van ba lá thì hai có tỷ lệ tử vong rất cao (8–10%).</li>
+                    </ul>
+                </div>`;
+        } else if (grade === 'moderate') {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>🛠️ NÊN CÂN NHẮC: SỬA VAN BA LÁ ĐỒNG THỜI (ANNULOPLASTY) <span class="class-badge class-2a">Class IIa</span></h4>
+                    <ul>
+                        <li>Nên cân nhắc sửa van ba lá đồng thời cho cả <strong>TR nguyên phát và TR thứ phát mức độ vừa</strong> nhằm ngăn ngừa TR tiến triển nặng thêm và thúc đẩy tái cấu trúc ngược thất phải (dựa trên 2 thử nghiệm ngẫu nhiên mới).</li>
+                        <li><em>Lưu ý:</em> Sửa van ba lá đồng thời làm tăng tỷ lệ phải đặt máy tạo nhịp vĩnh viễn sau mổ (lên tới ~14%).</li>
+                    </ul>
+                </div>`;
+        } else if (grade === 'mild_dilated') {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>⚖️ CÓ THỂ CÂN NHẮC: SỬA VAN BA LÁ ĐỒNG THỜI <span class="class-badge class-2b">Class IIb</span></h4>
+                    <ul>
+                        <li>Có thể cân nhắc sửa vòng van ba lá ở bệnh nhân chọn lọc có <strong>TR nhẹ thứ phát kèm giãn vòng van (≥ 40 mm hoặc &gt; 21 mm/m²)</strong> nếu có thêm yếu tố nguy cơ tiến triển (rung nhĩ, giãn nhĩ phải lớn, tăng áp phổi), cân nhắc kỹ với nguy cơ đặt máy tạo nhịp vĩnh viễn sau mổ.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result blue">
+                    <h4>✓ KHÔNG PHẪU THUẬT VAN BA LÁ ĐỒNG THỜI</h4>
+                    <ul>
+                        <li>Chỉ phẫu thuật xử lý tổn thương van tim bên trái, không can thiệp van ba lá.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    /* --- ARM 2: ISOLATED SEVERE TR --- */
+    function selectIsolContra(hasContra, card) {
+        clearSelection('tr-isol-contra');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('isol-contra-outcome');
+        const indStep = document.getElementById('tr-isol-ind');
+        const modeStep = document.getElementById('tr-isol-mode');
+
+        if (hasContra === 'yes') {
+            indStep.classList.add('hidden');
+            modeStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>💊 ĐIỀU TRỊ NỘI KHOA BẢO TỒN &amp; CHĂM SÓC GIẢM NHẸ</h4>
+                    <ul>
+                        <li>Khi đã có rối loạn chức năng RV/LV nặng, tăng áp phổi tiền mao mạch nặng (PVR &gt; 5 WU) hoặc TRI-SCORE ≥ 6, phẫu thuật và can thiệp qua ống thông không cải thiện tiên lượng sống.</li>
+                        <li>Tối ưu hóa lợi tiểu quai kết hợp kháng aldosterone, thuốc SGLT2i, kiểm soát tần số/nhịp rung nhĩ và điều trị tăng áp phổi (nếu có).</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = '';
+            modeStep.classList.add('hidden');
+            indStep.classList.remove('hidden');
+        }
+    }
+
+    function selectIsolInd(ind, card) {
+        clearSelection('tr-isol-ind');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('isol-ind-outcome');
+        const modeStep = document.getElementById('tr-isol-mode');
+
+        if (ind === 'asymp_norv') {
+            modeStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>👁️ THEO DÕI CHỦ ĐỘNG SÁT SAO (MỖI 6 THÁNG)</h4>
+                    <ul>
+                        <li>Khám lâm sàng và siêu âm tim (TTE) định kỳ <strong>ít nhất mỗi 6 tháng</strong> để phát hiện sớm dấu hiệu giãn hoặc suy giảm chức năng thất phải (TAPSE &lt; 17 mm, FAC ≤ 35%...).</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = '';
+            modeStep.classList.remove('hidden');
+            // Pre-fill note based on chosen indication
+            let preNote = '';
+            if (ind === 'symp_prim') {
+                preNote = `<strong>Chỉ định phẫu thuật <span class="class-badge class-1">Class I</span></strong> cho TR nguyên phát nặng có triệu chứng (nếu đủ điều kiện phẫu thuật).`;
+            } else if (ind === 'symp_sec') {
+                preNote = `<strong>Nên cân nhắc can thiệp <span class="class-badge class-2a">Class IIa</span></strong> cho TR thứ phát nặng có triệu chứng dai dẳng dù đã điều trị nội khoa tối ưu.`;
+            } else {
+                preNote = `<strong>Nên cân nhắc phẫu thuật sớm <span class="class-badge class-2a">Class IIa</span></strong> ở bệnh nhân TR nặng không triệu chứng nhưng đã có giãn RV hoặc suy giảm chức năng RV tiến triển.`;
+            }
+            document.getElementById('isol-mode-outcome').innerHTML = `
+                <div class="action-result blue" style="margin-bottom:10px;">
+                    <h4>📌 Chỉ định nền tảng: ${preNote}</h4>
+                    <ul><li>Chọn khả năng phẫu thuật bên dưới để xác định giữa Phẫu thuật và Can thiệp qua ống thông:</li></ul>
+                </div>`;
+        }
+    }
+
+    function selectIsolMode(mode, card) {
+        clearSelection('tr-isol-mode');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('isol-mode-outcome');
+        if (mode === 'surg_ok') {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🔪 PHẪU THUẬT VAN BA LÁ (ƯU TIÊN SỬA VAN ĐẶT VÒNG VAN) <span class="class-badge class-1">Class I</span> / <span class="class-badge class-2a">Class IIa</span></h4>
+                    <ul>
+                        <li><strong>Phẫu thuật sửa van ba lá (annuloplasty ring)</strong> được ưu tiên hơn thay van bất cứ khi nào giải phẫu cho phép (đặc biệt ở bệnh nhân TRI-SCORE thấp ≤ 3–5).</li>
+                        <li>Nếu lá van biến dạng/co kéo quá nặng không thể sửa → Thay van ba lá bằng <strong>van sinh học (BHV)</strong>.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>📎 NÂNG HẠNG MỚI 2025: CAN THIỆP VAN BA LÁ QUA ỐNG THÔNG (T-TEER / TTVR) <span class="class-badge class-2a">Class IIa</span></h4>
+                    <ul>
+                        <li>Nâng hạng từ Class IIb (2021) lên <strong>Class IIa (2025, Mức độ bằng chứng A)</strong> dựa trên các thử nghiệm TRILUMINATE, Tri.Fr và TRISCEND II!</li>
+                        <li><strong>Chỉ định:</strong> Cải thiện chất lượng sống và tái cấu trúc ngược thất phải ở bệnh nhân TR nặng có triệu chứng dai dẳng dù đã điều trị nội khoa tối ưu, có nguy cơ phẫu thuật cao, <strong>không có rối loạn chức năng RV nặng và không tăng áp phổi tiền mao mạch nặng</strong>.</li>
+                        <li><strong>Lựa chọn kỹ thuật tại Trung tâm Van tim chuyên sâu:</strong>
+                            <br>• <em>Sửa van qua ống thông (T-TEER - TriClip / PASCAL) hoặc tạo hình vòng van qua ống thông:</em> An toàn cao, ít biến chứng chảy máu/máy tạo nhịp; cần khoảng hở áp lá van (coaptation gap) phù hợp và không bị kẹt bởi dây điện cực.
+                            <br>• <em>Thay van ba lá qua ống thông (TTVR - EVOQUE):</em> Triệt tiêu TR gần như hoàn toàn ở giải phẫu khe hở rộng/phức tạp, nhưng tỷ lệ chảy máu nặng (~15%) và cần đặt máy tạo nhịp vĩnh viễn (~25%) cao hơn.
+                        </li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        calcTriScore();
+    });
+</script>
+
+</body>
+</html>

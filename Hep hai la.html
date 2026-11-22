@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESC/EACTS 2025: Công cụ Chẩn đoán &amp; Xử trí Hẹp Van Hai Lá (Mitral Stenosis)</title>
+    <style>
+        :root {
+            --primary-burgundy: #7a1c31;
+            --primary-dark: #4a0e1c;
+            --sky-blue-bg: #eef7fc;
+            --sky-blue-border: #b8dcf0;
+            --sky-blue-accent: #0284c7;
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --bg-body: #f1f5f9;
+            --card-bg: #ffffff;
+            --green-bg: #ecfdf5;
+            --green-border: #10b981;
+            --green-text: #065f46;
+            --amber-bg: #fffbeb;
+            --amber-border: #f59e0b;
+            --amber-text: #92400e;
+            --red-bg: #fef2f2;
+            --red-border: #ef4444;
+            --red-text: #991b1b;
+            --border-radius: 12px;
+            --shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.55;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-burgundy) 100%);
+            color: #ffffff;
+            padding: 22px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(122, 28, 49, 0.22);
+        }
+
+        header h1 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        .badge-source {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            margin-top: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 22px auto;
+            padding: 0 16px;
+        }
+
+        /* Main Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #e2e8f0;
+            padding: 6px;
+            border-radius: var(--border-radius);
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 210px;
+            padding: 12px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-burgundy);
+            background: rgba(255, 255, 255, 0.55);
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-burgundy);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Step Wizard Cards */
+        .wizard-step {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 18px;
+            border-left: 5px solid var(--primary-burgundy);
+            animation: slideDown 0.25s ease-out;
+        }
+
+        .wizard-step.hidden {
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .step-badge {
+            background: var(--primary-burgundy);
+            color: white;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .step-title {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-top: 4px;
+        }
+
+        .connector {
+            text-align: center;
+            color: var(--primary-burgundy);
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin: -8px 0 10px 0;
+        }
+
+        /* Echo Parameter Input Grid */
+        .echo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            padding: 14px;
+            border-radius: 10px;
+        }
+
+        .param-box {
+            background: #ffffff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .param-box label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .param-box input, .param-box select {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid #94a3b8;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .param-hint {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Choice Cards */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .choice-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: #ffffff;
+        }
+
+        .choice-card:hover {
+            border-color: var(--sky-blue-accent);
+            background: var(--sky-blue-bg);
+        }
+
+        .choice-card.selected {
+            border-color: var(--primary-burgundy);
+            background: #fdf2f4;
+            box-shadow: 0 0 0 1px var(--primary-burgundy);
+        }
+
+        .choice-card input[type="radio"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-burgundy);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .choice-text strong {
+            display: block;
+            font-size: 0.94rem;
+            color: var(--text-main);
+        }
+
+        .choice-text span {
+            display: block;
+            font-size: 0.81rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Checklist Group */
+        .checklist-group {
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 10px;
+        }
+
+        .check-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.91rem;
+            border-bottom: 1px solid rgba(184, 220, 240, 0.5);
+        }
+
+        .check-row:last-child {
+            border-bottom: none;
+        }
+
+        .check-row:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .check-row input[type="checkbox"] {
+            margin-top: 3px;
+            width: 17px;
+            height: 17px;
+            accent-color: var(--primary-burgundy);
+            flex-shrink: 0;
+        }
+
+        /* Wilkins Score Mini-Calculator */
+        .wilkins-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .wilkins-item {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .wilkins-item label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.84rem;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        .wilkins-item select {
+            width: 100%;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid #94a3b8;
+            font-size: 0.84rem;
+        }
+
+        /* Action / Result Banners */
+        .action-result {
+            border-radius: var(--border-radius);
+            padding: 16px 18px;
+            margin-top: 14px;
+            border-width: 2px;
+            border-style: solid;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .action-result.green {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+            color: var(--green-text);
+        }
+
+        .action-result.amber {
+            background: var(--amber-bg);
+            border-color: var(--amber-border);
+            color: var(--amber-text);
+        }
+
+        .action-result.red {
+            background: var(--red-bg);
+            border-color: var(--red-border);
+            color: var(--red-text);
+        }
+
+        .action-result.blue {
+            background: var(--sky-blue-bg);
+            border-color: var(--sky-blue-accent);
+            color: var(--primary-dark);
+        }
+
+        .action-result h4 {
+            font-size: 1.02rem;
+            margin-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-result ul {
+            margin-left: 20px;
+            font-size: 0.91rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .class-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .class-1 { background: #10b981; color: white; }
+        .class-2a { background: #f59e0b; color: white; }
+        .class-2b { background: #f97316; color: white; }
+        .class-3 { background: #ef4444; color: white; }
+
+        .btn-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-action {
+            background: var(--primary-burgundy);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(122, 28, 49, 0.25);
+        }
+
+        .btn-action:hover { background: var(--primary-dark); }
+
+        .btn-reset {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-reset:hover { background: #e2e8f0; }
+
+        /* Reference Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.89rem;
+        }
+
+        th {
+            background: var(--primary-burgundy);
+            color: white;
+            text-align: left;
+            padding: 11px 14px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td { background: #f8fafc; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            border-top: 4px solid var(--sky-blue-accent);
+        }
+
+        .info-card.burgundy { border-top-color: var(--primary-burgundy); }
+
+        .info-card h3 {
+            color: var(--primary-burgundy);
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+
+        .info-card ul {
+            margin-left: 18px;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        @media (max-width: 600px) {
+            .option-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Đánh giá &amp; Xử trí Hẹp Van Hai Lá (Mitral Stenosis) — ESC/EACTS 2025</h1>
+    <p>Nhập thông số siêu âm tim (TTE/TOE) &amp; tick chọn lâm sàng để tự động phân độ nặng và rẽ nhánh phác đồ can thiệp</p>
+    <span class="badge-source">2025 ESC/EACTS Guidelines for the Management of Valvular Heart Disease • Section 10 &amp; Figure 14</span>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-echo', this)">1. Đánh giá Siêu âm &amp; Phân độ Nặng</button>
+        <button class="tab-btn" onclick="switchTab('tab-rheumatic', this)">2. Lưu đồ Hẹp 2 lá Hậu thấp (Figure 14)</button>
+        <button class="tab-btn" onclick="switchTab('tab-mac-med', this)">3. Hẹp 2 lá Vôi hóa (MAC), Nội khoa &amp; Thai kỳ</button>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 1: ECHOCARDIOGRAPHIC ASSESSMENT & SEVERITY GRADING                -->
+    <!-- ===================================================================== -->
+    <div id="tab-echo" class="tab-content active">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Nhập số liệu siêu âm tim (TTE / TOE) của bệnh nhân bên dưới:</span>
+            <button class="btn-reset" onclick="resetEcho()">↻ Xóa số liệu nhập lại</button>
+        </div>
+
+        <!-- STEP E1: QUANTITATIVE ECHO PARAMETERS -->
+        <div class="wizard-step">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1 • Thông số Siêu âm Định lượng</span>
+                    <div class="step-title">Nhập các chỉ số Siêu âm tim (TTE / 3D TOE)</div>
+                </div>
+            </div>
+
+            <div class="echo-grid">
+                <div class="param-box">
+                    <label for="in-mva">Diện tích lỗ van (MVA - cm²)</label>
+                    <input type="number" id="in-mva" step="0.05" min="0.3" max="4.0" placeholder="VD: 1.2" oninput="evaluateEcho()">
+                    <span class="param-hint">Chuẩn: <strong>2D/3D Planimetry</strong>. Nặng (có ý nghĩa lâm sàng): <strong>≤ 1.5 cm²</strong> (Rất khít: &lt; 1.0 cm²).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="in-grad">Chênh áp trung bình (Mean PG - mmHg)</label>
+                    <input type="number" id="in-grad" step="0.5" min="1" max="40" placeholder="VD: 12" oninput="evaluateEcho()">
+                    <span class="param-hint">Nhẹ: &lt; 5 | Vừa: 5–10 | Nặng: <strong>&gt; 10 mmHg</strong> (ở nhịp tim 60–80 l/p). Lưu ý thể Low-gradient (&lt; 10 mmHg).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="in-spap">Áp lực ĐM phổi tâm thu (SPAP - mmHg)</label>
+                    <input type="number" id="in-spap" step="1" min="15" max="130" placeholder="VD: 55" oninput="evaluateEcho()">
+                    <span class="param-hint">Bình thường: &lt; 30 | Tăng áp phổi nặng / mốc chỉ định can thiệp: <strong>&gt; 50 mmHg</strong> lúc nghỉ.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="in-lavi">Thể tích nhĩ trái (LAVI - mL/m²) / ĐK (mm)</label>
+                    <input type="number" id="in-lavi" step="1" min="15" max="150" placeholder="VD: 65" oninput="evaluateEcho()">
+                    <span class="param-hint">Giãn nhĩ trái lớn (nguy cơ huyết khối cao): <strong>LAVI &gt; 60 mL/m²</strong> hoặc đường kính M-mode <strong>&gt; 50 mm</strong>.</span>
+                </div>
+            </div>
+
+            <!-- MORPHOLOGY & CONCOMITANT LESIONS CHECKBOXES -->
+            <div style="margin-top: 16px;">
+                <strong style="font-size: 0.94rem; color: var(--primary-dark);">Tick chọn đặc điểm Hình thái van &amp; Tổn thương phối hợp trên Siêu âm (TTE / TOE):</strong>
+                <div class="checklist-group" id="echo-morph-checks">
+                    <label class="check-row">
+                        <input type="checkbox" id="chk-commissural" checked onchange="evaluateEcho()">
+                        <span><strong>Có dính mép van (Commissural fusion) &amp; dày lá van dạng hậu thấp</strong> — <em>Đặc trưng của hẹp hai lá hậu thấp (Rheumatic MS), điều kiện tiên quyết để nong van bằng bóng (PMC).</em></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" id="chk-mac" onchange="evaluateEcho()">
+                        <span><strong>Vôi hóa vòng van lan rộng (MAC) không dính mép van</strong> — <em>Đặc trưng của hẹp hai lá thoái hóa người cao tuổi; cần chụp ECG-gated CCT đánh giá nguy cơ tắc LVOT.</em></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" id="chk-la-clot" onchange="evaluateEcho()">
+                        <span><strong>Huyết khối nhĩ trái (LA thrombus) hoặc cản âm tự phát dày đặc (Dense smoke)</strong> trên siêu âm qua thực quản (TOE).</span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" id="chk-concomitant" onchange="evaluateEcho()">
+                        <span><strong>Có tổn thương van phối hợp đi kèm</strong> (Hở chủ AR, Hẹp chủ AS, Hở hai lá MR &gt; nhẹ, hoặc Hở ba lá TR nặng) — <em>Cảnh báo sai số đo PHT và phương trình liên tục!</em></span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="echo-eval-outcome"></div>
+        </div>
+
+        <!-- REFERENCE TABLE OF ECHOCARDIOGRAPHIC PARAMETERS -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Thông số Siêu âm (TTE / TOE)</th>
+                        <th>Hẹp Nhẹ / Vừa (Progressive)</th>
+                        <th>Hẹp Nặng có ý nghĩa lâm sàng (Clinically Severe MS)</th>
+                        <th>Lưu ý Kỹ thuật &amp; Bẫy Chẩn đoán (ESC/EACTS 2025)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Diện tích lỗ van (MVA)</strong></td>
+                        <td>&gt; 1.5 cm²</td>
+                        <td><strong>≤ 1.5 cm²</strong><br><em>(Rất khít: &lt; 1.0 cm²)</em></td>
+                        <td><strong>2D/3D Planimetry</strong> là chuẩn mực nhất vì không phụ thuộc lưu lượng và độ giãn nở buồng tim.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Chênh áp trung bình (Mean PG)</strong></td>
+                        <td>&lt; 5 mmHg (nhẹ)<br>5–10 mmHg (vừa)</td>
+                        <td><strong>&gt; 10 mmHg</strong><br><em>(ở tần số tim 60–80 l/p)</em></td>
+                        <td>Phụ thuộc mạnh vào tần số tim và cung lượng tim. Thể <em>Low-gradient severe MS</em> (MVA ≤ 1.5 cm² nhưng Mean PG &lt; 10 mmHg) hay gặp ở người già.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Áp lực ĐM phổi tâm thu (SPAP)</strong></td>
+                        <td>&lt; 30 mmHg (nhẹ)<br>30–50 mmHg (vừa)</td>
+                        <td><strong>&gt; 50 mmHg</strong> lúc nghỉ</td>
+                        <td>SPAP &gt; 50 mmHg lúc nghỉ là mốc chỉ định can thiệp <span class="class-badge class-2a">Class IIa</span> ngay cả khi bệnh nhân chưa có triệu chứng.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Thời gian bán giảm áp lực (PHT)</strong></td>
+                        <td>&lt; 150 ms</td>
+                        <td><strong>≥ 150 ms</strong><br><em>(MVA = 220 / PHT)</em></td>
+                        <td><strong>Không chính xác (Bẫy chẩn đoán)</strong> ngay sau PMC, hoặc khi có hở chủ (AR), hở hai lá (MR), hoặc giảm độ giãn nở thất trái (phì đại thất trái, AS).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Siêu âm gắng sức (Exercise Echo)</strong></td>
+                        <td colspan="2">Đánh giá động học khi triệu chứng không tương xứng mức độ hẹp lúc nghỉ (Mean PG tăng &gt; 15 mmHg hoặc SPAP tăng &gt; 60 mmHg khi gắng sức gợi ý hẹp có ý nghĩa huyết động).</td>
+                        <td>Ưu tiên nghiệm pháp gắng sức thể lực (xe đạp/thảm lăn) hơn siêu âm Dobutamine.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 2: RHEUMATIC MS INTERACTIVE ALGORITHM (FIGURE 14)                 -->
+    <!-- ===================================================================== -->
+    <div id="tab-rheumatic" class="tab-content">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Áp dụng cho Hẹp hai lá hậu thấp có MVA ≤ 1.5 cm² (Figure 14):</span>
+            <button class="btn-reset" onclick="resetRheum()">↻ Làm lại từ đầu (Ca bệnh mới)</button>
+        </div>
+
+        <!-- STEP R1: SYMPTOMS -->
+        <div class="wizard-step" id="r-step-1">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1 • Figure 14</span>
+                    <div class="step-title">Tình trạng Triệu chứng Cơ năng của Bệnh nhân (MVA ≤ 1.5 cm²)</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectRheumSymp('yes', this)">
+                    <input type="radio" name="r_symp" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ TRIỆU CHỨNG (NYHA II–IV)</strong>
+                        <span>Khó thở khi gắng sức, khó thở khi nằm, cơn khó thở kịch phát về đêm...</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectRheumSymp('no', this)">
+                    <input type="radio" name="r_symp" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG CÓ TRIỆU CHỨNG</strong>
+                        <span>Bệnh nhân hoàn toàn không khai nhận triệu chứng lúc nghỉ.</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- ==================== SYMPTOMATIC ARM ==================== -->
+        <div class="wizard-step hidden" id="r-symp-contra">
+            <div class="connector">▼ Nhánh Có Triệu Chứng: Sàng lọc Chống chỉ định Nong van bằng bóng (PMC - Table 8)</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2A • Table 8</span>
+                    <div class="step-title">Tick chọn nếu Bệnh nhân CÓ Chống chỉ định Nong van bằng bóng qua da (PMC)</div>
+                </div>
+            </div>
+            <div class="checklist-group" id="pmc-contra-checks">
+                <label class="check-row"><input type="checkbox" onchange="evalPmcContra()"> <strong>Huyết khối nhĩ trái (LA thrombus)</strong> trên siêu âm qua thực quản (TOE). <em>(Nếu chỉ ở tiểu nhĩ trái và chống chỉ định mổ: có thể chống đông 1–3 tháng rồi siêu âm TOE kiểm tra lại).</em></label>
+                <label class="check-row"><input type="checkbox" onchange="evalPmcContra()"> <strong>Hở van hai lá (MR) mức độ hơn nhẹ (&gt; mild MR)</strong>.</label>
+                <label class="check-row"><input type="checkbox" onchange="evalPmcContra()"> <strong>Vôi hóa van nặng hoặc vôi hóa cả hai mép van</strong> (bi-commissural calcification).</label>
+                <label class="check-row"><input type="checkbox" onchange="evalPmcContra()"> <strong>Không có dính mép van</strong> (Absence of commissural fusion).</label>
+                <label class="check-row"><input type="checkbox" onchange="evalPmcContra()"> <strong>Bệnh van động mạch chủ nặng đi kèm</strong>, hoặc hẹp/hở van ba lá nặng phối hợp cần phẫu thuật.</label>
+                <label class="check-row"><input type="checkbox" onchange="evalPmcContra()"> <strong>Bệnh động mạch vành (CAD) đi kèm</strong> có chỉ định phẫu thuật bắc cầu (CABG).</label>
+            </div>
+            <div id="pmc-contra-outcome"></div>
+        </div>
+
+        <!-- STEP R3: WILKINS SCORE & ANATOMICAL/CLINICAL CHARACTERISTICS -->
+        <div class="wizard-step hidden" id="r-symp-fav">
+            <div class="connector">▼ Không có chống chỉ định tuyệt đối PMC → Chấm điểm Wilkins &amp; Đặc điểm Lâm sàng</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 3A • Đánh giá Hình thái &amp; Lâm sàng</span>
+                    <div class="step-title">Tính điểm Siêu âm Wilkins &amp; Tick Đặc điểm Bất lợi cho PMC</div>
+                </div>
+            </div>
+
+            <!-- Wilkins Calculator -->
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; margin-bottom: 12px;">
+                <strong style="font-size: 0.9rem; color: var(--primary-burgundy);">🧮 Bảng tính nhanh Điểm siêu âm Wilkins (Echocardiographic Score — Bất lợi khi &gt; 8 điểm):</strong>
+                <div class="wilkins-grid">
+                    <div class="wilkins-item">
+                        <label>1. Độ di động lá van (Mobility)</label>
+                        <select id="w-mob" onchange="evalPmcFav()">
+                            <option value="1">1đ: Di động tốt, chỉ hạn chế bờ van</option>
+                            <option value="2">2đ: Phần giữa và đáy lá van di động bình thường</option>
+                            <option value="3">3đ: Lá van di chuyển về phía trước tâm trương chủ yếu ở đáy</option>
+                            <option value="4">4đ: Lá van hầu như không di động tâm trương</option>
+                        </select>
+                    </div>
+                    <div class="wilkins-item">
+                        <label>2. Độ dày lá van (Thickening)</label>
+                        <select id="w-thick" onchange="evalPmcFav()">
+                            <option value="1">1đ: Lá van gần bình thường (4–5 mm)</option>
+                            <option value="2">2đ: Phần giữa bình thường, dày nhiều ở bờ (5–8 mm)</option>
+                            <option value="3">3đ: Dày toàn bộ lá van (5–8 mm)</option>
+                            <option value="4">4đ: Dày rất nặng toàn bộ lá van (&gt; 8–10 mm)</option>
+                        </select>
+                    </div>
+                    <div class="wilkins-item">
+                        <label>3. Vôi hóa lá van (Calcification)</label>
+                        <select id="w-calc" onchange="evalPmcFav()">
+                            <option value="1">1đ: Một vùng tăng âm nhỏ đơn độc</option>
+                            <option value="2">2đ: Các ổ tăng âm rải rác ở bờ lá van</option>
+                            <option value="3">3đ: Vôi hóa lan tới phần giữa lá van</option>
+                            <option value="4">4đ: Vôi hóa lan rộng toàn bộ mô lá van</option>
+                        </select>
+                    </div>
+                    <div class="wilkins-item">
+                        <label>4. Dày bộ máy dưới van (Subvalvular)</label>
+                        <select id="w-sub" onchange="evalPmcFav()">
+                            <option value="1">1đ: Dày tối thiểu ngay dưới lá van</option>
+                            <option value="2">2đ: Dày dây chằng lan tới 1/3 chiều dài dây chằng</option>
+                            <option value="3">3đ: Dày lan tới 1/3 xa của dây chằng</option>
+                            <option value="4">4đ: Dày và co rút nặng toàn bộ dây chằng tới tận cơ nhú</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: 8px; font-size: 0.88rem; font-weight: 700; color: var(--primary-dark);">
+                    Tổng điểm Wilkins hiện tại: <span id="wilkins-total" style="color: var(--primary-burgundy); font-size: 1rem;">4</span> / 16 điểm (<span id="wilkins-status" style="color: var(--green-text);">Thuận lợi ≤ 8 điểm</span>)
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="checklist-group" id="anat-unfav-checks" style="margin-top:0;">
+                    <strong style="font-size: 0.88rem; color: var(--primary-dark); display:block; margin-bottom:6px;">Đặc điểm GIẢI PHẪU bất lợi khác (Tick nếu CÓ):</strong>
+                    <label class="check-row"><input type="checkbox" onchange="evalPmcFav()"> Điểm Cormier nhóm 3 (vôi hóa van hai lá bất kỳ mức độ nào thấy trên màn tăng sáng fluoroscopy)</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalPmcFav()"> Hở van ba lá (TR) nặng đi kèm</label>
+                </div>
+                <div class="checklist-group" id="clin-unfav-checks" style="margin-top:0;">
+                    <strong style="font-size: 0.88rem; color: var(--primary-dark); display:block; margin-bottom:6px;">Đặc điểm LÂM SÀNG bất lợi (Tick nếu CÓ):</strong>
+                    <label class="check-row"><input type="checkbox" onchange="evalPmcFav()"> Tuổi cao</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalPmcFav()"> Tiền sử đã từng nong van / tách mép van trước đây</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalPmcFav()"> Suy tim NYHA độ IV</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalPmcFav()"> Rung nhĩ mạn tính (Permanent AF)</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalPmcFav()"> Tăng áp động mạch phổi (PH) nặng</label>
+                </div>
+            </div>
+            <div id="pmc-fav-outcome"></div>
+        </div>
+
+        <!-- STEP R4: SURGICAL RISK -->
+        <div class="wizard-step hidden" id="r-symp-surgrisk">
+            <div class="connector">▼ Đánh giá Nguy cơ Phẫu thuật</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 4A</span>
+                    <div class="step-title">Bệnh nhân có Chống chỉ định hoặc Nguy cơ Cao với Phẫu thuật Van Hai Lá không?</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectSurgRisk('no', this)">
+                    <input type="radio" name="r_surgrisk" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG — Phẫu thuật được (Nguy cơ thấp/trung bình)</strong>
+                        <span>Đủ điều kiện phẫu thuật sửa van (tại trung tâm kinh nghiệm) hoặc thay van hai lá.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectSurgRisk('yes', this)">
+                    <input type="radio" name="r_surgrisk" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ — Chống chỉ định hoặc Nguy cơ Phẫu thuật Cao</strong>
+                        <span>Nhiều bệnh đồng mắc nặng, suy yếu, nguy cơ tử vong phẫu thuật cao.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="surgrisk-outcome"></div>
+        </div>
+
+        <!-- ==================== ASYMPTOMATIC ARM ==================== -->
+        <div class="wizard-step hidden" id="r-asymp-risk">
+            <div class="connector">▼ Nhánh Không Triệu Chứng: Đánh giá Nguy cơ Thuyên tắc Mạch hoặc Mất bù Huyết động</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2B</span>
+                    <div class="step-title">Tick chọn nếu Bệnh nhân CÓ Yếu tố Nguy cơ Cao Thuyên tắc hoặc Mất bù Huyết động</div>
+                </div>
+            </div>
+            <div class="checklist-group" id="asymp-highrisk-checks">
+                <label class="check-row"><input type="checkbox" onchange="evalAsympRisk()"> <strong>Nguy cơ thuyên tắc mạch cao:</strong> Tiền sử thuyên tắc hệ thống, cản âm tự phát dày đặc (dense smoke) trong nhĩ trái trên TOE, hoặc rung nhĩ mới khởi phát / kịch phát.</label>
+                <label class="check-row"><input type="checkbox" onchange="evalAsympRisk()"> <strong>Nguy cơ mất bù huyết động cao:</strong> Áp lực ĐM phổi tâm thu (SPAP) lúc nghỉ &gt; 50 mmHg, cần phẫu thuật ngoài tim (NCS) lớn, hoặc đang mang thai / có kế hoạch mang thai.</label>
+            </div>
+            <div id="asymp-risk-outcome"></div>
+        </div>
+
+        <!-- STEP R3-ASYMP: EXERCISE TESTING -->
+        <div class="wizard-step hidden" id="r-asymp-ex">
+            <div class="connector">▼ Không có yếu tố nguy cơ cao lúc nghỉ → Nghiệm pháp Gắng sức</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 3B</span>
+                    <div class="step-title">Kết quả Nghiệm pháp Gắng sức (Exercise Testing / Exercise Echo)</div>
+                </div>
+            </div>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectExTest('no', this)">
+                    <input type="radio" name="r_extest" value="no">
+                    <div class="choice-text">
+                        <strong>Không xuất hiện triệu chứng khi gắng sức</strong>
+                        <span>Dung nạp gắng sức bình thường.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectExTest('yes', this)">
+                    <input type="radio" name="r_extest" value="yes">
+                    <div class="choice-text">
+                        <strong>Xuất hiện triệu chứng khi gắng sức (Bộc lộ triệu chứng)</strong>
+                        <span>Khó thở, giảm khả năng gắng sức do hẹp van hai lá.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="extest-outcome"></div>
+        </div>
+
+        <!-- STEP R4-ASYMP: PMC SUITABILITY -->
+        <div class="wizard-step hidden" id="r-asymp-pmc">
+            <div class="connector">▼ Đánh giá Điều kiện Thực hiện PMC ở Bệnh nhân Không Triệu Chứng</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 4B</span>
+                    <div class="step-title">Bệnh nhân có Chống chỉ định hoặc Đặc điểm Bất lợi cho PMC không?</div>
+                </div>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted);">Bao gồm chống chỉ định PMC (Table 8) hoặc đặc điểm bất lợi (Wilkins &gt; 8, Cormier 3, TR nặng, tuổi cao, tiền sử nong van, rung nhĩ mạn, PH nặng):</p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectAsympPmc('no', this)">
+                    <input type="radio" name="r_asymp_pmc" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG — Giải phẫu &amp; Lâm sàng thuận lợi cho PMC</strong>
+                        <span>Không có chống chỉ định, cấu trúc van phù hợp nong bóng qua da.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectAsympPmc('yes', this)">
+                    <input type="radio" name="r_asymp_pmc" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ — Chống chỉ định hoặc Đặc điểm bất lợi cho PMC</strong>
+                        <span>Không phù hợp để nong van bằng bóng qua da.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="asymp-pmc-outcome"></div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: DEGENERATIVE MS (MAC), MEDICAL THERAPY & SPECIAL SCENARIOS     -->
+    <!-- ===================================================================== -->
+    <div id="tab-mac-med" class="tab-content">
+        <div class="grid-2">
+            <div class="info-card burgundy">
+                <h3>1. Hẹp Hai Lá Thoái Hóa do Vôi hóa Vòng Van (MAC - Section 10.3)</h3>
+                <ul>
+                    <li><strong>Đặc điểm bệnh học:</strong> Thường gặp ở người cao tuổi, nhiều bệnh đồng mắc; vôi hóa lan từ vòng van (chủ yếu vòng van sau) vào lá van và bộ máy dưới van. <strong>Không có dính mép van</strong> nên <strong>chống chỉ định nong van bằng bóng (PMC)</strong>.</li>
+                    <li><strong>Đánh giá hình ảnh:</strong> TTE thường bị bóng cản âm do vôi hóa nặng; cần dùng <strong>TOE</strong> và bắt buộc chụp <strong>CT tim có cổng điện tâm đồ (ECG-gated CCT)</strong> để định vị mức độ lan rộng của vôi hóa và đánh giá nguy cơ tắc nghẽn đường ra thất trái (LVOT).</li>
+                    <li><strong>Chỉ định can thiệp (khi có triệu chứng kháng trị nội khoa):</strong>
+                        <br>• <em>Phẫu thuật tim hở:</em> Sửa hoặc thay van hai lá kèm lấy bỏ vôi hóa rộng và tái tạo vòng van bằng miếng vá (patch) — chỉ thực hiện tại Trung tâm Van tim rất giàu kinh nghiệm ở bệnh nhân chọn lọc (ví dụ bệnh nhân trẻ sau xạ trị ngực, tỷ lệ tử vong &lt; 5%).
+                        <br>• <em>Thay van hai lá qua đường ống thông (TMVI):</em> Có thể cân nhắc <span class="class-badge class-2b">Class IIb</span> ở bệnh nhân có triệu chứng, vôi hóa MAC lan rộng và rối loạn chức năng van hai lá nặng tại Trung tâm Van tim chuyên sâu. Ưu tiên dụng cụ <strong>TMVI chuyên biệt</strong> (an toàn hơn dùng van TAVI đặt ngược vào vị trí hai lá vì giảm nguy cơ tắc LVOT, di lệch van và tán huyết do rò cạnh van).
+                    </li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>2. Điều trị Nội khoa &amp; Chống đông trong Hẹp Hai Lá (Section 10.2.2)</h3>
+                <ul>
+                    <li><strong>Kiểm soát triệu chứng:</strong> Thuốc lợi tiểu, chẹn beta giao cảm, digoxin, chẹn kênh canxi không-dihydropyridine hoặc ivabradine giúp giảm sung huyết phổi và kéo dài thời gian đổ đầy tâm trương.</li>
+                    <li><strong>Chống đông trong Rung nhĩ (AF):</strong>
+                        <br>• Bắt buộc dùng <strong>Kháng Vitamin K (VKA) với mục tiêu INR 2.0–3.0</strong> <span class="class-badge class-1">Class I</span>.
+                        <br>• <strong>CHỐNG CHỈ ĐỊNH dùng DOAC</strong> ở bệnh nhân rung nhĩ kèm hẹp hai lá hậu thấp có <strong>MVA ≤ 2.0 cm²</strong> <span class="class-badge class-3">Class III</span>.
+                    </li>
+                    <li><strong>Chống đông khi còn Nhịp xoang:</strong> Chỉ định OAC khi có tiền sử thuyên tắc hệ thống hoặc có huyết khối nhĩ trái; nên cân nhắc OAC khi siêu âm TOE thấy cản âm tự phát dày đặc (dense smoke) hoặc giãn nhĩ trái lớn (đường kính M-mode &gt; 50 mm hoặc LAVI &gt; 60 mL/m²).</li>
+                    <li><strong>Phẫu thuật kèm Rung nhĩ:</strong> Nếu phẫu thuật van hai lá, khuyến cáo <strong>triệt đốt rung nhĩ đồng thời</strong> <span class="class-badge class-1">Class I</span> và <strong>đóng tiểu nhĩ trái (LAAO)</strong> <span class="class-badge class-1">Class I</span>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tình huống Lâm sàng Đặc biệt</th>
+                        <th>Khuyến cáo Xử trí theo ESC/EACTS 2025</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Phẫu thuật Ngoài tim (Non-Cardiac Surgery - NCS)</strong><br><em>(Section 15.2.2)</em></td>
+                        <td>
+                            • Kiểm soát chặt tần số tim (tránh nhịp nhanh) và cân bằng dịch (tránh phù phổi cấp); tránh dùng thuốc giãn động mạch.<br>
+                            • <strong>An toàn để mổ NCS ngay:</strong> Bệnh nhân có MVA &gt; 1.5 cm², hoặc bệnh nhân <em>không triệu chứng</em> có MVA ≤ 1.5 cm² và SPAP &lt; 50 mmHg.<br>
+                            • <strong>Cần nong van (PMC) hoặc can thiệp van trước mổ NCS nguy cơ cao:</strong> Bệnh nhân có triệu chứng hoặc SPAP &gt; 50 mmHg.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phụ nữ Chuẩn bị Mang thai &amp; Đang Mang thai</strong><br><em>(Section 16.1 &amp; 16.2)</em></td>
+                        <td>
+                            • <strong>Trước mang thai:</strong> Khuyến cáo điều trị triệt để hẹp hai lá có <strong>MVA &lt; 1.5 cm² ngay cả khi chưa có triệu chứng</strong> (lựa chọn đầu tay là <strong>PMC</strong>; nếu bắt buộc thay van thì chọn van sinh học BHV để tránh quái thai do VKA).<br>
+                            • <strong>Trong thai kỳ:</strong> Nguy cơ suy tim cao nhất ở tam cá nguyệt thứ 2 (1/3 số ca MVA &lt; 1.5 cm² và 1/2 số ca MVA &lt; 1.0 cm²). Nếu vẫn có triệu chứng hoặc SPAP &gt; 50 mmHg dù đã dùng lợi tiểu và chẹn beta-1 chọn lọc → cân nhắc thực hiện <strong>PMC sau tuần thai thứ 20</strong>.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bệnh Van tim Phối hợp (Multiple &amp; Mixed VHD)</strong><br><em>(Section 10.2.3 &amp; 13.3)</em></td>
+                        <td>
+                            • <strong>Hẹp 2 lá nặng + Bệnh van ĐMC nặng:</strong> Ưu tiên phẫu thuật cả hai van (trừ khi nguy cơ phẫu thuật cao). Nếu van ĐMC chỉ hẹp/hở vừa, có thể làm PMC để trì hoãn phẫu thuật.<br>
+                            • <strong>Hẹp 2 lá nặng + Hở 3 lá nặng:</strong> Nếu nguy cơ phẫu thuật không cao, ưu tiên phẫu thuật cả hai van. Nếu nguy cơ phẫu thuật cao, nhịp xoang, nhĩ giãn vừa và hở ba lá thứ phát do tăng áp phổi sau mao mạch → có thể cân nhắc PMC.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function clearSelection(containerId) {
+        document.querySelectorAll(`#${containerId} .choice-card`).forEach(c => c.classList.remove('selected'));
+    }
+
+    /* ================= TAB 1: ECHOCARDIOGRAPHY EVALUATION LOGIC ================= */
+    function resetEcho() {
+        document.getElementById('in-mva').value = '';
+        document.getElementById('in-grad').value = '';
+        document.getElementById('in-spap').value = '';
+        document.getElementById('in-lavi').value = '';
+        document.getElementById('chk-commissural').checked = true;
+        document.getElementById('chk-mac').checked = false;
+        document.getElementById('chk-la-clot').checked = false;
+        document.getElementById('chk-concomitant').checked = false;
+        document.getElementById('echo-eval-outcome').innerHTML = '';
+    }
+
+    function evaluateEcho() {
+        const mva = parseFloat(document.getElementById('in-mva').value);
+        const grad = parseFloat(document.getElementById('in-grad').value);
+        const spap = parseFloat(document.getElementById('in-spap').value);
+        const lavi = parseFloat(document.getElementById('in-lavi').value);
+
+        const isCommissural = document.getElementById('chk-commissural').checked;
+        const isMac = document.getElementById('chk-mac').checked;
+        const hasLaClot = document.getElementById('chk-la-clot').checked;
+        const hasConcomitant = document.getElementById('chk-concomitant').checked;
+
+        const out = document.getElementById('echo-eval-outcome');
+
+        if (isNaN(mva) && isNaN(grad) && isNaN(spap) && isNaN(lavi) && !isMac && !hasLaClot && !hasConcomitant) {
+            out.innerHTML = '';
+            return;
+        }
+
+        let alerts = [];
+        let severityBanner = '';
+
+        // 1. Severity grading based on MVA
+        if (!isNaN(mva)) {
+            if (mva <= 1.5) {
+                const verySevere = mva < 1.0 ? ' (Hẹp rất khít < 1.0 cm²)' : '';
+                const lowGradNote = (!isNaN(grad) && grad < 10)
+                    ? ' — <strong>Lưu ý thể Low-gradient severe MS (Mean PG &lt; 10 mmHg):</strong> thường gặp ở bệnh nhân cao tuổi, giải phẫu van thường kém thuận lợi.'
+                    : '';
+                severityBanner = `
+                    <div class="action-result red">
+                        <h4>🩺 PHÂN ĐỘ: HẸP VAN HAI LÁ CÓ Ý NGHĨA LÂM SÀNG (MVA = ${mva} cm² ≤ 1.5 cm²)${verySevere}</h4>
+                        <ul>
+                            <li>Đạt ngưỡng chỉ định xem xét can thiệp theo khuyến cáo ESC/EACTS 2025${lowGradNote}</li>
+                            ${isMac ? '<li><strong>Căn nguyên MAC:</strong> Vôi hóa vòng van lan rộng, không dính mép van → <strong>Chống chỉ định PMC</strong>. Cần chụp ECG-gated CCT đánh giá phẫu thuật hoặc TMVI (xem Thẻ 3).</li>' : '<li><strong>Căn nguyên Hậu thấp:</strong> Chuyển sang <strong>Thẻ 2 (Lưu đồ Figure 14)</strong> để phân nhánh điều trị PMC hay Phẫu thuật.</li>'}
+                        </ul>
+                    </div>`;
+            } else {
+                severityBanner = `
+                    <div class="action-result green">
+                        <h4>✓ PHÂN ĐỘ: HẸP VAN HAI LÁ MỨC ĐỘ NHẸ – VỪA (MVA = ${mva} cm² &gt; 1.5 cm²)</h4>
+                        <ul>
+                            <li>Chưa đạt ngưỡng hẹp nặng trên giải phẫu. Theo dõi TTE định kỳ mỗi <strong>2–3 năm</strong>.</li>
+                            ${mva <= 2.0 ? '<li><strong>Cảnh báo chống đông:</strong> Vì MVA ≤ 2.0 cm², nếu bệnh nhân có rung nhĩ (AF) <strong>bắt buộc dùng Kháng Vitamin K (VKA)</strong>, chống chỉ định DOAC <span class="class-badge class-3">Class III</span>.</li>' : ''}
+                            <li>Nếu bệnh nhân có triệu chứng cơ năng không giải thích được bằng nguyên nhân khác → Làm <strong>siêu âm tim gắng sức (Exercise Echo)</strong>; có thể cân nhắc PMC <span class="class-badge class-2b">Class IIb</span> nếu giải phẫu thuận lợi.</li>
+                        </ul>
+                    </div>`;
+            }
+        }
+
+        // 2. Haemodynamic & Structural Warnings
+        if (!isNaN(grad) && grad > 10) {
+            alerts.push(`<strong>Chênh áp trung bình tăng cao (${grad} mmHg &gt; 10 mmHg):</strong> Phản ánh tắc nghẽn huyết động đáng kể qua van hai lá.`);
+        }
+        if (!isNaN(spap) && spap > 50) {
+            alerts.push(`<strong>Tăng áp lực ĐM phổi nặng lúc nghỉ (SPAP = ${spap} mmHg &gt; 50 mmHg):</strong> Đây là yếu tố nguy cơ cao mất bù huyết động — đủ tiêu chuẩn chỉ định can thiệp PMC <span class="class-badge class-2a">Class IIa</span> ngay cả khi bệnh nhân chưa có triệu chứng.`);
+        }
+        if (!isNaN(lavi) && lavi > 60) {
+            alerts.push(`<strong>Giãn nhĩ trái lớn (LAVI = ${lavi} mL/m² &gt; 60 mL/m²):</strong> Nguy cơ cao hình thành huyết khối nhĩ trái; nên cân nhắc chống đông đường uống (OAC) ngay cả khi bệnh nhân còn nhịp xoang.`);
+        }
+        if (hasLaClot) {
+            alerts.push(`<strong>Huyết khối nhĩ trái / Cản âm dày đặc (Dense smoke):</strong> Chống chỉ định tuyệt đối nong van bằng bóng (PMC) ngay lập tức. Cần điều trị chống đông VKA (INR 2–3) và đánh giá lại bằng TOE sau 1–3 tháng (nếu huyết khối ở tiểu nhĩ trái) hoặc chỉ định phẫu thuật.`);
+        }
+        if (hasConcomitant) {
+            alerts.push(`<strong>Bẫy chẩn đoán Bệnh van phối hợp (Table 9):</strong> Khi có AR, MR, AS hoặc TR đi kèm, chỉ số <strong>PHT và phương trình liên tục không còn chính xác</strong>. Bắt buộc dựa vào <strong>2D/3D Planimetry trên TOE</strong> để đo MVA.`);
+        }
+        if (!isCommissural && !isMac) {
+            alerts.push(`<strong>Lưu ý hình thái van:</strong> Không ghi nhận dính mép van (commissural fusion) → Cần kiểm tra kỹ nguyên nhân (thoái hóa MAC, bẩm sinh, xạ trị...) vì PMC chỉ hiệu quả khi có dính mép van.`);
+        }
+
+        let alertsHtml = '';
+        if (alerts.length > 0) {
+            alertsHtml = `
+                <div class="action-result blue">
+                    <h4>📋 Phân tích Thông số Huyết động &amp; Lưu ý Lâm sàng Từ Siêu âm</h4>
+                    <ul>${alerts.map(a => `<li>${a}</li>`).join('')}</ul>
+                </div>`;
+        }
+
+        out.innerHTML = severityBanner + alertsHtml;
+    }
+
+    /* ================= TAB 2: RHEUMATIC MS FLOWCHART (FIGURE 14) ================= */
+    function resetRheum() {
+        document.querySelectorAll('#tab-rheumatic input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('#tab-rheumatic input[type="checkbox"]').forEach(c => c.checked = false);
+        document.querySelectorAll('#tab-rheumatic .choice-card').forEach(c => c.classList.remove('selected'));
+        ['w-mob', 'w-thick', 'w-calc', 'w-sub'].forEach(id => document.getElementById(id).value = '1');
+
+        ['r-symp-contra', 'r-symp-fav', 'r-symp-surgrisk', 'r-asymp-risk', 'r-asymp-ex', 'r-asymp-pmc'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        ['pmc-contra-outcome', 'pmc-fav-outcome', 'surgrisk-outcome', 'asymp-risk-outcome', 'extest-outcome', 'asymp-pmc-outcome'].forEach(id => {
+            document.getElementById(id).innerHTML = '';
+        });
+    }
+
+    function selectRheumSymp(val, card) {
+        clearSelection('r-step-1');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        ['r-symp-contra', 'r-symp-fav', 'r-symp-surgrisk', 'r-asymp-risk', 'r-asymp-ex', 'r-asymp-pmc'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+
+        if (val === 'yes') {
+            document.getElementById('r-symp-contra').classList.remove('hidden');
+            evalPmcContra();
+        } else {
+            document.getElementById('r-asymp-risk').classList.remove('hidden');
+            evalAsympRisk();
+        }
+    }
+
+    function evalPmcContra() {
+        const checks = document.querySelectorAll('#pmc-contra-checks input[type="checkbox"]');
+        let hasContra = false;
+        checks.forEach(c => { if (c.checked) hasContra = true; });
+
+        const out = document.getElementById('pmc-contra-outcome');
+        if (hasContra) {
+            document.getElementById('r-symp-fav').classList.add('hidden');
+            document.getElementById('r-symp-surgrisk').classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🔪 CHỈ ĐỊNH: PHẪU THUẬT VAN HAI LÁ (SURGERY) <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Do có chống chỉ định thực hiện PMC (Table 8), phẫu thuật sửa van (tại trung tâm kinh nghiệm) hoặc thay van hai lá là chỉ định bắt buộc.</li>
+                        <li>Nếu bệnh nhân có rung nhĩ đi kèm, khuyến cáo kết hợp <strong>triệt đốt rung nhĩ đồng thời</strong> <span class="class-badge class-1">Class I</span> và <strong>đóng tiểu nhĩ trái</strong> <span class="class-badge class-1">Class I</span>.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = '';
+            document.getElementById('r-symp-fav').classList.remove('hidden');
+            evalPmcFav();
+        }
+    }
+
+    function evalPmcFav() {
+        const wScore = parseInt(document.getElementById('w-mob').value)
+                     + parseInt(document.getElementById('w-thick').value)
+                     + parseInt(document.getElementById('w-calc').value)
+                     + parseInt(document.getElementById('w-sub').value);
+
+        document.getElementById('wilkins-total').textContent = wScore;
+        const wStatus = document.getElementById('wilkins-status');
+        const wilkinsUnfav = wScore > 8;
+
+        if (wilkinsUnfav) {
+            wStatus.textContent = 'Bất lợi (> 8 điểm)';
+            wStatus.style.color = 'var(--red-text)';
+        } else {
+            wStatus.textContent = 'Thuận lợi (≤ 8 điểm)';
+            wStatus.style.color = 'var(--green-text)';
+        }
+
+        let otherAnatUnfav = false;
+        document.querySelectorAll('#anat-unfav-checks input[type="checkbox"]').forEach(c => { if (c.checked) otherAnatUnfav = true; });
+
+        const anatUnfav = wilkinsUnfav || otherAnatUnfav;
+
+        let clinUnfav = false;
+        document.querySelectorAll('#clin-unfav-checks input[type="checkbox"]').forEach(c => { if (c.checked) clinUnfav = true; });
+
+        const out = document.getElementById('pmc-fav-outcome');
+        const surgRiskStep = document.getElementById('r-symp-surgrisk');
+
+        if (!anatUnfav && !clinUnfav) {
+            surgRiskStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🎈 CHỈ ĐỊNH ĐẦU TAY: NONG VAN HAI LÁ BẰNG BÓNG QUA DA (PMC) <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Bệnh nhân có triệu chứng, không có chống chỉ định, điểm Wilkins = ${wScore}/16 (≤ 8) và đặc điểm lâm sàng thuận lợi → <strong>PMC là điều trị chuẩn đầu tay</strong>.</li>
+                    </ul>
+                </div>`;
+        } else if (anatUnfav && !clinUnfav) {
+            surgRiskStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>🎈 NÊN CÂN NHẮC: NONG VAN HAI LÁ BẰNG BÓNG QUA DA (PMC) <span class="class-badge class-2a">Class IIa</span></h4>
+                    <ul>
+                        <li>Mặc dù giải phẫu dưới mức tối ưu (Wilkins = ${wScore}/16 hoặc có yếu tố giải phẫu bất lợi), bệnh nhân không có đặc điểm lâm sàng bất lợi → <strong>PMC vẫn nên được cân nhắc là điều trị khởi đầu</strong> tại trung tâm có kinh nghiệm.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result blue">
+                    <h4>⚖️ Có đặc điểm lâm sàng bất lợi → Cần đối chiếu Nguy cơ Phẫu thuật ở Bước 4A bên dưới</h4>
+                    <ul>
+                        <li>Theo lưu đồ Figure 14: Khi có đặc điểm lâm sàng bất lợi, quyết định giữa <strong>PMC</strong> và <strong>Phẫu thuật</strong> phụ thuộc vào nguy cơ phẫu thuật của bệnh nhân.</li>
+                    </ul>
+                </div>`;
+            surgRiskStep.classList.remove('hidden');
+        }
+    }
+
+    function selectSurgRisk(isHighRisk, card) {
+        clearSelection('r-symp-surgrisk');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('surgrisk-outcome');
+        if (isHighRisk === 'yes') {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🎈 CHỈ ĐỊNH: NONG VAN HAI LÁ BẰNG BÓNG QUA DA (PMC) <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>PMC được khuyến cáo cho mọi bệnh nhân có triệu chứng nhưng có chống chỉ định hoặc nguy cơ cao đối với phẫu thuật.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🔪 CHỈ ĐỊNH: PHẪU THUẬT VAN HAI LÁ (SURGERY) <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Bệnh nhân có đặc điểm lâm sàng/giải phẫu bất lợi cho PMC và đủ điều kiện phẫu thuật an toàn → Phẫu thuật sửa hoặc thay van hai lá.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    function evalAsympRisk() {
+        let highRisk = false;
+        document.querySelectorAll('#asymp-highrisk-checks input[type="checkbox"]').forEach(c => { if (c.checked) highRisk = true; });
+
+        const out = document.getElementById('asymp-risk-outcome');
+        const exStep = document.getElementById('r-asymp-ex');
+        const pmcStep = document.getElementById('r-asymp-pmc');
+
+        if (highRisk) {
+            exStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>⚠️ CÓ YẾU TỐ NGUY CƠ CAO → Đánh giá khả năng làm PMC ở Bước 4B bên dưới</h4>
+                    <ul>
+                        <li>Bệnh nhân không triệu chứng nhưng có nguy cơ cao thuyên tắc mạch hoặc mất bù huyết động có chỉ định can thiệp sớm.</li>
+                    </ul>
+                </div>`;
+            pmcStep.classList.remove('hidden');
+        } else {
+            pmcStep.classList.add('hidden');
+            out.innerHTML = '';
+            exStep.classList.remove('hidden');
+        }
+    }
+
+    function selectExTest(hasSymp, card) {
+        clearSelection('r-asymp-ex');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('extest-outcome');
+        const pmcStep = document.getElementById('r-asymp-pmc');
+
+        if (hasSymp === 'no') {
+            pmcStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>📅 QUYẾT ĐỊNH: THEO DÕI ĐỊNH KỲ (FOLLOW-UP)</h4>
+                    <ul>
+                        <li>Siêu âm tim (TTE) và khám lâm sàng <strong>mỗi năm 1 lần</strong>.</li>
+                        <li>Giáo dục bệnh nhân (đặc biệt phụ nữ trong độ tuổi sinh đẻ) báo ngay khi có triệu chứng khó thở hoặc trước khi có kế hoạch mang thai.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>🏃 NGHIỆM PHÁP GẮNG SỨC DƯƠNG TÍNH → Đánh giá khả năng làm PMC ở Bước 4B bên dưới</h4>
+                    <ul>
+                        <li>Bệnh nhân được xem như có triệu chứng và cần xét chỉ định can thiệp.</li>
+                    </ul>
+                </div>`;
+            pmcStep.classList.remove('hidden');
+        }
+    }
+
+    function selectAsympPmc(unsuitable, card) {
+        clearSelection('r-asymp-pmc');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('asymp-pmc-outcome');
+        if (unsuitable === 'no') {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>🎈 NÊN CÂN NHẮC: NONG VAN HAI LÁ BẰNG BÓNG QUA DA (PMC) <span class="class-badge class-2a">Class IIa</span></h4>
+                    <ul>
+                        <li>PMC nên được cân nhắc ở bệnh nhân không triệu chứng nhưng có nguy cơ thuyên tắc mạch cao / nguy cơ mất bù huyết động cao (hoặc gắng sức dương tính) khi giải phẫu và lâm sàng thuận lợi.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🔪 CÂN NHẮC PHẪU THUẬT VAN HAI LÁ (SURGERY) NẾU NGUY CƠ PHẪU THUẬT THẤP</h4>
+                    <ul>
+                        <li>Theo chú thích Figure 14: Nếu bệnh nhân có chống chỉ định hoặc đặc điểm bất lợi cho PMC, chỉ định phẫu thuật van hai lá được đặt ra <strong>nếu nguy cơ phẫu thuật thấp</strong> (hoặc có chỉ định bắt buộc như cần phẫu thuật ngoài tim lớn / chuẩn bị mang thai).</li>
+                    </ul>
+                </div>`;
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESC/EACTS 2025: Công cụ Chẩn đoán &amp; Xử trí Hẹp Van Ba Lá (Tricuspid Stenosis)</title>
+    <style>
+        :root {
+            --primary-burgundy: #7a1c31;
+            --primary-dark: #4a0e1c;
+            --sky-blue-bg: #eef7fc;
+            --sky-blue-border: #b8dcf0;
+            --sky-blue-accent: #0284c7;
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --bg-body: #f1f5f9;
+            --card-bg: #ffffff;
+            --green-bg: #ecfdf5;
+            --green-border: #10b981;
+            --green-text: #065f46;
+            --amber-bg: #fffbeb;
+            --amber-border: #f59e0b;
+            --amber-text: #92400e;
+            --red-bg: #fef2f2;
+            --red-border: #ef4444;
+            --red-text: #991b1b;
+            --border-radius: 12px;
+            --shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.55;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-burgundy) 100%);
+            color: #ffffff;
+            padding: 22px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(122, 28, 49, 0.22);
+        }
+
+        header h1 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        .badge-source {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            margin-top: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 22px auto;
+            padding: 0 16px;
+        }
+
+        /* Main Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #e2e8f0;
+            padding: 6px;
+            border-radius: var(--border-radius);
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 210px;
+            padding: 12px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-burgundy);
+            background: rgba(255, 255, 255, 0.55);
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-burgundy);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Step Wizard Cards */
+        .wizard-step {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 18px;
+            border-left: 5px solid var(--primary-burgundy);
+            animation: slideDown 0.25s ease-out;
+        }
+
+        .wizard-step.hidden {
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .step-badge {
+            background: var(--primary-burgundy);
+            color: white;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .step-title {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-top: 4px;
+        }
+
+        .connector {
+            text-align: center;
+            color: var(--primary-burgundy);
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin: -8px 0 10px 0;
+        }
+
+        /* Echo Parameter Input Grid */
+        .echo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            padding: 14px;
+            border-radius: 10px;
+        }
+
+        .param-box {
+            background: #ffffff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .param-box label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .param-box input, .param-box select {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid #94a3b8;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .param-hint {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Choice Cards */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .choice-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: #ffffff;
+        }
+
+        .choice-card:hover {
+            border-color: var(--sky-blue-accent);
+            background: var(--sky-blue-bg);
+        }
+
+        .choice-card.selected {
+            border-color: var(--primary-burgundy);
+            background: #fdf2f4;
+            box-shadow: 0 0 0 1px var(--primary-burgundy);
+        }
+
+        .choice-card input[type="radio"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-burgundy);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .choice-text strong {
+            display: block;
+            font-size: 0.94rem;
+            color: var(--text-main);
+        }
+
+        .choice-text span {
+            display: block;
+            font-size: 0.81rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Checklist Group */
+        .checklist-group {
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 10px;
+        }
+
+        .check-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.91rem;
+            border-bottom: 1px solid rgba(184, 220, 240, 0.5);
+        }
+
+        .check-row:last-child {
+            border-bottom: none;
+        }
+
+        .check-row:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .check-row input[type="checkbox"] {
+            margin-top: 3px;
+            width: 17px;
+            height: 17px;
+            accent-color: var(--primary-burgundy);
+            flex-shrink: 0;
+        }
+
+        /* Action / Result Banners */
+        .action-result {
+            border-radius: var(--border-radius);
+            padding: 16px 18px;
+            margin-top: 14px;
+            border-width: 2px;
+            border-style: solid;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .action-result.green {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+            color: var(--green-text);
+        }
+
+        .action-result.amber {
+            background: var(--amber-bg);
+            border-color: var(--amber-border);
+            color: var(--amber-text);
+        }
+
+        .action-result.red {
+            background: var(--red-bg);
+            border-color: var(--red-border);
+            color: var(--red-text);
+        }
+
+        .action-result.blue {
+            background: var(--sky-blue-bg);
+            border-color: var(--sky-blue-accent);
+            color: var(--primary-dark);
+        }
+
+        .action-result h4 {
+            font-size: 1.02rem;
+            margin-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-result ul {
+            margin-left: 20px;
+            font-size: 0.91rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .class-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .class-1 { background: #10b981; color: white; }
+        .class-2a { background: #f59e0b; color: white; }
+        .class-2b { background: #f97316; color: white; }
+        .class-3 { background: #ef4444; color: white; }
+
+        .btn-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-reset {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-reset:hover { background: #e2e8f0; }
+
+        /* Reference Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        th {
+            background: var(--primary-burgundy);
+            color: white;
+            text-align: left;
+            padding: 11px 14px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td { background: #f8fafc; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            border-top: 4px solid var(--sky-blue-accent);
+        }
+
+        .info-card.burgundy { border-top-color: var(--primary-burgundy); }
+
+        .info-card h3 {
+            color: var(--primary-burgundy);
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+
+        .info-card ul {
+            margin-left: 18px;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        @media (max-width: 600px) {
+            .option-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Đánh giá &amp; Xử trí Hẹp Van Ba Lá (Tricuspid Stenosis) — ESC/EACTS 2025</h1>
+    <p>Nhập thông số siêu âm Doppler, chọn căn nguyên &amp; tick chọn lâm sàng để phân độ nặng và rẽ nhánh phẫu thuật / nong van bằng bóng</p>
+    <span class="badge-source">2025 ESC/EACTS Guidelines for the Management of Valvular Heart Disease • Section 12 &amp; Recommendation Table 10</span>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-echo', this)">1. Chẩn đoán Siêu âm &amp; Căn nguyên (Section 12.1–12.2)</button>
+        <button class="tab-btn" onclick="switchTab('tab-pathway', this)">2. Lưu đồ Chỉ định Can thiệp &amp; Chọn Kỹ thuật (Rec Table 10)</button>
+        <button class="tab-btn" onclick="switchTab('tab-surg-med', this)">3. Lựa chọn Van Sinh học / Cơ học, Nội khoa &amp; Bệnh Phối hợp</button>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 1: ECHOCARDIOGRAPHY & AETIOLOGY ASSESSMENT                        -->
+    <!-- ===================================================================== -->
+    <div id="tab-echo" class="tab-content active">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Nhập thông số siêu âm Doppler qua van ba lá (ở tần số tim bình thường):</span>
+            <button class="btn-reset" onclick="resetTsEcho()">↻ Xóa số liệu nhập lại</button>
+        </div>
+
+        <div class="wizard-step">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1 • Section 12.2 (Evaluation)</span>
+                    <div class="step-title">Thông số Siêu âm Tim &amp; Đặc điểm Giải phẫu Van Ba Lá</div>
+                </div>
+            </div>
+
+            <div class="echo-grid">
+                <div class="param-box">
+                    <label for="ts-mpg">Chênh áp tâm trương TB - Mean PG (mmHg)</label>
+                    <input type="number" id="ts-mpg" step="0.5" min="1" max="30" placeholder="VD: 6.5" oninput="evalTsEcho()">
+                    <span class="param-hint">Hẹp ba lá nặng: <strong>Mean PG &gt; 5 mmHg</strong> (đo ở tần số tim bình thường, trung bình qua nhiều nhịp nếu rung nhĩ).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ts-hr">Tần số tim lúc đo siêu âm (lần/phút)</label>
+                    <input type="number" id="ts-hr" step="1" min="40" max="160" placeholder="VD: 75" oninput="evalTsEcho()">
+                    <span class="param-hint">Nhịp tim nhanh làm tăng giả tạo chênh áp tâm trương qua van ba lá.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ts-pht">Thời gian bán giảm áp - PHT (ms)</label>
+                    <input type="number" id="ts-pht" step="10" min="50" max="500" placeholder="VD: 210" oninput="evalTsEcho()">
+                    <span class="param-hint">Gợi ý hẹp ba lá có ý nghĩa: <strong>PHT ≥ 190 ms</strong> (tương ứng diện tích lỗ van ≤ 1.0 cm²).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="ts-aetiol">Căn nguyên bệnh sinh nghi ngờ</label>
+                    <select id="ts-aetiol" onchange="evalTsEcho()">
+                        <option value="rheumatic">Thấp tim (Rheumatic heart disease)</option>
+                        <option value="carcinoid">Hội chứng Carcinoid (Carcinoid syndrome)</option>
+                        <option value="cied">Liên quan dây điện cực / Huyết khối / Viêm nội tâm mạc</option>
+                        <option value="congenital">Bẩm sinh hoặc Rối loạn chuyển hóa (Fabry, Whipple, thuốc...)</option>
+                    </select>
+                    <span class="param-hint">Hẹp ba lá rất hiếm gặp ở các nước thu nhập cao; chủ yếu do thấp tim hoặc carcinoid.</span>
+                </div>
+            </div>
+
+            <div class="checklist-group" id="ts-echo-checks" style="margin-top: 14px;">
+                <strong style="font-size: 0.9rem; color: var(--primary-dark); display: block; margin-bottom: 6px;">Tick chọn Dấu hiệu Hình thái &amp; Huyết động Đi kèm trên Siêu âm:</strong>
+                <label class="check-row"><input type="checkbox" id="chk-ts-fusion" onchange="evalTsEcho()"> <strong>Dày lá van và dính mép van (Commissural fusion)</strong> — <em>Dấu hiệu đặc trưng của hẹp van ba lá do thấp tim (RHD).</em></label>
+                <label class="check-row"><input type="checkbox" id="chk-ts-tr" onchange="evalTsEcho()"> <strong>Hở van ba lá (TR) đáng kể đi kèm</strong> (Hẹp – Hở ba lá phối hợp) — <em>Thường gặp trong bệnh van ba lá hậu thấp hoặc carcinoid; làm tăng lưu lượng qua van khiến Mean PG tăng cao và chống chỉ định nong van bằng bóng.</em></label>
+                <label class="check-row"><input type="checkbox" id="chk-ts-ra-ivc" onchange="evalTsEcho()"> <strong>Giãn nhĩ phải (RA enlargement) và giãn tĩnh mạch chủ dưới (IVC)</strong> ít xẹp theo hô hấp.</label>
+                <label class="check-row"><input type="checkbox" id="chk-ts-left" onchange="evalTsEcho()"> <strong>Tổn thương van tim bên trái phối hợp</strong> (Hẹp/hở van hai lá hoặc van ĐMC) — <em>Gần như luôn hiện diện ở bệnh nhân hẹp ba lá hậu thấp!</em></label>
+            </div>
+
+            <div id="ts-echo-outcome"></div>
+        </div>
+
+        <!-- Reference Table of Aetiologies & Echocardiographic Features -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Căn nguyên Hẹp Van Ba Lá (Section 12.1)</th>
+                        <th>Đặc điểm Tổn thương Giải phẫu trên Siêu âm</th>
+                        <th>Lưu ý Xử trí Đặc thù</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Bệnh tim hậu thấp (Rheumatic - RHD)</strong></td>
+                        <td>Dày lá van (có hoặc không có vôi hóa), <strong>dính mép van (commissural fusion)</strong>, co rút bộ máy dưới van. Hầu như luôn phối hợp với bệnh van hai lá (MS/MR) và/hoặc van ĐMC.</td>
+                        <td>Thường biểu hiện dạng <strong>hẹp phối hợp hở van ba lá</strong>. Nếu hẹp đơn thuần không kèm hở đáng kể, có thể cân nhắc nong van bằng bóng.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Hội chứng Carcinoid</strong></td>
+                        <td>Lắng đọng mảng xơ hóa giàu serotonin trên bề mặt lá van và bộ máy dưới van làm các lá van dày cứng, cố định ở tư thế nửa mở (gây hẹp phối hợp hở ba lá nặng).</td>
+                        <td><strong>Bắt buộc ổn định bệnh lý ung thư (oncological stability)</strong> trước khi phẫu thuật thay van để tối ưu thời gian sống và độ bền van.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Tắc nghẽn cơ học (CIED / Huyết khối / VNTM)</strong></td>
+                        <td>Huyết khối bám dây điện cực máy tạo nhịp/ICD (CIED-associated thrombosis), kẹt lá van do dây điện cực, hoặc sùi lớn trong viêm nội tâm mạc nhiễm khuẩn.</td>
+                        <td>Đánh giá kỹ bằng siêu âm qua thực quản (TOE) 3D / CT tim để xét chống đông tiêu huyết khối, rút/đặt lại điện cực hoặc phẫu thuật.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Nguyên nhân hiếm gặp khác</strong></td>
+                        <td>Dị tật bẩm sinh, bệnh chuyển hóa/enzym (<strong>Fabry</strong>, <strong>Whipple</strong>), hoặc do thuốc (fenfluramine, methysergide).</td>
+                        <td>Điều trị bệnh nền đặc hiệu kết hợp phẫu thuật sửa hoặc thay van khi hẹp nặng có triệu chứng.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 2: MANAGEMENT ALGORITHM (RECOMMENDATION TABLE 10)                 -->
+    <!-- ===================================================================== -->
+    <div id="tab-pathway" class="tab-content">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Lưu đồ quyết định điều trị Hẹp Van Ba Lá Nặng (Mean PG &gt; 5 mmHg — Rec Table 10):</span>
+            <button class="btn-reset" onclick="resetTsPath()">↻ Làm lại từ đầu (Ca bệnh mới)</button>
+        </div>
+
+        <!-- STEP P1: CONCOMITANT LEFT-SIDED VALVE SURGERY -->
+        <div class="wizard-step" id="ts-step-1">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1 • Recommendation Table 10</span>
+                    <div class="step-title">Bệnh nhân Hẹp Van Ba Lá Nặng có Chỉ định Phẫu thuật Van Tim Bên Trái (Hai lá / ĐMC) không?</div>
+                </div>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted);">Hẹp van ba lá hậu thấp rất hiếm khi đơn độc mà thường đi kèm hẹp/hở van hai lá hoặc van động mạch chủ.</p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectTsLeft('yes', this)">
+                    <input type="radio" name="ts_left" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ — Đang có chỉ định Phẫu thuật Van Tim Bên Trái</strong>
+                        <span>Phẫu thuật van hai lá hoặc van ĐMC trong cùng cuộc mổ.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectTsLeft('no', this)">
+                    <input type="radio" name="ts_left" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG — Hẹp Van Ba Lá Đơn độc (hoặc van bên trái chưa cần mổ / làm PMC)</strong>
+                        <span>Đánh giá chỉ định can thiệp dựa trên triệu chứng suy tim phải và khả năng nong van bằng bóng.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="ts-left-outcome"></div>
+        </div>
+
+        <!-- STEP P2: SYMPTOMS IN ISOLATED SEVERE TS -->
+        <div class="wizard-step hidden" id="ts-step-symp">
+            <div class="connector">▼ Nhánh Không Mổ Van Tim Bên Trái → Đánh giá Triệu chứng Suy tim Phải</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2</span>
+                    <div class="step-title">Bệnh nhân Hẹp Van Ba Lá Nặng có Triệu chứng Cơ năng không?</div>
+                </div>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted);">Triệu chứng ứ trệ tuần hoàn hệ thống: Mệt mỏi (do giảm cung lượng tim), phù chi dưới, gan to, tĩnh mạch cổ nổi, cổ trướng, đầy bụng khó tiêu.</p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectTsSymp('yes', this)">
+                    <input type="radio" name="ts_symp" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ TRIỆU CHỨNG</strong>
+                        <span>Có dấu hiệu suy tim phải hoặc giảm cung lượng tim ảnh hưởng sinh hoạt.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectTsSymp('no', this)">
+                    <input type="radio" name="ts_symp" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG CÓ TRIỆU CHỨNG</strong>
+                        <span>Bệnh nhân hoàn toàn không có triệu chứng suy tim phải.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="ts-symp-outcome"></div>
+        </div>
+
+        <!-- STEP P3: BALLOON VALVULOPLASTY SUITABILITY -->
+        <div class="wizard-step hidden" id="ts-step-balloon">
+            <div class="connector">▼ Có Chỉ định Can thiệp → Đánh giá Khả năng Nong Van Ba Lá Bằng Bóng Qua Da</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 3 • Chú thích c &amp; d — Recommendation Table 10</span>
+                    <div class="step-title">Kiểm tra Điều kiện Thực hiện Nong Van Ba Lá Bằng Bóng (Percutaneous Balloon Valvuloplasty)</div>
+                </div>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted);">Nong van ba lá bằng bóng ít được áp dụng hơn nong van hai lá vì bệnh van ba lá hậu thấp thường kèm hở ba lá đáng kể (nong bóng dễ làm nặng thêm hở ba lá). Chọn tình trạng giải phẫu của bệnh nhân:</p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectTsBalloon('isolated_suit', this)">
+                    <input type="radio" name="ts_bal" value="isolated_suit">
+                    <div class="choice-text">
+                        <strong>1. Hẹp ba lá ĐƠN ĐỘC hậu thấp + KHÔNG có Hở ba lá đáng kể</strong>
+                        <span>Có dính mép van điển hình, lá van mềm mại, không kèm hở ba lá trung bình/nặng.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectTsBalloon('concomitant_pmc', this)">
+                    <input type="radio" name="ts_bal" value="concomitant_pmc">
+                    <div class="choice-text">
+                        <strong>2. Hẹp ba lá kèm Hẹp hai lá hậu thấp có thể làm PMC đồng thời</strong>
+                        <span>Cả hai van hai lá và ba lá đều phù hợp giải phẫu nong bằng bóng và không hở nặng.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectTsBalloon('unsuitable', this)">
+                    <input type="radio" name="ts_bal" value="unsuitable">
+                    <div class="choice-text">
+                        <strong>3. KHÔNG phù hợp nong bóng (Kèm Hở ba lá đáng kể / Carcinoid / Vôi hóa nặng)</strong>
+                        <span>Hẹp phối hợp hở ba lá hoặc căn nguyên không do dính mép van hậu thấp.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="ts-balloon-outcome"></div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: PROSTHESIS CHOICE (BHV vs MHV), MEDICAL & VALVE-IN-VALVE       -->
+    <!-- ===================================================================== -->
+    <div id="tab-surg-med" class="tab-content">
+        <div class="grid-2">
+            <div class="info-card burgundy">
+                <h3>1. Lựa chọn Kỹ thuật Ngoại khoa &amp; Loại Van Nhân tạo (Section 12.4)</h3>
+                <ul>
+                    <li><strong>Sửa van vs. Thay van ba lá:</strong> Mặc dù phẫu thuật sửa van (tách mép van, tạo hình lá van) được ưu tiên ở người trẻ khi giải phẫu cho phép, phần lớn bệnh nhân hẹp van ba lá nặng (đặc biệt do carcinoid hoặc dày cứng biến dạng nặng) <strong>thường cần phẫu thuật thay van ba lá (TV replacement)</strong>.</li>
+                    <li><strong>Ưu tiên Van Sinh học (BHV) hơn Van Cơ học (MHV):</strong>
+                        <br>• Tại vị trí van ba lá, <strong>Van sinh học (Biological Heart Valve) được ưu tiên lựa chọn hơn van cơ học</strong> ngay cả ở bệnh nhân tương đối trẻ.
+                        <br>• <em>Lý do huyết động:</em> Tuần hoàn tim phải có áp lực thấp và vận tốc dòng chảy chậm, dẫn đến <strong>nguy cơ huyết khối kẹt van cơ học rất cao</strong> tại vị trí ba lá dù đã dùng kháng Vitamin K. Hơn nữa, van sinh học ở vị trí ba lá có độ bền tốt hơn so với bên tim trái.
+                    </li>
+                    <li><strong>Khi van sinh học ba lá thoái hóa (SVD):</strong> Thay van ba lá qua đường ống thông trong van cũ (<strong>Transcatheter Tricuspid Valve-in-Valve - TViV</strong>) <span class="class-badge class-2a">Class IIa</span> là giải pháp thay thế rất hiệu quả và an toàn, giúp tránh phải mổ tim hở lại.</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>2. Điều trị Nội khoa &amp; Lưu ý Đặc biệt (Section 12.3 &amp; 12.4)</h3>
+                <ul>
+                    <li><strong>Vai trò của Điều trị Nội khoa (Cầu nối trước can thiệp):</strong>
+                        <br>• Điều trị nội khoa không làm thay đổi diễn tiến giải phẫu của van mà đóng vai trò <strong>cầu nối (bridge)</strong> giảm sung huyết trước phẫu thuật hoặc can thiệp.
+                        <br>• Biện pháp chính: <strong>Hạn chế muối nghiêm ngặt (intensive sodium restriction)</strong> kết hợp <strong>thuốc lợi tiểu</strong> (lợi tiểu quai ± kháng aldosterone) nhằm giảm ứ huyết tĩnh mạch hệ thống, giảm sung huyết gan và phù ngoại biên.
+                    </li>
+                    <li><strong>Bệnh nhân Hội chứng Carcinoid:</strong>
+                        <br>• Cần phối hợp đa chuyên khoa với Ung bướu và Nội tiết (sử dụng somatostatin analogues như octreotide/lanreotide trước và trong mổ để phòng ngừa <strong>cơn bão carcinoid - carcinoid crisis</strong> gây tụt huyết áp kháng trị và co thắt phế quản nặng khi gây mê).
+                        <br>• Chỉ định phẫu thuật thay van khi tình trạng ung thư đã được kiểm soát ổn định để đảm bảo tiên lượng sống sau mổ.
+                    </li>
+                    <li><strong>Can thiệp qua ống thông tiên phát (Transcatheter TV implantation):</strong> Thay van ba lá qua đường ống thông trên van tự nhiên bị hẹp hiện là lĩnh vực đang phát triển nhưng dữ liệu còn rất hạn chế (chủ yếu báo cáo ca bệnh đơn lẻ).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function clearSelection(containerId) {
+        document.querySelectorAll(`#${containerId} .choice-card`).forEach(c => c.classList.remove('selected'));
+    }
+
+    /* ================= TAB 1: ECHO EVALUATION ================= */
+    function resetTsEcho() {
+        document.getElementById('ts-mpg').value = '';
+        document.getElementById('ts-hr').value = '';
+        document.getElementById('ts-pht').value = '';
+        document.getElementById('ts-aetiol').value = 'rheumatic';
+        document.querySelectorAll('#ts-echo-checks input[type="checkbox"]').forEach(c => c.checked = false);
+        document.getElementById('ts-echo-outcome').innerHTML = '';
+    }
+
+    function evalTsEcho() {
+        const mpg = parseFloat(document.getElementById('ts-mpg').value);
+        const hr = parseFloat(document.getElementById('ts-hr').value);
+        const pht = parseFloat(document.getElementById('ts-pht').value);
+        const aetiol = document.getElementById('ts-aetiol').value;
+
+        const hasFusion = document.getElementById('chk-ts-fusion').checked;
+        const hasTr = document.getElementById('chk-ts-tr').checked;
+        const hasRaIvc = document.getElementById('chk-ts-ra-ivc').checked;
+        const hasLeft = document.getElementById('chk-ts-left').checked;
+
+        const out = document.getElementById('ts-echo-outcome');
+        if (isNaN(mpg) && isNaN(hr) && isNaN(pht) && !hasFusion && !hasTr && !hasRaIvc && !hasLeft) {
+            out.innerHTML = '';
+            return;
+        }
+
+        let isSevere = false;
+        let reasons = [];
+
+        if (!isNaN(mpg) && mpg > 5) {
+            isSevere = true;
+            reasons.push(`Mean gradient tâm trương = ${mpg} mmHg (&gt; 5 mmHg)`);
+        }
+        if (!isNaN(pht) && pht >= 190) {
+            isSevere = true;
+            reasons.push(`PHT = ${pht} ms (≥ 190 ms)`);
+        }
+
+        let bannerHtml = '';
+        if (isSevere) {
+            bannerHtml = `
+                <div class="action-result red">
+                    <h4>🩺 KẾT LUẬN SIÊU ÂM: HẸP VAN BA LÁ MỨC ĐỘ NẶNG (SEVERE TS)</h4>
+                    <ul>
+                        <li><strong>Tiêu chuẩn đạt được:</strong> ${reasons.join('; ')}.</li>
+                        <li>Chuyển sang <strong>Thẻ 2 (Lưu đồ Chỉ định Can thiệp - Rec Table 10)</strong> để xác định chỉ định phẫu thuật hoặc nong van bằng bóng.</li>
+                    </ul>
+                </div>`;
+        } else {
+            bannerHtml = `
+                <div class="action-result green">
+                    <h4>✓ CHƯA ĐẠT TIÊU CHUẨN HẸP VAN BA LÁ NẶNG (Mean PG ≤ 5 mmHg)</h4>
+                    <ul>
+                        <li>Theo dõi định kỳ bằng siêu âm tim, đặc biệt chú ý tiến triển của các tổn thương van tim bên trái đi kèm.</li>
+                    </ul>
+                </div>`;
+        }
+
+        let alerts = [];
+        if (!isNaN(hr) && hr > 90) {
+            alerts.push(`<strong>Cảnh báo tần số tim nhanh (HR = ${hr} lần/phút):</strong> Nhịp tim nhanh rút ngắn thời gian tâm trương làm tăng giả tạo chênh áp qua van ba lá. Cần đánh giá lại chênh áp khi tần số tim được kiểm soát về mức bình thường (60–80 l/p).`);
+        }
+        if (hasTr) {
+            alerts.push(`<strong>Hở van ba lá (TR) đáng kể đi kèm:</strong> Tăng lưu lượng qua van làm tăng chênh áp tâm trương, đồng thời là <strong>chống chỉ định của nong van ba lá bằng bóng</strong> (ưu tiên phẫu thuật thay van).`);
+        }
+        if (hasLeft) {
+            alerts.push(`<strong>Bệnh van tim bên trái phối hợp:</strong> Theo Rec Table 10, nếu bệnh nhân có chỉ định phẫu thuật van tim bên trái (hai lá / ĐMC), khuyến cáo <strong>phẫu thuật xử lý đồng thời hẹp van ba lá nặng <span class="class-badge class-1">Class I</span></strong>.`);
+        }
+        if (aetiol === 'carcinoid') {
+            alerts.push(`<strong>Căn nguyên Carcinoid:</strong> Cần kiểm soát ổn định bệnh lý ung thư nội tiết trước mổ và dự phòng cơn bão carcinoid chu phẫu.`);
+        }
+        if (hasFusion && !hasTr) {
+            alerts.push(`<strong>Dính mép van hậu thấp đơn thuần (không hở ba lá đáng kể):</strong> Giải phẫu thuận lợi để cân nhắc nong van ba lá bằng bóng qua da nếu cần can thiệp.`);
+        }
+
+        let alertsHtml = '';
+        if (alerts.length > 0) {
+            alertsHtml = `
+                <div class="action-result blue">
+                    <h4>📋 Lưu ý Huyết động &amp; Bệnh học Từ Siêu âm</h4>
+                    <ul>${alerts.map(a => `<li>${a}</li>`).join('')}</ul>
+                </div>`;
+        }
+
+        out.innerHTML = bannerHtml + alertsHtml;
+    }
+
+    /* ================= TAB 2: MANAGEMENT PATHWAY (REC TABLE 10) ================= */
+    function resetTsPath() {
+        document.querySelectorAll('#tab-pathway input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('#tab-pathway .choice-card').forEach(c => c.classList.remove('selected'));
+
+        document.getElementById('ts-step-symp').classList.add('hidden');
+        document.getElementById('ts-step-balloon').classList.add('hidden');
+        document.getElementById('ts-left-outcome').innerHTML = '';
+        document.getElementById('ts-symp-outcome').innerHTML = '';
+        document.getElementById('ts-balloon-outcome').innerHTML = '';
+    }
+
+    function selectTsLeft(hasLeftSurg, card) {
+        clearSelection('ts-step-1');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('ts-left-outcome');
+        const sympStep = document.getElementById('ts-step-symp');
+        const balStep = document.getElementById('ts-step-balloon');
+
+        if (hasLeftSurg === 'yes') {
+            sympStep.classList.add('hidden');
+            balStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🔪 CHỈ ĐỊNH BẮT BUỘC: PHẪU THUẬT VAN BA LÁ ĐỒNG THỜI <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Khuyến cáo phẫu thuật van ba lá (thường là <strong>thay van ba lá bằng van sinh học</strong>, hoặc sửa van ở người trẻ nếu giải phẫu cho phép) đồng thời khi phẫu thuật van tim bên trái, <strong>bất kể triệu chứng của hẹp van ba lá</strong>.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = '';
+            balStep.classList.add('hidden');
+            sympStep.classList.remove('hidden');
+        }
+    }
+
+    function selectTsSymp(hasSymp, card) {
+        clearSelection('ts-step-symp');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('ts-symp-outcome');
+        const balStep = document.getElementById('ts-step-balloon');
+
+        if (hasSymp === 'yes') {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🚨 CHỈ ĐỊNH CAN THIỆP BẮT BUỘC: HẸP VAN BA LÁ NẶNG CÓ TRIỆU CHỨNG <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Khuyến cáo can thiệp van ba lá cho bệnh nhân hẹp ba lá nặng có triệu chứng. Đánh giá điều kiện nong van bằng bóng hay phẫu thuật thay van ở <strong>Bước 3</strong> bên dưới:</li>
+                    </ul>
+                </div>`;
+            balStep.classList.remove('hidden');
+        } else {
+            balStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>👁️ THEO DÕI ĐỊNH KỲ &amp; KIỂM SOÁT DỊCH</h4>
+                    <ul>
+                        <li>Chưa có chỉ định can thiệp ở bệnh nhân hẹp ba lá nặng đơn độc chưa có triệu chứng.</li>
+                        <li>Theo dõi lâm sàng và siêu âm tim định kỳ; hướng dẫn chế độ ăn giảm muối và dùng lợi tiểu nhẹ nếu có dấu hiệu ứ trệ tĩnh mạch.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    function selectTsBalloon(choice, card) {
+        clearSelection('ts-step-balloon');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('ts-balloon-outcome');
+        if (choice === 'isolated_suit') {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>🎈 CÓ THỂ THỬ NONG VAN BA LÁ BẰNG BÓNG QUA DA (PERCUTANEOUS BALLOON VALVULOPLASTY)</h4>
+                    <ul>
+                        <li>Theo chú thích c (Rec Table 10): Nong van ba lá bằng bóng có thể được thực hiện như bước tiếp cận đầu tiên nếu <strong>hẹp ba lá đơn độc</strong> do dính mép van hậu thấp và không kèm hở ba lá đáng kể.</li>
+                        <li>Nếu nong bóng thất bại hoặc gây hở ba lá nặng → Chuyển sang <strong>Phẫu thuật thay van ba lá</strong>.</li>
+                    </ul>
+                </div>`;
+        } else if (choice === 'concomitant_pmc') {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>🎈 NONG VAN BA LÁ BẰNG BÓNG ĐỒNG THỜI KHI LÀM PMC VAN HAI LÁ</h4>
+                    <ul>
+                        <li>Theo chú thích d (Rec Table 10): Có thể thực hiện nong van ba lá bằng bóng trong cùng thủ thuật nếu bệnh nhân có chỉ định và đủ điều kiện làm <strong>PMC cho van hai lá</strong>.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🔪 PHẪU THUẬT VAN BA LÁ (THƯỜNG LÀ THAY VAN SINH HỌC) <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Phẫu thuật là lựa chọn chuẩn khi hẹp van ba lá không phù hợp nong bóng (kèm hở ba lá đáng kể, hội chứng carcinoid, vôi hóa nặng).</li>
+                        <li><strong>Ưu tiên Van sinh học (BHV)</strong> hơn van cơ học để tránh biến chứng huyết khối kẹt van trong hệ tuần hoàn áp lực thấp bên tim phải.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+</script>
+
+</body>
+</html>

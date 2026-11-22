@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESC/EACTS 2025: Công cụ Chẩn đoán &amp; Xử trí Hẹp Van Động Mạch Chủ (Aortic Stenosis)</title>
+    <style>
+        :root {
+            --primary-burgundy: #7a1c31;
+            --primary-dark: #4a0e1c;
+            --sky-blue-bg: #eef7fc;
+            --sky-blue-border: #b8dcf0;
+            --sky-blue-accent: #0284c7;
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --bg-body: #f1f5f9;
+            --card-bg: #ffffff;
+            --green-bg: #ecfdf5;
+            --green-border: #10b981;
+            --green-text: #065f46;
+            --amber-bg: #fffbeb;
+            --amber-border: #f59e0b;
+            --amber-text: #92400e;
+            --red-bg: #fef2f2;
+            --red-border: #ef4444;
+            --red-text: #991b1b;
+            --border-radius: 12px;
+            --shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.55;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-burgundy) 100%);
+            color: #ffffff;
+            padding: 22px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(122, 28, 49, 0.22);
+        }
+
+        header h1 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        .badge-source {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            margin-top: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .container {
+            max-width: 1020px;
+            margin: 22px auto;
+            padding: 0 16px;
+        }
+
+        /* Main Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #e2e8f0;
+            padding: 6px;
+            border-radius: var(--border-radius);
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 210px;
+            padding: 12px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-burgundy);
+            background: rgba(255, 255, 255, 0.55);
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-burgundy);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Step Wizard Cards */
+        .wizard-step {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 18px;
+            border-left: 5px solid var(--primary-burgundy);
+            animation: slideDown 0.25s ease-out;
+        }
+
+        .wizard-step.hidden {
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .step-badge {
+            background: var(--primary-burgundy);
+            color: white;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .step-title {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-top: 4px;
+        }
+
+        .connector {
+            text-align: center;
+            color: var(--primary-burgundy);
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin: -8px 0 10px 0;
+        }
+
+        /* Echo Parameter Input Grid */
+        .echo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            padding: 14px;
+            border-radius: 10px;
+        }
+
+        .param-box {
+            background: #ffffff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .param-box label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .param-box input, .param-box select {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid #94a3b8;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .param-hint {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Choice Cards */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .choice-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: #ffffff;
+        }
+
+        .choice-card:hover {
+            border-color: var(--sky-blue-accent);
+            background: var(--sky-blue-bg);
+        }
+
+        .choice-card.selected {
+            border-color: var(--primary-burgundy);
+            background: #fdf2f4;
+            box-shadow: 0 0 0 1px var(--primary-burgundy);
+        }
+
+        .choice-card input[type="radio"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-burgundy);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .choice-text strong {
+            display: block;
+            font-size: 0.94rem;
+            color: var(--text-main);
+        }
+
+        .choice-text span {
+            display: block;
+            font-size: 0.81rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Checklist Group */
+        .checklist-group {
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 10px;
+        }
+
+        .check-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.91rem;
+            border-bottom: 1px solid rgba(184, 220, 240, 0.5);
+        }
+
+        .check-row:last-child {
+            border-bottom: none;
+        }
+
+        .check-row:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .check-row input[type="checkbox"] {
+            margin-top: 3px;
+            width: 17px;
+            height: 17px;
+            accent-color: var(--primary-burgundy);
+            flex-shrink: 0;
+        }
+
+        /* Action / Result Banners */
+        .action-result {
+            border-radius: var(--border-radius);
+            padding: 16px 18px;
+            margin-top: 14px;
+            border-width: 2px;
+            border-style: solid;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .action-result.green {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+            color: var(--green-text);
+        }
+
+        .action-result.amber {
+            background: var(--amber-bg);
+            border-color: var(--amber-border);
+            color: var(--amber-text);
+        }
+
+        .action-result.red {
+            background: var(--red-bg);
+            border-color: var(--red-border);
+            color: var(--red-text);
+        }
+
+        .action-result.blue {
+            background: var(--sky-blue-bg);
+            border-color: var(--sky-blue-accent);
+            color: var(--primary-dark);
+        }
+
+        .action-result h4 {
+            font-size: 1.02rem;
+            margin-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-result ul {
+            margin-left: 20px;
+            font-size: 0.91rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .class-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .class-1 { background: #10b981; color: white; }
+        .class-2a { background: #f59e0b; color: white; }
+        .class-2b { background: #f97316; color: white; }
+        .class-3 { background: #ef4444; color: white; }
+
+        .btn-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-reset {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-reset:hover { background: #e2e8f0; }
+
+        /* Reference Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        th {
+            background: var(--primary-burgundy);
+            color: white;
+            text-align: left;
+            padding: 11px 14px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td { background: #f8fafc; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            border-top: 4px solid var(--sky-blue-accent);
+        }
+
+        .info-card.burgundy { border-top-color: var(--primary-burgundy); }
+
+        .info-card h3 {
+            color: var(--primary-burgundy);
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+
+        .info-card ul {
+            margin-left: 18px;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        @media (max-width: 600px) {
+            .option-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Đánh giá &amp; Xử trí Hẹp Van Động Mạch Chủ (Aortic Stenosis) — ESC/EACTS 2025</h1>
+    <p>Nhập thông số siêu âm, CCT điểm vôi hóa (AVCS), Dobutamine Echo &amp; tick chọn đặc điểm bệnh nhân để rẽ nhánh SAVR / TAVI / Ross</p>
+    <span class="badge-source">2025 ESC/EACTS Guidelines for the Management of Valvular Heart Disease • Section 8 &amp; Figures 6–9, 21</span>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-diag', this)">1. Chẩn đoán Tích hợp &amp; Low-Gradient AS (Fig. 6)</button>
+        <button class="tab-btn" onclick="switchTab('tab-indication', this)">2. Chỉ định Can thiệp &amp; Chọn SAVR / TAVI (Fig. 7–9)</button>
+        <button class="tab-btn" onclick="switchTab('tab-ncs-cad', this)">3. Phẫu thuật Ngoài tim (Fig. 21), CAD &amp; Van Phối hợp</button>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 1: INTEGRATIVE IMAGING ASSESSMENT OF AS (FIGURE 6)                -->
+    <!-- ===================================================================== -->
+    <div id="tab-diag" class="tab-content active">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Nhập thông số siêu âm Doppler &amp; CT điểm vôi hóa van ĐMC (Figure 6):</span>
+            <button class="btn-reset" onclick="resetAsDiag()">↻ Xóa số liệu nhập lại</button>
+        </div>
+
+        <div class="wizard-step">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1 • Figure 6 (Integrative Imaging Assessment)</span>
+                    <div class="step-title">Thông số Huyết động Siêu âm Tim (TTE) &amp; Lưu lượng</div>
+                </div>
+            </div>
+
+            <div class="echo-grid">
+                <div class="param-box">
+                    <label for="as-vmax">Vận tốc đỉnh qua van - Vmax (m/s)</label>
+                    <input type="number" id="as-vmax" step="0.1" min="1.5" max="7.5" placeholder="VD: 4.3" oninput="evalAsDiag()">
+                    <span class="param-hint">Nặng: <strong>≥ 4.0 m/s</strong> | Rất nặng: <strong>&gt; 5.0 m/s</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="as-mpg">Chênh áp trung bình - Mean PG (mmHg)</label>
+                    <input type="number" id="as-mpg" step="1" min="5" max="120" placeholder="VD: 45" oninput="evalAsDiag()">
+                    <span class="param-hint">Nặng: <strong>≥ 40 mmHg</strong> | Rất nặng: <strong>≥ 60 mmHg</strong>.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="as-ava">Diện tích lỗ van - AVA (cm²)</label>
+                    <input type="number" id="as-ava" step="0.05" min="0.2" max="3.0" placeholder="VD: 0.8" oninput="evalAsDiag()">
+                    <span class="param-hint">Nặng: <strong>≤ 1.0 cm²</strong> (hoặc AVAi ≤ 0.6 cm²/m²).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="as-svi">Chỉ số nhát bóp - SVi (mL/m²)</label>
+                    <input type="number" id="as-svi" step="1" min="15" max="80" placeholder="VD: 32" oninput="evalAsDiag()">
+                    <span class="param-hint">Cung lượng thấp (Low-flow): <strong>SVi ≤ 35 mL/m²</strong> (Gợi ý theo giới: Nam &lt; 40, Nữ &lt; 32).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="as-lvef">Phân suất tống máu - LVEF (%)</label>
+                    <input type="number" id="as-lvef" step="1" min="10" max="85" placeholder="VD: 45" oninput="evalAsDiag()">
+                    <span class="param-hint">Bảo tồn: <strong>≥ 50%</strong> | Giảm: <strong>&lt; 50%</strong> (Mốc mổ không triệu chứng: &lt; 55% hoặc &lt; 50%).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="as-sex">Giới tính Bệnh nhân</label>
+                    <select id="as-sex" onchange="evalAsDiag()">
+                        <option value="male">Nam giới (Male)</option>
+                        <option value="female">Nữ giới (Female)</option>
+                    </select>
+                    <span class="param-hint">Dùng để đối chiếu ngưỡng điểm vôi hóa CCT (AVCS).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="as-avcs">Điểm vôi hóa van trên CT - AVCS (AU)</label>
+                    <input type="number" id="as-avcs" step="50" min="0" max="8000" placeholder="VD: 2400" oninput="evalAsDiag()">
+                    <span class="param-hint">Hẹp nặng rất khả dĩ: <strong>Nam &gt; 2000 AU</strong>, <strong>Nữ &gt; 1200 AU</strong> (Rất đặc hiệu: Nam &gt; 3000, Nữ &gt; 1600).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="as-dse">Siêu âm Gắng sức Dobutamine (DSE)</label>
+                    <select id="as-dse" onchange="evalAsDiag()">
+                        <option value="none">Chưa làm / Không áp dụng</option>
+                        <option value="true_severe">Có dự trữ co bóp (SV tăng ≥ 20%) &amp; AVA ≤ 1.0 cm² (True-severe AS)</option>
+                        <option value="pseudo_severe">Có dự trữ co bóp (SV tăng ≥ 20%) &amp; AVA &gt; 1.0 cm² (Pseudo-severe AS)</option>
+                        <option value="no_reserve">Không có dự trữ co bóp (SV tăng &lt; 20%)</option>
+                    </select>
+                    <span class="param-hint">Áp dụng cho Low-flow, Low-gradient AS kèm giảm LVEF (&lt; 50%).</span>
+                </div>
+            </div>
+
+            <div class="checklist-group" id="as-diag-checks" style="margin-top: 12px;">
+                <label class="check-row"><input type="checkbox" id="chk-as-err" checked onchange="evalAsDiag()"> <strong>Đã loại trừ sai số đo lường</strong> (kiểm tra đường kính LVOT, đặt cửa sổ Doppler đa mặt cắt, chỉ số không thứ nguyên DVI &lt; 0.25).</label>
+                <label class="check-row"><input type="checkbox" id="chk-as-highflow" onchange="evalAsDiag()"> <strong>Có tình trạng cung lượng cao có thể hồi phục</strong> (thiếu máu nặng, cường giáp, cầu nối động-tĩnh mạch AVF chạy thận) hoặc tăng huyết áp chưa kiểm soát.</label>
+                <label class="check-row"><input type="checkbox" id="chk-as-bav" onchange="evalAsDiag()"> <strong>Van ĐMC hai mảnh (BAV)</strong> hoặc hẹp do xơ hóa ưu thế (sau thấp tim, sau xạ trị, thoái hóa dạng tinh bột amyloidosis) — <em>Lưu ý: AVCS trên CT có thể thấp dù hẹp thực sự nặng!</em></label>
+            </div>
+
+            <div id="as-diag-outcome"></div>
+        </div>
+
+        <!-- Summary Table of the 4 AS Hemodynamic Subtypes -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Thể Huyết động Hẹp Van ĐMC</th>
+                        <th>Vmax / Mean PG</th>
+                        <th>AVA</th>
+                        <th>SVi &amp; LVEF</th>
+                        <th>Bước Xác nhận Chẩn đoán (Figure 6)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Hẹp nặng chênh áp cao</strong><br><em>(High-gradient severe AS)</em></td>
+                        <td>Vmax ≥ 4.0 m/s<br>Mean PG ≥ 40 mmHg</td>
+                        <td>≤ 1.0 cm²</td>
+                        <td>Bất kỳ SVi &amp; LVEF</td>
+                        <td><strong>Xác định Hẹp ĐMC nặng ngay</strong> (nếu đã loại trừ cung lượng cao hồi phục như thiếu máu, cường giáp, AVF).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Cung lượng thấp, chênh áp thấp + Giảm LVEF</strong><br><em>(Classical LFLG AS)</em></td>
+                        <td>Vmax &lt; 4.0 m/s<br>Mean PG &lt; 40 mmHg</td>
+                        <td>≤ 1.0 cm²</td>
+                        <td>SVi ≤ 35 mL/m²<br><strong>LVEF &lt; 50%</strong></td>
+                        <td>Làm <strong>DSE liều thấp</strong> (nếu AVA duy trì ≤ 1.0 cm² khi SV tăng ≥ 20% → Hẹp thực sự; nếu AVA &gt; 1.0 cm² → Hẹp giả) và/hoặc đo <strong>CT điểm vôi hóa (AVCS)</strong>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Cung lượng thấp, chênh áp thấp + LVEF bảo tồn</strong><br><em>(Paradoxical LFLG AS)</em></td>
+                        <td>Vmax &lt; 4.0 m/s<br>Mean PG &lt; 40 mmHg</td>
+                        <td>≤ 1.0 cm²</td>
+                        <td>SVi ≤ 35 mL/m²<br><strong>LVEF ≥ 50%</strong></td>
+                        <td>Đo <strong>CT điểm vôi hóa (AVCS &gt; 2000 AU ở nam; &gt; 1200 AU ở nữ)</strong> kết hợp đánh giá tích hợp (phì đại thất trái, planimetry CT/TOE/CMR).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Cung lượng bình thường, chênh áp thấp</strong><br><em>(Normal-flow LG AS)</em></td>
+                        <td>Vmax &lt; 4.0 m/s<br>Mean PG &lt; 40 mmHg</td>
+                        <td>≤ 1.0 cm²</td>
+                        <td>SVi &gt; 35 mL/m²<br>LVEF ≥ 50%</td>
+                        <td>Thường là <strong>Hẹp ĐMC mức độ vừa (Non-severe AS)</strong>; theo dõi định kỳ trừ khi bằng chứng đa phương thức chứng minh hẹp nặng.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 2: INDICATIONS FOR INTERVENTION & MODE SELECTION (FIGURES 7–9)    -->
+    <!-- ===================================================================== -->
+    <div id="tab-indication" class="tab-content">
+        <div class="btn-bar">
+            <span style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;">Phân nhánh xử trí Hẹp Van ĐMC Nặng đã xác định (Figure 7, 8 &amp; 9):</span>
+            <button class="btn-reset" onclick="resetAsInd()">↻ Làm lại từ đầu (Ca bệnh mới)</button>
+        </div>
+
+        <!-- STEP I1: SYMPTOMS -->
+        <div class="wizard-step" id="i-step-1">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1 • Figure 7</span>
+                    <div class="step-title">Bệnh nhân Hẹp Van ĐMC Nặng (Severe AS) có Triệu chứng không?</div>
+                </div>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted);">Triệu chứng kinh điển: Khó thở khi gắng sức, đau thắt ngực, ngất/tiền ngất khi gắng sức, hoặc suy tim mất bù cấp (với sốc tim do AS cấp, TAVI cấp cứu được ưu tiên hơn nong van bằng bóng BAV).</p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectAsSymp('yes', this)">
+                    <input type="radio" name="as_symp" value="yes">
+                    <div class="choice-text">
+                        <strong>CÓ TRIỆU CHỨNG</strong>
+                        <span>Có triệu chứng cơ năng (hoặc bộc lộ triệu chứng khi làm nghiệm pháp gắng sức).</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectAsSymp('no', this)">
+                    <input type="radio" name="as_symp" value="no">
+                    <div class="choice-text">
+                        <strong>KHÔNG CÓ TRIỆU CHỨNG</strong>
+                        <span>Không có triệu chứng lúc nghỉ (và nghiệm pháp gắng sức âm tính nếu thực hiện được).</span>
+                    </div>
+                </label>
+            </div>
+            <div id="i-symp-outcome"></div>
+        </div>
+
+        <!-- STEP I2: ASYMPTOMATIC WORKUP (LVEF & PROGNOSTIC MARKERS) -->
+        <div class="wizard-step hidden" id="i-step-asymp">
+            <div class="connector">▼ Nhánh Không Triệu Chứng: Đánh giá LVEF &amp; Các Yếu tố Tiên lượng Xấu (Figure 7)</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2A • Cập nhật Mới ESC/EACTS 2025</span>
+                    <div class="step-title">Kiểm tra Chức năng Thất trái (LVEF) &amp; Chỉ số Nguy cơ</div>
+                </div>
+            </div>
+
+            <div class="checklist-group" id="as-asymp-checks">
+                <label class="check-row" style="background: var(--red-bg); border-radius: 6px; margin-bottom: 6px;">
+                    <input type="checkbox" id="chk-as-lvef50" onchange="evalAsAsymp()">
+                    <span><strong style="color: var(--red-text);">LVEF &lt; 50%</strong> mà không có nguyên nhân nào khác → <em>Chỉ định can thiệp bắt buộc Class I!</em></span>
+                </label>
+                <label class="check-row"><input type="checkbox" class="as-2a-marker" onchange="evalAsAsymp()"> <strong>Hẹp ĐMC nặng chênh áp cao (High-gradient AS: Vmax ≥ 4.0 m/s, Mean PG ≥ 40 mmHg)</strong> kèm LVEF ≥ 50% <em>(Cập nhật mới 2025 dựa trên thử nghiệm EARLY TAVR, AVATAR, RECOVERY: nên cân nhắc can thiệp sớm Class IIa thay vì chờ đợi nếu nguy cơ thủ thuật thấp!)</em>.</label>
+                <label class="check-row"><input type="checkbox" class="as-2a-marker" onchange="evalAsAsymp()"> <strong>Hẹp ĐMC rất khít (Very severe AS):</strong> Mean PG ≥ 60 mmHg hoặc Vmax &gt; 5.0 m/s.</label>
+                <label class="check-row"><input type="checkbox" class="as-2a-marker" onchange="evalAsAsymp()"> <strong>Vôi hóa van nặng trên CT (AVCS &gt; 2000 ở nam, &gt; 1200 ở nữ)</strong> kèm tốc độ tiến triển <strong>Vmax ≥ 0.3 m/s/năm</strong>.</label>
+                <label class="check-row"><input type="checkbox" class="as-2a-marker" onchange="evalAsAsymp()"> <strong>Tăng BNP hoặc NT-proBNP rõ rệt</strong> (&gt; 3 lần giới hạn trên bình thường theo tuổi/giới, xác nhận qua đo lặp lại).</label>
+                <label class="check-row"><input type="checkbox" class="as-2a-marker" onchange="evalAsAsymp()"> <strong>LVEF &lt; 55%</strong> mà không có nguyên nhân nào khác.</label>
+                <label class="check-row"><input type="checkbox" class="as-2a-marker" onchange="evalAsAsymp()"> <strong>Nghiệm pháp gắng sức có tụt huyết áp bền vững (&gt; 20 mmHg)</strong>.</label>
+            </div>
+
+            <div class="checklist-group" style="background: #fdf2f4; border-color: #f43f5e; margin-top: 10px;">
+                <label class="check-row"><input type="checkbox" id="chk-as-lowrisk" checked onchange="evalAsAsymp()"> <strong>Nguy cơ thủ thuật / phẫu thuật thấp (Low procedural risk)</strong> theo đánh giá của Heart Team.</label>
+            </div>
+
+            <div id="i-asymp-outcome"></div>
+        </div>
+
+        <!-- STEP I3: MODE OF INTERVENTION (SAVR vs TAVI vs ROSS - FIGURES 7, 8, 9) -->
+        <div class="wizard-step hidden" id="i-step-mode">
+            <div class="connector">▼ Hội chẩn Heart Team: Lựa chọn Phương thức Can thiệp (SAVR vs. TAVI vs. Ross)</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 3 • Figure 7, 8 &amp; 9 (Cập nhật Mốc 70 Tuổi)</span>
+                    <div class="step-title">Đánh giá Tuổi, Giải phẫu Van &amp; Yếu tố Lâm sàng Đi kèm</div>
+                </div>
+            </div>
+
+            <div class="echo-grid" style="margin-top: 8px; margin-bottom: 12px;">
+                <div class="param-box">
+                    <label for="as-age">Tuổi bệnh nhân (năm)</label>
+                    <input type="number" id="as-age" value="72" min="18" max="105" oninput="evalAsMode()">
+                    <span class="param-hint">Mốc khuyến cáo mới 2025: <strong>&lt; 70 tuổi</strong> (SAVR) vs. <strong>≥ 70 tuổi</strong> (TAVI). Van cơ học cân nhắc khi &lt; 60 tuổi.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="as-surgrisk">Nguy cơ Phẫu thuật (STS-PROM / EuroSCORE II)</label>
+                    <select id="as-surgrisk" onchange="evalAsMode()">
+                        <option value="low">Nguy cơ thấp (&lt; 4%)</option>
+                        <option value="inter">Nguy cơ trung bình (4%–8%)</option>
+                        <option value="high">Nguy cơ cao (&gt; 8%) hoặc Không thể phẫu thuật</option>
+                    </select>
+                    <span class="param-hint">Đánh giá kết hợp thang điểm và tình trạng suy yếu (frailty).</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="as-valve-morph">Hình thái Van ĐMC</label>
+                    <select id="as-valve-morph" onchange="evalAsMode()">
+                        <option value="tricuspid">Van ĐMC 3 mảnh (Tricuspid AV)</option>
+                        <option value="bicuspid">Van ĐMC 2 mảnh (Bicuspid AV - BAV)</option>
+                    </select>
+                    <span class="param-hint">TAVI Class I ở ≥ 70 tuổi áp dụng cho <strong>van 3 mảnh</strong>; van 2 mảnh ở người nguy cơ tăng chỉ là Class IIb.</span>
+                </div>
+
+                <div class="param-box">
+                    <label for="as-tf-access">Đường vào Động mạch Đùi (Transfemoral)</label>
+                    <select id="as-tf-access" onchange="evalAsMode()">
+                        <option value="yes">Thuận lợi cho TAVI qua đường đùi</option>
+                        <option value="no">Không phù hợp đường đùi (hẹp/vôi hóa/gập góc nặng)</option>
+                    </select>
+                    <span class="param-hint">Ưu thế của TAVI chủ yếu được chứng minh qua đường động mạch đùi.</span>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="checklist-group" id="fav-savr-checks" style="margin-top:0;">
+                    <strong style="font-size: 0.88rem; color: var(--primary-burgundy); display:block; margin-bottom:6px;">Yếu tố ỦNG HỘ PHẪU THUẬT (Favours SAVR - Figure 9):</strong>
+                    <label class="check-row"><input type="checkbox" onchange="evalAsMode()"> Vôi hóa vòng van hoặc LVOT nặng/gồ ghề (nguy cơ vỡ vòng van, rò cạnh van cao).</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalAsMode()"> Kích thước vòng van nằm ngoài khung cỡ van TAVI hoặc nguy cơ tắc lỗ vành cao (xoang Valsalva nông, lá van dài).</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalAsMode()"> Cần phẫu thuật tim phối hợp: Bệnh mạch vành phức tạp (cần CABG), bệnh van tim nguyên phát khác nặng, phình gốc/ĐMC lên ≥ 45 mm, hoặc phì đại vách liên thất cần cắt cơ.</label>
+                </div>
+
+                <div class="checklist-group" id="fav-tavi-checks" style="margin-top:0;">
+                    <strong style="font-size: 0.88rem; color: var(--sky-blue-accent); display:block; margin-bottom:6px;">Yếu tố ỦNG HỘ TAVI (Favours TAVI - Figure 9):</strong>
+                    <label class="check-row"><input type="checkbox" onchange="evalAsMode()"> Động mạch chủ sứ (Porcelain aorta).</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalAsMode()"> Cầu nối mạch vành (CABG) cũ còn thông tốt nằm sát xương ức.</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalAsMode()"> Biến dạng lồng ngực nặng, vẹo cột sống nặng hoặc di chứng xạ trị vùng ngực.</label>
+                    <label class="check-row"><input type="checkbox" onchange="evalAsMode()"> Thể trạng suy yếu (Frailty) hoặc bệnh đồng mắc nặng làm tăng nguy cơ mổ tim hở.</label>
+                </div>
+            </div>
+
+            <div id="i-mode-outcome"></div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: NON-CARDIAC SURGERY (FIG. 21), CAD & MIXED AV DISEASE          -->
+    <!-- ===================================================================== -->
+    <div id="tab-ncs-cad" class="tab-content">
+        <div class="grid-2">
+            <!-- Non-cardiac Surgery (Figure 21) -->
+            <div class="info-card burgundy">
+                <h3>1. Xử trí Hẹp ĐMC Nặng khi Phẫu thuật Ngoài tim (NCS - Figure 21)</h3>
+                <ul>
+                    <li><strong>Phẫu thuật ngoài tim CẤP CỨU / KHẨN CẤP (Urgent NCS):</strong>
+                        <br>• <em>Nguy cơ phẫu thuật Thấp – Trung bình:</em> Tiến hành mổ NCS ngay dưới theo dõi huyết động chặt chẽ (tránh tụt huyết áp, tránh loạn nhịp, duy trì tiền tải).
+                        <br>• <em>Nguy cơ phẫu thuật Cao:</em> Cân nhắc làm <strong>TAVI hoặc Nong van ĐMC bằng bóng (BAV)</strong> trước mổ NCS nếu khả thi, hoặc mổ NCS dưới theo dõi huyết động nghiêm ngặt.
+                    </li>
+                    <li><strong>Phẫu thuật ngoài tim CHƯƠNG TRÌNH (Elective NCS):</strong>
+                        <br>• <em>Có triệu chứng hoặc Rối loạn chức năng thất trái:</em> Bắt buộc hội chẩn Heart Team để <strong>TAVI hoặc SAVR trước khi mổ NCS</strong> (nếu nguy cơ thủ thuật van thấp). Nếu nguy cơ làm TAVI/SAVR quá cao → mổ NCS dưới theo dõi chặt chẽ.
+                        <br>• <em>Không triệu chứng &amp; Thất trái bình thường:</em> Mổ NCS an toàn nếu nguy cơ NCS thấp–trung bình; nếu NCS nguy cơ cao thì hội chẩn Heart Team cân nhắc can thiệp van trước.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- CAD & Mixed Aortic Valve Disease -->
+            <div class="info-card">
+                <h3>2. Bệnh Mạch vành (CAD) &amp; Bệnh Van ĐMC Phối hợp (Section 6.1 &amp; 13.3)</h3>
+                <ul>
+                    <li><strong>Đánh giá mạch vành trước can thiệp van:</strong>
+                        <br>• Chụp <strong>CCTA</strong> được khuyến cáo <span class="class-badge class-1">Class I</span> nếu xác suất tiền nghiệm CAD tắc nghẽn ≤ 50% (ở ứng viên TAVI, nếu CT lập kế hoạch TAVI đủ chất lượng loại trừ CAD nặng thì có thể bỏ qua chụp mạch vành xâm lấn <span class="class-badge class-2a">Class IIa</span>).
+                        <br>• Chụp <strong>mạch vành xâm lấn (ICA)</strong> khuyến cáo <span class="class-badge class-1">Class I</span> nếu xác suất tiền nghiệm &gt; 50%.
+                    </li>
+                    <li><strong>Tái thông mạch vành đi kèm:</strong>
+                        <br>• <em>Nếu phẫu thuật SAVR:</em> Làm <strong>CABG</strong> khi hẹp mạch vành <strong>≥ 70%</strong> <span class="class-badge class-1">Class I</span> (hoặc ≥ 50% thân chung); cân nhắc CABG khi hẹp 50%–70% <span class="class-badge class-2a">Class IIa</span>.
+                        <br>• <em>Nếu làm TAVI (Cập nhật mới 2025 - NOTION-3):</em> Nên cân nhắc <strong>PCI</strong> <span class="class-badge class-2a">Class IIa</span> khi hẹp <strong>≥ 90%</strong> ở đoạn mạch có đường kính tham chiếu ≥ 2.5 mm; có thể cân nhắc PCI <span class="class-badge class-2b">Class IIb</span> khi hẹp ≥ 70% đoạn gần các nhánh chính.
+                    </li>
+                    <li><strong>Hẹp van ĐMC vừa đi kèm phẫu thuật tim khác (Rec Table 5 &amp; 11):</strong> Nên cân nhắc thay van ĐMC (SAVR) <span class="class-badge class-2a">Class IIa</span> ở bệnh nhân hẹp ĐMC mức độ vừa (AVA 1.0–1.5 cm² hoặc Mean PG 25–40 mmHg) đang phẫu thuật CABG, ĐMC lên hoặc van tim khác.</li>
+                    <li><strong>Hẹp vừa phối hợp Hở vừa van ĐMC (Mixed moderate AS + AR - Rec Table 12):</strong> Khuyến cáo can thiệp van <span class="class-badge class-1">Class I</span> khi có <strong>Mean PG ≥ 40 mmHg hoặc Vmax ≥ 4.0 m/s</strong> kèm triệu chứng (hoặc không triệu chứng nhưng LVEF &lt; 50%) ngay cả khi AVA &gt; 1.0 cm².</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function clearSelection(containerId) {
+        document.querySelectorAll(`#${containerId} .choice-card`).forEach(c => c.classList.remove('selected'));
+    }
+
+    /* ================= TAB 1: INTEGRATIVE AS DIAGNOSIS (FIGURE 6) ================= */
+    function resetAsDiag() {
+        ['as-vmax', 'as-mpg', 'as-ava', 'as-svi', 'as-lvef', 'as-avcs'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('as-sex').value = 'male';
+        document.getElementById('as-dse').value = 'none';
+        document.getElementById('chk-as-err').checked = true;
+        document.getElementById('chk-as-highflow').checked = false;
+        document.getElementById('chk-as-bav').checked = false;
+        document.getElementById('as-diag-outcome').innerHTML = '';
+    }
+
+    function evalAsDiag() {
+        const vmax = parseFloat(document.getElementById('as-vmax').value);
+        const mpg = parseFloat(document.getElementById('as-mpg').value);
+        const ava = parseFloat(document.getElementById('as-ava').value);
+        const svi = parseFloat(document.getElementById('as-svi').value);
+        const lvef = parseFloat(document.getElementById('as-lvef').value);
+        const sex = document.getElementById('as-sex').value;
+        const avcs = parseFloat(document.getElementById('as-avcs').value);
+        const dse = document.getElementById('as-dse').value;
+
+        const errExcluded = document.getElementById('chk-as-err').checked;
+        const highFlow = document.getElementById('chk-as-highflow').checked;
+        const isBav = document.getElementById('chk-as-bav').checked;
+
+        const out = document.getElementById('as-diag-outcome');
+        if (isNaN(vmax) && isNaN(mpg) && isNaN(ava) && isNaN(svi) && isNaN(lvef) && isNaN(avcs) && dse === 'none') {
+            out.innerHTML = '';
+            return;
+        }
+
+        const isHighGrad = (!isNaN(vmax) && vmax >= 4.0) || (!isNaN(mpg) && mpg >= 40);
+        const isVerySevere = (!isNaN(vmax) && vmax > 5.0) || (!isNaN(mpg) && mpg >= 60);
+        const isSmallAva = (!isNaN(ava) && ava <= 1.0);
+        const isLowFlow = (!isNaN(svi) && svi <= 35);
+        const isPreservedEf = isNaN(lvef) ? true : (lvef >= 50);
+
+        const avcsThresh = (sex === 'male') ? 2000 : 1200;
+        const avcsUnlikely = (sex === 'male') ? 1600 : 800;
+        const isAvcsSevere = (!isNaN(avcs) && avcs > avcsThresh);
+
+        let resultHtml = '';
+
+        if (isHighGrad && isSmallAva) {
+            resultHtml = `
+                <div class="action-result red">
+                    <h4>🩺 XÁC ĐỊNH: HẸP VAN ĐMC NẶNG CHÊNH ÁP CAO (HIGH-GRADIENT SEVERE AS) ${isVerySevere ? '— THỂ RẤT KHÍT (Vmax > 5 m/s hoặc Mean PG ≥ 60 mmHg)' : ''}</h4>
+                    <ul>
+                        <li>Chẩn đoán hẹp van ĐMC nặng được xác lập chắc chắn bất kể chức năng thất trái (LVEF) và tình trạng lưu lượng.</li>
+                        <li>Chuyển sang <strong>Thẻ 2 (Chỉ định Can thiệp &amp; Chọn SAVR / TAVI)</strong> để xác định thời điểm và phương thức điều trị.</li>
+                    </ul>
+                </div>`;
+        } else if (isHighGrad && !isNaN(ava) && ava > 1.0) {
+            if (highFlow) {
+                resultHtml = `
+                    <div class="action-result amber">
+                        <h4>🔄 CHÊNH ÁP CAO DO TÌNH TRẠNG CUNG LƯỢNG CAO CÓ THỂ HỒI PHỤC</h4>
+                        <ul>
+                            <li>Cần điều trị ổn định các nguyên nhân tăng cung lượng (thiếu máu, cường giáp, cầu nối AVF lưu lượng cao...) và <strong>đánh giá lại siêu âm tim ở trạng thái lưu lượng bình thường</strong> (Figure 6).</li>
+                        </ul>
+                    </div>`;
+            } else {
+                resultHtml = `
+                    <div class="action-result red">
+                        <h4>🩺 XÁC ĐỊNH: HẸP VAN ĐMC NẶNG (DISCORDANT HIGH-GRADIENT AS)</h4>
+                        <ul>
+                            <li>Khi đã loại trừ tình trạng cung lượng cao hồi phục, chênh áp cao (Mean PG ≥ 40 mmHg / Vmax ≥ 4.0 m/s) khẳng định <strong>Hẹp ĐMC nặng</strong> ngay cả khi AVA đo được &gt; 1.0 cm² (thường gặp trong bệnh van ĐMC phối hợp AS + AR hoặc kích thước LVOT lớn).</li>
+                        </ul>
+                    </div>`;
+            }
+        } else if (!isHighGrad && !isSmallAva && !isNaN(ava)) {
+            resultHtml = `
+                <div class="action-result green">
+                    <h4>✓ KẾT LUẬN: HẸP VAN ĐMC CHƯA NẶNG (NON-SEVERE AS — Mức độ Nhẹ / Vừa)</h4>
+                    <ul>
+                        <li>Chưa đạt ngưỡng hẹp nặng. Theo dõi siêu âm tim mỗi <strong>1 năm</strong> (nếu hẹp vừa, đặc biệt khi van vôi hóa nhiều) hoặc mỗi <strong>2–3 năm</strong> (nếu hẹp nhẹ, ít vôi hóa).</li>
+                        <li>Nếu bệnh nhân chuẩn bị phẫu thuật CABG, ĐMC lên hoặc van tim khác và đang hẹp ĐMC vừa (AVA 1.0–1.5 cm²): nên cân nhắc <strong>SAVR đồng thời</strong> <span class="class-badge class-2a">Class IIa</span>.</li>
+                    </ul>
+                </div>`;
+        } else if (!isHighGrad && isSmallAva) {
+            // Discordant low-gradient AS (AVA <= 1.0, Vmax < 4.0, Mean PG < 40)
+            let warningErr = !errExcluded ? '<li><strong>Cảnh báo bước 1 (Figure 6):</strong> Bạn chưa tick xác nhận loại trừ sai số đo lường! Cần kiểm tra lại đường kính LVOT (thường bị đo nhỏ hơn thực tế) và đặt đầu dò Doppler ở nhiều cửa sổ (cạnh ức phải, trên hõm ức).</li>' : '';
+
+            if (!isNaN(svi) && !isLowFlow && isPreservedEf) {
+                resultHtml = `
+                    <div class="action-result blue">
+                        <h4>ℹ️ THỂ: CUNG LƯỢNG BÌNH THƯỜNG, CHÊNH ÁP THẤP (Normal-flow, Low-gradient AS)</h4>
+                        <ul>
+                            ${warningErr}
+                            <li>Với SVi = ${svi} mL/m² (&gt; 35 mL/m²) và LVEF bảo tồn, tiên lượng tương tự <strong>Hẹp ĐMC mức độ vừa (Severe AS less likely)</strong>.</li>
+                            <li>Theo dõi lâm sàng và siêu âm định kỳ, trừ khi đánh giá đa phương thức (CT điểm vôi hóa, planimetry...) chứng minh hẹp thực sự nặng.</li>
+                        </ul>
+                    </div>`;
+            } else if (isPreservedEf) {
+                // Paradoxical LFLG AS (LVEF >= 50%, SVi <= 35)
+                if (isAvcsSevere) {
+                    resultHtml = `
+                        <div class="action-result red">
+                            <h4>🩺 XÁC ĐỊNH: HẸP ĐMC NẶNG THỂ CUNG LƯỢNG THẤP – CHÊNH ÁP THẤP, LVEF BẢO TỒN</h4>
+                            <ul>
+                                ${warningErr}
+                                <li>Điểm vôi hóa van ĐMC trên CT (<strong>AVCS = ${avcs} AU &gt; ${avcsThresh} AU</strong>) xác nhận <strong>Hẹp ĐMC thực sự nặng</strong> dù chênh áp thấp.</li>
+                                <li>Nếu bệnh nhân có triệu chứng → Nên cân nhắc can thiệp (TAVI hoặc SAVR) <span class="class-badge class-2a">Class IIa</span>.</li>
+                            </ul>
+                        </div>`;
+                } else {
+                    resultHtml = `
+                        <div class="action-result amber">
+                            <h4>🔍 NGHI NGỜ PARADOXICAL LFLG AS (LVEF ≥ 50%, SVi ≤ 35 mL/m²) — CẦN ĐO AVCS TRÊN CT</h4>
+                            <ul>
+                                ${warningErr}
+                                <li>Cần chụp <strong>CT đo điểm vôi hóa van ĐMC (AVCS)</strong>: ngưỡng xác định hẹp nặng là <strong>&gt; 2000 AU ở nam</strong> và <strong>&gt; 1200 AU ở nữ</strong> (ít khả năng nặng nếu &lt; 1600 AU ở nam, &lt; 800 AU ở nữ).</li>
+                                ${!isNaN(avcs) && avcs <= avcsThresh ? `<li>Giá trị AVCS hiện tại (${avcs} AU) chưa vượt ngưỡng tiêu chuẩn → Cần <strong>đánh giá tích hợp (Integrated assessment)</strong>: kiểm tra phì đại thất trái đồng tâm, planimetry trên TOE/CT/CMR (ngưỡng &lt; 1.2 cm²), hoặc lưu ý trường hợp van 2 mảnh / xơ hóa ít vôi hóa.</li>` : ''}
+                            </ul>
+                        </div>`;
+                }
+            } else {
+                // Classical LFLG AS (LVEF < 50%, SVi <= 35)
+                if (dse === 'true_severe' || isAvcsSevere) {
+                    resultHtml = `
+                        <div class="action-result red">
+                            <h4>🩺 XÁC ĐỊNH: HẸP ĐMC NẶNG THỰC SỰ (CLASSICAL LFLG AS VỚI LVEF &lt; 50%)</h4>
+                            <ul>
+                                ${warningErr}
+                                <li>Đã khẳng định hẹp ĐMC thực sự nặng qua ${dse === 'true_severe' ? 'Siêu âm gắng sức Dobutamine (AVA ≤ 1.0 cm²)' : ''} ${isAvcsSevere ? `CT điểm vôi hóa (AVCS = ${avcs} AU > ${avcsThresh} AU)` : ''}.</li>
+                                <li><strong>Chỉ định can thiệp bắt buộc <span class="class-badge class-1">Class I</span></strong> (kể cả khi không triệu chứng vì LVEF &lt; 50%!).</li>
+                            </ul>
+                        </div>`;
+                } else if (dse === 'pseudo_severe') {
+                    resultHtml = `
+                        <div class="action-result green">
+                            <h4>✓ KẾT LUẬN: HẸP ĐMC GIẢ NẶNG (PSEUDO-SEVERE AS)</h4>
+                            <ul>
+                                <li>Khi tăng cung lượng tim bằng Dobutamine liều thấp, diện tích lỗ van mở rộng &gt; 1.0 cm² → Hẹp thực sự chỉ ở mức độ vừa, nguyên nhân chính là bệnh cơ tim giảm co bóp.</li>
+                                <li><strong>Điều trị nội khoa suy tim tối ưu (GDMT)</strong> theo khuyến cáo suy tim, không can thiệp van ngay.</li>
+                            </ul>
+                        </div>`;
+                } else {
+                    resultHtml = `
+                        <div class="action-result amber">
+                            <h4>🔍 CLASSICAL LFLG AS (LVEF &lt; 50%) — CẦN LÀM DOBUTAMINE ECHO (DSE) VÀ/HOẶC CT AVCS</h4>
+                            <ul>
+                                ${warningErr}
+                                <li>Cần thực hiện <strong>Siêu âm gắng sức Dobutamine liều thấp (DSE)</strong> để phân biệt hẹp thực sự (AVA ≤ 1.0 cm²) với hẹp giả (AVA &gt; 1.0 cm²).</li>
+                                <li>Nếu không có dự trữ co bóp (SV tăng &lt; 20%) hoặc kết quả DSE không rõ ràng → Bắt buộc chụp <strong>CT đo điểm vôi hóa (AVCS &gt; ${avcsThresh} AU)</strong>. Lưu ý: kể cả khi không có dự trữ co bóp, can thiệp vẫn cải thiện tiên lượng nếu hẹp thực sự nặng!</li>
+                            </ul>
+                        </div>`;
+                }
+            }
+        }
+
+        if (isBav && resultHtml !== '') {
+            resultHtml += `
+                <div class="action-result blue" style="margin-top:10px;">
+                    <h4>💡 Lưu ý Van ĐMC Hai mảnh (BAV) / Xơ hóa ưu thế</h4>
+                    <ul>
+                        <li>Bệnh nhân có BAV, sau thấp tim, sau xạ trị hoặc thoái hóa tinh bột (amyloidosis) có thể bị <strong>hẹp van ĐMC thực sự nặng dù điểm vôi hóa AVCS trên CT không cao</strong> do cơ chế xơ hóa dày lá van chiếm ưu thế.</li>
+                    </ul>
+                </div>`;
+        }
+
+        out.innerHTML = resultHtml;
+    }
+
+    /* ================= TAB 2: INDICATIONS & MODE SELECTION (FIGURES 7–9) ================= */
+    function resetAsInd() {
+        document.querySelectorAll('#tab-indication input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('#tab-indication .choice-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('#tab-indication input[type="checkbox"]').forEach(c => c.checked = false);
+        document.getElementById('chk-as-lowrisk').checked = true;
+        document.getElementById('as-age').value = 72;
+        document.getElementById('as-surgrisk').value = 'low';
+        document.getElementById('as-valve-morph').value = 'tricuspid';
+        document.getElementById('as-tf-access').value = 'yes';
+
+        document.getElementById('i-step-asymp').classList.add('hidden');
+        document.getElementById('i-step-mode').classList.add('hidden');
+        document.getElementById('i-symp-outcome').innerHTML = '';
+        document.getElementById('i-asymp-outcome').innerHTML = '';
+        document.getElementById('i-mode-outcome').innerHTML = '';
+    }
+
+    function selectAsSymp(val, card) {
+        clearSelection('i-step-1');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('i-symp-outcome');
+        const asympStep = document.getElementById('i-step-asymp');
+        const modeStep = document.getElementById('i-step-mode');
+
+        if (val === 'yes') {
+            asympStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🚨 CHỈ ĐỊNH CAN THIỆP SỚM BẮT BUỘC <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Hẹp van ĐMC nặng có triệu chứng có tiên lượng rất xấu nếu điều trị nội khoa đơn thuần. Khuyến cáo can thiệp sớm cho mọi bệnh nhân có kỳ vọng sống &gt; 1 năm.</li>
+                        <li>Tiến hành đánh giá lựa chọn phương thức can thiệp (<strong>SAVR vs. TAVI</strong>) ở <strong>Bước 3</strong> bên dưới.</li>
+                    </ul>
+                </div>`;
+            modeStep.classList.remove('hidden');
+            evalAsMode();
+        } else {
+            out.innerHTML = '';
+            modeStep.classList.add('hidden');
+            asympStep.classList.remove('hidden');
+            evalAsAsymp();
+        }
+    }
+
+    function evalAsAsymp() {
+        const lvef50 = document.getElementById('chk-as-lvef50').checked;
+        const markers = document.querySelectorAll('.as-2a-marker');
+        let hasMarker = false;
+        markers.forEach(m => { if (m.checked) hasMarker = true; });
+        const lowRisk = document.getElementById('chk-as-lowrisk').checked;
+
+        const out = document.getElementById('i-asymp-outcome');
+        const modeStep = document.getElementById('i-step-mode');
+
+        if (lvef50) {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🚨 CHỈ ĐỊNH CAN THIỆP BẮT BUỘC: LVEF &lt; 50% <span class="class-badge class-1">Class I</span></h4>
+                    <ul>
+                        <li>Khuyến cáo can thiệp van ĐMC ngay cả khi bệnh nhân chưa có triệu chứng. Chuyển sang <strong>Bước 3</strong> chọn phương thức SAVR / TAVI.</li>
+                    </ul>
+                </div>`;
+            modeStep.classList.remove('hidden');
+            evalAsMode();
+        } else if (hasMarker && lowRisk) {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>⚡ NÊN CÂN NHẮC CAN THIỆP SỚM <span class="class-badge class-2a">Class IIa</span></h4>
+                    <ul>
+                        <li>Theo khuyến cáo ESC/EACTS 2025: Nên cân nhắc can thiệp sớm ở bệnh nhân hẹp ĐMC nặng không triệu chứng có nguy cơ thủ thuật thấp khi có hẹp chênh áp cao (EARLY TAVR/AVATAR) hoặc có các dấu hiệu tiên lượng xấu đi kèm (Vmax &gt; 5.0 m/s, tiến triển ≥ 0.3 m/s/năm kèm vôi hóa nặng, BNP &gt; 3× ULN, LVEF &lt; 55%, hoặc tụt HA &gt; 20 mmHg khi gắng sức).</li>
+                        <li>Chuyển sang <strong>Bước 3</strong> để hội chẩn Heart Team chọn SAVR hay TAVI.</li>
+                    </ul>
+                </div>`;
+            modeStep.classList.remove('hidden');
+            evalAsMode();
+        } else {
+            modeStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>👁️ THEO DÕI CHỦ ĐỘNG SÁT SAO (CLOSE ACTIVE SURVEILLANCE)</h4>
+                    <ul>
+                        <li>Khám lâm sàng và siêu âm tim (TTE) định kỳ <strong>ít nhất mỗi 6 tháng</strong> tại Phòng khám Van tim (Heart Valve Clinic).</li>
+                        <li>Giáo dục bệnh nhân và gia đình báo ngay lập tức khi xuất hiện triệu chứng khó thở, đau ngực hoặc choáng ngất.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    function evalAsMode() {
+        const age = parseInt(document.getElementById('as-age').value) || 70;
+        const surgRisk = document.getElementById('as-surgrisk').value;
+        const morph = document.getElementById('as-valve-morph').value;
+        const tfAccess = document.getElementById('as-tf-access').value;
+
+        let savrFavCount = 0;
+        document.querySelectorAll('#fav-savr-checks input[type="checkbox"]').forEach(c => { if (c.checked) savrFavCount++; });
+
+        let taviFavCount = 0;
+        document.querySelectorAll('#fav-tavi-checks input[type="checkbox"]').forEach(c => { if (c.checked) taviFavCount++; });
+
+        const out = document.getElementById('i-mode-outcome');
+
+        // Determine primary recommendation per Figure 7 & Rec Table 4
+        let headline = '';
+        let colorClass = 'blue';
+        let bullets = [];
+
+        if (age >= 70 && morph === 'tricuspid' && tfAccess === 'yes' && savrFavCount === 0) {
+            colorClass = 'green';
+            headline = `🎯 KHUYẾN CÁO ĐẦU TAY: TAVI QUA ĐƯỜNG ĐỘNG MẠCH ĐÙI <span class="class-badge class-1">Class I</span>`;
+            bullets.push(`Bệnh nhân <strong>≥ 70 tuổi</strong>, van ĐMC <strong>3 mảnh</strong> và giải phẫu/đường vào động mạch đùi thuận lợi → <strong>TAVI là phương thức điều trị được khuyến cáo hàng đầu (Class I)</strong> theo ESC/EACTS 2025 giúp hồi phục nhanh và giảm biến chứng sớm.`);
+        } else if (age < 70 && surgRisk === 'low' && taviFavCount === 0) {
+            colorClass = 'green';
+            headline = `🔪 KHUYẾN CÁO ĐẦU TAY: PHẪU THUẬT THAY VAN ĐMC (SAVR) <span class="class-badge class-1">Class I</span>`;
+            bullets.push(`Bệnh nhân <strong>&lt; 70 tuổi</strong> và <strong>nguy cơ phẫu thuật thấp</strong> → <strong>SAVR được khuyến cáo hàng đầu (Class I)</strong> dựa trên kỳ vọng sống dài và quản lý trọn đời (lifetime management).`);
+            if (age < 60) {
+                bullets.push(`<strong>Lựa chọn loại van (Figure 8):</strong> Với bệnh nhân <strong>&lt; 60 tuổi</strong>, ưu tiên <strong>Van cơ học (MHV)</strong> <span class="class-badge class-2a">Class IIa</span> (nếu không chống chỉ định chống đông VKA) hoặc <strong>Phẫu thuật Ross</strong> tại trung tâm có kinh nghiệm cao.`);
+            } else {
+                bullets.push(`<strong>Lựa chọn loại van (Figure 8):</strong> Trong khoảng 60–69 tuổi, cân nhắc giữa van cơ học và van sinh học (BHV, ưu tiên &gt; 65 tuổi) dựa trên kỳ vọng sống và nguyện vọng bệnh nhân.`);
+            }
+        } else {
+            colorClass = 'amber';
+            headline = `⚖️ HỘI CHẨN HEART TEAM: CÂN NHẮC GIỮA SAVR VÀ TAVI <span class="class-badge class-1">Class I</span>`;
+            bullets.push(`Bệnh nhân nằm ở vùng giao thoa (ví dụ: &lt; 70 tuổi nhưng nguy cơ phẫu thuật tăng, ≥ 70 tuổi nhưng van 2 mảnh hoặc có yếu tố giải phẫu ủng hộ SAVR/TAVI) → <strong>Heart Team quyết định cá thể hóa</strong> dựa trên giải phẫu CT, nguy cơ thủ thuật và kế hoạch can thiệp lại trong tương lai.`);
+        }
+
+        if (morph === 'bicuspid') {
+            bullets.push(`<strong>Lưu ý Van ĐMC Hai mảnh (BAV):</strong> SAVR vẫn là lựa chọn chính ở người trẻ hoặc có giãn ĐMC lên (≥ 45 mm). <strong>TAVI</strong> có thể cân nhắc <span class="class-badge class-2b">Class IIb</span> ở bệnh nhân hẹp BAV nặng có <strong>nguy cơ phẫu thuật tăng</strong> và giải phẫu trên CT thuận lợi (tránh khi vôi hóa raphe quá nặng).`);
+        }
+
+        if (tfAccess === 'no') {
+            if (surgRisk === 'high') {
+                bullets.push(`<strong>Không phù hợp phẫu thuật &amp; không đi được đường đùi:</strong> Nên cân nhắc <strong>TAVI không qua đường đùi (Non-transfemoral TAVI: dưới đòn, cảnh, tĩnh mạch chủ...)</strong> <span class="class-badge class-2a">Class IIa</span>.`);
+            } else {
+                bullets.push(`<strong>Không đi được đường đùi nhưng mổ được:</strong> <strong>SAVR</strong> được ưu tiên hơn TAVI qua đường tiếp cận thay thế.`);
+            }
+        }
+
+        if (savrFavCount > 0) {
+            bullets.push(`<strong>Có ${savrFavCount} yếu tố giải phẫu/bệnh lý đi kèm ủng hộ SAVR:</strong> Phẫu thuật cho phép xử lý triệt để vòng van vôi hóa nặng, tránh tắc lỗ vành, kết hợp CABG, sửa/thay van khác hoặc thay ĐMC lên (khi đường kính ≥ 45 mm).`);
+        }
+        if (taviFavCount > 0) {
+            bullets.push(`<strong>Có ${taviFavCount} yếu tố ủng hộ TAVI:</strong> ĐMC sứ, cầu nối CABG cũ sát xương ức, biến dạng ngực/xạ trị hoặc suy yếu làm tăng đáng kể rủi ro mổ tim hở.`);
+        }
+
+        bullets.push(`<strong>Quản lý trọn đời (Lifetime Management - Figure 9):</strong> Nếu dự kiến kỳ vọng sống vượt quá độ bền van sinh học, cần tính toán từ lần can thiệp đầu tiên: mở rộng vòng van ĐMC khi SAVR (nếu vòng van nhỏ tránh PPM), không dùng van không giá (stentless) hoặc van có lá gắn ngoài khung, và chọn van TAVI căn chỉnh mép van (commissural alignment) để bảo toàn đường vào mạch vành cho TAV-in-TAV sau này.`);
+
+        out.innerHTML = `
+            <div class="action-result ${colorClass}">
+                <h4>${headline}</h4>
+                <ul>${bullets.map(b => `<li>${b}</li>`).join('')}</ul>
+            </div>`;
+    }
+</script>
+
+</body>
+</html>
