@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Clinical Pathway: Xử trí Thuyên tắc Phổi Cấp (Acute PE) v2</title>
+    <style>
+        :root {
+            --primary-burgundy: #7a1c31;
+            --primary-dark: #4a0e1c;
+            --sky-blue-bg: #eef7fc;
+            --sky-blue-border: #b8dcf0;
+            --sky-blue-accent: #0284c7;
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --bg-body: #f1f5f9;
+            --card-bg: #ffffff;
+            --green-bg: #ecfdf5;
+            --green-border: #10b981;
+            --green-text: #065f46;
+            --amber-bg: #fffbeb;
+            --amber-border: #f59e0b;
+            --amber-text: #92400e;
+            --red-bg: #fef2f2;
+            --red-border: #ef4444;
+            --red-text: #991b1b;
+            --border-radius: 12px;
+            --shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.55;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-burgundy) 100%);
+            color: #ffffff;
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(122, 28, 49, 0.2);
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            font-size: 0.88rem;
+            color: #e2e8f0;
+        }
+
+        .badge-source {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-top: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .container {
+            max-width: 940px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+
+        /* Main Mode Switcher */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #e2e8f0;
+            padding: 6px;
+            border-radius: var(--border-radius);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.92rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-burgundy);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Sub-tabs inside Step 1 for PTP Calculators */
+        .sub-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .sub-tab-btn {
+            padding: 8px 14px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.86rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .sub-tab-btn:hover {
+            border-color: var(--sky-blue-accent);
+            color: var(--primary-dark);
+        }
+
+        .sub-tab-btn.active {
+            background: var(--primary-burgundy);
+            color: #ffffff;
+            border-color: var(--primary-burgundy);
+        }
+
+        .ptp-panel {
+            display: none;
+        }
+
+        .ptp-panel.active {
+            display: block;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Step Card (Interactive Wizard) */
+        .wizard-step {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 18px;
+            border-left: 5px solid var(--primary-burgundy);
+            animation: slideDown 0.25s ease-out;
+        }
+
+        .wizard-step.hidden {
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .step-badge {
+            background: var(--primary-burgundy);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .step-title {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-top: 4px;
+        }
+
+        /* Option Buttons (Radio-like cards) */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .choice-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: #ffffff;
+        }
+
+        .choice-card:hover {
+            border-color: var(--sky-blue-accent);
+            background: var(--sky-blue-bg);
+        }
+
+        .choice-card.selected {
+            border-color: var(--primary-burgundy);
+            background: #fdf2f4;
+            box-shadow: 0 0 0 1px var(--primary-burgundy);
+        }
+
+        .choice-card input[type="radio"],
+        .choice-card input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-burgundy);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .choice-text strong {
+            display: block;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .choice-text span {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Checklist Box */
+        .checklist-group {
+            background: var(--sky-blue-bg);
+            border: 1px solid var(--sky-blue-border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+        }
+
+        .check-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.92rem;
+            border-bottom: 1px solid rgba(184, 220, 240, 0.5);
+        }
+
+        .check-row:last-child {
+            border-bottom: none;
+        }
+
+        .check-row:hover {
+            background: rgba(255, 255, 255, 0.75);
+        }
+
+        .check-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .check-row input[type="checkbox"] {
+            margin-top: 3px;
+            width: 17px;
+            height: 17px;
+            accent-color: var(--primary-burgundy);
+            flex-shrink: 0;
+        }
+
+        .pts-badge {
+            background: #ffffff;
+            color: var(--primary-burgundy);
+            border: 1px solid var(--sky-blue-border);
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        /* Heart Rate Radio Group inside Revised Geneva */
+        .hr-group {
+            background: #ffffff;
+            border: 1px solid var(--sky-blue-border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-top: 8px;
+        }
+
+        .hr-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .hr-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: #f8fafc;
+        }
+
+        .hr-pill input[type="radio"] {
+            accent-color: var(--primary-burgundy);
+        }
+
+        /* Score Summary Bar */
+        .score-summary-bar {
+            margin-top: 14px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-weight: 700;
+            border: 2px solid;
+        }
+
+        .score-summary-bar.low {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+            color: var(--green-text);
+        }
+
+        .score-summary-bar.inter {
+            background: var(--amber-bg);
+            border-color: var(--amber-border);
+            color: var(--amber-text);
+        }
+
+        .score-summary-bar.high {
+            background: var(--red-bg);
+            border-color: var(--red-border);
+            color: var(--red-text);
+        }
+
+        .tier-toggle {
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.75);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Result Action Box */
+        .action-result {
+            border-radius: var(--border-radius);
+            padding: 18px 20px;
+            margin-top: 14px;
+            border-width: 2px;
+            border-style: solid;
+            animation: slideDown 0.25s ease-out;
+        }
+
+        .action-result.green {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+            color: var(--green-text);
+        }
+
+        .action-result.amber {
+            background: var(--amber-bg);
+            border-color: var(--amber-border);
+            color: var(--amber-text);
+        }
+
+        .action-result.red {
+            background: var(--red-bg);
+            border-color: var(--red-border);
+            color: var(--red-text);
+        }
+
+        .action-result.blue {
+            background: var(--sky-blue-bg);
+            border-color: var(--sky-blue-accent);
+            color: var(--primary-dark);
+        }
+
+        .action-result h4 {
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-result ul {
+            margin-left: 20px;
+            font-size: 0.92rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .btn-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 14px;
+        }
+
+        .btn-reset {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn-reset:hover {
+            background: #e2e8f0;
+        }
+
+        .input-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
+        .input-inline input[type="number"] {
+            width: 85px;
+            padding: 6px 10px;
+            border: 1px solid #94a3b8;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .connector {
+            text-align: center;
+            color: var(--primary-burgundy);
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin: -10px 0 8px 0;
+        }
+
+        @media (max-width: 600px) {
+            .option-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Công cụ Quyết định Lâm sàng Tương tác: Thuyên tắc Phổi Cấp (Acute PE)</h1>
+    <p>Tính điểm Wells / Revised Geneva / Gestalt và tự động rẽ nhánh chẩn đoán, hồi sức thất phải &amp; chỉ định ngoại khoa</p>
+    <span class="badge-source">Prucnal CK, Kabrhel C, Jansson PS. Clin Chest Med 47 (2026) 851–866</span>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchMode('mode-diag', this)">Nhánh A: Chẩn đoán &amp; Loại trừ PE (Fig. 1)</button>
+        <button class="tab-btn" onclick="switchMode('mode-treat', this)">Nhánh B: Phân tầng, Hồi sức &amp; Phẫu thuật (Fig. 2)</button>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODE A: INTERACTIVE DIAGNOSTIC PATHWAY                                -->
+    <!-- ===================================================================== -->
+    <div id="mode-diag" class="tab-content active">
+        <div class="btn-bar">
+            <button class="btn-reset" onclick="resetDiag()">↻ Làm lại từ đầu (Bệnh nhân mới)</button>
+        </div>
+
+        <!-- STEP D1: PRETEST PROBABILITY WITH INTEGRATED CALCULATORS -->
+        <div class="wizard-step" id="d-step-1">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1</span>
+                    <div class="step-title">Đánh giá Xác suất Tiền nghiệm (Pretest Probability - PTP)</div>
+                </div>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Chọn công cụ đánh giá bên dưới — hệ thống sẽ tự động tính điểm, phân tầng và mở nhánh xử trí tương ứng:</p>
+
+            <!-- Sub-tabs for PTP tools -->
+            <div class="sub-tabs">
+                <button class="sub-tab-btn active" onclick="switchPtpTab('ptp-wells', this)">🧮 Tính điểm Wells Score</button>
+                <button class="sub-tab-btn" onclick="switchPtpTab('ptp-geneva', this)">🧮 Tính điểm Revised Geneva</button>
+                <button class="sub-tab-btn" onclick="switchPtpTab('ptp-gestalt', this)">🩺 Chọn trực tiếp (Gestalt lâm sàng)</button>
+            </div>
+
+            <!-- PANEL 1: WELLS SCORE CALCULATOR -->
+            <div id="ptp-wells" class="ptp-panel active">
+                <div class="checklist-group" id="wells-checks">
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="3" onchange="calcWells()"> Dấu hiệu hoặc triệu chứng lâm sàng của DVT (sưng, đau khi sờ tĩnh mạch sâu)</div>
+                        <span class="pts-badge">+3.0 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="3" onchange="calcWells()"> PE là chẩn đoán khả dĩ số #1 hoặc ngang bằng chẩn đoán khác</div>
+                        <span class="pts-badge">+3.0 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="1.5" onchange="calcWells()"> Nhịp tim &gt; 100 lần/phút</div>
+                        <span class="pts-badge">+1.5 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="1.5" onchange="calcWells()"> Bất động ≥ 3 ngày hoặc phẫu thuật trong vòng 4 tuần trước</div>
+                        <span class="pts-badge">+1.5 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="1.5" onchange="calcWells()"> Tiền sử đã từng bị PE hoặc DVT trước đây</div>
+                        <span class="pts-badge">+1.5 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="1" onchange="calcWells()"> Ho ra máu</div>
+                        <span class="pts-badge">+1.0 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="1" onchange="calcWells()"> Ung thư đang hoạt động (điều trị trong 6 tháng qua hoặc chăm sóc giảm nhẹ)</div>
+                        <span class="pts-badge">+1.0 đ</span>
+                    </label>
+                </div>
+
+                <div id="wells-result-bar" class="score-summary-bar low">
+                    <div>
+                        Tổng điểm Wells: <span id="wells-total">0</span> điểm → <span id="wells-tier-label">NGUY CƠ THẤP (&lt; 2 điểm — Tỷ lệ PE 1.3%)</span>
+                    </div>
+                    <label class="tier-toggle" title="Chuyển đổi giữa thang 3 bậc (<2 / 2-6 / >6) và thang 2 bậc (≤4 / >4)">
+                        <input type="checkbox" id="wells-two-tier" onchange="calcWells()"> Dùng thang 2 bậc (PE Unlikely ≤ 4đ / Likely &gt; 4đ)
+                    </label>
+                </div>
+            </div>
+
+            <!-- PANEL 2: REVISED GENEVA SCORE CALCULATOR -->
+            <div id="ptp-geneva" class="ptp-panel">
+                <div class="checklist-group" id="geneva-checks">
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="1" onchange="calcGeneva()"> Tuổi &gt; 65 năm</div>
+                        <span class="pts-badge">+1 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="3" onchange="calcGeneva()"> Tiền sử DVT hoặc PE trước đây</div>
+                        <span class="pts-badge">+3 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="2" onchange="calcGeneva()"> Phẫu thuật (gây mê toàn thân) hoặc gãy xương chi dưới trong 1 tháng qua</div>
+                        <span class="pts-badge">+2 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="2" onchange="calcGeneva()"> Ung thư đang hoạt động</div>
+                        <span class="pts-badge">+2 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="3" onchange="calcGeneva()"> Đau một bên chi dưới tự phát</div>
+                        <span class="pts-badge">+3 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="2" onchange="calcGeneva()"> Ho ra máu</div>
+                        <span class="pts-badge">+2 đ</span>
+                    </label>
+                    <label class="check-row">
+                        <div class="check-left"><input type="checkbox" data-pts="4" onchange="calcGeneva()"> Đau khi sờ dọc tĩnh mạch sâu chi dưới và phù một bên chân</div>
+                        <span class="pts-badge">+4 đ</span>
+                    </label>
+
+                    <div class="hr-group">
+                        <strong style="font-size: 0.88rem; color: var(--primary-dark);">Nhịp tim lúc khám (lần/phút):</strong>
+                        <div class="hr-options">
+                            <label class="hr-pill"><input type="radio" name="geneva_hr" value="0" checked onchange="calcGeneva()"> &lt; 75 l/p (0 đ)</label>
+                            <label class="hr-pill"><input type="radio" name="geneva_hr" value="3" onchange="calcGeneva()"> 75–94 l/p (+3 đ)</label>
+                            <label class="hr-pill"><input type="radio" name="geneva_hr" value="5" onchange="calcGeneva()"> ≥ 95 l/p (+5 đ)</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="geneva-result-bar" class="score-summary-bar low">
+                    <div>
+                        Tổng điểm Revised Geneva: <span id="geneva-total">0</span> điểm → <span id="geneva-tier-label">NGUY CƠ THẤP (0–3 điểm — Tỷ lệ PE 9%)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 3: MANUAL GESTALT SELECTION -->
+            <div id="ptp-gestalt" class="ptp-panel">
+                <div class="option-grid">
+                    <label class="choice-card" onclick="selectDiagPTP('low', this)">
+                        <input type="radio" name="diag_ptp" value="low">
+                        <div class="choice-text">
+                            <strong>1. Nguy cơ Thấp (PTP &lt; 15%)</strong>
+                            <span>Cảm nhận lâm sàng ít nghĩ đến PE.</span>
+                        </div>
+                    </label>
+                    <label class="choice-card" onclick="selectDiagPTP('inter', this)">
+                        <input type="radio" name="diag_ptp" value="inter">
+                        <div class="choice-text">
+                            <strong>2. Nguy cơ Trung bình</strong>
+                            <span>Cảm nhận lâm sàng nghi ngờ mức độ vừa.</span>
+                        </div>
+                    </label>
+                    <label class="choice-card" onclick="selectDiagPTP('high', this)">
+                        <input type="radio" name="diag_ptp" value="high">
+                        <div class="choice-text">
+                            <strong>3. Nguy cơ Cao (PE Likely)</strong>
+                            <span>Cảm nhận lâm sàng nghi ngờ rất cao PE cấp.</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- BRANCH D2-LOW: PERC RULE -->
+        <div class="wizard-step hidden" id="d-step-low">
+            <div class="connector">▼ Rẽ nhánh Nguy cơ Thấp</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2A</span>
+                    <div class="step-title">Kiểm tra 8 Tiêu chí Loại trừ PERC Rule</div>
+                </div>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Tick chọn nếu bệnh nhân <strong>CÓ</strong> bất kỳ yếu tố nào dưới đây (nếu không có yếu tố nào, để trống):</p>
+            <div class="checklist-group" id="perc-checks">
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalPERC()"> Tuổi ≥ 50</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalPERC()"> Nhịp tim ≥ 100 lần/phút</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalPERC()"> SpO₂ khí trời ≤ 94%</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalPERC()"> Sưng phù một bên chân (bất đối xứng)</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalPERC()"> Ho ra máu</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalPERC()"> Phẫu thuật hoặc chấn thương trong vòng 4 tuần</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalPERC()"> Tiền sử DVT hoặc PE trước đây</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalPERC()"> Đang sử dụng hormone ngoại sinh (thuốc tránh thai, nội tiết...)</div></label>
+            </div>
+            <div id="perc-outcome"></div>
+        </div>
+
+        <!-- BRANCH D2-INTER: YEARS CRITERIA -->
+        <div class="wizard-step hidden" id="d-step-inter">
+            <div class="connector">▼ Rẽ nhánh Nguy cơ Trung bình (hoặc PERC Dương tính)</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2B</span>
+                    <div class="step-title">Đánh giá Tiêu chí YEARS &amp; Tuổi để xác định Ngưỡng D-dimer</div>
+                </div>
+            </div>
+            <div class="input-inline">
+                <label for="diag-age">Nhập tuổi bệnh nhân:</label>
+                <input type="number" id="diag-age" value="55" min="18" max="120" oninput="evalYEARS()"> tuổi
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Tick chọn nếu bệnh nhân <strong>CÓ</strong> các tiêu chí YEARS sau:</p>
+            <div class="checklist-group" id="years-checks">
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalYEARS()"> Có dấu hiệu lâm sàng của DVT (sưng, nóng, đỏ, đau bắp chân)</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalYEARS()"> Ho ra máu</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalYEARS()"> PE là chẩn đoán khả dĩ nhất (#1) hoặc ngang bằng chẩn đoán khác</div></label>
+            </div>
+            <div id="years-threshold-banner" style="margin-top: 12px;"></div>
+
+            <div style="margin-top: 16px; border-top: 1px dashed #cbd5e1; padding-top: 14px;">
+                <strong style="font-size: 0.95rem; color: var(--primary-dark);">Chọn kết quả xét nghiệm D-dimer thực tế:</strong>
+                <div class="option-grid">
+                    <label class="choice-card" onclick="selectDdimerRes('neg', this)">
+                        <input type="radio" name="ddimer_res" value="neg">
+                        <div class="choice-text">
+                            <strong>D-dimer Âm tính (Dưới ngưỡng trên)</strong>
+                            <span>Thấp hơn ngưỡng cắt YEARS / hiệu chỉnh tuổi.</span>
+                        </div>
+                    </label>
+                    <label class="choice-card" onclick="selectDdimerRes('pos', this)">
+                        <input type="radio" name="ddimer_res" value="pos">
+                        <div class="choice-text">
+                            <strong>D-dimer Dương tính (Vượt ngưỡng trên)</strong>
+                            <span>Cao hơn ngưỡng cắt cho phép.</span>
+                        </div>
+                    </label>
+                </div>
+                <div id="ddimer-final-outcome"></div>
+            </div>
+        </div>
+
+        <!-- BRANCH D2-HIGH: HIGH PTP -->
+        <div class="wizard-step hidden" id="d-step-high">
+            <div class="connector">▼ Rẽ nhánh Nguy cơ Cao</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2C</span>
+                    <div class="step-title">Đánh giá Tình trạng Huyết động trước khi Chụp Hình ảnh</div>
+                </div>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Không dùng D-dimer để loại trừ ở nhóm nguy cơ cao. Chọn tình trạng huyết động hiện tại:</p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectHighHemo('stable', this)">
+                    <input type="radio" name="high_hemo" value="stable">
+                    <div class="choice-text">
+                        <strong>Huyết động Ổn định</strong>
+                        <span>HATT ≥ 90 mmHg, không tụt HA, không sốc.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectHighHemo('unstable', this)">
+                    <input type="radio" name="high_hemo" value="unstable">
+                    <div class="choice-text">
+                        <strong>Huyết động Không Ổn định / Sốc</strong>
+                        <span>HATT &lt; 90 mmHg &gt; 15 phút, tụt &gt; 40 mmHg hoặc cần vận mạch.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="high-hemo-outcome"></div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODE B: INTERACTIVE TREATMENT, RESUSCITATION & SURGERY PATHWAY        -->
+    <!-- ===================================================================== -->
+    <div id="mode-treat" class="tab-content">
+        <div class="btn-bar">
+            <button class="btn-reset" onclick="resetTreat()">↻ Làm lại từ đầu (Ca bệnh mới)</button>
+        </div>
+
+        <!-- STEP T1: HEMODYNAMIC STATUS -->
+        <div class="wizard-step" id="t-step-1">
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 1</span>
+                    <div class="step-title">Đánh giá Huyết động Ngay Lập Tức (Đã xác định hoặc Nghi ngờ rất cao PE)</div>
+                </div>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Bệnh nhân có <strong>Sốc tắc nghẽn / Tụt huyết áp</strong> (HATT &lt; 90 mmHg &gt; 15 phút, giảm HATT &gt; 40 mmHg, đang dùng vận mạch, hoặc ngừng tuần hoàn) không?</p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectTreatHemo('unstable', this)">
+                    <input type="radio" name="treat_hemo" value="unstable">
+                    <div class="choice-text">
+                        <strong style="color: var(--red-text);">CÓ — Bất ổn Huyết động (PE Nguy cơ Cao)</strong>
+                        <span>Chiếm ~5% số ca, nguy cơ tử vong cực cao do suy thất phải cấp.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectTreatHemo('stable', this)">
+                    <input type="radio" name="treat_hemo" value="stable">
+                    <div class="choice-text">
+                        <strong style="color: var(--green-text);">KHÔNG — Huyết động Ổn định</strong>
+                        <span>HATT ≥ 90 mmHg, tưới máu mô bảo tồn. Cần đánh giá tiếp chức năng thất phải.</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- BRANCH T2-HIGH: HIGH RISK PE (SHOCK) -->
+        <div class="wizard-step hidden" id="t-step-high">
+            <div class="connector">▼ Rẽ nhánh PE Nguy cơ Cao (Massive PE)</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge" style="background: var(--red-border);">Cấp cứu Tối khẩn</span>
+                    <div class="step-title">Hồi sức Bảo vệ Thất phải &amp; Lựa chọn Phương pháp Tái tưới máu</div>
+                </div>
+            </div>
+
+            <div class="action-result blue" style="margin-top: 0; margin-bottom: 16px;">
+                <h4>🛡️ Phác đồ Hồi sức Thất phải (Bắt buộc thực hiện song song tại ED)</h4>
+                <ul>
+                    <li><strong>Chống đông ngay:</strong> Bolus + truyền tĩnh mạch <strong>UFH</strong> (hoặc tiêm LMWH nếu chưa sẵn sàng bơm tiêm điện).</li>
+                    <li><strong>Vận mạch đầu tay:</strong> <strong>Norepinephrine</strong> (duy trì áp lực tưới máu vành phải). Hàng hai: <strong>Vasopressin</strong> liều thấp (0.01–0.03 đv/phút) hoặc Epinephrine. <strong>Cấm dùng Phenylephrine</strong> (gây tăng PVR).</li>
+                    <li><strong>Dịch truyền:</strong> Hạn chế tối đa! Chỉ bolus nhỏ ≤ 250–500 mL nếu nghiệm pháp nâng chân thụ động (PLR) dương tính.</li>
+                    <li><strong>Hô hấp:</strong> Oxy qua HFNC (mục tiêu SpO₂ &gt; 90–92%). <strong>Tránh đặt nội khí quản</strong> nếu chưa thật sự ngừng thở/suy hô hấp kiệt sức (áp lực dương làm sập tiền tải RV và gây ngừng tim).</li>
+                </ul>
+            </div>
+
+            <p style="font-size: 0.92rem; font-weight: 700; color: var(--primary-dark);">Kích hoạt đội PERT (Cấp cứu – Tim mạch – Can thiệp – Ngoại Lồng ngực Tim mạch). Đánh giá khả năng Tiêu sợi huyết toàn thân:</p>
+            <div class="option-grid">
+                <label class="choice-card" onclick="selectHighReperf('st_ok', this)">
+                    <input type="radio" name="high_reperf" value="st_ok">
+                    <div class="choice-text">
+                        <strong>Không có chống chỉ định Tiêu sợi huyết</strong>
+                        <span>Bệnh nhân có thể dùng Alteplase hoặc Tenecteplase đường tĩnh mạch.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectHighReperf('st_contra', this)">
+                    <input type="radio" name="high_reperf" value="st_contra">
+                    <div class="choice-text">
+                        <strong>Chống chỉ định hoặc Thất bại Tiêu sợi huyết</strong>
+                        <span>Mới mổ lớn, chấn thương sọ não, xuất huyết, hoặc huyết khối di động trong tim phải.</span>
+                    </div>
+                </label>
+                <label class="choice-card" onclick="selectHighReperf('arrest', this)">
+                    <input type="radio" name="high_reperf" value="arrest">
+                    <div class="choice-text">
+                        <strong>Sốc kháng trị vận mạch / Ngừng tuần hoàn</strong>
+                        <span>Đang ép tim hoặc tụt huyết áp trơ dù đã dùng vận mạch liều cao.</span>
+                    </div>
+                </label>
+            </div>
+            <div id="high-reperf-outcome"></div>
+        </div>
+
+        <!-- BRANCH T2-STABLE: RV DYSFUNCTION & BIOMARKERS -->
+        <div class="wizard-step hidden" id="t-step-stable">
+            <div class="connector">▼ Rẽ nhánh Huyết động Ổn định</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 2</span>
+                    <div class="step-title">Đánh giá Rối loạn Chức năng Thất phải (RV Strain) &amp; Men tim</div>
+                </div>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Tick chọn các dấu hiệu <strong>CÓ HIỆN DIỆN</strong> trên bệnh nhân:</p>
+            <div class="checklist-group">
+                <label class="check-row"><div class="check-left"><input type="checkbox" id="chk-rv-img" onchange="evalStableRisk()"> <span><strong>Giãn/Rối loạn thất phải trên hình ảnh:</strong> CTPA (RV/LV &gt; 1, vách liên thất phẳng/lệch trái) hoặc Siêu âm tim/POCUS (dấu McConnell, TAPSE giảm).</span></div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" id="chk-biomarker" onchange="evalStableRisk()"> <span><strong>Tăng dấu ấn sinh học cơ tim:</strong> Tăng Troponin hoặc BNP / NT-proBNP.</span></div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" id="chk-spesi" onchange="evalStableRisk()"> <span><strong>Thang điểm sPESI ≥ 1 điểm</strong> (Tuổi &gt;80, Ung thư, Suy tim/Bệnh phổi mạn, Mạch ≥110, HATT &lt;100, SpO₂ &lt;90%).</span></div></label>
+            </div>
+            <div id="stable-risk-outcome"></div>
+        </div>
+
+        <!-- SUB-BRANCH T3-LOW: HESTIA OUTPATIENT SCREENING -->
+        <div class="wizard-step hidden" id="t-step-hestia">
+            <div class="connector">▼ Rẽ nhánh Nguy cơ Thấp / Trung bình-Thấp</div>
+            <div class="step-header">
+                <div>
+                    <span class="step-badge">Bước 3</span>
+                    <div class="step-title">Sàng lọc Tiêu chuẩn Xuất viện Sớm (Hestia &amp; Yếu tố Xã hội)</div>
+                </div>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Tick chọn nếu bệnh nhân <strong>CÓ</strong> bất kỳ rào cản nhập viện nào sau đây:</p>
+            <div class="checklist-group" id="hestia-checks">
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalHestia()"> Nguy cơ chảy máu cao, suy thận/suy gan nặng, hoặc giảm tiểu cầu.</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalHestia()"> Cần thở oxy để duy trì SpO₂ &gt; 90% hoặc đau nhiều cần giảm đau tĩnh mạch.</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalHestia()"> Có huyết khối trung tâm lớn / huyết khối di động trong tim / DVT nặng kèm theo.</div></label>
+                <label class="check-row"><div class="check-left"><input type="checkbox" onchange="evalHestia()"> Lý do xã hội: Không đảm bảo tuân thủ thuốc DOAC, không thể tái khám trong 1–3 tuần, hoặc không có người hỗ trợ.</div></label>
+            </div>
+            <div id="hestia-outcome"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchMode(modeId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(modeId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function switchPtpTab(panelId, btn) {
+        document.querySelectorAll('.ptp-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(panelId).classList.add('active');
+        btn.classList.add('active');
+
+        if (panelId === 'ptp-wells') calcWells();
+        else if (panelId === 'ptp-geneva') calcGeneva();
+    }
+
+    function clearSelection(containerId) {
+        document.querySelectorAll(`#${containerId} .choice-card`).forEach(c => c.classList.remove('selected'));
+    }
+
+    /* ================= PTP CALCULATORS (WELLS & GENEVA) ================= */
+    function calcWells() {
+        const checks = document.querySelectorAll('#wells-checks input[type="checkbox"]');
+        let score = 0;
+        checks.forEach(c => {
+            if (c.checked) score += parseFloat(c.getAttribute('data-pts'));
+        });
+
+        const twoTier = document.getElementById('wells-two-tier').checked;
+        const bar = document.getElementById('wells-result-bar');
+        const totalEl = document.getElementById('wells-total');
+        const labelEl = document.getElementById('wells-tier-label');
+
+        totalEl.textContent = score;
+        bar.classList.remove('low', 'inter', 'high');
+
+        let branch = 'low';
+        if (twoTier) {
+            if (score <= 4) {
+                bar.classList.add('inter');
+                labelEl.textContent = 'PE UNLIKELY (0–4 điểm — Tỷ lệ PE 12.1%) → Làm D-dimer';
+                branch = 'inter';
+            } else {
+                bar.classList.add('high');
+                labelEl.textContent = 'PE LIKELY (> 4 điểm — Tỷ lệ PE 37.1%) → Chụp CTPA';
+                branch = 'high';
+            }
+        } else {
+            if (score < 2) {
+                bar.classList.add('low');
+                labelEl.textContent = 'NGUY CƠ THẤP (< 2 điểm — Tỷ lệ PE 1.3%) → Kiểm tra PERC';
+                branch = 'low';
+            } else if (score <= 6) {
+                bar.classList.add('inter');
+                labelEl.textContent = 'NGUY CƠ TRUNG BÌNH (2–6 điểm — Tỷ lệ PE 16.2%) → Đánh giá YEARS & D-dimer';
+                branch = 'inter';
+            } else {
+                bar.classList.add('high');
+                labelEl.textContent = 'NGUY CƠ CAO (> 6 điểm — Tỷ lệ PE 37.5%) → Chụp CTPA';
+                branch = 'high';
+            }
+        }
+        routeDiagnosticBranch(branch);
+    }
+
+    function calcGeneva() {
+        const checks = document.querySelectorAll('#geneva-checks input[type="checkbox"]');
+        let score = 0;
+        checks.forEach(c => {
+            if (c.checked) score += parseFloat(c.getAttribute('data-pts'));
+        });
+
+        const hrRadios = document.querySelectorAll('input[name="geneva_hr"]');
+        hrRadios.forEach(r => {
+            if (r.checked) score += parseFloat(r.value);
+        });
+
+        const bar = document.getElementById('geneva-result-bar');
+        const totalEl = document.getElementById('geneva-total');
+        const labelEl = document.getElementById('geneva-tier-label');
+
+        totalEl.textContent = score;
+        bar.classList.remove('low', 'inter', 'high');
+
+        let branch = 'low';
+        if (score <= 3) {
+            bar.classList.add('low');
+            labelEl.textContent = 'NGUY CƠ THẤP (0–3 điểm — Tỷ lệ PE 9%) → Kiểm tra PERC';
+            branch = 'low';
+        } else if (score <= 10) {
+            bar.classList.add('inter');
+            labelEl.textContent = 'NGUY CƠ TRUNG BÌNH (4–10 điểm — Tỷ lệ PE 27.5%) → Đánh giá YEARS & D-dimer';
+            branch = 'inter';
+        } else {
+            bar.classList.add('high');
+            labelEl.textContent = 'NGUY CƠ CAO (≥ 11 điểm — Tỷ lệ PE 71.7%) → Chụp CTPA';
+            branch = 'high';
+        }
+        routeDiagnosticBranch(branch);
+    }
+
+    function routeDiagnosticBranch(level) {
+        document.getElementById('d-step-low').classList.add('hidden');
+        document.getElementById('d-step-inter').classList.add('hidden');
+        document.getElementById('d-step-high').classList.add('hidden');
+
+        if (level === 'low') {
+            document.getElementById('d-step-low').classList.remove('hidden');
+            evalPERC();
+        } else if (level === 'inter') {
+            document.getElementById('d-step-inter').classList.remove('hidden');
+            evalYEARS();
+        } else if (level === 'high') {
+            document.getElementById('d-step-high').classList.remove('hidden');
+        }
+    }
+
+    /* ================= DIAGNOSTIC PATHWAY LOGIC ================= */
+    function resetDiag() {
+        document.querySelectorAll('#mode-diag input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('#mode-diag input[type="checkbox"]').forEach(c => c.checked = false);
+        document.querySelectorAll('#mode-diag .choice-card').forEach(c => c.classList.remove('selected'));
+        // Reset Geneva HR to <75
+        const defaultHr = document.querySelector('input[name="geneva_hr"][value="0"]');
+        if (defaultHr) defaultHr.checked = true;
+
+        document.getElementById('perc-outcome').innerHTML = '';
+        document.getElementById('ddimer-final-outcome').innerHTML = '';
+        document.getElementById('high-hemo-outcome').innerHTML = '';
+
+        // Re-evaluate active PTP calculator (defaults to 0 points -> Low risk)
+        if (document.getElementById('ptp-wells').classList.contains('active')) {
+            calcWells();
+        } else if (document.getElementById('ptp-geneva').classList.contains('active')) {
+            calcGeneva();
+        } else {
+            document.getElementById('d-step-low').classList.add('hidden');
+            document.getElementById('d-step-inter').classList.add('hidden');
+            document.getElementById('d-step-high').classList.add('hidden');
+        }
+    }
+
+    function selectDiagPTP(level, card) {
+        clearSelection('ptp-gestalt');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+        routeDiagnosticBranch(level);
+    }
+
+    function evalPERC() {
+        const checks = document.querySelectorAll('#perc-checks input[type="checkbox"]');
+        let posCount = 0;
+        checks.forEach(c => { if (c.checked) posCount++; });
+
+        const out = document.getElementById('perc-outcome');
+        if (posCount === 0) {
+            document.getElementById('d-step-inter').classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>✓ KẾT LUẬN: LOẠI TRỪ THUYÊN TẮC PHỔI (PERC Âm tính 0/8)</h4>
+                    <ul>
+                        <li>Xác suất âm tính giả thấp hơn nguy cơ biến chứng do chụp CTPA.</li>
+                        <li><strong>Không cần làm D-dimer, không cần chụp CTPA.</strong> Tìm nguyên nhân khác gây triệu chứng.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>⚠️ PERC Dương tính (${posCount}/8 tiêu chí) → Chuyển sang nhánh xét nghiệm D-dimer bên dưới</h4>
+                    <ul>
+                        <li>Không thể loại trừ bằng lâm sàng đơn thuần. Hãy đánh giá tiếp tiêu chí YEARS ở Bước 2B ngay bên dưới.</li>
+                    </ul>
+                </div>`;
+            document.getElementById('d-step-inter').classList.remove('hidden');
+            evalYEARS();
+        }
+    }
+
+    function evalYEARS() {
+        const age = parseInt(document.getElementById('diag-age').value) || 50;
+        const checks = document.querySelectorAll('#years-checks input[type="checkbox"]');
+        let yearsCount = 0;
+        checks.forEach(c => { if (c.checked) yearsCount++; });
+
+        const banner = document.getElementById('years-threshold-banner');
+        if (yearsCount === 0) {
+            banner.innerHTML = `
+                <div class="action-result blue" style="margin-top:0;">
+                    <h4>🎯 Ngưỡng loại trừ áp dụng: D-dimer &lt; 1000 ng/mL</h4>
+                    <ul>
+                        <li>Bệnh nhân đạt <strong>YEARS Low Risk (0/3 tiêu chí)</strong> → Được phép nâng ngưỡng loại trừ lên <strong>1000 ng/mL</strong>, giúp giảm đáng kể tỷ lệ chụp CTPA không cần thiết.</li>
+                    </ul>
+                </div>`;
+        } else {
+            const cutoff = age > 50 ? age * 10 : 500;
+            const note = age > 50 ? `Hiệu chỉnh theo tuổi (${age} × 10 ng/mL)` : `Ngưỡng chuẩn (Tuổi ≤ 50)`;
+            banner.innerHTML = `
+                <div class="action-result amber" style="margin-top:0;">
+                    <h4>🎯 Ngưỡng loại trừ áp dụng: D-dimer ≤ ${cutoff} ng/mL (${note})</h4>
+                    <ul>
+                        <li>Có <strong>${yearsCount}/3 tiêu chí YEARS</strong> → Không áp dụng ngưỡng 1000 ng/mL.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    function selectDdimerRes(res, card) {
+        clearSelection('d-step-inter');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('ddimer-final-outcome');
+        if (res === 'neg') {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>✓ KẾT LUẬN: LOẠI TRỪ THUYÊN TẮC PHỔI</h4>
+                    <ul>
+                        <li>D-dimer dưới ngưỡng cắt tương ứng với phân tầng nguy cơ → An toàn để loại trừ PE cấp.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🩻 CHỈ ĐỊNH: CHỤP CẮT LỚP VI TÍNH ĐỘNG MẠCH PHỔI (CTPA)</h4>
+                    <ul>
+                        <li>Tiêu chuẩn vàng xác định chẩn đoán và đánh giá tỷ lệ thất phải/thất trái (RV/LV).</li>
+                        <li><strong>Lưu ý ngoại khoa/lâm sàng:</strong> Nếu CTPA chỉ phát hiện <em>huyết khối hạ phân thùy đơn độc (isolated SSPE)</em>, cần siêu âm Doppler tĩnh mạch chi dưới; nếu không có DVT và nguy cơ tái phát thấp, có thể cân nhắc theo dõi thay vì chống đông.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    function selectHighHemo(state, card) {
+        clearSelection('d-step-high');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('high-hemo-outcome');
+        if (state === 'stable') {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🩻 CHỈ ĐỊNH: CHỤP CTPA NGAY LẬP TỨC (Bỏ qua D-dimer)</h4>
+                    <ul>
+                        <li>Nếu không có chống chỉ định chảy máu và thời gian chờ chụp CTPA kéo dài, cân nhắc tiêm 1 liều chống đông trước khi chụp.</li>
+                        <li>Sau khi có kết quả CTPA dương tính, chuyển sang <strong>Nhánh B (Phân tầng &amp; Điều trị)</strong>.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🚨 BÁO ĐỘNG ĐỎ: KHỞI TRỊ CHỐNG ĐÔNG NGAY + SIÊU ÂM POCUS TẠI GIƯỜNG</h4>
+                    <ul>
+                        <li><strong>Không trì hoãn chống đông</strong> để chờ đi chụp CTPA (Bolus UFH tĩnh mạch ngay nếu không chống chỉ định tuyệt đối).</li>
+                        <li>Thực hiện <strong>POCUS tại giường:</strong> Tìm dấu hiệu quá tải thất phải cấp (RV/LV &gt; 1, dấu McConnell, vách liên thất chữ D, huyết khối di động trong tim phải) và siêu âm ép tĩnh mạch chi dưới tìm DVT.</li>
+                        <li>Nếu có DVT mới hoặc giãn thất phải điển hình kèm lâm sàng sốc tắc nghẽn → Đủ cơ sở khởi động phác đồ <strong>Tái tưới máu PE Nguy cơ Cao (Nhánh B)</strong> ngay lập tức.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    /* ================= TREATMENT PATHWAY LOGIC ================= */
+    function resetTreat() {
+        document.querySelectorAll('#mode-treat input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('#mode-treat input[type="checkbox"]').forEach(c => c.checked = false);
+        document.querySelectorAll('#mode-treat .choice-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById('t-step-high').classList.add('hidden');
+        document.getElementById('t-step-stable').classList.add('hidden');
+        document.getElementById('t-step-hestia').classList.add('hidden');
+        document.getElementById('high-reperf-outcome').innerHTML = '';
+        document.getElementById('stable-risk-outcome').innerHTML = '';
+        document.getElementById('hestia-outcome').innerHTML = '';
+    }
+
+    function selectTreatHemo(state, card) {
+        clearSelection('t-step-1');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        document.getElementById('t-step-high').classList.add('hidden');
+        document.getElementById('t-step-stable').classList.add('hidden');
+        document.getElementById('t-step-hestia').classList.add('hidden');
+
+        if (state === 'unstable') {
+            document.getElementById('t-step-high').classList.remove('hidden');
+        } else {
+            document.getElementById('t-step-stable').classList.remove('hidden');
+            evalStableRisk();
+        }
+    }
+
+    function selectHighReperf(choice, card) {
+        clearSelection('t-step-high');
+        card.classList.add('selected');
+        card.querySelector('input').checked = true;
+
+        const out = document.getElementById('high-reperf-outcome');
+        if (choice === 'st_ok') {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>💉 ĐIỀU TRỊ ĐẦU TAY: TIÊU SỢI HUYẾT TOÀN THÂN (SYSTEMIC THROMBOLYSIS) + ICU</h4>
+                    <ul>
+                        <li>Sử dụng <strong>Alteplase (r-tPA)</strong> hoặc <strong>Tenecteplase (TNK-tPA)</strong> ngay tại buồng hồi sức ED nếu bệnh nhân quá nặng không an toàn để di chuyển.</li>
+                        <li>Duy trì song song chống đông (UFH) và chuyển Hồi sức tích cực (ICU).</li>
+                        <li>Nếu huyết động không cải thiện sau tiêu sợi huyết → Chuyển sang <strong>Phẫu thuật lấy huyết khối cứu vãn (Rescue Surgical Embolectomy)</strong>.</li>
+                    </ul>
+                </div>`;
+        } else if (choice === 'st_contra') {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🔪 HỘI CHẨN KHẨN NGOẠI LỒNG NGỰC TIM MẠCH / CAN THIỆP MẠCH (PERT)</h4>
+                    <ul>
+                        <li><strong>Phẫu thuật lấy huyết khối ĐM phổi (Surgical Embolectomy):</strong> Chỉ định ưu tiên khi có chống chỉ định tiêu sợi huyết, thất bại tiêu sợi huyết, hoặc có <em>huyết khối di động trong buồng tim phải (Clot-in-transit)</em> / kẹt lỗ bầu dục.</li>
+                        <li><strong>Can thiệp qua catheter (CDT / Mechanical Thrombectomy):</strong> Lựa chọn thay thế tại trung tâm có sẵn ekip thông tim/can thiệp mạch và bệnh nhân đủ ổn định để vận chuyển.</li>
+                        <li><strong>Lưu ý ngoại khoa:</strong> Việc bệnh nhân đã được tiêm LMWH trước đó <em>không</em> phải chống chỉ định của phẫu thuật hay can thiệp.</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result red">
+                    <h4>🫀 TRIỂN KHAI VA-ECMO CỨU MẠNG (RESCUE VA-ECMO)</h4>
+                    <ul>
+                        <li>Thiết lập <strong>VA-ECMO</strong> đùi–đùi ngay tại ED/ICU để giải áp thất phải và duy trì tưới máu tạng trong lúc hồi sức ngừng tim hoặc sốc trơ.</li>
+                        <li>Sau khi huyết động ổn định trên ECMO → Đưa bệnh nhân lên phòng mổ thực hiện <strong>Surgical Embolectomy</strong> hoặc phòng can thiệp lấy huyết khối cơ học.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    function evalStableRisk() {
+        const rvImg = document.getElementById('chk-rv-img').checked;
+        const bio = document.getElementById('chk-biomarker').checked;
+        const spesi = document.getElementById('chk-spesi').checked;
+
+        const out = document.getElementById('stable-risk-outcome');
+        const hestiaStep = document.getElementById('t-step-hestia');
+
+        if (rvImg && bio) {
+            hestiaStep.classList.add('hidden');
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>⚠️ PHÂN TẦNG: NGUY CƠ TRUNG BÌNH-CAO (Intermediate-High Risk PE)</h4>
+                    <ul>
+                        <li><strong>Chống đông ưu tiên:</strong> Tiêm dưới da <strong>LMWH</strong> (ưu tiên hơn UFH nhờ dược động học ổn định, ít chảy máu và <em>không cản trở phẫu thuật/can thiệp</em> nếu diễn tiến xấu).</li>
+                        <li><strong>Hội chẩn đội PERT:</strong> Cân nhắc can thiệp qua catheter (CDT) hoặc tiêu sợi huyết liều thấp nếu gánh nặng huyết khối trung tâm lớn.</li>
+                        <li><strong>Theo dõi nội trú bắt buộc:</strong> Nhập khoa theo dõi Monitor/SpO₂ liên tục trong <strong>48–72 giờ đầu</strong> (có <strong>5% nguy cơ</strong> tụt huyết áp chuyển thành PE Nguy cơ Cao). Nếu ổn định sau 48–72h → chuyển sang thuốc uống <strong>DOAC</strong>.</li>
+                    </ul>
+                </div>`;
+        } else if (!rvImg && !bio && !spesi) {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>✓ PHÂN TẦNG: NGUY CƠ THẤP (Low Risk PE — sPESI = 0, không giãn RV)</h4>
+                    <ul>
+                        <li>Đánh giá tiếp <strong>Bước 3 (Tiêu chuẩn Hestia)</strong> bên dưới để quyết định cho xuất viện điều trị ngoại trú ngay tại ED.</li>
+                    </ul>
+                </div>`;
+            hestiaStep.classList.remove('hidden');
+            evalHestia();
+        } else {
+            out.innerHTML = `
+                <div class="action-result blue">
+                    <h4>ℹ️ PHÂN TẦNG: NGUY CƠ TRUNG BÌNH-THẤP (Intermediate-Low Risk PE)</h4>
+                    <ul>
+                        <li>Có sPESI ≥ 1 hoặc chỉ dương tính đơn độc 1 yếu tố (hình ảnh RV <em>hoặc</em> men tim).</li>
+                        <li>Kiểm tra <strong>Bước 3 (Tiêu chuẩn Hestia)</strong> bên dưới: đa số cần nhập viện khởi trị LMWH/DOAC; chỉ một số ít ca chọn lọc mới cân nhắc điều trị ngoại trú.</li>
+                    </ul>
+                </div>`;
+            hestiaStep.classList.remove('hidden');
+            evalHestia();
+        }
+    }
+
+    function evalHestia() {
+        const checks = document.querySelectorAll('#hestia-checks input[type="checkbox"]');
+        let barrierCount = 0;
+        checks.forEach(c => { if (c.checked) barrierCount++; });
+
+        const spesi = document.getElementById('chk-spesi').checked;
+        const rvImg = document.getElementById('chk-rv-img').checked;
+        const bio = document.getElementById('chk-biomarker').checked;
+        const out = document.getElementById('hestia-outcome');
+
+        if (barrierCount === 0 && !spesi && !rvImg && !bio) {
+            out.innerHTML = `
+                <div class="action-result green">
+                    <h4>🏠 QUYẾT ĐỊNH: XUẤT VIỆN ĐIỀU TRỊ NGOẠI TRÚ NGAY TẠI ED</h4>
+                    <ul>
+                        <li><strong>Kê đơn đầu tay:</strong> Thuốc chống đông đường uống <strong>DOAC</strong> (Apixaban hoặc Rivaroxaban — lưu ý hướng dẫn rõ liều nạp 1–3 tuần đầu cho bệnh nhân).</li>
+                        <li><strong>Tái khám:</strong> Hẹn tái khám chuyên khoa trong vòng <strong>1–3 tuần</strong> (và đánh giá lại sau 3 tháng để tầm soát tăng áp phổi mạn tính CTEPH hoặc ung thư tiềm ẩn nếu PE vô căn).</li>
+                    </ul>
+                </div>`;
+        } else {
+            out.innerHTML = `
+                <div class="action-result amber">
+                    <h4>🏥 QUYẾT ĐỊNH: NHẬP VIỆN ĐIỀU TRỊ NỘI TRÚ</h4>
+                    <ul>
+                        <li>Khởi trị chống đông bằng <strong>LMWH</strong> tiêm dưới da hoặc <strong>DOAC</strong> đường uống (tránh dùng UFH nếu không suy thận nặng vì dược động học kém ổn định).</li>
+                        <li>Theo dõi đáp ứng lâm sàng và chuyển sang phác đồ ngoại trú khi ổn định.</li>
+                    </ul>
+                </div>`;
+        }
+    }
+
+    // Initialize default Wells calculation on load
+    window.addEventListener('DOMContentLoaded', () => {
+        calcWells();
+    });
+</script>
+
+</body>
+</html>
