@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hội Chẩn Đa Mô Thức Ung Thư Phổi - NCCN 2026</title>
+    <style>
+        /* ==========================================================================
+           1. GIAO DIỆN NHẬP LIỆU THÔNG MINH TRÊN WEB & ĐIỆN THOẠI (SCREEN ONLY)
+           ========================================================================== */
+        :root {
+            --primary: #0f4c81;
+            --primary-dark: #093256;
+            --primary-light: #e0f2fe;
+            --accent: #0d9488;
+            --accent-light: #ccfbf1;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border: #cbd5e1;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        /* Ẩn bản in khi đang xem trên màn hình */
+        #print-doc {
+            display: none;
+        }
+
+        /* Header cố định trên cùng */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #fff;
+            padding: 12px 16px;
+            box-shadow: 0 4px 12px rgba(15, 76, 129, 0.2);
+        }
+
+        .header-top {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-brand-icon {
+            background: rgba(255, 255, 255, 0.15);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .app-brand h1 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .app-brand span {
+            font-size: 12px;
+            color: #bae6fd;
+            display: block;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 9px 14px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-print {
+            background: #10b981;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        /* Thanh điều hướng nhanh các phần trên mobile */
+        .nav-pills {
+            max-width: 960px;
+            margin: 10px auto 0 auto;
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .nav-pills::-webkit-scrollbar { display: none; }
+
+        .nav-pill {
+            background: rgba(255, 255, 255, 0.12);
+            color: #e0f2fe;
+            text-decoration: none;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .nav-pill:hover {
+            background: rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+
+        /* Khung chứa nội dung chính */
+        .app-container {
+            max-width: 960px;
+            margin: 16px auto 80px auto;
+            padding: 0 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Card từng phân mục */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            scroll-margin-top: 105px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .card-badge {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 3px 10px;
+            border-radius: 6px;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .sub-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 16px 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Grid nhập liệu linh hoạt */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--text-main);
+            background: #f8fafc;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.12);
+        }
+
+        textarea.form-control {
+            min-height: 85px;
+            resize: vertical;
+        }
+
+        /* Hệ thống nút chọn dạng Chip (Tối ưu chạm trên điện thoại) */
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip-item {
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .chip-item input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .chip-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 13px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: #f8fafc;
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s ease;
+        }
+
+        .chip-box::before {
+            content: "○";
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: bold;
+        }
+
+        .chip-item input[type="checkbox"] + .chip-box::before {
+            content: "☐";
+        }
+
+        .chip-item input:checked + .chip-box {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .chip-item input:checked + .chip-box::before {
+            content: "☑";
+            color: var(--primary);
+        }
+
+        .chip-item input[type="radio"]:checked + .chip-box::before {
+            content: "◉";
+        }
+
+        /* Thẻ chuyên khoa tham gia */
+        .dept-row {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 10px;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .dept-row:last-child { border-bottom: none; }
+
+        /* Thanh nổi dưới đáy cho điện thoại */
+        .mobile-bottom-bar {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .dept-row {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            .header-actions .btn-print span.btn-text {
+                display: none;
+            }
+            .mobile-bottom-bar {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #fff;
+                padding: 10px 16px;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                z-index: 999;
+                gap: 10px;
+            }
+            .mobile-bottom-bar .btn {
+                flex: 1;
+                justify-content: center;
+                padding: 12px;
+                font-size: 15px;
+            }
+        }
+
+        /* ==========================================================================
+           2. BẢN IN CHUẨN NGHỊ ĐỊNH 30/2020/NĐ-CP (CHỈ HIỂN THỊ KHI IN / XUẤT PDF)
+           ========================================================================== */
+        @media print {
+            @page {
+                size: A4 portrait;
+                /* Lề chuẩn Nghị định 30/2020/NĐ-CP: Trên 20mm, Dưới 20mm, Trái 30mm, Phải 15mm */
+                margin: 20mm 15mm 20mm 30mm;
+            }
+
+            body {
+                background: #fff !important;
+                color: #000 !important;
+                font-family: "Times New Roman", Times, serif !important;
+                font-size: 13pt !important;
+                line-height: 1.35 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* Ẩn toàn bộ giao diện App */
+            #app-ui, .mobile-bottom-bar {
+                display: none !important;
+            }
+
+            /* Hiển thị bản in chuẩn hành chính */
+            #print-doc {
+                display: block !important;
+                width: 100% !important;
+            }
+
+            /* BẢNG QUỐC HIỆU - TIÊU NGỮ & CƠ QUAN BAN HÀNH (2 CỘT NGANG HÀNG TUYỆT ĐỐI) */
+            table.nd30-header-table {
+                width: 100%;
+                border-collapse: collapse;
+                border: none;
+                margin-bottom: 12pt;
+                table-layout: fixed;
+            }
+
+            table.nd30-header-table td {
+                border: none !important;
+                padding: 0 !important;
+                vertical-align: top;
+                text-align: center;
+            }
+
+            td.nd30-col-left {
+                width: 47%;
+            }
+
+            td.nd30-col-right {
+                width: 53%;
+            }
+
+            .p-org-parent {
+                font-size: 11.5pt;
+                text-transform: uppercase;
+                margin: 0;
+                line-height: 1.25;
+                white-space: nowrap;
+            }
+
+            .p-org-name {
+                font-size: 11.5pt;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin: 1pt 0 3pt 0;
+                line-height: 1.25;
+                white-space: nowrap;
+            }
+
+            .p-line-left {
+                width: 45%;
+                border-bottom: 1pt solid #000;
+                margin: 0 auto 5pt auto;
+            }
+
+            .p-doc-num {
+                font-size: 12pt;
+                margin: 0;
+            }
+
+            .p-nation {
+                font-size: 11.5pt;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin: 0;
+                line-height: 1.25;
+                white-space: nowrap;
+            }
+
+            .p-motto {
+                font-size: 12.5pt;
+                font-weight: bold;
+                margin: 1pt 0 3pt 0;
+                line-height: 1.25;
+                white-space: nowrap;
+            }
+
+            .p-line-right {
+                width: 68%;
+                border-bottom: 1pt solid #000;
+                margin: 0 auto 5pt auto;
+            }
+
+            .p-date {
+                font-size: 12pt;
+                font-style: italic;
+                text-align: right;
+                margin: 0;
+                padding-right: 4pt;
+            }
+
+            /* Tiêu đề phiếu */
+            .p-title-block {
+                text-align: center;
+                margin: 10pt 0 10pt 0;
+            }
+
+            .p-main-title {
+                font-size: 14pt;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin: 0 0 2pt 0;
+            }
+
+            .p-sub-title {
+                font-size: 12pt;
+                font-style: italic;
+                margin: 0;
+            }
+
+            .p-meta-bar {
+                width: 100%;
+                border-collapse: collapse;
+                border-bottom: 1pt solid #000;
+                margin-bottom: 8pt;
+                padding-bottom: 4pt;
+                font-size: 12pt;
+            }
+            .p-meta-bar td {
+                border: none;
+                padding: 2pt 0;
+            }
+
+            .p-sec-title {
+                font-size: 13pt;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin: 10pt 0 4pt 0;
+                page-break-after: avoid;
+            }
+
+            .p-sub-sec {
+                font-size: 13pt;
+                font-weight: bold;
+                margin: 6pt 0 2pt 0;
+                page-break-after: avoid;
+            }
+
+            .p-line {
+                margin: 0 0 3.5pt 0;
+                text-align: justify;
+            }
+
+            /* Gạch đầu dòng chuẩn Nghị định 30/2020/NĐ-CP */
+            .p-indent {
+                margin: 0 0 3.5pt 14pt;
+                text-align: justify;
+            }
+
+            /* Bảng dữ liệu hành chính */
+            table.p-data-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 4pt 0 8pt 0;
+                font-size: 12.5pt;
+            }
+
+            table.p-data-table th,
+            table.p-data-table td {
+                border: 0.75pt solid #000;
+                padding: 4pt 6pt;
+                text-align: left;
+                vertical-align: top;
+            }
+
+            table.p-data-table th {
+                font-weight: bold;
+                text-align: center;
+            }
+
+            /* Khối kết luận đóng khung */
+            .p-conclusion-box {
+                border: 0.75pt solid #000;
+                padding: 6pt 8pt;
+                min-height: 45pt;
+                margin-top: 3pt;
+                white-space: pre-wrap;
+            }
+
+            /* Bảng chữ ký 4 chuyên khoa */
+            table.p-sign-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10pt;
+                page-break-inside: avoid;
+                table-layout: fixed;
+            }
+
+            table.p-sign-table td {
+                width: 25%;
+                text-align: center;
+                vertical-align: top;
+                padding: 2pt;
+                border: none;
+            }
+
+            .p-sign-role {
+                font-size: 11.5pt;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            .p-sign-note {
+                font-size: 11pt;
+                font-style: italic;
+            }
+
+            .p-sign-space {
+                height: 58pt;
+            }
+
+            .p-sign-name {
+                font-size: 12pt;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==========================================================================
+     PHẦN 1: GIAO DIỆN NHẬP LIỆU THÔNG MINH (WEB & MOBILE)
+     ========================================================================== -->
+<div id="app-ui">
+    <header class="app-header">
+        <div class="header-top">
+            <div class="app-brand">
+                <div class="app-brand-icon">🫁</div>
+                <div>
+                    <h1>HỘI CHẨN ĐA MÔ THỨC UNG THƯ PHỔI</h1>
+                    <span>Bệnh viện Đa khoa Thống Nhất • Hướng dẫn NCCN 2026</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button type="button" class="btn btn-reset" onclick="resetAll()">↺ Làm mới</button>
+                <button type="button" class="btn btn-print" onclick="prepareAndPrint()">
+                    🖨️ <span class="btn-text">In / Xuất PDF (NĐ 30)</span>
+                </button>
+            </div>
+        </div>
+        <nav class="nav-pills">
+            <a href="#sec-1" class="nav-pill">1. Hội đồng</a>
+            <a href="#sec-2" class="nav-pill">2. Hành chính & Thể trạng</a>
+            <a href="#sec-3" class="nav-pill">3. Hình ảnh & TNM</a>
+            <a href="#sec-4" class="nav-pill">4. Giải phẫu bệnh & Gen</a>
+            <a href="#sec-5" class="nav-pill">5. Kết luận NCCN</a>
+        </nav>
+    </header>
+
+    <main class="app-container">
+
+        <!-- THÔNG TIN HÀNH CHÍNH PHIẾU -->
+        <section class="card">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Số phiếu hội chẩn</label>
+                    <input type="text" id="in-so-phieu" class="form-control" placeholder="VD: 15">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mã hồ sơ MTB</label>
+                    <input type="text" id="in-ma-mtb" class="form-control" placeholder="VD: MTB-2026-015">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số vào viện / Mã BN</label>
+                    <input type="text" id="in-ma-bn" class="form-control" placeholder="Nhập mã bệnh nhân...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ngày hội chẩn</label>
+                    <input type="date" id="in-ngay-hc" class="form-control">
+                </div>
+            </div>
+        </section>
+
+        <!-- MỤC 1: THÀNH PHẦN HỘI ĐỒNG -->
+        <section id="sec-1" class="card">
+            <div class="card-header">
+                <span class="card-badge">MỤC I</span>
+                <h2 class="card-title">Thành phần Hội đồng tham gia</h2>
+            </div>
+            
+            <div class="dept-row">
+                <label class="chip-item">
+                    <input type="checkbox" id="chk-khoa-nl" checked>
+                    <span class="chip-box">Khoa Ngoại Lồng ngực</span>
+                </label>
+                <input type="text" id="bs-nl" class="form-control" placeholder="Họ tên BS Ngoại Lồng ngực (VD: BS CKI Bùi Văn Linh, BS Nguyễn Văn Sang...)">
+            </div>
+
+            <div class="dept-row">
+                <label class="chip-item">
+                    <input type="checkbox" id="chk-khoa-ub" checked>
+                    <span class="chip-box">Khoa Ung bướu</span>
+                </label>
+                <input type="text" id="bs-ub" class="form-control" placeholder="Họ tên BS Khoa Ung bướu...">
+            </div>
+
+            <div class="dept-row">
+                <label class="chip-item">
+                    <input type="checkbox" id="chk-khoa-cdha" checked>
+                    <span class="chip-box">Khoa Chẩn đoán hình ảnh</span>
+                </label>
+                <input type="text" id="bs-cdha" class="form-control" placeholder="Họ tên BS Chẩn đoán hình ảnh...">
+            </div>
+
+            <div class="dept-row">
+                <label class="chip-item">
+                    <input type="checkbox" id="chk-khoa-gpb" checked>
+                    <span class="chip-box">Khoa Giải phẫu bệnh</span>
+                </label>
+                <input type="text" id="bs-gpb" class="form-control" placeholder="Họ tên BS Giải phẫu bệnh...">
+            </div>
+
+            <div class="dept-row">
+                <label class="chip-item">
+                    <input type="checkbox" id="chk-khoa-khac">
+                    <span class="chip-box">Chuyên khoa khác</span>
+                </label>
+                <input type="text" id="bs-khac" class="form-control" placeholder="Nội Hô hấp / Gây mê hồi sức / Tim mạch (Ghi rõ khoa & họ tên)...">
+            </div>
+        </section>
+
+        <!-- MỤC 2: HÀNH CHÍNH & TỔNG TRẠNG -->
+        <section id="sec-2" class="card">
+            <div class="card-header">
+                <span class="card-badge">MỤC II</span>
+                <h2 class="card-title">Hành chính &amp; Tổng trạng lâm sàng</h2>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group" style="grid-column: span 2;">
+                    <label class="form-label">Họ và tên người bệnh</label>
+                    <input type="text" id="in-ho-ten" class="form-control" style="text-transform: uppercase; font-weight: 600;" placeholder="NGUYỄN VĂN A">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tuổi</label>
+                    <input type="number" id="in-tuoi" class="form-control" placeholder="65">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Giới tính</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="radio" name="gioi" value="Nam"><span class="chip-box">Nam</span></label>
+                        <label class="chip-item"><input type="radio" name="gioi" value="Nữ"><span class="chip-box">Nữ</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 12px;">
+                <label class="form-label">Lý do hội chẩn</label>
+                <div class="chip-group">
+                    <label class="chip-item"><input type="checkbox" name="lydo" value="Chẩn đoán & điều trị ban đầu"><span class="chip-box">Điều trị ban đầu</span></label>
+                    <label class="chip-item"><input type="checkbox" name="lydo" value="Đánh giá lại sau điều trị tân bổ trợ"><span class="chip-box">Đánh giá sau tân bổ trợ</span></label>
+                    <label class="chip-item"><input type="checkbox" name="lydo" value="Bệnh tái phát / tiến triển"><span class="chip-box">Tái phát / Tiến triển</span></label>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Tiền sử hút thuốc lá</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="radio" name="thuocla" value="Không hút thuốc"><span class="chip-box">Không</span></label>
+                        <label class="chip-item"><input type="radio" name="thuocla" value="Đang hút thuốc"><span class="chip-box">Đang hút</span></label>
+                        <label class="chip-item"><input type="radio" name="thuocla" value="Đã bỏ thuốc"><span class="chip-box">Đã bỏ</span></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số gói-năm (nếu có)</label>
+                    <input type="text" id="in-goi-nam" class="form-control" placeholder="VD: 30 gói-năm">
+                </div>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 12px;">
+                <label class="form-label">Chỉ số toàn trạng (ECOG Performance Status)</label>
+                <div class="chip-group">
+                    <label class="chip-item"><input type="radio" name="ecog" value="ECOG 0"><span class="chip-box">0 (Hoạt động bình thường)</span></label>
+                    <label class="chip-item"><input type="radio" name="ecog" value="ECOG 1"><span class="chip-box">1 (Hạn chế gắng sức nặng)</span></label>
+                    <label class="chip-item"><input type="radio" name="ecog" value="ECOG 2"><span class="chip-box">2 (Tự phục vụ, nghỉ &lt;50% ngày)</span></label>
+                    <label class="chip-item"><input type="radio" name="ecog" value="ECOG 3"><span class="chip-box">3 (Nghỉ &gt;50% ngày)</span></label>
+                    <label class="chip-item"><input type="radio" name="ecog" value="ECOG 4"><span class="chip-box">4 (Nằm tại giường)</span></label>
+                </div>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 12px;">
+                <label class="form-label">Bệnh lý đồng mắc chính</label>
+                <div class="chip-group">
+                    <label class="chip-item"><input type="checkbox" name="benhnen" value="COPD / Hen phế quản"><span class="chip-box">COPD / Hen</span></label>
+                    <label class="chip-item"><input type="checkbox" name="benhnen" value="Bệnh mạch vành / Tăng huyết áp"><span class="chip-box">Tim mạch / THA</span></label>
+                    <label class="chip-item"><input type="checkbox" name="benhnen" value="Đái tháo đường"><span class="chip-box">Đái tháo đường</span></label>
+                    <label class="chip-item"><input type="checkbox" name="benhnen" value="Bệnh thận mạn"><span class="chip-box">Bệnh thận mạn</span></label>
+                    <label class="chip-item"><input type="checkbox" name="benhnen" value="Suy giảm chức năng gan"><span class="chip-box">Bệnh gan</span></label>
+                </div>
+            </div>
+
+            <div class="sub-title">Đánh giá chức năng hô hấp - tim mạch (Bắt buộc nếu cân nhắc phẫu thuật)</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">FEV1 (% dự đoán)</label>
+                    <input type="text" id="in-fev1" class="form-control" placeholder="VD: 82%">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ppoFEV1 (%)</label>
+                    <input type="text" id="in-ppofev1" class="form-control" placeholder="VD: 65%">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">DLCO / ppoDLCO (%)</label>
+                    <input type="text" id="in-dlco" class="form-control" placeholder="VD: 78% / 62%">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Siêu âm tim (EF% / PAPs)</label>
+                    <input type="text" id="in-satim" class="form-control" placeholder="VD: EF 64%, PAPs 28 mmHg">
+                </div>
+            </div>
+        </section>
+
+        <!-- MỤC 3: CHẨN ĐOÁN HÌNH ẢNH & PHÂN GIAI ĐOẠN -->
+        <section id="sec-3" class="card">
+            <div class="card-header">
+                <span class="card-badge">MỤC III.1</span>
+                <h2 class="card-title">Chẩn đoán hình ảnh &amp; Phân giai đoạn lâm sàng</h2>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Bên phổi tổn thương</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="checkbox" name="vitri_phoi" value="Phổi Phải"><span class="chip-box">Phổi Phải</span></label>
+                        <label class="chip-item"><input type="checkbox" name="vitri_phoi" value="Phổi Trái"><span class="chip-box">Phổi Trái</span></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Thùy phổi</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="checkbox" name="thuy_phoi" value="Thùy trên"><span class="chip-box">Trên</span></label>
+                        <label class="chip-item"><input type="checkbox" name="thuy_phoi" value="Thùy giữa"><span class="chip-box">Giữa</span></label>
+                        <label class="chip-item"><input type="checkbox" name="thuy_phoi" value="Thùy dưới"><span class="chip-box">Dưới</span></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kích thước u lớn nhất (mm)</label>
+                    <input type="text" id="in-kt-u" class="form-control" placeholder="VD: 34 mm">
+                </div>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 12px;">
+                <label class="form-label">Đặc điểm hình ảnh &amp; Vị trí tương quan</label>
+                <div class="chip-group">
+                    <label class="chip-item"><input type="checkbox" name="dacdiem_u" value="U đặc (Solid)"><span class="chip-box">U đặc</span></label>
+                    <label class="chip-item"><input type="checkbox" name="dacdiem_u" value="U bán đặc (Part-solid)"><span class="chip-box">Bán đặc</span></label>
+                    <label class="chip-item"><input type="checkbox" name="dacdiem_u" value="Kính mờ (GGO)"><span class="chip-box">Kính mờ</span></label>
+                    <label class="chip-item"><input type="checkbox" name="dacdiem_u" value="Vị trí trung tâm"><span class="chip-box">Trung tâm</span></label>
+                    <label class="chip-item"><input type="checkbox" name="dacdiem_u" value="Vị trí ngoại vi"><span class="chip-box">Ngoại vi</span></label>
+                </div>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 12px;">
+                <label class="form-label">Xâm lấn lân cận &amp; Hạch nghi ngờ trên CT (cN)</label>
+                <input type="text" id="in-xamlan-hach" class="form-control" placeholder="VD: Chưa xâm lấn màng phổi tạng; Hạch nhóm 4R (12mm), 10R (10mm)...">
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">MRI Sọ não có tiêm thuốc (NCCN IB–IV)</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="radio" name="mri_nao" value="Chưa thực hiện"><span class="chip-box">Chưa làm</span></label>
+                        <label class="chip-item"><input type="radio" name="mri_nao" value="Không di căn não"><span class="chip-box">Âm tính</span></label>
+                        <label class="chip-item"><input type="radio" name="mri_nao" value="Có di căn não"><span class="chip-box">Có di căn</span></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">PET/CT toàn thân</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="radio" name="pet_ct" value="Chưa thực hiện"><span class="chip-box">Chưa làm</span></label>
+                        <label class="chip-item"><input type="radio" name="pet_ct" value="Không di căn xa"><span class="chip-box">Không di căn xa</span></label>
+                        <label class="chip-item"><input type="radio" name="pet_ct" value="Có di căn xa"><span class="chip-box">Có di căn xa</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 12px;">
+                <label class="form-label">Đánh giá hạch trung thất xâm lấn (EBUS-TBNA / Nội soi trung thất)</label>
+                <input type="text" id="in-ebus" class="form-control" placeholder="VD: Không chỉ định / Hoặc kết quả sinh thiết trạm 4R, 7...">
+            </div>
+
+            <div class="sub-title">Phân loại giai đoạn lâm sàng (AJCC 9th / UICC TNM — Tự động chẩn đoán)</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Khối u (cT)</label>
+                    <select id="in-ct" class="form-control" onchange="autoCalculateTNM()">
+                        <option value="">-- Chọn cT --</option>
+                        <option value="Tx">Tx (Không đánh giá được)</option>
+                        <option value="T0">T0 (Không thấy u nguyên phát)</option>
+                        <option value="Tis">Tis (Ung thư tại chỗ)</option>
+                        <option value="T1mi">T1mi (Xâm lấn tối thiểu ≤ 0.5cm)</option>
+                        <option value="T1a">T1a (≤ 1 cm)</option>
+                        <option value="T1b">T1b (&gt; 1 đến ≤ 2 cm)</option>
+                        <option value="T1c">T1c (&gt; 2 đến ≤ 3 cm)</option>
+                        <option value="T2a">T2a (&gt; 3 đến ≤ 4 cm / PQ gốc / MP tạng)</option>
+                        <option value="T2b">T2b (&gt; 4 đến ≤ 5 cm)</option>
+                        <option value="T3">T3 (&gt; 5 đến ≤ 7 cm / Thành ngực / Nốt cùng thùy)</option>
+                        <option value="T4">T4 (&gt; 7 cm / Trung thất, tim, mạch lớn / Nốt khác thùy cùng bên)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Hạch vùng (cN)</label>
+                    <select id="in-cn" class="form-control" onchange="autoCalculateTNM()">
+                        <option value="">-- Chọn cN --</option>
+                        <option value="Nx">Nx (Không đánh giá được)</option>
+                        <option value="N0">N0 (Không di căn hạch vùng)</option>
+                        <option value="N1">N1 (Hạch quanh phế quản / rốn phổi cùng bên)</option>
+                        <option value="N2a">N2a (Hạch trung thất cùng bên — 1 trạm)</option>
+                        <option value="N2b">N2b (Hạch trung thất cùng bên — nhiều trạm)</option>
+                        <option value="N3">N3 (Hạch trung thất đối bên / thượng đòn)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Di căn xa (cM)</label>
+                    <select id="in-cm" class="form-control" onchange="autoCalculateTNM()">
+                        <option value="">-- Chọn cM --</option>
+                        <option value="M0">M0 (Không di căn xa)</option>
+                        <option value="M1a">M1a (U phổi đối bên / Tràn dịch MP-MT ác tính)</option>
+                        <option value="M1b">M1b (1 ổ di căn ngoài lồng ngực đơn độc)</option>
+                        <option value="M1c1">M1c1 (Nhiều ổ di căn trong 1 cơ quan)</option>
+                        <option value="M1c2">M1c2 (Nhiều ổ di căn ở nhiều cơ quan)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Kết luận Giai đoạn (Tự động)</label>
+                    <input type="text" id="in-stage" class="form-control" style="font-weight: 700; color: #0f4c81; background: #e0f2fe;" placeholder="Tự động tính khi chọn T, N, M..." readonly>
+                </div>
+            </div>
+        </section>
+
+        <!-- MỤC 4: GIẢI PHẪU BỆNH & BIOMARKERS -->
+        <section id="sec-4" class="card">
+            <div class="card-header">
+                <span class="card-badge">MỤC III.2</span>
+                <h2 class="card-title">Giải phẫu bệnh &amp; Dấu ấn sinh học (NCCN 2026)</h2>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 12px;">
+                <label class="form-label">Nguồn bệnh phẩm</label>
+                <div class="chip-group">
+                    <label class="chip-item"><input type="checkbox" name="benhpham" value="Sinh thiết xuyên thành ngực (TTNA)"><span class="chip-box">Sinh thiết xuyên thành ngực</span></label>
+                    <label class="chip-item"><input type="checkbox" name="benhpham" value="Nội soi phế quản / EBUS"><span class="chip-box">Nội soi phế quản / EBUS</span></label>
+                    <label class="chip-item"><input type="checkbox" name="benhpham" value="Dịch màng phổi (Cell block)"><span class="chip-box">Dịch màng phổi</span></label>
+                    <label class="chip-item"><input type="checkbox" name="benhpham" value="Bệnh phẩm phẫu thuật"><span class="chip-box">Bệnh phẩm mổ</span></label>
+                </div>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 12px;">
+                <label class="form-label">Phân loại mô bệnh học (WHO)</label>
+                <div class="chip-group">
+                    <label class="chip-item"><input type="radio" name="mbh" value="NSCLC - Ung thư biểu mô tuyến (Adenocarcinoma)"><span class="chip-box">NSCLC - Biểu mô tuyến</span></label>
+                    <label class="chip-item"><input type="radio" name="mbh" value="NSCLC - Ung thư biểu mô vảy (Squamous)"><span class="chip-box">NSCLC - Biểu mô vảy</span></label>
+                    <label class="chip-item"><input type="radio" name="mbh" value="NSCLC - Tế bào lớn / NOS"><span class="chip-box">NSCLC - NOS</span></label>
+                    <label class="chip-item"><input type="radio" name="mbh" value="SCLC - Ung thư phổi tế bào nhỏ"><span class="chip-box">SCLC (Tế bào nhỏ)</span></label>
+                </div>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 12px;">
+                <label class="form-label">Kết quả Hóa mô miễn dịch (IHC)</label>
+                <input type="text" id="in-ihc" class="form-control" placeholder="VD: TTF-1 (+), Napsin A (+), p40 (-)...">
+            </div>
+
+            <div class="sub-title">Sinh học phân tử &amp; Miễn dịch (Khuyến cáo NCCN 2026 từ GĐ IB–IIIA có thể mổ &amp; IIIB–IV)</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">PD-L1 (TPS)</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="radio" name="pdl1" value="Chưa làm"><span class="chip-box">Chưa làm</span></label>
+                        <label class="chip-item"><input type="radio" name="pdl1" value="< 1%"><span class="chip-box">&lt; 1%</span></label>
+                        <label class="chip-item"><input type="radio" name="pdl1" value="1 - 49%"><span class="chip-box">1–49%</span></label>
+                        <label class="chip-item"><input type="radio" name="pdl1" value="≥ 50%"><span class="chip-box">&ge; 50%</span></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đột biến EGFR</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="radio" name="egfr" value="Chưa làm"><span class="chip-box">Chưa làm</span></label>
+                        <label class="chip-item"><input type="radio" name="egfr" value="Âm tính"><span class="chip-box">Âm tính</span></label>
+                        <label class="chip-item"><input type="radio" name="egfr" value="Dương tính (Exon 19 del)"><span class="chip-box">(+) Ex19del</span></label>
+                        <label class="chip-item"><input type="radio" name="egfr" value="Dương tính (L858R)"><span class="chip-box">(+) L858R</span></label>
+                        <label class="chip-item"><input type="radio" name="egfr" value="Dương tính (Exon 20 ins / Khác)"><span class="chip-box">(+) Khác</span></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tái sắp xếp ALK</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="radio" name="alk" value="Chưa làm"><span class="chip-box">Chưa làm</span></label>
+                        <label class="chip-item"><input type="radio" name="alk" value="Âm tính"><span class="chip-box">Âm tính</span></label>
+                        <label class="chip-item"><input type="radio" name="alk" value="Dương tính"><span class="chip-box">Dương tính</span></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tái sắp xếp RET (NCCN 2026)</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="radio" name="ret" value="Chưa làm"><span class="chip-box">Chưa làm</span></label>
+                        <label class="chip-item"><input type="radio" name="ret" value="Âm tính"><span class="chip-box">Âm tính</span></label>
+                        <label class="chip-item"><input type="radio" name="ret" value="Dương tính"><span class="chip-box">Dương tính</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group full">
+                <label class="form-label">Các đột biến khác / Panel NGS (ROS1, KRAS G12C, MET, BRAF V600E, NTRK, HER2...)</label>
+                <input type="text" id="in-ngs" class="form-control" placeholder="Nhập kết quả NGS mở rộng (nếu có)...">
+            </div>
+        </section>
+
+        <!-- MỤC 5: THẢO LUẬN & KẾT LUẬN NCCN 2026 -->
+        <section id="sec-5" class="card">
+            <div class="card-header">
+                <span class="card-badge">MỤC IV</span>
+                <h2 class="card-title">Thảo luận &amp; Kết luận hướng điều trị (NCCN 2026)</h2>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Khả năng cắt bỏ (Resectability)</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="radio" name="resect" value="Cắt bỏ được (Resectable)"><span class="chip-box">Cắt bỏ được</span></label>
+                        <label class="chip-item"><input type="radio" name="resect" value="Ranh giới (Borderline)"><span class="chip-box">Ranh giới</span></label>
+                        <label class="chip-item"><input type="radio" name="resect" value="Không cắt bỏ được (Unresectable)"><span class="chip-box">Không cắt bỏ được</span></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Khả năng chịu phẫu thuật (Operability)</label>
+                    <div class="chip-group">
+                        <label class="chip-item"><input type="radio" name="oper" value="Đủ điều kiện phẫu thuật"><span class="chip-box">Đủ ĐK mổ</span></label>
+                        <label class="chip-item"><input type="radio" name="oper" value="Nguy cơ phẫu thuật cao"><span class="chip-box">Nguy cơ cao</span></label>
+                        <label class="chip-item"><input type="radio" name="oper" value="Không thể phẫu thuật (Medically inoperable)"><span class="chip-box">Không thể mổ</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sub-title">Chiến lược điều trị đa mô thức thống nhất (Chọn một hoặc nhiều hướng phối hợp)</div>
+            <div class="chip-group" style="flex-direction: column; gap: 8px; margin-bottom: 14px;">
+                <label class="chip-item">
+                    <input type="checkbox" name="strategy" value="Phẫu thuật triệt căn ngay (VATS / Mở ngực: Cắt thùy hoặc phân thùy + Nạo hạch trung thất hệ thống)">
+                    <span class="chip-box" style="width: 100%;"><strong>GĐ Sớm (I–II):</strong> Phẫu thuật triệt căn ngay (VATS / Mở ngực: Cắt thùy/phân thùy + Nạo hạch hệ thống)</span>
+                </label>
+                <label class="chip-item">
+                    <input type="checkbox" name="strategy" value="Xạ trị lập thể định vị thân (SBRT / SABR) cho GĐ I–II hạch âm tính không đủ điều kiện phẫu thuật">
+                    <span class="chip-box" style="width: 100%;"><strong>GĐ Sớm không mổ được:</strong> Xạ trị lập thể định vị thân (SBRT / SABR)</span>
+                </label>
+                <label class="chip-item">
+                    <input type="checkbox" name="strategy" value="Điều trị tân bổ trợ / Chu phẫu: Hóa - Miễn dịch tân bổ trợ (Nivolumab / Pembrolizumab / Durvalumab + Platinum) → Đánh giá phẫu thuật → Duy trì miễn dịch">
+                    <span class="chip-box" style="width: 100%;"><strong>GĐ IB ≥4cm, II, IIIA/IIIB chọn lọc:</strong> Hóa - Miễn dịch tân bổ trợ / Chu phẫu (loại trừ EGFR/ALK trước điều trị)</span>
+                </label>
+                <label class="chip-item">
+                    <input type="checkbox" name="strategy" value="Điều trị bổ trợ sau phẫu thuật theo Biomarker: Hóa trị Platinum và/hoặc Điều trị đích bổ trợ (Osimertinib / Alectinib / Selpercatinib) hoặc Miễn dịch bổ trợ (Atezolizumab / Pembrolizumab)">
+                    <span class="chip-box" style="width: 100%;"><strong>Sau phẫu thuật:</strong> Hóa trị bổ trợ và/hoặc Đích bổ trợ (Osimertinib / Alectinib / Selpercatinib) / Miễn dịch bổ trợ</span>
+                </label>
+                <label class="chip-item">
+                    <input type="checkbox" name="strategy" value="Hóa - Xạ trị đồng thời triệt căn (cCRT) → Điều trị củng cố Durvalumab (hoặc Osimertinib nếu EGFR+)">
+                    <span class="chip-box" style="width: 100%;"><strong>GĐ III không thể phẫu thuật:</strong> Hóa - Xạ trị đồng thời (cCRT) → Củng cố Durvalumab / Osimertinib</span>
+                </label>
+                <label class="chip-item">
+                    <input type="checkbox" name="strategy" value="Giai đoạn IV / Tái phát: Liệu pháp nhắm trúng đích bước 1 hoặc Miễn dịch / Hóa - Miễn dịch kết hợp + Điều trị giảm nhẹ / tại chỗ">
+                    <span class="chip-box" style="width: 100%;"><strong>GĐ IV / Tái phát:</strong> Liệu pháp đích bước 1 hoặc Miễn dịch / Hóa - Miễn dịch ± Điều trị tại chỗ</span>
+                </label>
+            </div>
+
+            <div class="form-group full" style="margin-bottom: 12px;">
+                <label class="form-label">Chỉ định cận lâm sàng bổ sung trước điều trị (nếu cần)</label>
+                <div class="chip-group">
+                    <label class="chip-item"><input type="checkbox" name="bosung" value="Chụp MRI sọ não"><span class="chip-box">MRI sọ não</span></label>
+                    <label class="chip-item"><input type="checkbox" name="bosung" value="Chụp PET/CT toàn thân"><span class="chip-box">PET/CT</span></label>
+                    <label class="chip-item"><input type="checkbox" name="bosung" value="Nội soi siêu âm sinh thiết hạch (EBUS-TBNA)"><span class="chip-box">EBUS-TBNA</span></label>
+                    <label class="chip-item"><input type="checkbox" name="bosung" value="Xét nghiệm EGFR, ALK, RET, PD-L1, NGS"><span class="chip-box">Xét nghiệm Biomarker / NGS</span></label>
+                    <label class="chip-item"><input type="checkbox" name="bosung" value="Đo chức năng hô hấp / Siêu âm tim"><span class="chip-box">Đánh giá tim mạch - hô hấp</span></label>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Khoa tiếp nhận điều trị chính</label>
+                    <input type="text" id="in-khoa-tiepnhan" class="form-control" placeholder="VD: Khoa Ngoại Lồng ngực / Khoa Ung bướu">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Thời điểm tái hội chẩn MTB</label>
+                    <input type="text" id="in-tai-hc" class="form-control" placeholder="VD: Sau 3 chu kỳ tân bổ trợ / Khi có kết quả NGS">
+                </div>
+            </div>
+
+            <div class="form-group full">
+                <label class="form-label">Kết luận chi tiết &amp; Y lệnh cụ thể của Hội đồng</label>
+                <textarea id="in-ketluan" class="form-control" placeholder="Ghi rõ kế hoạch phẫu thuật, phác đồ thuốc, thời gian dự kiến thực hiện và dặn dò người bệnh..."></textarea>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- THANH IN NỔI DƯỚI ĐÁY TRÊN ĐIỆN THOẠI -->
+    <div class="mobile-bottom-bar">
+        <button type="button" class="btn btn-print" onclick="prepareAndPrint()">🖨️ In / Xuất PDF Chuẩn NĐ 30</button>
+    </div>
+</div>
+
+<!-- ==========================================================================
+     PHẦN 2: BẢN IN HÀNH CHÍNH CHUẨN NGHỊ ĐỊNH 30/2020/NĐ-CP (TỰ ĐỘNG ĐỔ DỮ LIỆU)
+     ========================================================================== -->
+<div id="print-doc">
+    <!-- BẢNG 2 CỘT ĐỐI XỨNG NGANG HÀNG: CƠ QUAN BAN HÀNH (TRÁI) & QUỐC HIỆU TIÊU NGỮ (PHẢI) -->
+    <table class="nd30-header-table">
+        <tr>
+            <td class="nd30-col-left">
+                <p class="p-org-parent">SỞ Y TẾ THÀNH PHỐ ĐỒNG NAI</p>
+                <p class="p-org-name">BỆNH VIỆN ĐA KHOA THỐNG NHẤT</p>
+                <div class="p-line-left"></div>
+                <p class="p-doc-num">Số: <span id="p-so-phieu">.....</span>/HCĐMT-BVĐKTN</p>
+            </td>
+            <td class="nd30-col-right">
+                <p class="p-nation">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
+                <p class="p-motto">Độc lập - Tự do - Hạnh phúc</p>
+                <div class="p-line-right"></div>
+                <p class="p-date" id="p-ngay-thang">Đồng Nai, ngày ..... tháng ..... năm 2026</p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- TÊN LOẠI VÀ TRÍCH YẾU VĂN BẢN -->
+    <div class="p-title-block">
+        <h1 class="p-main-title">PHIẾU HỘI CHẨN ĐA MÔ THỨC UNG THƯ PHỔI</h1>
+        <p class="p-sub-title">(Áp dụng quy trình chẩn đoán và điều trị cập nhật theo hướng dẫn NCCN 2026)</p>
+    </div>
+
+    <table class="p-meta-bar">
+        <tr>
+            <td style="width: 35%;"><strong>Mã hồ sơ MTB:</strong> <span id="p-ma-mtb">....................</span></td>
+            <td style="width: 35%;"><strong>Số vào viện / Mã BN:</strong> <span id="p-ma-bn">....................</span></td>
+            <td style="width: 30%; text-align: right;"><strong>Đơn vị trình:</strong> Khoa Ngoại Lồng ngực</td>
+        </tr>
+    </table>
+
+    <!-- MỤC I -->
+    <div class="p-sec-title">I. THÀNH PHẦN HỘI ĐỒNG THAM GIA</div>
+    <table class="p-data-table">
+        <thead>
+            <tr>
+                <th style="width: 32%;">Chuyên khoa</th>
+                <th style="width: 46%;">Họ và tên Bác sĩ tham gia</th>
+                <th style="width: 22%;">Vai trò chuyên môn</th>
+            </tr>
+        </thead>
+        <tbody id="p-tbody-hoidong"></tbody>
+    </table>
+
+    <!-- MỤC II -->
+    <div class="p-sec-title">II. HÀNH CHÍNH &amp; TỔNG TRẠNG LÂM SÀNG</div>
+    <p class="p-line">
+        <strong>1. Họ và tên người bệnh:</strong> <span id="p-ho-ten" style="font-weight: bold; text-transform: uppercase;">..................................................</span> 
+        &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Tuổi:</strong> <span id="p-tuoi">......</span> 
+        &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Giới:</strong> <span id="p-gioi">......</span>
+    </p>
+    <p class="p-line"><strong>2. Lý do hội chẩn:</strong> <span id="p-lydo">........................................................................................................................</span></p>
+    <p class="p-line">
+        <strong>3. Tiền sử hút thuốc lá:</strong> <span id="p-thuocla">..........................</span> 
+        &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Chỉ số toàn trạng:</strong> <span id="p-ecog">................</span>
+    </p>
+    <p class="p-line"><strong>4. Bệnh lý đồng mắc chính:</strong> <span id="p-benhnen">..............................................................................................................</span></p>
+    <p class="p-line"><strong>5. Đánh giá chức năng hô hấp - tim mạch:</strong> <span id="p-chucnang">......................................................................................</span></p>
+
+    <!-- MỤC III -->
+    <div class="p-sec-title">III. TÓM TẮT CẬN LÂM SÀNG CHUYÊN KHOA (CHECKLIST NCCN 2026)</div>
+    
+    <div class="p-sub-sec">1. Chẩn đoán hình ảnh &amp; Phân giai đoạn lâm sàng (Bác sĩ CĐHA trình bày)</div>
+    <p class="p-indent">- <strong>Vị trí &amp; Kích thước u:</strong> <span id="p-vitri-kt">............................................................................................................</span></p>
+    <p class="p-indent">- <strong>Xâm lấn lân cận &amp; Hạch nghi ngờ (cN):</strong> <span id="p-xamlan">.......................................................................................</span></p>
+    <p class="p-indent">- <strong>Đánh giá di căn xa:</strong> MRI Sọ não: <span id="p-mri">..................</span> &nbsp;|&nbsp; PET/CT toàn thân: <span id="p-pet">..................</span></p>
+    <p class="p-indent">- <strong>Đánh giá hạch trung thất xâm lấn (EBUS-TBNA / Nội soi trung thất):</strong> <span id="p-ebus">.................................................</span></p>
+    <p class="p-indent">- <strong>Phân loại giai đoạn lâm sàng (AJCC 9th / UICC TNM):</strong> <strong id="p-tnm">cT... N... M... &rarr; Giai đoạn: ...........</strong></p>
+
+    <div class="p-sub-sec">2. Giải phẫu bệnh &amp; Dấu ấn sinh học (Bác sĩ Giải phẫu bệnh trình bày)</div>
+    <p class="p-indent">- <strong>Bệnh phẩm &amp; Mô bệnh học (WHO):</strong> <span id="p-mbh">.............................................................................................</span></p>
+    <p class="p-indent">- <strong>Hóa mô miễn dịch (IHC):</strong> <span id="p-ihc">..............................................................................................................</span></p>
+    <p class="p-indent">- <strong>Dấu ấn sinh học &amp; Miễn dịch (NCCN 2026):</strong> <span id="p-biomarker" style="font-weight: bold;">...................................................................................</span></p>
+    <p class="p-indent">- <strong>Panel NGS mở rộng (nếu có):</strong> <span id="p-ngs">......................................................................................................</span></p>
+
+    <!-- MỤC IV -->
+    <div class="p-sec-title">IV. THẢO LUẬN &amp; KẾT LUẬN HƯỚNG ĐIỀU TRỊ THEO NCCN 2026</div>
+    <p class="p-line">
+        <strong>1. Đánh giá phẫu thuật (Ngoại Lồng ngực):</strong> 
+        Khả năng cắt bỏ: <span id="p-resect" style="font-weight: bold;">......................</span> &nbsp;|&nbsp; 
+        Thể trạng mổ: <span id="p-oper" style="font-weight: bold;">......................</span>
+    </p>
+    <p class="p-line"><strong>2. Chiến lược điều trị đa mô thức thống nhất:</strong></p>
+    <div id="p-strategy-list" class="p-indent">........................................................................................................................................</div>
+    <p class="p-line"><strong>3. Yêu cầu cận lâm sàng bổ sung trước điều trị:</strong> <span id="p-bosung">Không</span></p>
+    <p class="p-line">
+        <strong>4. Khoa tiếp nhận điều trị chính:</strong> <span id="p-khoa-tn" style="font-weight: bold;">..........................</span> 
+        &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Tái hội chẩn MTB:</strong> <span id="p-tai-hc">..........................</span>
+    </p>
+    <p class="p-line"><strong>5. Kết luận chi tiết &amp; Y lệnh của Hội đồng:</strong></p>
+    <div class="p-conclusion-box" id="p-ketluan"></div>
+
+    <!-- MỤC V: CHỮ KÝ XÁC NHẬN -->
+    <div class="p-sec-title" style="page-break-after: avoid;">V. XÁC NHẬN CỦA HỘI ĐỒNG ĐA MÔ THỨC</div>
+    <table class="p-sign-table">
+        <tr>
+            <td>
+                <div class="p-sign-role">ĐẠI DIỆN NGOẠI LỒNG NGỰC</div>
+                <div class="p-sign-note">(Ký, ghi rõ họ tên)</div>
+                <div class="p-sign-space"></div>
+                <div class="p-sign-name" id="sign-nl"></div>
+            </td>
+            <td>
+                <div class="p-sign-role">ĐẠI DIỆN KHOA UNG BƯỚU</div>
+                <div class="p-sign-note">(Ký, ghi rõ họ tên)</div>
+                <div class="p-sign-space"></div>
+                <div class="p-sign-name" id="sign-ub"></div>
+            </td>
+            <td>
+                <div class="p-sign-role">ĐẠI DIỆN CĐ HÌNH ẢNH</div>
+                <div class="p-sign-note">(Ký, ghi rõ họ tên)</div>
+                <div class="p-sign-space"></div>
+                <div class="p-sign-name" id="sign-cdha"></div>
+            </td>
+            <td>
+                <div class="p-sign-role">ĐẠI DIỆN GIẢI PHẪU BỆNH</div>
+                <div class="p-sign-note">(Ký, ghi rõ họ tên)</div>
+                <div class="p-sign-space"></div>
+                <div class="p-sign-name" id="sign-gpb"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    // Khởi tạo ngày hiện tại
+    document.addEventListener("DOMContentLoaded", () => {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById("in-ngay-hc").value = today;
+    });
+
+    // Tự động chẩn đoán giai đoạn Ung thư phổi theo AJCC 9th Edition (NCCN 2026)
+    function autoCalculateTNM() {
+        const t = document.getElementById("in-ct").value;
+        const n = document.getElementById("in-cn").value;
+        const m = document.getElementById("in-cm").value;
+        const stageInput = document.getElementById("in-stage");
+
+        if (m === "M1a" || m === "M1b") {
+            stageInput.value = "Giai đoạn IVA";
+            return;
+        }
+        if (m === "M1c1" || m === "M1c2" || m === "M1") {
+            stageInput.value = "Giai đoạn IVB";
+            return;
+        }
+
+        if (!t || !n || m !== "M0") {
+            stageInput.value = "";
+            return;
+        }
+
+        if (t === "Tx" && n === "N0") {
+            stageInput.value = "Ung thư ẩn (Occult Carcinoma)";
+            return;
+        }
+        if (t === "Tx" || n === "Nx") {
+            stageInput.value = "Chưa xác định (Cần đánh giá đủ T/N)";
+            return;
+        }
+
+        let stage = "";
+        if (t === "Tis" && n === "N0") {
+            stage = "Giai đoạn 0";
+        } 
+        else if (["T1mi", "T1a", "T1b", "T1c"].includes(t)) {
+            if (n === "N0") {
+                if (t === "T1mi" || t === "T1a") stage = "Giai đoạn IA1";
+                else if (t === "T1b") stage = "Giai đoạn IA2";
+                else if (t === "T1c") stage = "Giai đoạn IA3";
+            } 
+            else if (n === "N1") stage = "Giai đoạn IIA";
+            else if (n === "N2a") stage = "Giai đoạn IIB";
+            else if (n === "N2b") stage = "Giai đoạn IIIA";
+            else if (n === "N3") stage = "Giai đoạn IIIB";
+        } 
+        else if (t === "T2a") {
+            if (n === "N0") stage = "Giai đoạn IB";
+            else if (n === "N1") stage = "Giai đoạn IIB";
+            else if (n === "N2a") stage = "Giai đoạn IIIA";
+            else if (n === "N2b") stage = "Giai đoạn IIIB";
+            else if (n === "N3") stage = "Giai đoạn IIIB";
+        } 
+        else if (t === "T2b") {
+            if (n === "N0") stage = "Giai đoạn IIA";
+            else if (n === "N1") stage = "Giai đoạn IIB";
+            else if (n === "N2a") stage = "Giai đoạn IIIA";
+            else if (n === "N2b") stage = "Giai đoạn IIIB";
+            else if (n === "N3") stage = "Giai đoạn IIIB";
+        } 
+        else if (t === "T3") {
+            if (n === "N0") stage = "Giai đoạn IIB";
+            else if (n === "N1") stage = "Giai đoạn IIIA";
+            else if (n === "N2a") stage = "Giai đoạn IIIA";
+            else if (n === "N2b") stage = "Giai đoạn IIIB";
+            else if (n === "N3") stage = "Giai đoạn IIIC";
+        } 
+        else if (t === "T4") {
+            if (n === "N0" || n === "N1") stage = "Giai đoạn IIIA";
+            else if (n === "N2a" || n === "N2b") stage = "Giai đoạn IIIB";
+            else if (n === "N3") stage = "Giai đoạn IIIC";
+        }
+
+        stageInput.value = stage || "Không xác định";
+    }
+
+    // Hàm tiện ích lấy giá trị
+    const val = (id, fallback = "....................") => {
+        const el = document.getElementById(id);
+        return el && el.value.trim() !== "" ? el.value.trim() : fallback;
+    };
+
+    const getRadio = (name, fallback = "Chưa ghi nhận") => {
+        const el = document.querySelector(`input[name="${name}"]:checked`);
+        return el ? el.value : fallback;
+    };
+
+    const getChecks = (name) => {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+    };
+
+    // Đồng bộ toàn bộ dữ liệu sang bản in chuẩn Nghị định 30/2020/NĐ-CP và gọi lệnh in
+    function prepareAndPrint() {
+        const dateStr = document.getElementById("in-ngay-hc").value;
+        if (dateStr) {
+            const [y, m, d] = dateStr.split("-");
+            document.getElementById("p-ngay-thang").textContent = `Đồng Nai, ngày ${d} tháng ${m} năm ${y}`;
+        }
+
+        document.getElementById("p-so-phieu").textContent = val("in-so-phieu", ".....");
+        document.getElementById("p-ma-mtb").textContent = val("in-ma-mtb", "....................");
+        document.getElementById("p-ma-bn").textContent = val("in-ma-bn", "....................");
+
+        const depts = [
+            { chk: "chk-khoa-nl", name: "Khoa Ngoại Lồng ngực", doc: "bs-nl", role: "Đánh giá phẫu thuật", sign: "sign-nl" },
+            { chk: "chk-khoa-ub", name: "Khoa Ung bướu", doc: "bs-ub", role: "Nội khoa / Hóa - Xạ trị", sign: "sign-ub" },
+            { chk: "chk-khoa-cdha", name: "Khoa Chẩn đoán hình ảnh", doc: "bs-cdha", role: "Hình ảnh học / Sinh thiết", sign: "sign-cdha" },
+            { chk: "chk-khoa-gpb", name: "Khoa Giải phẫu bệnh", doc: "bs-gpb", role: "Mô bệnh học / Biomarker", sign: "sign-gpb" },
+            { chk: "chk-khoa-khac", name: "Chuyên khoa phối hợp", doc: "bs-khac", role: "Tư vấn chuyên sâu", sign: null }
+        ];
+
+        const tbody = document.getElementById("p-tbody-hoidong");
+        tbody.innerHTML = "";
+        depts.forEach(d => {
+            const isChecked = document.getElementById(d.chk).checked;
+            const docName = val(d.doc, "");
+            if (isChecked || docName !== "") {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td><strong>${d.name}</strong></td><td>${docName || "................................................"}</td><td>${d.role}</td>`;
+                tbody.appendChild(tr);
+            }
+            if (d.sign) {
+                document.getElementById(d.sign).textContent = docName;
+            }
+        });
+
+        document.getElementById("p-ho-ten").textContent = val("in-ho-ten", "..................................................");
+        document.getElementById("p-tuoi").textContent = val("in-tuoi", "......");
+        document.getElementById("p-gioi").textContent = getRadio("gioi", "......");
+
+        const lydo = getChecks("lydo");
+        document.getElementById("p-lydo").textContent = lydo.length ? lydo.join("; ") : "........................................................................";
+
+        const thuoc = getRadio("thuocla", "Chưa rõ");
+        const goin = val("in-goi-nam", "");
+        document.getElementById("p-thuocla").textContent = goin ? `${thuoc} (${goin})` : thuoc;
+        document.getElementById("p-ecog").textContent = getRadio("ecog", "Chưa đánh giá");
+
+        const benhnen = getChecks("benhnen");
+        document.getElementById("p-benhnen").textContent = benhnen.length ? benhnen.join(", ") : "Không ghi nhận bệnh đồng mắc nặng";
+
+        const fev1 = val("in-fev1", "...");
+        const ppofev1 = val("in-ppofev1", "...");
+        const dlco = val("in-dlco", "...");
+        const satim = val("in-satim", "...");
+        document.getElementById("p-chucnang").textContent = `FEV1: ${fev1} | ppoFEV1: ${ppofev1} | DLCO/ppoDLCO: ${dlco} | Siêu âm tim: ${satim}`;
+
+        const phoi = getChecks("vitri_phoi").join(", ");
+        const thuy = getChecks("thuy_phoi").join(", ");
+        const ktu = val("in-kt-u", "...");
+        const dacdiem = getChecks("dacdiem_u").join(", ");
+        document.getElementById("p-vitri-kt").textContent = `${phoi || "Chưa rõ vị trí"} ${thuy ? "(" + thuy + ")" : ""} — Kích thước: ${ktu} ${dacdiem ? "— Đặc điểm: " + dacdiem : ""}`;
+
+        document.getElementById("p-xamlan").textContent = val("in-xamlan-hach", "Chưa ghi nhận xâm lấn / hạch bất thường");
+        document.getElementById("p-mri").textContent = getRadio("mri_nao", "Chưa làm");
+        document.getElementById("p-pet").textContent = getRadio("pet_ct", "Chưa làm");
+        document.getElementById("p-ebus").textContent = val("in-ebus", "Không chỉ định");
+
+        const ct = val("in-ct", "...");
+        const cn = val("in-cn", "...");
+        const cm = val("in-cm", "...");
+        const stg = val("in-stage", "...........");
+        document.getElementById("p-tnm").textContent = `c${ct} ${cn} ${cm}  →  ${stg}`;
+
+        const bp = getChecks("benhpham").join(", ");
+        const mbh = getRadio("mbh", "Chưa có kết quả mô bệnh học");
+        document.getElementById("p-mbh").textContent = `${bp ? "[" + bp + "] " : ""}${mbh}`;
+        document.getElementById("p-ihc").textContent = val("in-ihc", "Chưa thực hiện");
+
+        const bio = [
+            `PD-L1: ${getRadio("pdl1", "Chưa làm")}`,
+            `EGFR: ${getRadio("egfr", "Chưa làm")}`,
+            `ALK: ${getRadio("alk", "Chưa làm")}`,
+            `RET: ${getRadio("ret", "Chưa làm")}`
+        ];
+        document.getElementById("p-biomarker").textContent = bio.join("  |  ");
+        document.getElementById("p-ngs").textContent = val("in-ngs", "Chưa thực hiện");
+
+        document.getElementById("p-resect").textContent = getRadio("resect", "Chưa đánh giá");
+        document.getElementById("p-oper").textContent = getRadio("oper", "Chưa đánh giá");
+
+        const strategies = getChecks("strategy");
+        document.getElementById("p-strategy-list").innerHTML = strategies.length 
+            ? strategies.map(s => `- ${s}`).join("<br>") 
+            : "<em>(Chưa chọn chiến lược điều trị)</em>";
+
+        const bosung = getChecks("bosung");
+        document.getElementById("p-bosung").textContent = bosung.length ? bosung.join("; ") : "Không yêu cầu bổ sung";
+
+        document.getElementById("p-khoa-tn").textContent = val("in-khoa-tiepnhan", "....................");
+        document.getElementById("p-tai-hc").textContent = val("in-tai-hc", "Theo diễn tiến lâm sàng");
+        document.getElementById("p-ketluan").textContent = val("in-ketluan", "");
+
+        window.print();
+    }
+
+    // Làm mới dữ liệu
+    function resetAll() {
+        if (confirm("Xóa toàn bộ thông tin đang nhập trên phiếu?")) {
+            document.querySelectorAll('#app-ui input[type="text"], #app-ui input[type="number"], #app-ui select, #app-ui textarea').forEach(el => {
+                el.value = "";
+            });
+            document.querySelectorAll('#app-ui input[type="radio"]').forEach(el => el.checked = false);
+            document.querySelectorAll('#app-ui input[type="checkbox"]').forEach(el => {
+                el.checked = ["chk-khoa-nl", "chk-khoa-ub", "chk-khoa-cdha", "chk-khoa-gpb"].includes(el.id);
+            });
+        }
+    }
+</script>
+
+</body>
+</html>
